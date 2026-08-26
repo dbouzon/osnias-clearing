@@ -1,2 +1,0 @@
-# osnias-clearing
-Osnias Cleraring
