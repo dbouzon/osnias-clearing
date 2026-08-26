@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Osnias Clearing</title>
+<style>
+  :root {
+    --bg: #06090f;
+    --bg-glow: #0d1420;
+    --gold: #c9a35a;
+    --gold-soft: #a8853f;
+    --text: #eef1f6;
+    --text-dim: #9aa4b2;
+    --line: rgba(201, 163, 90, 0.25);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, var(--bg-glow) 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: "Georgia", "Iowan Old Style", "Palatino Linotype", serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 6vh 6vw;
+    text-align: center;
+    overflow-x: hidden;
+  }
+
+  .wrap {
+    max-width: 780px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.2rem;
+  }
+
+  .mark {
+    width: 64px;
+    height: 64px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .mark::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+  }
+
+  .mark span {
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--text);
+    line-height: 1.05;
+  }
+
+  h1 .accent {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .divider {
+    width: 72px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0.2rem 0;
+  }
+
+  .tagline {
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    font-size: clamp(1rem, 2.4vw, 1.25rem);
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 400;
+    max-width: 620px;
+  }
+
+  .cycle {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 0.6rem;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--gold-soft);
+  }
+
+  .cycle .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold-soft);
+  }
+
+  footer {
+    position: fixed;
+    bottom: 1.6rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: rgba(154, 164, 178, 0.5);
+  }
+
+  @media (prefers-color-scheme: light) {
+    body { background: radial-gradient(ellipse 80% 60% at 50% 0%, #f3ede0 0%, #ffffff 55%); color: #1a1a1a; }
+    .tagline { color: #55524a; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="mark"><span>OR</span></div>
+    <h1>osnias<span class="accent">-clearing</span></h1>
+    <div class="divider"></div>
+    <p class="tagline">The First Jubilee Clearing House on Blockchain</p>
+    <div class="cycle">
+      <span>91-Day Cycle</span>
+      <span class="dot"></span>
+      <span>4 Times a Year</span>
+    </div>
+  </div>
+  <footer>OSNIAS CLEARING</footer>
+</body>
+</html>
