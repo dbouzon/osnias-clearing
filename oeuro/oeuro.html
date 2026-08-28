@@ -441,10 +441,119 @@
       .btn { width: 100%; }
       .resource { align-items: flex-start; flex-direction: column; }
     }
+  
+    /* Fixed site-wide navigation bar */
+    .site-nav-fixed {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(5,8,20,.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: .7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .site-nav-brand {
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-right: auto;
+    }
+
+    .site-nav-brand span { color: var(--accent); }
+
+    .site-nav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      justify-content: flex-end;
+    }
+
+    .site-nav-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: .48rem .74rem;
+      border: 1px solid rgba(255,255,255,.38);
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      font-size: .69rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav-buttons a:hover,
+    .site-nav-buttons a:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: #fff;
+      text-decoration: none;
+    }
+
+    @media (max-width: 760px) {
+      .site-nav-inner { padding: .65rem 1rem; }
+      .site-nav-brand { width: 100%; margin-right: 0; }
+      .site-nav-buttons { justify-content: flex-start; }
+    }
+
+    /* Same content frame as OSNIAS / ORUSD */
+    .hero-grid { grid-template-columns: 1fr !important; }
+
+    .essential-parameters { margin-bottom: 3rem; }
+    .essential-parameters .panel { width: 100%; }
+    .essential-parameters .stats {
+      grid-template-columns: repeat(4, minmax(0,1fr));
+    }
+
+    @media (max-width: 900px) {
+      .essential-parameters .stats {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .essential-parameters .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 
 <body>
+
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+        OSNIAS <span>CLEARING</span>
+      </a>
+
+      <nav class="site-nav-buttons" aria-label="Main site navigation">
+        <a href="/osnias-clearing/history/history.html">History</a>
+        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
+        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
+        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
+        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
+        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
+        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
+      </nav>
+    </div>
+  </div>
+
   <header>
     <div class="container">
       <div class="topbar">
@@ -474,25 +583,33 @@
               non-replayable external proofs and final settlement under manager authority.
             </p>
 
-            <div class="tags">
-              <span class="tag tag-accent">EUR Clearing Token</span>
-              <span class="tag">6 decimals</span>
-              <span class="tag">EOA → EOA</span>
-              <span class="tag">0.15% transfer fee</span>
-              <span class="tag">0.501 OEURO minimum</span>
-              <span class="tag">24h oracle validity</span>
-            </div>
-
             <div class="actions">
-              <a class="btn btn-primary" href="#resources">View public files →</a>
-              <a class="btn" href="https://sepolia.etherscan.io/address/0xd3CC962AA559f28B4411c60F7c01ea14fccb25D8#code" target="_blank" rel="noopener noreferrer">Sepolia contract</a>
-              <a class="btn" href="#specification">Technical specification</a>
-              <a class="btn" href="#oracle">Oracle architecture</a>
+              <a class="btn btn-primary"
+                 href="/osnias-clearing/oeuro/oeuro_technical.pdf"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                Local Technical Documentation · PDF ↗
+              </a>
+
+              <a class="btn"
+                 href="https://doi.org/10.5281/zenodo.22140908"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                Zenodo DOI · Permanent Archive ↗
+              </a>
             </div>
           </div>
+        </div>
+      </section>
+    </div>
+  </header>
 
-          <aside class="panel">
-            <div class="panel-title">OEURO — essential parameters</div>
+  <main class="container">
+
+
+    <section class="essential-parameters" aria-label="OEURO essential parameters">
+      <aside class="panel">
+            <div class="section-label">01 · OEURO — Essential Parameters</div>
 
             <div class="stats">
               <div class="stat">
@@ -538,15 +655,31 @@
               </div>
             </div>
           </aside>
-        </div>
-      </section>
-    </div>
-  </header>
+    </section>
 
-  <main class="container">
+
+    <section class="testnet-status" aria-label="OEURO Ethereum Sepolia testnet status">
+      <div class="notice" style="margin-top:0; margin-bottom:3rem;">
+        <div class="section-label" style="margin-bottom:.7rem;">02 · OEURO on Ethereum Sepolia Testnet</div>
+        OEURO already has a public reference deployment on Ethereum Sepolia for development,
+        integration testing and pre-audit validation. The deployed testnet contract provides a
+        directly inspectable implementation of the current OEURO clearing-token logic before the
+        intended production architecture is finalized.
+        <br /><br />
+        <strong>Reference address:</strong>
+        <span style="word-break:break-all;">0xd3CC962AA559f28B4411c60F7c01ea14fccb25D8</span>
+        <br /><br />
+        <a class="btn btn-primary"
+           href="https://sepolia.etherscan.io/address/0xd3CC962AA559f28B4411c60F7c01ea14fccb25D8#code"
+           target="_blank"
+           rel="noopener noreferrer">
+          View OEURO on Sepolia Etherscan →
+        </a>
+      </div>
+    </section>
 
     <section id="role">
-      <div class="section-label">01 · Technical role</div>
+      <div class="section-label">03 · Technical Role</div>
       <h2>A clearing register, not a market token</h2>
 
       <p class="section-intro">
@@ -576,7 +709,7 @@
     </section>
 
     <section id="p2p">
-      <div class="section-label">02 · P2P circulation</div>
+      <div class="section-label">04 · P2P Circulation</div>
       <h2>Gross debited / net received</h2>
 
       <p class="section-intro">
@@ -632,7 +765,7 @@
     </section>
 
     <section id="oracle">
-      <div class="section-label">03 · Oracle & settlement</div>
+      <div class="section-label">05 · Oracle & Settlement</div>
       <h2>The oracle attests. The manager settles.</h2>
 
       <p class="section-intro">
@@ -680,8 +813,16 @@
     </section>
 
     <section id="specification">
-      <div class="section-label">04 · Technical specification</div>
+      <div class="section-label">06 · Technical Specification</div>
       <h2>OEURO token design</h2>
+      <div class="actions" style="margin-top:.8rem; margin-bottom:1.2rem;">
+        <a class="btn btn-primary"
+           href="/osnias-clearing/oeuro/oeuro_technical.pdf"
+           target="_blank"
+           rel="noopener noreferrer">
+          Open OEURO Technical Documentation · PDF ↗
+        </a>
+      </div>
 
       <table class="spec-table">
         <tr>
@@ -748,7 +889,7 @@
     </section>
 
     <section id="security">
-      <div class="section-label">05 · Security invariants</div>
+      <div class="section-label">07 · Security Invariants</div>
       <h2>Explicit trust boundaries</h2>
 
       <div class="grid-3">
@@ -791,16 +932,22 @@
     </section>
 
     <section id="resources">
-      <div class="section-label">06 · Transparency</div>
+      <div class="section-label">08 · Transparency</div>
       <h2>Public source, ABI and flattened contract</h2>
 
       <p class="section-intro">
-        OEURO technical files are publicly accessible from this <strong>/oeuro/</strong> directory.
-        The links below use relative paths so they remain valid on GitHub Pages and on a future custom domain.
+        OEURO technical files are publicly accessible from the <strong>/oeuro/</strong> repository directory.
+        The links below point to the current public technical package.
       </p>
 
+      <div class="notice" style="margin-bottom:1.25rem;">
+        <strong>Permanent technical archive — Zenodo.</strong>
+        The published OEURO technical package is permanently archived under DOI
+        <a href="https://doi.org/10.5281/zenodo.22140908" target="_blank" rel="noopener noreferrer"><strong>10.5281/zenodo.22140908</strong></a>.
+      </div>
+
       <div class="resources">
-        <a class="resource" href="oeuro-testnet.sol">
+        <a class="resource" href="/osnias-clearing/oeuro/oeuro-testnet.sol">
           <div>
             <strong>oeuro-testnet.sol</strong>
             <span>Reference Solidity source</span>
@@ -808,7 +955,7 @@
           <div class="resource-type">SOURCE ↗</div>
         </a>
 
-        <a class="resource" href="oeuro-testnet.abi">
+        <a class="resource" href="/osnias-clearing/oeuro/oeuro-testnet.abi">
           <div>
             <strong>oeuro-testnet.abi</strong>
             <span>Public contract ABI</span>
@@ -816,7 +963,7 @@
           <div class="resource-type">ABI ↗</div>
         </a>
 
-        <a class="resource" href="oeuro-testnet-flat.sol">
+        <a class="resource" href="/osnias-clearing/oeuro/oeuro-testnet-flat.sol">
           <div>
             <strong>oeuro-testnet-flat.sol</strong>
             <span>Flattened Solidity source for technical review</span>
@@ -832,7 +979,7 @@
           <div class="resource-type">ETHERSCAN ↗</div>
         </a>
 
-        <a class="resource" href="oeuro_technical.pdf" target="_blank" rel="noopener noreferrer">
+        <a class="resource" href="/osnias-clearing/oeuro/oeuro_technical.pdf" target="_blank" rel="noopener noreferrer">
           <div>
             <strong>oeuro_technical.pdf</strong>
             <span>OEURO Technical White Paper &amp; Audit Reference</span>
@@ -855,7 +1002,7 @@
     <div class="container footer-grid">
       <div>OEURO · EUR Clearing Token</div>
       <div>
-        <a href="../index.html">Osnias Clearing</a>
+        <a href="/osnias-clearing/index.html">Osnias Clearing</a>
         &nbsp;·&nbsp;
         <a href="#p2p">P2P</a>
         &nbsp;·&nbsp;
