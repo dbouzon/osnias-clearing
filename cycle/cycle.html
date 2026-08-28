@@ -444,6 +444,29 @@
   font-size:.78rem;
   letter-spacing:.04em;
 }
+
+/* Cycle at a glance directly below cycle.jpg */
+.hero-grid{
+  grid-template-columns:1fr !important;
+}
+.cycle-calendar-illustration + .panel{
+  width:100%;
+  margin-top:1rem;
+  margin-bottom:1.4rem;
+}
+.cycle-calendar-illustration + .panel .stats{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+@media(max-width:900px){
+  .cycle-calendar-illustration + .panel .stats{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:560px){
+  .cycle-calendar-illustration + .panel .stats{
+    grid-template-columns:1fr;
+  }
+}
 </style>
 </head>
 <body>
@@ -466,27 +489,7 @@
               Osnias Clearing operates on a 91-day clearing cycle structured in three phases:
               a 3-day Burn Triduum, an 85-day issuance and P2P circulation window, and a 3-day Compensation Triduum.
               Four identical cycles form a 364-day annual Jubilee calendar.
-            </p><figure class="cycle-calendar-illustration">
-<img alt="Four-season 91-day clearing cycle: 13 weeks per season, 4 seasons per 364-day year" decoding="async" loading="eager" src="/osnias-clearing/cycle/cycle.jpg"/>
-<figcaption>
-    Four seasons · 13 weeks per season · 91 days per clearing cycle
-  </figcaption>
-</figure>
-<div class="tags">
-<span class="tag accent">91-day clearing cycle</span>
-<span class="tag">Immediate recording</span>
-<span class="tag">Progressive compensation</span>
-<span class="tag">Final net settlement</span>
-<span class="tag">7-year Clearing Epoch</span>
-<span class="tag">Week 53 Jubilee Reset</span>
-</div>
-<div class="actions">
-<a class="btn primary" href="#timeline">See the cycle →</a>
-<a class="btn" href="/osnias-clearing/cycle/onias-clearing-calendrier.pdf">Official Calendar PDF</a>
-<a class="btn" href="/osnias-clearing/index.html">Back to Osnias Clearing</a>
-</div>
-</div>
-<aside class="panel">
+            </p><figure class="cycle-calendar-illustration"><img alt="Four-season 91-day clearing cycle: 13 weeks per season, 4 seasons per 364-day year" decoding="async" height="533" loading="eager" src="/osnias-clearing/cycle/cycle.jpg" width="533"/><figcaption>Four seasons · 13 weeks per season · 91 days per clearing cycle</figcaption></figure><aside class="panel">
 <div class="panel-title">Cycle at a glance</div>
 <div class="stats">
 <div class="stat">
@@ -521,6 +524,21 @@
 </div>
 </div>
 </aside>
+<div class="tags">
+<span class="tag accent">91-day clearing cycle</span>
+<span class="tag">Immediate recording</span>
+<span class="tag">Progressive compensation</span>
+<span class="tag">Final net settlement</span>
+<span class="tag">7-year Clearing Epoch</span>
+<span class="tag">Week 53 Jubilee Reset</span>
+</div>
+<div class="actions">
+<a class="btn primary" href="#timeline">See the cycle →</a>
+<a class="btn" href="/osnias-clearing/cycle/onias-clearing-calendrier.pdf">Official Calendar PDF</a>
+<a class="btn" href="/osnias-clearing/index.html">Back to Osnias Clearing</a>
+</div>
+</div>
+
 </div>
 </section>
 </div>
