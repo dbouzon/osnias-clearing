@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Osnias Clearing — Infrastructure de Clearing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Osnias Clearing — Infrastructure programmable de clearing pour les règlements libellés en USD et EUR. Architecture de gouvernance, registres ORUSD et OEURO, séparation fonctionnelle." />
+  <meta name="theme-color" content="#050814" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:title" content="Osnias Clearing — Infrastructure de Clearing" />
+  <meta property="og:description" content="Infrastructure programmable de clearing pour les règlements libellés en USD et EUR. Séparation fonctionnelle, gouvernance institutionnelle et modèle de sécurité documenté." />
+  <meta property="og:type" content="website" />
+
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-alt: #0b1020;
+      --bg-card: rgba(8, 12, 28, 0.92);
+      --accent: #3fd1ff;
+      --accent-soft: #1a9fd0;
+      --text: #f5f7ff;
+      --muted: #9aa3c2;
+      --border: #1b2338;
+      --ok: #3fd1ff;
+      --warning: #e8b84a;
+      --fw-bold: 600;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #101633 0, #050814 55%);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus-visible {
+      text-decoration: underline;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #050814 0, #0b1020 40%, #050814 100%);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 0;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-size: 0.92rem;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav {
+      display: flex;
+      gap: 1.4rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .nav a:hover,
+    .nav a:focus-visible {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Mobile menu */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.4rem 0.7rem;
+      border-radius: 0.4rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+
+    .menu-toggle:hover {
+      border-color: var(--accent-soft);
+      color: var(--text);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 3.2rem 0 2.8rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(0, 1.6fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      color: var(--accent);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 600;
+    }
+
+    .hero-title {
+      font-size: clamp(1.9rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      line-height: 1.15;
+    }
+
+    .hero-subtitle {
+      font-size: 1.02rem;
+      color: var(--muted);
+      max-width: 38rem;
+      margin-bottom: 1.6rem;
+      line-height: 1.7;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .tag {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 0.22rem 0.7rem;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      background: rgba(15, 24, 48, 0.7);
+    }
+
+    .tag-accent {
+      border-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.15rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      cursor: pointer;
+      background: #050814;
+      color: var(--text);
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      font-weight: 500;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      border-color: var(--accent-soft);
+      background: linear-gradient(135deg, #1a9fd0, #3fd1ff);
+      color: #050814;
+      font-weight: 600;
+    }
+
+    .btn-outline {
+      color: var(--muted);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent-soft);
+      color: var(--text);
+    }
+
+    /* Hero panel */
+    .hero-panel {
+      border-radius: 0.9rem;
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at top left, #151c3b 0, #050814 55%);
+      padding: 1.35rem;
+      font-size: 0.84rem;
+    }
+
+    .hero-panel h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .hero-panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    .pill {
+      border-radius: 0.7rem;
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      background: rgba(8, 12, 28, 0.9);
+    }
+
+    .pill-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-bottom: 0.3rem;
+      color: var(--muted);
+    }
+
+    .pill-main {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .pill-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Main */
+    main {
+      padding: 2rem 0 3.5rem;
+    }
+
+    section {
+      margin-bottom: 3.2rem;
+    }
+
+    .section-title {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+      font-weight: 600;
+    }
+
+    .section-intro {
+      max-width: 52rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    /* Cards */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      border-radius: 0.85rem;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      padding: 1.15rem;
+      font-size: 0.9rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.8rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .card-tag {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .card-body {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .card-list {
+      list-style: none;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .card-list li {
+      margin-bottom: 0.32rem;
+      padding-left: 0.1rem;
+    }
+
+    .card-list li::before {
+      content: "– ";
+      color: var(--accent-soft);
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.85rem;
+    }
+
+    .badge {
+      font-size: 0.68rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 0.12rem 0.55rem;
+      color: var(--muted);
+    }
+
+    .badge-ok {
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    /* Architecture flow */
+    .architecture-flow {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.7rem;
+      max-width: 680px;
+      margin: 1.4rem auto 0;
+    }
+
+    .flow-box {
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 0.8rem;
+      padding: 0.9rem 1rem;
+      background: var(--bg-card);
+    }
+
+    .flow-box strong {
+      display: block;
+      margin-bottom: 0.15rem;
+      font-size: 0.95rem;
+    }
+
+    .flow-box span {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .flow-separator {
+      text-align: center;
+      color: var(--accent);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 500;
+    }
+
+    .flow-bottom {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    /* Notice / Disclaimer boxes */
+    .notice {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-soft);
+      border-radius: 0.7rem;
+      padding: 1rem 1.1rem;
+      background: rgba(8, 12, 28, 0.75);
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-top: 1.2rem;
+      line-height: 1.6;
+    }
+
+    .disclaimer-box {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--warning);
+      border-radius: 0.7rem;
+      padding: 1.15rem 1.25rem;
+      background: rgba(20, 16, 8, 0.45);
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 1.5rem;
+      line-height: 1.65;
+    }
+
+    .disclaimer-box strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .status-box {
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      background: var(--bg-card);
+      padding: 1.25rem 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .status-box h3 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+      font-weight: 600;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .status-item {
+      font-size: 0.84rem;
+    }
+
+    .status-item .label {
+      color: var(--muted);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.2rem;
+    }
+
+    .status-item .value {
+      font-weight: 500;
+    }
+
+    .status-item .value.pending {
+      color: var(--warning);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.8rem 0 2.2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--muted);
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.4rem;
+    }
+
+    .footer-legal {
+      border-top: 1px solid var(--border);
+      padding-top: 1.2rem;
+      font-size: 0.74rem;
+      line-height: 1.6;
+      max-width: 72rem;
+      color: #7a84a5;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .two-col {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-panel-grid,
+      .grid-3 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .nav.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #0b1020;
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem 1.2rem;
+        gap: 0.9rem;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      header {
+        position: relative;
+      }
+
+      .flow-bottom {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .container {
+        padding: 0 1.1rem;
+      }
+
+      .hero {
+        padding-top: 2.2rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  
+    /* Navigation/readability overrides */
+    header,
+    header .brand,
+    header .brand span,
+    header nav a,
+    .hero,
+    .hero h1,
+    .hero h2,
+    .hero h3,
+    .hero p,
+    .hero .lead,
+    .hero .eyebrow {
+      color: #ffffff !important;
+    }
+
+    header nav a {
+      opacity: 1 !important;
+    }
+
+    .main-nav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      align-items: center;
+      justify-content: flex-end;
+      padding: .7rem 0;
+    }
+
+    .main-nav-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: .55rem .85rem;
+      border: 1px solid rgba(255,255,255,.46);
+      border-radius: 999px;
+      background: rgba(255,255,255,.09);
+      color: #ffffff !important;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .045em;
+      text-transform: none;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: .18s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .main-nav-buttons a:hover,
+    .main-nav-buttons a:focus-visible {
+      background: rgba(255,255,255,.18);
+      border-color: #ffffff;
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    @media (max-width: 980px) {
+      .topbar {
+        align-items: flex-start !important;
+        flex-direction: column;
+        padding: .8rem 0;
+      }
+
+      .main-nav-buttons {
+        justify-content: flex-start;
+        width: 100%;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="topbar">
+        <div class="logo" aria-label="Osnias Clearing">
+          OSNIAS <span>CLEARING</span>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">
+          Menu
+        </button>
+
+        
+        <nav class="main-nav-buttons" aria-label="Main navigation">
+          <a href="/history/history.html">History</a>
+          <a href="/cycle/cycle.html">Jubilee Cycle</a>
+          <a href="/sei/sei.html">SEI Mainnet</a>
+          <a href="/oracle/oracle.html">Oracle</a>
+          <a href="/osnias/osnias.html">OSNIAS Token</a>
+          <a href="/orusd/orusd.html">ORUSD Clearing Token</a>
+          <a href="/OEuro/oeuro.html">OEURO Clearing Token</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow">Infrastructure de clearing</span>
+
+            <h1 class="hero-title">Worldwide Clearing Rail</h1>
+<p class="hero-subtitle">
+              Osnias Clearing est une infrastructure programmable destinée au clearing de règlements libellés en USD et en EUR.
+              Elle sépare de manière explicite les fonctions de gouvernance, de clearing et de sécurité afin de fournir une architecture lisible, documentée et auditable.
+            </p>
+
+            <div class="hero-tags">
+              <span class="tag tag-accent">91-Day Clearing Cycle</span>
+              <span class="tag">Jubilee-cycle framework</span>
+              <span class="tag">ORUSD · OEURO · OSNIAS</span>
+              <span class="tag">Séparation fonctionnelle</span>
+              <span class="tag">Gouvernance institutionnelle</span>
+              <span class="tag">Modèle de sécurité documenté</span>
+            </div>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#architecture">Architecture</a>
+              <a class="btn btn-outline" href="#registry">Registry de production</a>
+              <a class="btn btn-outline" href="#docs">Documentation</a>
+            </div>
+          </div>
+
+          <aside class="hero-panel" aria-label="Couches fonctionnelles">
+            <h2>Couches fonctionnelles</h2>
+
+            <div class="hero-panel-grid">
+              <div class="pill">
+                <div class="pill-title">OSNIAS</div>
+                <div class="pill-main">Governance Layer</div>
+                <div class="pill-meta">
+                  Couche de gouvernance dédiée à l’organisation, aux rôles et aux décisions structurantes.
+                </div>
+              </div>
+
+              <div class="pill">
+                <div class="pill-title">Séparation</div>
+                <div class="pill-main">Governance ≠ Clearing</div>
+                <div class="pill-meta">
+                  Les fonctions de gouvernance et les registres de clearing sont distincts et auditables séparément.
+                </div>
+              </div>
+
+              <div class="pill">
+                <div class="pill-title">ORUSD</div>
+                <div class="pill-main">USD Clearing Register</div>
+                <div class="pill-meta">
+                  Registre de clearing programmable pour les règlements libellés en USD.
+                </div>
+              </div>
+
+              <div class="pill">
+                <div class="pill-title">OEURO</div>
+                <div class="pill-main">EUR Clearing Register</div>
+                <div class="pill-meta">
+                  Registre de clearing programmable pour les règlements libellés en EUR.
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+
+      <!-- STATUS -->
+      <section id="status" aria-labelledby="status-title">
+        <div class="section-title" id="status-title">Statut de l’infrastructure</div>
+
+        <div class="status-box">
+          <h3>État actuel</h3>
+          <div class="status-grid">
+            <div class="status-item">
+              <div class="label">Architecture</div>
+              <div class="value">Documentée</div>
+            </div>
+            <div class="status-item">
+              <div class="label">Environnement testnet</div>
+              <div class="value pending">En cours de publication</div>
+            </div>
+            <div class="status-item">
+              <div class="label">Mainnet production</div>
+              <div class="value pending">Non déployé</div>
+            </div>
+            <div class="status-item">
+              <div class="label">Registry public</div>
+              <div class="value pending">En préparation</div>
+            </div>
+            <div class="status-item">
+              <div class="label">Audits externes</div>
+              <div class="value pending">À planifier</div>
+            </div>
+            <div class="status-item">
+              <div class="label">Documentation technique</div>
+              <div class="value">En cours de publication</div>
+            </div>
+          </div>
+        </div>
+
+        <p class="section-intro" style="margin-bottom: 0;">
+          Les adresses de contrats, ABI, versions et références de production seront publiées exclusivement via le registry officiel une fois les déploiements effectués et validés. Aucune adresse de production n’est active à la date de publication de cette page.
+        </p>
+      </section>
+
+      <!-- ARCHITECTURE -->
+  
+
+    <section id="clearing-cycle">
+      <div class="section-title">91-Day Clearing Cycle</div>
+
+      <p class="section-intro">
+        Osnias Clearing separates the time of exchange from the time of final settlement.
+        Transactions and clearing entries can circulate immediately inside the cycle, while the final net position is settled only after participants have had time to offset reciprocal commitments.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Continuous clearing</div>
+            <div class="card-tag">Day 1 → Day 88</div>
+          </div>
+          <div class="card-body">
+            Movements are recorded on the blockchain and positions evolve throughout the cycle.
+            Participants retain time to trade, receive payments and naturally compensate reciprocal obligations.
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Dated statement</div>
+            <div class="card-tag">Day 88</div>
+          </div>
+          <div class="card-body">
+            A dated clearing statement is produced near the end of the cycle.
+            Participants have a short review period to contest a discrepancy before final execution.
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Final settlement</div>
+            <div class="card-tag">Day 91</div>
+          </div>
+          <div class="card-body">
+            After the review window, the final net position is executed through the settlement architecture.
+            The objective is to settle the residual balance, not every individual movement one by one.
+          </div>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Time is part of the clearing design.</strong>
+        The 91-day period is not a technical delay: it is the economic window that allows reciprocal positions to circulate and compensate before final settlement.
+        This operating cycle sits inside a broader architecture inspired by Jubilee cycles and periodic economic rebalancing.
+      </div>
+
+      <div class="badge-row" style="margin-top:1rem;">
+        <a class="badge badge-ok" href="/cycle/cycle.html">Explore the 91-Day & Jubilee Cycle →</a>
+      </div>
+    </section>
+
+    <section id="ecosystem">
+      <div class="section-title">OSNIAS ecosystem — public entry points</div>
+
+      <p class="section-intro">
+        Osnias Clearing separates governance, USD clearing, EUR clearing and regulatory positioning into distinct public documentation domains.
+        Each page is dedicated to one function and links directly to its technical sources and permanent archive.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">OSNIAS — Governance Token</div>
+            <div class="card-tag">Governance · Omnichain EVM</div>
+          </div>
+
+          <div class="card-body">
+            Governance token with fixed genesis supply, canonical governance state on Sei, LayerZero OFT mobility and public technical documentation.
+          </div>
+
+          <ul class="card-list">
+            <li>100,000,000 genesis supply.</li>
+            <li>6 decimals.</li>
+            <li>ERC20Votes + ERC-2612 Permit.</li>
+            <li>Sei canonical governance.</li>
+            <li>Zenodo DOI: 10.5281/zenodo.22139986.</li>
+          </ul>
+
+          <div class="badge-row">
+            <a class="badge badge-ok" href="/osnias/osnias.html">Open OSNIAS page →</a>
+            <a class="badge" href="https://doi.org/10.5281/zenodo.22139986" target="_blank" rel="noopener noreferrer">Zenodo DOI ↗</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">ORUSD — USD Clearing Token</div>
+            <div class="card-tag">USD clearing · P2P</div>
+          </div>
+
+          <div class="card-body">
+            Restricted USD-denominated clearing register designed for direct EOA-to-EOA settlement with explicit mint/burn and oracle-gated requests.
+          </div>
+
+          <ul class="card-list">
+            <li>6 decimals.</li>
+            <li>0.501 ORUSD minimum gross transfer.</li>
+            <li>0.15% protocol fee.</li>
+            <li>24-hour oracle request validity.</li>
+            <li>Zenodo DOI: 10.5281/zenodo.22140272.</li>
+          </ul>
+
+          <div class="badge-row">
+            <a class="badge badge-ok" href="/orusd/orusd.html">Open ORUSD page →</a>
+            <a class="badge" href="https://doi.org/10.5281/zenodo.22140272" target="_blank" rel="noopener noreferrer">Zenodo DOI ↗</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">OEURO — EUR Clearing Token</div>
+            <div class="card-tag">EUR clearing · P2P</div>
+          </div>
+
+          <div class="card-body">
+            Restricted EUR-denominated clearing register with direct P2P circulation, controlled supply and auditable oracle-request settlement.
+          </div>
+
+          <ul class="card-list">
+            <li>6 decimals.</li>
+            <li>0.501 OEURO minimum gross transfer.</li>
+            <li>0.15% protocol fee.</li>
+            <li>Ethereum Sepolia reference deployment.</li>
+            <li>Zenodo DOI: 10.5281/zenodo.22140908.</li>
+          </ul>
+
+          <div class="badge-row">
+            <a class="badge badge-ok" href="/OEuro/oeuro.html">Open OEURO page →</a>
+            <a class="badge" href="https://doi.org/10.5281/zenodo.22140908" target="_blank" rel="noopener noreferrer">Zenodo DOI ↗</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="two-col" style="margin-top:1.5rem;">
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Regulatory Positioning</div>
+            <div class="card-tag">Request for Guidance</div>
+          </div>
+
+          <div class="card-body">
+            Functional regulatory presentation of the architecture: governance, clearing, lending-partner separation and jurisdiction-specific requests for guidance.
+          </div>
+
+          <ul class="card-list">
+            <li>No customer deposits collected by Osnias Clearing.</li>
+            <li>No credit issued by Osnias Clearing.</li>
+            <li>No leverage mechanism in the clearing rail.</li>
+            <li>Collateral custody remains with independent lending partners.</li>
+            <li>Separate review tracks for SEC/CFTC/FinCEN, AMF/ACPR, ESMA/EBA, FINMA and AFA.</li>
+          </ul>
+
+          <div class="badge-row">
+            <a class="badge badge-ok" href="/regulation/regulation.html">Open Regulation page →</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Public Documentation Architecture</div>
+            <div class="card-tag">GitHub + Zenodo</div>
+          </div>
+
+          <div class="card-body">
+            Each technical domain is documented through a public landing page, repository source files, ABI, flattened source, white paper and permanent Zenodo archive.
+          </div>
+
+          <ul class="card-list">
+            <li>GitHub: current public technical files.</li>
+            <li>Zenodo: immutable citable archives with DOI.</li>
+            <li>Testnet references: public implementation verification.</li>
+            <li>Registry: production addresses and privileged roles to be published separately.</li>
+          </ul>
+
+          <div class="badge-row">
+            <span class="badge badge-ok">Public-by-design</span>
+            <span class="badge">Audit-oriented</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="architecture">
+        <div class="section-title">Architecture</div>
+
+        <p class="section-intro">
+          Osnias Clearing est conçu comme une infrastructure spécialisée de clearing. Il n’a pas vocation à assurer des fonctions de marché, de liquidité, de conservation d’actifs ou d’échange. Son objet est d’organiser, d’enregistrer et de sécuriser le règlement selon des règles déterministes et documentées.
+        </p>
+
+        <div class="architecture-flow" aria-label="Schéma fonctionnel">
+          <div class="flow-box">
+            <strong>OSNIAS</strong>
+            <span>Governance Layer</span>
+          </div>
+
+          <div class="flow-separator">Séparation fonctionnelle</div>
+
+          <div class="flow-bottom">
+            <div class="flow-box">
+              <strong>ORUSD</strong>
+              <span>USD Clearing Register</span>
+            </div>
+            <div class="flow-box">
+              <strong>OEURO</strong>
+              <span>EUR Clearing Register</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="notice">
+          Le périmètre fonctionnel d’Osnias Clearing se limite au clearing. Les fonctions d’échange, de liquidité, de prêt, de conservation ou d’interopérabilité relèvent d’autres infrastructures ou acteurs et ne constituent pas le cœur du protocole.
+        </div>
+      </section>
+
+      <!-- CLEARING -->
+  
+    <section id="multichain">
+      <div class="section-title">Un rail de clearing multichain EVM</div>
+
+      <div class="two-col">
+        <div>
+          <p class="section-intro">
+            L’ambition d’Osnias Clearing est de créer une couche de clearing commune au-dessus de plusieurs écosystèmes EVM.
+            Les réseaux conservent leur autonomie, leurs protocoles et leurs modèles économiques ; Osnias Clearing apporte une logique de règlement commune entre domaines compatibles.
+          </p>
+
+          <ul class="card-list">
+            <li>Arbitrum — intégration de partenaires de lending et de liquidité institutionnelle.</li>
+            <li>Ethereum — couche EVM de référence et accès aux infrastructures de lending établies.</li>
+            <li>Cronos — environnement EVM orienté actifs numériques et services financiers.</li>
+            <li>BNB Chain — capacité transactionnelle et large écosystème EVM.</li>
+            <li>Base — environnement EVM à forte intégration applicative.</li>
+            <li>Polygon — infrastructure EVM scalable et écosystème de financement décentralisé.</li>
+            <li>Sei — domaine de gouvernance et de clearing dans l’architecture cible.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Lending partners → Clearing rail</div>
+            <div class="card-tag">Interoperable EVM domains</div>
+          </div>
+
+          <div class="card-body">
+            Osnias Clearing ne remplace pas les protocoles de lending. Il vise à s’y intégrer comme infrastructure de règlement.
+            Les collatéraux sont constitués de stablecoins ; le financement, la gestion du collatéral et du risque restent dans le domaine du lender. Osnias Clearing ne collecte aucun dépôt, n’accorde aucun crédit et n’introduit aucun levier : son rôle est limité au clearing et au settlement.
+          </div>
+
+          <ul class="card-list">
+            <li>Financement et collatéral gérés par les partenaires de lending.</li>
+            <li>Collatéraux constitués de stablecoins.</li>
+            <li>Aucun dépôt ni fonds de clientèle collecté par Osnias Clearing.</li>
+            <li>Aucun crédit accordé par Osnias Clearing.</li>
+            <li>Aucun mécanisme de levier financier dans le rail de clearing.</li>
+            <li>Clearing USD via ORUSD.</li>
+            <li>Clearing EUR via OEURO.</li>
+            <li>Gouvernance distincte via OSNIAS.</li>
+            <li>Architecture compatible avec plusieurs réseaux EVM.</li>
+          </ul>
+
+          <div class="badge-row">
+            <span class="badge badge-ok">Multichain EVM</span>
+            <span class="badge">Lending integration</span>
+            <span class="badge">Stablecoin collateral</span>
+            <span class="badge">Clearing settlement</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice">
+        <strong style="color:var(--text);">Périmètre fonctionnel.</strong>
+        Osnias Clearing est conçu comme une infrastructure de clearing et de settlement sur réseaux EVM.
+        Le protocole n’a pas vocation à recevoir des dépôts bancaires, à tenir des comptes bancaires traditionnels ni à octroyer du crédit bancaire.
+        Les actifs de collatéral sont des stablecoins et restent dans le périmètre technique et contractuel des partenaires de lending concernés.
+      </div>
+    </section>
+
+    <section id="clearing">
+        <div class="section-title">Registres de clearing — ORUSD &amp; OEURO</div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">ORUSD</div>
+              <div class="card-tag">USD Clearing Register</div>
+            </div>
+
+            <div class="card-body">
+              ORUSD est un registre de clearing programmable représenté par un token ERC-20 à circulation restreinte. Il est conçu pour le règlement entre comptes autorisés selon des règles explicites et auditables.
+            </div>
+
+            <ul class="card-list">
+              <li>6 décimales</li>
+              <li>Circulation directe EOA → EOA</li>
+              <li>Transferts vers contrats non prévus dans le modèle opérationnel</li>
+              <li>Minimum brut de transfert : 0,501 ORUSD</li>
+              <li>Frais de transfert : 0,15 %, déduits du montant</li>
+              <li>Mint / burn sous contrôle du gestionnaire</li>
+              <li>Demandes oracle valables 24 heures</li>
+              <li>Protection anti-rejeu des preuves externes</li>
+            </ul>
+
+            <div class="badge-row">
+              <span class="badge badge-ok">USD clearing</span>
+              <span class="badge">EOA settlement</span>
+              <span class="badge">Oracle attestation</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">OEURO</div>
+              <div class="card-tag">EUR Clearing Register</div>
+            </div>
+
+            <div class="card-body">
+              OEURO constitue le domaine de clearing libellé en EUR. Son rôle est distinct de celui d’un instrument de marché : il organise le règlement selon les règles propres à l’infrastructure.
+            </div>
+
+            <ul class="card-list">
+              <li>Architecture dédiée au clearing EUR</li>
+              <li>Règles de règlement documentées et auditables</li>
+              <li>Supply gérée par des fonctions explicites</li>
+              <li>Séparation fonctionnelle avec la gouvernance OSNIAS</li>
+              <li>Absence de dépendance native à une couche de liquidité de marché</li>
+            </ul>
+
+            <div class="badge-row">
+              <span class="badge badge-ok">EUR clearing</span>
+              <span class="badge">Dedicated register</span>
+              <span class="badge">Functional separation</span>
+            </div>
+          </article>
+
+          <article class="card" id="governance">
+            <div class="card-header">
+              <div class="card-title">OSNIAS</div>
+              <div class="card-tag">Governance Layer</div>
+            </div>
+
+            <div class="card-body">
+              OSNIAS porte la couche de gouvernance du système. Cette fonction est volontairement distincte des mécanismes de clearing ORUSD et OEURO.
+            </div>
+
+            <ul class="card-list">
+              <li>Gouvernance dédiée aux décisions structurantes</li>
+              <li>Séparation des rôles et responsabilités</li>
+              <li>Architecture multisignature pour la production</li>
+              <li>Clés dormantes et dispositifs de récupération hors ligne</li>
+              <li>Registry externe pour les adresses, rôles et versions</li>
+            </ul>
+
+            <div class="badge-row">
+              <span class="badge badge-ok">Governance</span>
+              <span class="badge">Role separation</span>
+              <span class="badge">Recovery architecture</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- SECURITY -->
+      <section id="security">
+        <div class="section-title">Sécurité &amp; gouvernance opérationnelle</div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Privileged-Key Security</div>
+              <div class="card-tag">Multisig · Cold storage</div>
+            </div>
+
+            <div class="card-body">
+              L’architecture de production est conçue pour éviter la dépendance à une clé opérationnelle unique.
+            </div>
+
+            <ul class="card-list">
+              <li>Autorités privilégiées sous contrôle multisignature</li>
+              <li>Cold storage pour les clés sensibles</li>
+              <li>Clés dormantes de récupération, hors usage opérationnel courant</li>
+              <li>Séparation des rôles manager / oracle / feeRecipient</li>
+              <li>Procédures documentées de rotation et de récupération</li>
+            </ul>
+
+            <div class="badge-row">
+              <span class="badge badge-ok">Multisig production</span>
+              <span class="badge">Dormant recovery</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Invariants de clearing</div>
+              <div class="card-tag">Deterministic settlement</div>
+            </div>
+
+            <div class="card-body">
+              Les registres de clearing s’appuient sur des invariants simples, documentables et testables.
+            </div>
+
+            <ul class="card-list">
+              <li>Supply modifiée uniquement par des fonctions explicites</li>
+              <li>Cycle de demande oracle déterministe</li>
+              <li>Preuves externes protégées contre le rejeu</li>
+              <li>Règlement sous contrôle du gestionnaire</li>
+              <li>Séparation entre logique de clearing et logique de gouvernance</li>
+            </ul>
+
+            <div class="badge-row">
+              <span class="badge badge-ok">Documented invariants</span>
+              <span class="badge">Auditable design</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REGISTRY -->
+      <section id="registry">
+        <div class="section-title">Registry de production</div>
+
+        <p class="section-intro">
+          Le registry public a vocation à constituer la source officielle d’identification des contrats, versions, rôles et références de production. Aucune adresse de production n’est publiée avant validation et déploiement effectif.
+        </p>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Public Production Registry</div>
+              <div class="card-tag">Canonical references</div>
+            </div>
+
+            <div class="card-body">
+              Le registry recensera les éléments suivants une fois les déploiements validés :
+            </div>
+
+            <ul class="card-list">
+              <li>Network / Chain ID</li>
+              <li>Adresses des contrats</li>
+              <li>Version et hash de déploiement</li>
+              <li>Manager / oracle / feeRecipient / GasPool</li>
+              <li>Multisig de production et architecture de récupération</li>
+              <li>ABI, code source, références d’audit</li>
+              <li>Statut : testnet / active / superseded</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Politique de publication</div>
+              <div class="card-tag">Traceability</div>
+            </div>
+
+            <div class="card-body">
+              Distinction explicite entre environnements de test et architecture de production.
+            </div>
+
+            <ul class="card-list">
+              <li>Contrats testnet clairement identifiés comme tels</li>
+              <li>Architecture mainnet documentée séparément</li>
+              <li>Adresses de production publiées uniquement après déploiement</li>
+              <li>Historique des versions conservé dans le registry</li>
+              <li>Aucun contrat non référencé dans le registry ne doit être considéré comme officiel</li>
+            </ul>
+
+            <div class="badge-row">
+              <span class="badge badge-ok">Clear status</span>
+              <span class="badge">Version traceability</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DOCS -->
+      <section id="docs">
+        <div class="section-title">Documentation &amp; publications</div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Technical White Papers</div>
+              <div class="card-tag">Architecture · Security</div>
+            </div>
+
+            <div class="card-body">
+              Les publications techniques décrivent l’architecture, les invariants, les rôles de gouvernance et les règles de clearing.
+            </div>
+
+            <ul class="card-list">
+              <li>ORUSD — Technical White Paper &amp; Audit Reference</li>
+              <li>OEURO — EUR Clearing Register Architecture</li>
+              <li>OSNIAS — Governance Architecture</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Code &amp; ABI</div>
+              <div class="card-tag">Developer resources</div>
+            </div>
+
+            <div class="card-body">
+              Accès aux sources, ABI, versions de contrats et références de déploiement publiées par Osnias Clearing.
+            </div>
+
+            <ul class="card-list">
+              <li>Sources Solidity</li>
+              <li>ABI officiels</li>
+              <li>Versioning et changelog</li>
+              <li>Références de tests et d’analyse statique</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Archives &amp; références</div>
+              <div class="card-tag">Persistent records</div>
+            </div>
+
+            <div class="card-body">
+              Les documents institutionnels peuvent être archivés sur des plateformes pérennes avec identifiants persistants et métadonnées publiques.
+            </div>
+
+            <ul class="card-list">
+              <li>White papers</li>
+              <li>Notes d’architecture</li>
+              <li>Références d’audit</li>
+              <li>Historique documentaire</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- DISCLAIMER -->
+      <section id="disclaimer">
+        <div class="section-title">Avertissements importants</div>
+
+        <div class="disclaimer-box">
+          <strong>Nature de l’information.</strong>
+          La présente page et les documents associés décrivent une infrastructure technologique de clearing. Ils ne constituent en aucun cas une offre au public de titres financiers, un prospectus, une recommandation d’investissement, un conseil en investissement, ni une solicitation d’aucune sorte.
+          <br /><br />
+          <strong>Absence de statut réglementaire affirmé.</strong>
+          À la date de publication, Osnias Clearing ne revendique pas le statut d’établissement de crédit, de prestataire de services de paiement, de prestataire de services sur crypto-actifs (PSCA / CASP), de chambre de compensation agréée ou de tout autre statut réglementé. Toute utilisation future dans un cadre réglementé nécessitera le respect des autorisations et obligations applicables (notamment AMF, ACPR, MiCA, ou autorités équivalentes).
+          <br /><br />
+          <strong>Risques technologiques.</strong>
+          Les protocoles de type blockchain comportent des risques techniques, opérationnels et de sécurité (bugs, vulnérabilités, erreurs de configuration, pertes de clés, etc.). Les utilisateurs et parties prenantes doivent procéder à leur propre diligence et ne pas se fonder uniquement sur les informations publiées ici.
+          <br /><br />
+          <strong>Statut des contrats.</strong>
+          Aucun contrat de production n’est déployé à la date de cette page. Seules les adresses et références figurant dans le registry officiel, une fois publié, doivent être considérées comme faisant autorité.
+          <br /><br />
+          <strong>Droit applicable.</strong>
+          Les informations sont fournies à titre purement descriptif et technique. Elles n’engagent pas l’existence d’une relation contractuelle. Toute interprétation ou utilisation relève de la responsabilité de l’utilisateur.
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>© Osnias Clearing</div>
+        <div>
+          <a href="#architecture">Architecture</a>
+          &nbsp;·&nbsp;
+          <a href="#registry">Registry</a>
+        &nbsp;·&nbsp;
+        <a href="/regulation/regulation.html">Regulation</a>
+          &nbsp;·&nbsp;
+          <a href="#docs">Documentation</a>
+          &nbsp;·&nbsp;
+          <a href="#disclaimer">Avertissements</a>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        Cette page présente une description technique d’une infrastructure de clearing. Elle ne constitue pas une offre de titres, un conseil en investissement ni une solicitation. Aucun contrat de production n’est actif à la date de publication. Les informations sont fournies sans garantie d’aucune sorte. Les utilisateurs sont invités à consulter des conseils juridiques et techniques indépendants avant toute utilisation ou interaction avec les composants du système.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const toggle = document.getElementById('menuToggle');
+      const nav = document.getElementById('mainNav');
+      if (!toggle || !nav) return;
+
+      toggle.addEventListener('click', function () {
+        const isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggle.textContent = isOpen ? 'Fermer' : 'Menu';
+      });
+
+      // Close menu on link click (mobile)
+      nav.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          nav.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.textContent = 'Menu';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
