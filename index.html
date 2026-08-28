@@ -117,7 +117,7 @@ header {
 }
 
 .hero {
-  padding: 5rem 0 4.2rem;
+  padding: 2rem 0 3.2rem;
 }
 
 .hero-grid {
@@ -465,7 +465,7 @@ footer {
 
 @media (max-width: 560px) {
   .container { padding: 0 1rem; }
-  .hero { padding: 3.5rem 0 3rem; }
+  .hero { padding: 2rem 0 2.5rem; }
   .hero-title { font-size: clamp(2.8rem, 16vw, 4rem); }
   .hero-panel-grid { grid-template-columns: 1fr; }
   .hero-actions { flex-direction: column; }
@@ -671,6 +671,15 @@ footer {
   background:var(--panel);
   box-shadow:0 0 32px rgba(63,209,255,.06);
 }
+
+.hero-copy .home-index-picture{
+  margin:1.4rem 0 0;
+  text-align:left;
+}
+.hero-copy .home-index-picture img{
+  margin:0;
+  width:min(533px,100%);
+}
 </style></head>
 <body>
 <div class="site-nav-fixed">
@@ -692,7 +701,9 @@ footer {
             It provides a common clearing registry for positions backed by funds managed by
             independent DeFi protocols across EVM networks. Clearing is strictly separated
             from custody, lending and credit activities.
-          </p>
+          </p><section aria-label="Osnias Clearing multichain EVM illustration" class="home-index-picture" id="home-index-picture">
+<img alt="Osnias Clearing at the centre of a multichain EVM network" decoding="async" height="400" loading="eager" src="/osnias-clearing/index-picture.png" width="533"/>
+</section>
 </div>
 <aside aria-label="Functional layers" class="hero-panel">
 <h2>Functional Layers</h2>
@@ -776,9 +787,6 @@ footer {
 </div>
 </section>
 
-<section aria-label="Osnias Clearing multichain EVM illustration" class="home-index-picture" id="home-index-picture">
-<img alt="Osnias Clearing at the centre of a multichain EVM network" decoding="async" height="400" loading="eager" src="/osnias-clearing/index-picture.png" width="533"/>
-</section>
 <section aria-labelledby="status-title" id="status">
 <div class="section-title" id="status-title">Infrastructure Status</div>
 <div class="status-box">
