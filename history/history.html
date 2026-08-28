@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Osnias Clearing — Historical Foundations</title>
+  <meta name="description" content="Historical foundations of Osnias Clearing: Onias III, Onias IV, the Zadokite high-priestly tradition, Leontopolis, Qumran and the Jubilee-inspired clearing cycle." />
+  <meta name="theme-color" content="#050814" />
+
+  <meta property="og:title" content="Osnias Clearing — Historical Foundations" />
+  <meta property="og:description" content="From Onias III and Onias IV to a modern clearing architecture structured around time, reconciliation and Jubilee cycles." />
+  <meta property="og:type" content="website" />
+
+  <style>
+    :root {
+      --bg: #050814;
+      --panel: rgba(8, 12, 28, 0.94);
+      --panel-2: rgba(15, 24, 48, 0.78);
+      --accent: #3fd1ff;
+      --accent-soft: #1a9fd0;
+      --text: #f5f7ff;
+      --muted: #9aa3c2;
+      --border: #1b2338;
+      --ok: #64e6b2;
+      --warning: #e8b84a;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      line-height: 1.65;
+      background:
+        radial-gradient(circle at 82% 0%, rgba(63,209,255,.10), transparent 29rem),
+        radial-gradient(circle at 10% 5%, rgba(63,209,255,.05), transparent 23rem),
+        var(--bg);
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover, a:focus-visible { text-decoration: underline; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Fixed site-wide navigation bar */
+    .site-nav-fixed {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(5,8,20,.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: .7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .site-nav-brand {
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-right: auto;
+    }
+
+    .site-nav-brand span { color: var(--accent); }
+
+    .site-nav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      justify-content: flex-end;
+    }
+
+    .site-nav-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: .48rem .74rem;
+      border: 1px solid rgba(255,255,255,.38);
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      font-size: .69rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav-buttons a:hover,
+    .site-nav-buttons a:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: #fff;
+      text-decoration: none;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(5,8,20,.98), rgba(11,16,32,.96));
+    }
+
+    .hero {
+      padding: 5rem 0 4rem;
+    }
+
+    .eyebrow,
+    .section-label {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: .73rem;
+      font-weight: 700;
+      margin-bottom: .55rem;
+    }
+
+    h1 {
+      font-size: clamp(3.1rem, 8vw, 6rem);
+      line-height: .95;
+      letter-spacing: .025em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-role {
+      font-size: clamp(1.25rem,3vw,1.8rem);
+      font-weight: 650;
+      margin-bottom: 1rem;
+    }
+
+    .hero-lead {
+      max-width: 52rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: .64rem 1.05rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(5,8,20,.72);
+      color: var(--text);
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    .btn:hover {
+      text-decoration: none;
+      border-color: var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg,var(--accent-soft),var(--accent));
+      border-color: var(--accent);
+      color: #03101a;
+    }
+
+    main {
+      padding: 3rem 0 4rem;
+    }
+
+    section {
+      margin-bottom: 4rem;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem,4vw,2.35rem);
+      line-height: 1.2;
+      margin-bottom: .8rem;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      max-width: 58rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 1.2rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 1.2rem;
+    }
+
+    .card,
+    .notice,
+    .timeline-item,
+    .source-card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 1rem;
+    }
+
+    .card {
+      padding: 1.2rem;
+    }
+
+    .card-kicker {
+      color: var(--muted);
+      font-size: .67rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      margin-bottom: .3rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: .55rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.4rem;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 145px 1fr;
+      gap: 1.2rem;
+      padding: 1.15rem;
+    }
+
+    .timeline-date {
+      color: var(--accent);
+      font-size: .76rem;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .timeline-item h3 {
+      font-size: 1rem;
+      margin-bottom: .3rem;
+    }
+
+    .timeline-item p {
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .notice {
+      padding: 1rem 1.1rem;
+      margin-top: 1.3rem;
+      border-left: 3px solid var(--accent-soft);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .notice strong { color: var(--text); }
+
+    .notice.caution {
+      border-left-color: var(--warning);
+    }
+
+    .cycle-box {
+      border: 1px solid var(--accent-soft);
+      border-radius: 1rem;
+      padding: 1.3rem;
+      background:
+        radial-gradient(circle at top left, rgba(63,209,255,.09), transparent 24rem),
+        var(--panel);
+    }
+
+    .cycle-figures {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: .8rem;
+      margin-top: 1rem;
+    }
+
+    .cycle-figure {
+      border: 1px solid var(--border);
+      border-radius: .8rem;
+      background: var(--panel-2);
+      padding: 1rem;
+    }
+
+    .cycle-figure strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: .15rem;
+    }
+
+    .cycle-figure span {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .sources {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: .9rem;
+      margin-top: 1.3rem;
+    }
+
+    .source-card {
+      padding: 1rem;
+    }
+
+    .source-card strong {
+      display: block;
+      margin-bottom: .3rem;
+    }
+
+    .source-card p {
+      color: var(--muted);
+      font-size: .8rem;
+      margin-bottom: .7rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.8rem 0 2.2rem;
+      color: var(--muted);
+      font-size: .77rem;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-3,
+      .grid-2,
+      .sources,
+      .cycle-figures {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: .35rem;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .site-nav-inner { padding: .65rem 1rem; }
+      .site-nav-brand { width: 100%; margin-right: 0; }
+      .site-nav-buttons { justify-content: flex-start; }
+    }
+
+    @media (max-width: 560px) {
+      .container { padding: 0 1rem; }
+      .hero { padding: 3.6rem 0 3rem; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  
+    /* Readability upgrade */
+    body {
+      font-size: 18px;
+      line-height: 1.72;
+    }
+
+    .hero-lead,
+    .section-intro,
+    .card p,
+    .timeline-item p,
+    .notice,
+    .source-card p,
+    .cycle-figure span {
+      color: #ffffff !important;
+    }
+
+    .hero-lead {
+      font-size: 1.16rem !important;
+      line-height: 1.8 !important;
+    }
+
+    .section-intro {
+      font-size: 1.08rem !important;
+      line-height: 1.8 !important;
+    }
+
+    .card p,
+    .timeline-item p,
+    .notice,
+    .source-card p {
+      font-size: .98rem !important;
+      line-height: 1.75 !important;
+    }
+
+    .cycle-figure span {
+      font-size: .9rem !important;
+      line-height: 1.6 !important;
+    }
+
+    .card-kicker,
+    .timeline-date,
+    .eyebrow,
+    .section-label {
+      font-size: .8rem !important;
+    }
+
+    h2 {
+      font-size: clamp(1.9rem, 4vw, 2.6rem) !important;
+    }
+
+    .card h3,
+    .timeline-item h3,
+    .source-card strong {
+      font-size: 1.08rem !important;
+    }
+
+  
+    /* Historical hero illustration */
+    .hero-illustration {
+      margin: 1.4rem 0 1.8rem;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      overflow: hidden;
+      background: var(--panel);
+    }
+
+    .hero-illustration img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .hero-illustration figcaption {
+      padding: .75rem 1rem;
+      color: #ffffff;
+      font-size: .9rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+        OSNIAS <span>CLEARING</span>
+      </a>
+
+      <nav class="site-nav-buttons" aria-label="Main site navigation">
+        <a href="/osnias-clearing/history/history.html">History</a>
+        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
+        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
+        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
+        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
+        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
+        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
+      </nav>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <section class="hero">
+        <div class="eyebrow">Historical Foundations · Time · Integrity · Reconciliation</div>
+
+        <h1>ONIAS III &amp; ONIAS IV</h1>
+        <div class="hero-role">From the Zadokite high-priestly tradition to a modern clearing architecture</div>
+
+        <figure class="hero-illustration">
+          <img src="/osnias-clearing/history/history.jpg"
+               alt="Illustration of Onias IV teaching before the city of Leontopolis"
+               loading="eager" />
+          <figcaption>Onias IV before the city of Leontopolis — historical illustration.</figcaption>
+        </figure>
+
+
+        <p class="hero-lead">
+          Osnias Clearing takes its name and historical inspiration from the Oniad tradition associated with
+          Onias III and Onias IV. Their world joined religious authority, public responsibility, stewardship
+          of entrusted assets and the discipline of institutions over time. The modern protocol does not claim
+          to reproduce an ancient institution: it adopts a contemporary clearing philosophy inspired by
+          integrity, ordered time, reconciliation and periodic release.
+        </p>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="#onias-iii">Onias III</a>
+          <a class="btn" href="#onias-iv">Onias IV</a>
+          <a class="btn" href="#jubilee">Jubilee Legacy</a>
+          <a class="btn" href="#sources">Historical Sources</a>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section id="onias-iii">
+      <div class="section-label">01 · Onias III</div>
+      <h2>Legitimacy, stewardship and the pursuit of justice</h2>
+
+      <p class="section-intro">
+        Onias III served as High Priest of the Jerusalem Temple in the second century BCE, approximately
+        from 187 to 175 BCE. The historical tradition presents him as one of the last legitimate high priests
+        of the Zadokite line. The Second Book of Maccabees is reported as describing him as a good man who
+        sought justice.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Legitimacy</div>
+          <h3>Zadokite continuity</h3>
+          <p>
+            Onias III belonged to the Oniad high-priestly family associated with the Zadokite line.
+            His removal from office took place in a period when religious authority, political power
+            and royal intervention were increasingly entangled.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Integrity</div>
+          <h3>A reputation for justice</h3>
+          <p>
+            Ancient tradition preserved in the sources portrays Onias III as a good man committed to justice.
+            This reputation is central to the historical memory adopted by Osnias Clearing.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Stewardship</div>
+          <h3>Custody of entrusted wealth</h3>
+          <p>
+            As High Priest, Onias III was connected with the administration and protection of the Temple treasury,
+            including funds deposited there by third parties. His office therefore carried both religious and civil responsibility.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Historical point.</strong>
+        The surviving sources support Onias III's high-priestly office, his association with the Temple treasury,
+        and his reputation for justice. They do not establish that he personally operated a modern-style clearing register.
+      </div>
+    </section>
+
+    <section id="onias-iv">
+      <div class="section-label">02 · Onias IV</div>
+      <h2>Leontopolis: continuity beyond Jerusalem</h2>
+
+      <p class="section-intro">
+        Onias IV, son of Onias III, left Judea for Ptolemaic Egypt. With the permission of Ptolemy VI,
+        he established a temple in Egypt, traditionally dated to the middle of the second century BCE.
+        The sanctuary became known as the Temple of Onias and gave the Oniad tradition an institutional
+        continuation outside Jerusalem.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Transmission</div>
+          <h3>From father to son</h3>
+          <p>
+            Onias IV inherited the prestige and expectations attached to the Oniad high-priestly family,
+            even though the high priesthood in Jerusalem passed into other hands.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Leontopolis</div>
+          <h3>A new institutional center</h3>
+          <p>
+            In Egypt, Onias IV founded a temple modeled on the Jerusalem sanctuary.
+            The site associated with this temple is Tell el-Yahudiya, one of the places historically called Leontopolis.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Continuity</div>
+          <h3>An Oniad community in Egypt</h3>
+          <p>
+            Sources describe an Oniad presence in Egypt that acquired political and military importance,
+            with territory later remembered as the “land of Onias.”
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="timeline">
+      <div class="section-label">03 · Historical Continuity</div>
+      <h2>Jerusalem, Antioch and Egypt</h2>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">c. 187–175 BCE</div>
+          <div>
+            <h3>Onias III as High Priest</h3>
+            <p>
+              Onias III holds the high-priestly office in Jerusalem and is associated with the last known
+              phase of recognized Oniad/Zadokite high-priestly legitimacy.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">c. 171–170 BCE</div>
+          <div>
+            <h3>Death of Onias III</h3>
+            <p>
+              After his deposition and exile, Onias III is killed near Antioch.
+              His death becomes part of the memory of a displaced legitimate priestly order.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Mid-2nd century BCE</div>
+          <div>
+            <h3>Onias IV in Egypt</h3>
+            <p>
+              Onias IV establishes the Temple of Onias in Ptolemaic Egypt, creating a durable institutional
+              expression of the Oniad tradition outside Judea.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Until 73 CE</div>
+          <div>
+            <h3>The Temple of Onias remains active</h3>
+            <p>
+              The Egyptian sanctuary survives for more than two centuries before being closed by order of Vespasian.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="qumran">
+      <div class="section-label">04 · Qumran &amp; the Zadokite Memory</div>
+      <h2>A historical connection — but not a proven direct transmission</h2>
+
+      <p class="section-intro">
+        The Qumran communities and the Dead Sea Scrolls preserve a strong Zadokite identity and a pronounced concern
+        for ordered sacred time. Some twentieth-century scholars proposed identifying Onias III with the
+        “Teacher of Righteousness” mentioned in the Qumran texts. That identification was once influential,
+        but it has largely been abandoned and remains unproven.
+      </p>
+
+      <div class="notice caution">
+        <strong>Source discipline.</strong>
+        The cited historical sources do not prove that Onias III or Onias IV personally transmitted
+        the 364-day calendar, Jubilee rules, or a specific system of registers to Qumran.
+        Osnias Clearing therefore treats this relationship as an intellectual and symbolic lineage,
+        not as a demonstrated chain of documentary transmission.
+      </div>
+    </section>
+
+    <section id="time">
+      <div class="section-label">05 · Time, Record and Word</div>
+      <h2>The institutional meaning adopted by Osnias Clearing</h2>
+
+      <p class="section-intro">
+        In the ancient high-priestly world, the Temple was not only a sanctuary. It was also an institution
+        in which entrusted wealth, obligations, public authority and sacred time converged.
+        Osnias Clearing draws from this historical setting three modern principles.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Record</div>
+          <h3>Keep an accountable register</h3>
+          <p>
+            A clearing system must preserve a traceable and reconcilable record of positions.
+            The register is not the wealth itself; it records claims, movements and settlement states.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Word</div>
+          <h3>Honor commitments</h3>
+          <p>
+            Clearing transforms reciprocal promises into an ordered process of reconciliation.
+            The protocol gives participants time to perform, exchange and offset positions before final settlement.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Time</div>
+          <h3>Give settlement a rhythm</h3>
+          <p>
+            Osnias Clearing treats time as part of economic architecture.
+            Immediate computation does not require immediate final settlement.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="jubilee">
+      <div class="section-label">06 · The Jubilee Clearing Legacy</div>
+      <h2>A modern clearing rhythm inspired by periodic release</h2>
+
+      <p class="section-intro">
+        Osnias Clearing does not reproduce an ancient legal calendar. It translates the Jubilee idea
+        into a modern operational principle: economic positions should have time to circulate and compensate,
+        while the system periodically closes, reconciles and releases.
+      </p>
+
+      <div class="cycle-box">
+        <div class="cycle-figures">
+          <div class="cycle-figure">
+            <strong>52 weeks</strong>
+            <span>Four 13-week clearing cycles form a 364-day operating year.</span>
+          </div>
+
+          <div class="cycle-figure">
+            <strong>4 × 91 days</strong>
+            <span>Each cycle gives participants time to exchange, rebalance and compensate positions.</span>
+          </div>
+
+          <div class="cycle-figure">
+            <strong>7th year</strong>
+            <span>A dedicated Jubilee Week closes the seven-year Clearing Epoch and releases the expiring framework.</span>
+          </div>
+        </div>
+
+        <div class="notice">
+          <strong>Modern doctrine.</strong>
+          Value is created by circulation, reciprocal exchange and compensation over time — not by the clearing token itself.
+          The 91-day cycle is therefore a deliberate economic breathing space, not a technical delay.
+        </div>
+      </div>
+    </section>
+
+    <section id="osnias-clearing">
+      <div class="section-label">07 · Why the Name Osnias Clearing?</div>
+      <h2>Walking in the footsteps of an institutional tradition</h2>
+
+      <p class="section-intro">
+        The name Osnias Clearing is a deliberate reference to the Oniad tradition: integrity in office,
+        responsibility for entrusted value, continuity of institutions and disciplined treatment of time.
+        The protocol translates those themes into an EVM clearing architecture designed for the twenty-first century.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Ancient inspiration</div>
+          <h3>Integrity, stewardship and ordered time</h3>
+          <p>
+            Onias III and Onias IV belong to an historical world in which priestly legitimacy,
+            entrusted assets and institutional continuity were inseparable from the ordering of communal life.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Modern implementation</div>
+          <h3>Registry, clearing and periodic reconciliation</h3>
+          <p>
+            Osnias Clearing uses blockchain infrastructure to record positions, reconcile them over time
+            and settle residual balances through explicit clearing cycles while separating clearing from custody, lending and credit.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="section-label">08 · Historical Sources</div>
+      <h2>Sources used for this page</h2>
+
+      <p class="section-intro">
+        The historical statements on this page are based on the following public reference articles.
+        Interpretive passages describing the philosophy of Osnias Clearing are explicitly modern and should not be read as claims about ancient technical practice.
+      </p>
+
+      <div class="sources">
+        <div class="source-card">
+          <strong>Onias III</strong>
+          <p>High priesthood, Zadokite lineage, Temple treasury, reputation for justice and the debated Qumran hypothesis.</p>
+          <a class="btn" href="https://fr.wikipedia.org/wiki/Onias_III" target="_blank" rel="noopener noreferrer">Open source ↗</a>
+        </div>
+
+        <div class="source-card">
+          <strong>Onias IV</strong>
+          <p>Migration to Ptolemaic Egypt, foundation of the Temple of Onias and the Egyptian Oniad community.</p>
+          <a class="btn" href="https://fr.wikipedia.org/wiki/Onias_IV" target="_blank" rel="noopener noreferrer">Open source ↗</a>
+        </div>
+
+        <div class="source-card">
+          <strong>Leontopolis</strong>
+          <p>Geographical and historical context for the Egyptian sanctuary associated with Onias IV.</p>
+          <a class="btn" href="https://fr.wikipedia.org/wiki/L%C3%A9ontopolis" target="_blank" rel="noopener noreferrer">Open source ↗</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>Osnias Clearing · Historical Foundations</div>
+      <div>
+        <a href="/osnias-clearing/index.html">Home</a>
+        &nbsp;·&nbsp;
+        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
+        &nbsp;·&nbsp;
+        <a href="#sources">Sources</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
