@@ -1,18 +1,16 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>OSNIAS — Governance Token</title>
-  <meta name="description" content="Official presentation of the OSNIAS governance token: utility, design, canonical governance on Sei, fixed supply, omnichain EVM mobility, technical specification and public technical resources." />
-  <meta name="theme-color" content="#050814" />
-
-  <meta property="og:title" content="OSNIAS — Governance Token" />
-  <meta property="og:description" content="Governance token · Fixed genesis supply · Sei canonical governance · Omnichain EVM mobility · Public technical resources." />
-  <meta property="og:type" content="website" />
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>OSNIAS — Governance Token</title>
+<meta content="Official presentation of the OSNIAS governance token: utility, design, canonical governance on Sei, fixed supply, omnichain EVM mobility, technical specification and public technical resources." name="description"/>
+<meta content="#050814" name="theme-color"/>
+<meta content="OSNIAS — Governance Token" property="og:title"/>
+<meta content="Governance token · Fixed genesis supply · Sei canonical governance · Omnichain EVM mobility · Public technical resources." property="og:description"/>
+<meta content="website" property="og:type"/>
+<style>
     :root {
       --bg: #050814;
       --panel: rgba(8, 12, 28, 0.94);
@@ -91,7 +89,7 @@
     }
 
     .hero {
-      padding: 5rem 0 4.2rem;
+      padding: 2rem 0 3.2rem;
     }
 
     .hero-grid {
@@ -465,7 +463,7 @@
 
     @media (max-width: 560px) {
       .container { padding: 0 1rem; }
-      .hero { padding: 3.5rem 0 3rem; }
+      .hero { padding: 1.8rem 0 2.5rem; }
       .stats { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
       .btn { width: 100%; }
@@ -581,425 +579,453 @@
       }
     }
 
-  </style>
+  
+
+/* Shared top navigation — same banner as index.html */
+.site-nav-fixed {
+  background: #050814 !important;
+  border-bottom: 1px solid #1b2338 !important;
+}
+
+.site-nav-inner {
+  min-height: 48px;
+  padding: .45rem 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  flex-wrap: wrap !important;
+}
+
+.site-nav-brand {
+  font-size: .80rem !important;
+  letter-spacing: .08em !important;
+  flex: 0 0 auto;
+}
+
+.site-nav-buttons {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: .45rem !important;
+  justify-content: flex-start !important;
+  width: 100%;
+  overflow: visible !important;
+  padding-top: .15rem;
+}
+
+.site-nav-buttons a {
+  min-height: 34px !important;
+  padding: .47rem .78rem !important;
+  font-size: .67rem !important;
+  letter-spacing: .055em !important;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,.35) !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.045) !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+.site-nav-buttons a:hover,
+.site-nav-buttons a:focus-visible {
+  background: rgba(255,255,255,.12) !important;
+  border-color: #fff !important;
+  text-decoration: none !important;
+}
+
+@media (max-width: 900px) {
+  .site-nav-inner {
+    align-items: flex-start !important;
+  }
+
+  .site-nav-brand {
+    width: 100%;
+    margin-right: 0 !important;
+  }
+
+  .site-nav-buttons {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+
+  .site-nav-buttons a {
+    min-height: 32px !important;
+    padding: .42rem .66rem !important;
+    font-size: .64rem !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-nav-inner {
+    padding: .55rem 1rem !important;
+  }
+
+  .site-nav-buttons {
+    gap: .38rem !important;
+  }
+
+  .site-nav-buttons a {
+    flex: 0 1 auto;
+    white-space: normal !important;
+    text-align: center;
+    line-height: 1.15;
+  }
+}
+</style>
 </head>
-
 <body>
-
-  <div class="site-nav-fixed">
-    <div class="site-nav-inner">
-      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/osnias-clearing/index.html">
         OSNIAS <span>CLEARING</span>
-      </a>
-
-      <nav class="site-nav-buttons" aria-label="Main site navigation">
-        <a href="/osnias-clearing/history/history.html">History</a>
-        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
-        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
-        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
-        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
-        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
-        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
-      </nav>
-    </div>
-  </div>
-
-  <header>
-    <div class="container">
-      <div class="topbar">
-        <div class="brand">OSNIAS <span>Token</span></div>
-
-        <nav aria-label="OSNIAS navigation">
-          <a href="#utility">Utility</a>
-          <a href="#governance">Governance</a>
-          <a href="#specification">Design</a>
-          <a href="#omnichain">Omnichain</a>
-          <a href="#security">Security</a>
-          <a href="#resources">Transparency</a>
-        </nav>
-      </div>
-
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Governance token · Public technical reference</div>
-
-            <h1>OSNIAS</h1>
-            <div class="hero-role">The governance token of the OSNIAS ecosystem</div>
-
-            <p class="hero-lead">
+</a>
+<nav aria-label="Main site navigation" class="site-nav-buttons"><a href="/osnias-clearing/history/history.html">History</a><a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a><a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a><a href="/osnias-clearing/oracle/oracle.html">Oracle</a><a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a><a href="/osnias-clearing/tokenomics/tokenomics.html">Tokenomics</a><a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a><a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a><a href="/osnias-clearing/regulation/regulation.html">Regulation</a></nav>
+</div>
+</div>
+<header>
+<div class="container">
+<div class="topbar">
+<div class="brand">OSNIAS <span>Token</span></div>
+<nav aria-label="OSNIAS navigation">
+<a href="#utility">Utility</a>
+<a href="#governance">Governance</a>
+<a href="#specification">Design</a>
+<a href="#omnichain">Omnichain</a>
+<a href="#security">Security</a>
+<a href="#resources">Transparency</a>
+</nav>
+</div>
+<section class="hero">
+<div class="hero-grid">
+<div>
+<div class="eyebrow">Governance token · Public technical reference</div>
+<h1>OSNIAS</h1>
+<div class="hero-role">The governance token of the OSNIAS ecosystem</div>
+<p class="hero-lead">
               OSNIAS is designed to carry governance rights, long-term economic alignment and the strategic reserve associated with the token. Its design prioritizes a fixed supply, simple ownership rights, canonical governance on Sei and omnichain economic mobility across compatible EVM networks.
             </p>
-
-            <div class="actions">
-              <a class="btn btn-primary"
-                 href="/osnias-clearing/osnias/OSNIAS_Technical.pdf"
-                 target="_blank"
-                 rel="noopener noreferrer">
+<div class="actions">
+<a class="btn btn-primary" href="/osnias-clearing/osnias/OSNIAS_Technical.pdf" rel="noopener noreferrer" target="_blank">
                 Local Technical Documentation · PDF ↗
               </a>
-
-              <a class="btn"
-                 href="https://doi.org/10.5281/zenodo.22139986"
-                 target="_blank"
-                 rel="noopener noreferrer">
+<a class="btn" href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank">
                 Zenodo DOI · Permanent Archive ↗
               </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </header>
-
-  <main class="container">
-
-
-    <section class="essential-parameters" aria-label="OSNIAS essential parameters">
-      <aside class="panel">
-            <div class="section-label">01 · OSNIAS — Essential Parameters</div>
-
-            <div class="stats">
-              <div class="stat">
-                <small>Initial supply</small>
-                <strong>100,000,000</strong>
-                <span>Created at genesis</span>
-              </div>
-
-              <div class="stat">
-                <small>Decimals</small>
-                <strong>6</strong>
-                <span>Explicit precision</span>
-              </div>
-
-              <div class="stat">
-                <small>Governance</small>
-                <strong>Sei</strong>
-                <span>Canonical voting state</span>
-              </div>
-
-              <div class="stat">
-                <small>Interoperability</small>
-                <strong>OFT</strong>
-                <span>Omnichain EVM mobility</span>
-              </div>
-
-              <div class="stat">
-                <small>Vote</small>
-                <strong>ERC20Votes</strong>
-                <span>Delegation & checkpoints</span>
-              </div>
-
-              <div class="stat">
-                <small>Burn</small>
-                <strong>Self-burn</strong>
-                <span>The holder burns their own tokens</span>
-              </div>
-
-              <div class="stat">
-                <small>Permanent archive</small>
-                <strong>Zenodo DOI</strong>
-                <span>10.5281/zenodo.22139986</span>
-              </div>
-            </div>
-          </aside>
-    </section>
-
-
-    <section class="testnet-status" aria-label="OSNIAS Ethereum Sepolia testnet status">
-      <div class="notice" style="margin-top:0; margin-bottom:3rem;">
-        <div class="section-label" style="margin-bottom:.7rem;">02 · OSNIAS on Ethereum Sepolia Testnet</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</header>
+<main class="container">
+<section aria-label="OSNIAS essential parameters" class="essential-parameters">
+<aside class="panel">
+<div class="section-label">01 · OSNIAS — Essential Parameters</div>
+<div class="stats">
+<div class="stat">
+<small>Initial supply</small>
+<strong>100,000,000</strong>
+<span>Created at genesis</span>
+</div>
+<div class="stat">
+<small>Decimals</small>
+<strong>6</strong>
+<span>Explicit precision</span>
+</div>
+<div class="stat">
+<small>Governance</small>
+<strong>Sei</strong>
+<span>Canonical voting state</span>
+</div>
+<div class="stat">
+<small>Interoperability</small>
+<strong>OFT</strong>
+<span>Omnichain EVM mobility</span>
+</div>
+<div class="stat">
+<small>Vote</small>
+<strong>ERC20Votes</strong>
+<span>Delegation &amp; checkpoints</span>
+</div>
+<div class="stat">
+<small>Burn</small>
+<strong>Self-burn</strong>
+<span>The holder burns their own tokens</span>
+</div>
+<div class="stat">
+<small>Permanent archive</small>
+<strong>Zenodo DOI</strong>
+<span>10.5281/zenodo.22139986</span>
+</div>
+</div>
+</aside>
+</section>
+<section aria-label="OSNIAS Ethereum Sepolia testnet status" class="testnet-status">
+<div class="notice" style="margin-top:0; margin-bottom:3rem;">
+<div class="section-label" style="margin-bottom:.7rem;">02 · OSNIAS on Ethereum Sepolia Testnet</div>
         OSNIAS already has a reference deployment on Ethereum Sepolia for development,
         integration testing and pre-audit validation. This public test environment is used to
         exercise the token implementation before the intended production deployment on Sei.
         The Sepolia deployment uses a simplified administrative configuration suitable for testing;
         production privileged roles are intended to move to the mainnet multisignature security model.
-        <br /><br />
-        <a class="btn btn-primary"
-           href="https://sepolia.etherscan.io/"
-           target="_blank"
-           rel="noopener noreferrer">
+        <br/><br/>
+<a class="btn btn-primary" href="https://sepolia.etherscan.io/" rel="noopener noreferrer" target="_blank">
           View Ethereum Sepolia Explorer →
         </a>
-      </div>
-    </section>
-
-    <section id="utility">
-      <div class="section-label">03 · Utility</div>
-      <h2>What is OSNIAS used for?</h2>
-
-      <p class="section-intro">
+</div>
+</section>
+<section id="utility">
+<div class="section-label">03 · Utility</div>
+<h2>What is OSNIAS used for?</h2>
+<p class="section-intro">
         OSNIAS is primarily a governance token. Its function is to represent economic and decision-making power within OSNIAS governance, while remaining a transferable and technically composable EVM asset.
       </p>
-
-      <div class="grid-3">
-        <article class="card">
-          <div class="card-kicker">Governance</div>
-          <h3>Governance rights</h3>
-          <p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Governance</div>
+<h3>Governance rights</h3>
+<p>
             Eligible OSNIAS held on the canonical Sei chain can contribute to voting power according to the applicable governance rules.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Strategic alignment</div>
-          <h3>Long-term alignment</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Strategic alignment</div>
+<h3>Long-term alignment</h3>
+<p>
             The token aligns holders, governance and strategic management without turning every operational decision into an on-chain vote.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Strategic reserve</div>
-          <h3>Strategic reserve</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Strategic reserve</div>
+<h3>Strategic reserve</h3>
+<p>
             The technical specification provides for a strategic-reserve role, with major uses potentially subject to reserved governance matters.
           </p>
-        </article>
-      </div>
-    </section>
-
-    <section id="governance">
-      <div class="section-label">04 · Governance</div>
-      <h2>A single canonical governance domain on Sei</h2>
-
-      <p class="section-intro">
+</article>
+</div>
+</section>
+<section id="governance">
+<div class="section-label">04 · Governance</div>
+<h2>A single canonical governance domain on Sei</h2>
+<p class="section-intro">
         The rule is simple: OSNIAS economic mobility may be multichain, but governance power remains localized on Sei. This architecture is designed to preserve an observable and deterministic electorate without reconstructing votes across multiple networks.
       </p>
-
-      <div class="governance-rule">
-        <div class="rule-box canonical">
-          <strong>OSNIAS on Sei</strong>
-          <p>Economic value + governance eligibility, subject to the applicable voting and delegation rules.</p>
+<div class="governance-rule">
+<div class="rule-box canonical">
+<strong>OSNIAS on Sei</strong>
+<p>Economic value + governance eligibility, subject to the applicable voting and delegation rules.</p>
+</div>
+<div class="rule-center">
+          Single canonical<br/>governance state
         </div>
-
-        <div class="rule-center">
-          Single canonical<br />governance state
-        </div>
-
-        <div class="rule-box">
-          <strong>OSNIAS outside Sei</strong>
-          <p>Economic value only. Positions held on other networks do not generate OSNIAS voting power.</p>
-        </div>
-      </div>
-
-      <div class="notice">
-        <strong>Governance Locality Invariant.</strong>
+<div class="rule-box">
+<strong>OSNIAS outside Sei</strong>
+<p>Economic value only. Positions held on other networks do not generate OSNIAS voting power.</p>
+</div>
+</div>
+<div class="notice">
+<strong>Governance Locality Invariant.</strong>
         A token must not be able to exercise voting power simultaneously on Sei and on another blockchain. Governance does not aggregate remote votes, external staking positions or custodied representations outside Sei.
       </div>
-    </section>
-
-    <section id="specification">
-      <div class="section-label">05 · Technical Specification</div>
-      <h2>Design du token</h2>
-
-      <p class="section-intro">
+</section>
+<section id="specification">
+<div class="section-label">05 · Technical Specification</div>
+<h2>Design du token</h2>
+<p class="section-intro">
         OSNIAS favors a relatively simple, readable and auditable contract. Native functions serve token ownership, governance and omnichain mobility; external financial uses remain the responsibility of third-party protocols.
       </p>
-
-      <table class="spec-table">
-        <tr>
-          <th>Name</th>
-          <td>OSNIAS</td>
-        </tr>
-        <tr>
-          <th>Nature</th>
-          <td>ERC-20 governance and strategic-reserve token.</td>
-        </tr>
-        <tr>
-          <th>Genesis supply</th>
-          <td>100,000,000 OSNIAS.</td>
-        </tr>
-        <tr>
-          <th>Decimals</th>
-          <td>6 decimals.</td>
-        </tr>
-        <tr>
-          <th>Token creation</th>
-          <td>No arbitrary post-genesis token creation should be possible beyond the technical mechanisms required by the OFT design.</td>
-        </tr>
-        <tr>
-          <th>Burn</th>
-          <td>Voluntary self-burn of the holder’s own tokens; no confiscation or administrative burn of third-party balances.</td>
-        </tr>
-        <tr>
-          <th>Vote</th>
-          <td>ERC20Votes with delegation and checkpoints; governance power recognized on the canonical Sei state.</td>
-        </tr>
-        <tr>
-          <th>Permit</th>
-          <td>ERC-2612 Permit for compatible signed approvals.</td>
-        </tr>
-        <tr>
-          <th>Omnichain</th>
-          <td>LayerZero V2 OFT for economic mobility across supported EVM networks.</td>
-        </tr>
-        <tr>
-          <th>Management</th>
-          <td>Constrained operational management: hard invariants are non-negotiable; reserved matters require the applicable governance vote.</td>
-        </tr>
-        <tr>
-          <th>Mainnet architecture</th>
-          <td>Privileged administration intended to be protected by multisig, cold/emergency keys and an external registry.</td>
-        </tr>
-      </table>
-    </section>
-
-    <section id="omnichain">
-      <div class="section-label">06 · Economic Mobility</div>
-      <h2>OSNIAS can circulate outside its governance chain</h2>
-
-      <p class="section-intro">
+<table class="spec-table">
+<tr>
+<th>Name</th>
+<td>OSNIAS</td>
+</tr>
+<tr>
+<th>Nature</th>
+<td>ERC-20 governance and strategic-reserve token.</td>
+</tr>
+<tr>
+<th>Genesis supply</th>
+<td>100,000,000 OSNIAS.</td>
+</tr>
+<tr>
+<th>Decimals</th>
+<td>6 decimals.</td>
+</tr>
+<tr>
+<th>Token creation</th>
+<td>No arbitrary post-genesis token creation should be possible beyond the technical mechanisms required by the OFT design.</td>
+</tr>
+<tr>
+<th>Burn</th>
+<td>Voluntary self-burn of the holder’s own tokens; no confiscation or administrative burn of third-party balances.</td>
+</tr>
+<tr>
+<th>Vote</th>
+<td>ERC20Votes with delegation and checkpoints; governance power recognized on the canonical Sei state.</td>
+</tr>
+<tr>
+<th>Permit</th>
+<td>ERC-2612 Permit for compatible signed approvals.</td>
+</tr>
+<tr>
+<th>Omnichain</th>
+<td>LayerZero V2 OFT for economic mobility across supported EVM networks.</td>
+</tr>
+<tr>
+<th>Management</th>
+<td>Constrained operational management: hard invariants are non-negotiable; reserved matters require the applicable governance vote.</td>
+</tr>
+<tr>
+<th>Mainnet architecture</th>
+<td>Privileged administration intended to be protected by multisig, cold/emergency keys and an external registry.</td>
+</tr>
+</table>
+</section>
+<section id="omnichain">
+<div class="section-label">06 · Economic Mobility</div>
+<h2>OSNIAS can circulate outside its governance chain</h2>
+<p class="section-intro">
         The OFT design allows OSNIAS to be used as an economic asset on compatible EVM networks without duplicating governance power. This separation between economic mobility and governance authority is a core characteristic of the token.
       </p>
-
-      <div class="grid-3">
-        <article class="card">
-          <div class="card-kicker">Self-custody</div>
-          <h3>Transfer & custody</h3>
-          <p>OSNIAS can be transferred and held in wallets or custody solutions compatible with supported networks.</p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">External composability</div>
-          <h3>Third-party integrations</h3>
-          <p>Third-party protocols may technically use OSNIAS for staking, farming, lending, escrow, liquidity, collateral or other compatible EVM use cases.</p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">No protocol promise</div>
-          <h3>No market guarantee</h3>
-          <p>Technical compatibility does not constitute a promise of yield, liquidity, listing, market depth or price appreciation.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="security">
-      <div class="section-label">07 · Invariants</div>
-      <h2>What the contract must not allow to be bypassed</h2>
-
-      <div class="grid-3">
-        <article class="card">
-          <div class="card-kicker">Supply integrity</div>
-          <h3>Protected supply</h3>
-          <p>No management authority may arbitrarily create tokens beyond the intended model.</p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Holder rights</div>
-          <h3>Holder ownership</h3>
-          <p>No arbitrary seizure or burn of balances held by third parties.</p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Governance locality</div>
-          <h3>Voting only on Sei</h3>
-          <p>Governance power remains attached to the eligible canonical representation on Sei.</p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">OFT conservation</div>
-          <h3>Omnichain accounting</h3>
-          <p>Cross-chain movements must preserve the intended global supply accounting.</p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Reserved matters</div>
-          <h3>Management limits</h3>
-          <p>Decisions classified as reserved matters must follow the applicable governance procedure.</p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Operational security</div>
-          <h3>Mainnet multisig</h3>
-          <p>The production model is intended to replace sensitive single-key authorities with a multisignature architecture and separate recovery mechanisms.</p>
-        </article>
-      </div>
-
-      <div class="notice">
-        <strong>Design principle.</strong>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Self-custody</div>
+<h3>Transfer &amp; custody</h3>
+<p>OSNIAS can be transferred and held in wallets or custody solutions compatible with supported networks.</p>
+</article>
+<article class="card">
+<div class="card-kicker">External composability</div>
+<h3>Third-party integrations</h3>
+<p>Third-party protocols may technically use OSNIAS for staking, farming, lending, escrow, liquidity, collateral or other compatible EVM use cases.</p>
+</article>
+<article class="card">
+<div class="card-kicker">No protocol promise</div>
+<h3>No market guarantee</h3>
+<p>Technical compatibility does not constitute a promise of yield, liquidity, listing, market depth or price appreciation.</p>
+</article>
+</div>
+</section>
+<section id="security">
+<div class="section-label">07 · Invariants</div>
+<h2>What the contract must not allow to be bypassed</h2>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Supply integrity</div>
+<h3>Protected supply</h3>
+<p>No management authority may arbitrarily create tokens beyond the intended model.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Holder rights</div>
+<h3>Holder ownership</h3>
+<p>No arbitrary seizure or burn of balances held by third parties.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Governance locality</div>
+<h3>Voting only on Sei</h3>
+<p>Governance power remains attached to the eligible canonical representation on Sei.</p>
+</article>
+<article class="card">
+<div class="card-kicker">OFT conservation</div>
+<h3>Omnichain accounting</h3>
+<p>Cross-chain movements must preserve the intended global supply accounting.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Reserved matters</div>
+<h3>Management limits</h3>
+<p>Decisions classified as reserved matters must follow the applicable governance procedure.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Operational security</div>
+<h3>Mainnet multisig</h3>
+<p>The production model is intended to replace sensitive single-key authorities with a multisignature architecture and separate recovery mechanisms.</p>
+</article>
+</div>
+<div class="notice">
+<strong>Design principle.</strong>
         Governance should constrain management without replacing day-to-day management: smart contracts protect non-negotiable invariants; governance decides reserved strategic matters; the Token Manager retains execution discretion within approved limits.
       </div>
-    </section>
-
-    <section id="resources">
-      <div class="section-label">08 · Transparency</div>
-      <h2>Technical files are public</h2>
-
-      <p class="section-intro">
+</section>
+<section id="resources">
+<div class="section-label">08 · Transparency</div>
+<h2>Technical files are public</h2>
+<p class="section-intro">
         This page is not intended to ask visitors to rely on a commercial presentation. The contract, ABI, flattened source and technical reference document can be reviewed directly in the public <strong>/osnias/</strong> directory.
       </p>
-
-      <div class="notice" style="margin-bottom:1.25rem;">
-        <strong>Permanent technical archive — Zenodo.</strong>
+<div class="notice" style="margin-bottom:1.25rem;">
+<strong>Permanent technical archive — Zenodo.</strong>
         The published OSNIAS technical package is permanently archived under DOI
-        <a href="https://doi.org/10.5281/zenodo.22139986" target="_blank" rel="noopener noreferrer"><strong>10.5281/zenodo.22139986</strong></a>.
+        <a href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank"><strong>10.5281/zenodo.22139986</strong></a>.
         This archive contains the Solidity source code, ABI, flattened source and technical reference document.
       </div>
-
-      <div class="resources">
-        <a class="resource" href="https://doi.org/10.5281/zenodo.22139986" target="_blank" rel="noopener noreferrer">
-          <div>
-            <strong>Zenodo — OSNIAS Token Technical Archive</strong>
-            <span>Permanent archive · DOI 10.5281/zenodo.22139986</span>
-          </div>
-          <div class="resource-type">DOI ↗</div>
-        </a>
-
-        <a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet.sol">
-          <div>
-            <strong>/osnias/OSNIAS-testnet.sol</strong>
-            <span>Reference testnet Solidity contract</span>
-          </div>
-          <div class="resource-type">SOURCE ↗</div>
-        </a>
-
-        <a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet.abi">
-          <div>
-            <strong>/osnias/OSNIAS-testnet.abi</strong>
-            <span>Public contract ABI</span>
-          </div>
-          <div class="resource-type">ABI ↗</div>
-        </a>
-
-        <a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet-flat.sol">
-          <div>
-            <strong>/osnias/OSNIAS-testnet-flat.sol</strong>
-            <span>Flattened Solidity source for review and audit</span>
-          </div>
-          <div class="resource-type">FLAT ↗</div>
-        </a>
-
-        <a class="resource" href="/osnias-clearing/osnias/OSNIAS_Technical.pdf">
-          <div>
-            <strong>/osnias/OSNIAS_Technical.pdf</strong>
-            <span>Technical white paper & audit reference (PDF)</span>
-          </div>
-          <div class="resource-type">PDF ↗</div>
-        </a>
-      </div>
-
-      <div class="notice">
-        <strong>Transparency technique.</strong>
+<div class="resources">
+<a class="resource" href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank">
+<div>
+<strong>Zenodo — OSNIAS Token Technical Archive</strong>
+<span>Permanent archive · DOI 10.5281/zenodo.22139986</span>
+</div>
+<div class="resource-type">DOI ↗</div>
+</a>
+<a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet.sol">
+<div>
+<strong>/osnias/OSNIAS-testnet.sol</strong>
+<span>Reference testnet Solidity contract</span>
+</div>
+<div class="resource-type">SOURCE ↗</div>
+</a>
+<a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet.abi">
+<div>
+<strong>/osnias/OSNIAS-testnet.abi</strong>
+<span>Public contract ABI</span>
+</div>
+<div class="resource-type">ABI ↗</div>
+</a>
+<a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet-flat.sol">
+<div>
+<strong>/osnias/OSNIAS-testnet-flat.sol</strong>
+<span>Flattened Solidity source for review and audit</span>
+</div>
+<div class="resource-type">FLAT ↗</div>
+</a>
+<a class="resource" href="/osnias-clearing/osnias/OSNIAS_Technical.pdf">
+<div>
+<strong>/osnias/OSNIAS_Technical.pdf</strong>
+<span>Technical white paper &amp; audit reference (PDF)</span>
+</div>
+<div class="resource-type">PDF ↗</div>
+</a>
+</div>
+<div class="notice">
+<strong>Transparency technique.</strong>
         The testnet files document the current reference implementation. The production configuration — addresses, multisig, privileged roles, endpoints and OFT peers — should be published separately at mainnet deployment.
       </div>
-    </section>
-
-  </main>
-
-  <footer>
-    <div class="container footer-grid">
-      <div>OSNIAS · Governance Token</div>
-      <div>
-        <a href="#governance">Governance</a>
-        &nbsp;·&nbsp;
+</section>
+</main>
+<footer>
+<div class="container footer-grid">
+<div>OSNIAS · Governance Token</div>
+<div>
+<a href="#governance">Governance</a>
+         · 
         <a href="#specification">Specification</a>
-        &nbsp;·&nbsp;
+         · 
         <a href="#resources">Public files</a>
-        &nbsp;·&nbsp;
-        <a href="https://doi.org/10.5281/zenodo.22139986" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22139986</a>
-      </div>
-    </div>
-  </footer>
+         · 
+        <a href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank">DOI 10.5281/zenodo.22139986</a>
+</div>
+</div>
+</footer>
 </body>
 </html>
+
+<style>
+.site-nav-inner{
+  min-height:44px !important;
+  padding:.35rem 1.5rem !important;
+}
+.site-nav-buttons{
+  padding-top:0 !important;
+}
+header .container{
+  padding-top:0 !important;
+}
+</style>
