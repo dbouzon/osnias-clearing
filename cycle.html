@@ -269,7 +269,8 @@
           <a href="#reference-deposit">Reference Deposit</a>
           <a href="#blockchain">Blockchain</a>
           <a href="#oracle">Oracle</a>
-          <a href="#jubilee">Jubilee</a>
+          <a href="#jubilee">Epoch</a>
+          <a href="#jubilee-week">Week 53</a>
           <a href="#calendar">Calendar</a>
           <a href="#settlement">Settlement</a>
         </nav>
@@ -292,7 +293,8 @@
               <span class="tag">Immediate recording</span>
               <span class="tag">Progressive compensation</span>
               <span class="tag">Final net settlement</span>
-              <span class="tag">Jubilee-cycle framework</span>
+              <span class="tag">7-year Clearing Epoch</span>
+              <span class="tag">Week 53 Jubilee Reset</span>
             </div>
 
             <div class="actions">
@@ -659,51 +661,157 @@
     </section>
 
     <section id="jubilee">
-      <div class="section-label">08 · Jubilee framework</div>
-      <h2>The short clearing cycle inside a longer rhythm</h2>
+      <div class="section-label">08 · Jubilee Epoch</div>
+      <h2>Seven years of clearing, then a terminal Jubilee Week</h2>
 
       <p class="section-intro">
-        The 91-day mechanism is the operating quarter of Osnias Clearing.
-        Four quarters form a 364-day annual calendar: 13 weeks × 7 days × 4 quarters.
-        This regular structure sits within the broader Jubilee-cycle framework, where economic activity is organized around recurring periods of release, circulation, compensation and closure.
+        Osnias Clearing groups its operating years into seven-year Clearing Epochs. Each normal year contains four
+        91-day clearing cycles, or 364 days in total. At the end of the seventh year, a 53rd week is inserted as a
+        Jubilee Week dedicated to terminal reconciliation, extinction of the expiring clearing token and release of
+        all associated escrows.
       </p>
 
       <div class="grid-3">
         <article class="card">
-          <div class="card-kicker">Quarterly rhythm</div>
-          <h3>91-day clearing</h3>
-          <p>Each quarter follows the same three-phase structure: Burn Triduum, issuance/P2P window and Compensation Triduum.</p>
+          <div class="card-kicker">Operating unit</div>
+          <h3>91-day clearing cycle</h3>
+          <p>
+            Four cycles form one 364-day operating year. During each cycle, positions circulate, offset and are
+            finally reconciled through the Day-89 to Day-91 closing process.
+          </p>
         </article>
 
         <article class="card">
-          <div class="card-kicker">Annual rhythm</div>
-          <h3>364-day calendar</h3>
-          <p>Four cycles of 91 days form a complete 364-day year, or 52 exact seven-day weeks.</p>
+          <div class="card-kicker">Long cycle</div>
+          <h3>7-year Clearing Epoch</h3>
+          <p>
+            The same clearing token and its associated registry belong to one seven-year epoch. The epoch gives a
+            defined lifetime to the clearing instrument rather than allowing positions to continue indefinitely.
+          </p>
         </article>
 
         <article class="card">
-          <div class="card-kicker">Long horizon</div>
-          <h3>Jubilee inspiration</h3>
-          <p>The broader framework treats periodic release, circulation, compensation and reset as recurring structural principles.</p>
+          <div class="card-kicker">Terminal week</div>
+          <h3>Week 53 — Jubilee Week</h3>
+          <p>
+            The additional week is not another clearing cycle. It is the terminal settlement week of the seven-year
+            epoch: ordinary circulation stops, remaining positions are reconciled, escrows are released and the
+            expiring token is permanently retired.
+          </p>
+        </article>
+      </div>
+
+      <div class="formula">
+        <strong>91 days</strong> → 4 cycles = <strong>364-day year</strong> → 7 years = <strong>Clearing Epoch</strong> → <strong>Week 53 Jubilee Reset</strong>
+      </div>
+
+      <div class="notice">
+        <strong>Jubilee Reset Principle.</strong>
+        At the end of Jubilee Week, every clearing token belonging to the expiring epoch is burned or made
+        permanently invalid, all associated escrows are released, and the closing register becomes final.
+        No clearing-token balance is automatically migrated into the following epoch.
+      </div>
+    </section>
+
+    <section id="jubilee-week">
+      <div class="section-label">09 · Week 53 — terminal settlement</div>
+      <h2>Close the old epoch before opening the new one</h2>
+
+      <p class="section-intro">
+        During Jubilee Week, ordinary economic circulation of the expiring clearing token is closed. Only the
+        operations required for terminal settlement, burn, reconciliation and escrow release remain available.
+        This prevents the terminal snapshot from continuing to move while the system is being closed.
+      </p>
+
+      <div class="timeline">
+        <div class="step">
+          <div class="day">Jubilee Days 1–3</div>
+          <strong>Terminal burn & release</strong>
+          <p>
+            Users may complete terminal burn/restitution operations. Associated collateral escrows are progressively
+            released while the final registry is reconciled.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="day">Jubilee Days 4–5</div>
+          <strong>Residual reconciliation</strong>
+          <p>
+            Remaining positions, operational exceptions and escrow states are aligned. Ordinary P2P circulation and
+            new minting remain closed.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="day">Jubilee Day 6</div>
+          <strong>Token extinction</strong>
+          <p>
+            Any remaining units of the expiring clearing token are terminally retired or made permanently invalid
+            through the dedicated Jubilee close mechanism.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="day">Jubilee Day 7</div>
+          <strong>Epoch closed</strong>
+          <p>
+            All escrows of the old epoch are released, the registry becomes final and immutable, and the old clearing
+            token has no further circulation role.
+          </p>
+        </div>
+      </div>
+
+      <div class="notice">
+        <strong>No automatic rollover.</strong>
+        The Jubilee is a real economic and technical closure. The old token is not wrapped, bridged or automatically
+        converted into the new token. Historical records remain auditable, but clearing balances do not carry forward.
+      </div>
+    </section>
+
+    <section id="new-epoch">
+      <div class="section-label">10 · New Clearing Epoch</div>
+      <h2>A new token, a new register, a new seven-year cycle</h2>
+
+      <p class="section-intro">
+        Once Jubilee Week has fully released the old escrows and retired the previous clearing token, Osnias Clearing
+        initializes the following epoch with a new clearing token and a new active registry. The previous epoch remains
+        available only as an immutable historical record.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Old epoch</div>
+          <h3>Final and historical</h3>
+          <p>The old registry is preserved for auditability, while the old clearing token is permanently non-circulating.</p>
+        </article>
+        <article class="card">
+          <div class="card-kicker">New epoch</div>
+          <h3>Fresh clearing token</h3>
+          <p>A newly initialized clearing token becomes the instrument of circulation for the next seven-year epoch.</p>
+        </article>
+        <article class="card">
+          <div class="card-kicker">Reset</div>
+          <h3>No inherited clearing balance</h3>
+          <p>New escrows and new reference positions are established without automatically carrying the old epoch's clearing balances forward.</p>
         </article>
       </div>
 
       <div class="notice">
-        <strong>Important distinction.</strong>
-        The Jubilee reference describes the long-term temporal philosophy of the system.
-        The 91-day cycle is the operational clearing mechanism.
-        The two should not be confused: one gives the architecture its long rhythm; the other defines how clearing works day to day.
+        <strong>Epoch identity.</strong>
+        Public names such as ORUSD or OEURO may remain stable, while the protocol and registry identify the technical
+        epoch explicitly so that an expiring token cannot be confused with its successor.
       </div>
     </section>
 
 
     <section id="calendar">
-      <div class="section-label">09 · Official calendar</div>
+      <div class="section-label">11 · Official calendar</div>
       <h2>Official 364-Day Jubilee Cycle Calendar</h2>
 
       <p class="section-intro">
         The official annual matrix documents the four 91-day quarters, the 13-week structure of each quarter,
         and the operating status of Burn, Mint and P2P functions for every day of the 364-day year.
+        The seven-year epoch model extends this annual matrix with a terminal Week 53 in Year 7 for Jubilee closure.
       </p>
 
       <div class="grid-2">
@@ -731,7 +839,7 @@
     </section>
 
     <section id="summary">
-      <div class="section-label">10 · Summary</div>
+      <div class="section-label">12 · Summary</div>
       <h2>Clearing needs time</h2>
 
       <div class="grid-3">
