@@ -1,18 +1,16 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>Osnias Clearing — Historical Foundations</title>
-  <meta name="description" content="Historical foundations of Osnias Clearing: Onias III, Onias IV, the Zadokite high-priestly tradition, Leontopolis, Qumran and the Jubilee-inspired clearing cycle." />
-  <meta name="theme-color" content="#050814" />
-
-  <meta property="og:title" content="Osnias Clearing — Historical Foundations" />
-  <meta property="og:description" content="From Onias III and Onias IV to a modern clearing architecture structured around time, reconciliation and Jubilee cycles." />
-  <meta property="og:type" content="website" />
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Osnias Clearing — Historical Foundations</title>
+<meta content="Historical foundations of Osnias Clearing: Onias III, Onias IV, the Zadokite high-priestly tradition, Leontopolis, Qumran and the Jubilee-inspired clearing cycle." name="description"/>
+<meta content="#050814" name="theme-color"/>
+<meta content="Osnias Clearing — Historical Foundations" property="og:title"/>
+<meta content="From Onias III and Onias IV to a modern clearing architecture structured around time, reconciliation and Jubilee cycles." property="og:description"/>
+<meta content="website" property="og:type"/>
+<style>
     :root {
       --bg: #050814;
       --panel: rgba(8, 12, 28, 0.94);
@@ -470,373 +468,401 @@
       border-top: 1px solid var(--border);
     }
 
-  </style>
+  
+
+/* Shared top navigation — same banner as index.html */
+.site-nav-fixed {
+  background: #050814 !important;
+  border-bottom: 1px solid #1b2338 !important;
+}
+
+.site-nav-inner {
+  min-height: 48px;
+  padding: .45rem 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  flex-wrap: wrap !important;
+}
+
+.site-nav-brand {
+  font-size: .80rem !important;
+  letter-spacing: .08em !important;
+  flex: 0 0 auto;
+}
+
+.site-nav-buttons {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: .45rem !important;
+  justify-content: flex-start !important;
+  width: 100%;
+  overflow: visible !important;
+  padding-top: .15rem;
+}
+
+.site-nav-buttons a {
+  min-height: 34px !important;
+  padding: .47rem .78rem !important;
+  font-size: .67rem !important;
+  letter-spacing: .055em !important;
+  text-transform: uppercase;
+  border-color: rgba(255,255,255,.35) !important;
+  background: rgba(255,255,255,.045) !important;
+  white-space: nowrap;
+}
+
+.site-nav-buttons a:hover,
+.site-nav-buttons a:focus-visible {
+  background: rgba(255,255,255,.12) !important;
+  border-color: #fff !important;
+}
+
+@media (max-width: 900px) {
+  .site-nav-inner {
+    align-items: flex-start !important;
+  }
+
+  .site-nav-brand {
+    width: 100%;
+    margin-right: 0 !important;
+  }
+
+  .site-nav-buttons {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+
+  .site-nav-buttons a {
+    min-height: 32px !important;
+    padding: .42rem .66rem !important;
+    font-size: .64rem !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-nav-inner {
+    padding: .55rem 1rem !important;
+  }
+
+  .site-nav-buttons {
+    gap: .38rem !important;
+  }
+
+  .site-nav-buttons a {
+    flex: 0 1 auto;
+    white-space: normal !important;
+    text-align: center;
+    line-height: 1.15;
+  }
+}
+</style>
 </head>
-
 <body>
-  <div class="site-nav-fixed">
-    <div class="site-nav-inner">
-      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/osnias-clearing/index.html">
         OSNIAS <span>CLEARING</span>
-      </a>
-
-      <nav class="site-nav-buttons" aria-label="Main site navigation">
-        <a href="/osnias-clearing/history/history.html">History</a>
-        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
-        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
-        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
-        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
-        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
-        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
-      </nav>
-    </div>
-  </div>
-
-  <header>
-    <div class="container">
-      <section class="hero">
-        <div class="eyebrow">Historical Foundations · Time · Integrity · Reconciliation</div>
-
-        <h1>ONIAS III &amp; ONIAS IV</h1>
-        <div class="hero-role">From the Zadokite high-priestly tradition to a modern clearing architecture</div>
-
-        <figure class="hero-illustration">
-          <img src="/osnias-clearing/history/history.jpg"
-               alt="Illustration of Onias IV teaching before the city of Leontopolis"
-               loading="eager" />
-          <figcaption>Onias IV before the city of Leontopolis — historical illustration.</figcaption>
-        </figure>
-
-
-        <p class="hero-lead">
+</a>
+<nav aria-label="Main site navigation" class="site-nav-buttons"><a href="/osnias-clearing/history/history.html">History</a><a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a><a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a><a href="/osnias-clearing/oracle/oracle.html">Oracle</a><a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a><a href="/osnias-clearing/tokenomics/tokenomics.html">Tokenomics</a><a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a><a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a><a href="/osnias-clearing/regulation/regulation.html">Regulation</a></nav>
+</div>
+</div>
+<header>
+<div class="container">
+<section class="hero">
+<div class="eyebrow">Historical Foundations · Time · Integrity · Reconciliation</div>
+<h1>ONIAS III &amp; ONIAS IV</h1>
+<div class="hero-role">From the Zadokite high-priestly tradition to a modern clearing architecture</div>
+<figure class="hero-illustration">
+<img alt="Illustration of Onias IV teaching before the city of Leontopolis" loading="eager" src="/osnias-clearing/history/history.jpg"/>
+<figcaption>Onias IV before the city of Leontopolis — historical illustration.</figcaption>
+</figure>
+<p class="hero-lead">
           Osnias Clearing takes its name and historical inspiration from the Oniad tradition associated with
           Onias III and Onias IV. Their world joined religious authority, public responsibility, stewardship
           of entrusted assets and the discipline of institutions over time. The modern protocol does not claim
           to reproduce an ancient institution: it adopts a contemporary clearing philosophy inspired by
           integrity, ordered time, reconciliation and periodic release.
         </p>
-
-        <div class="actions">
-          <a class="btn btn-primary" href="#onias-iii">Onias III</a>
-          <a class="btn" href="#onias-iv">Onias IV</a>
-          <a class="btn" href="#jubilee">Jubilee Legacy</a>
-          <a class="btn" href="#sources">Historical Sources</a>
-        </div>
-      </section>
-    </div>
-  </header>
-
-  <main class="container">
-
-    <section id="onias-iii">
-      <div class="section-label">01 · Onias III</div>
-      <h2>Legitimacy, stewardship and the pursuit of justice</h2>
-
-      <p class="section-intro">
+<div class="actions">
+<a class="btn btn-primary" href="#onias-iii">Onias III</a>
+<a class="btn" href="#onias-iv">Onias IV</a>
+<a class="btn" href="#jubilee">Jubilee Legacy</a>
+<a class="btn" href="#sources">Historical Sources</a>
+</div>
+</section>
+</div>
+</header>
+<main class="container">
+<section id="onias-iii">
+<div class="section-label">01 · Onias III</div>
+<h2>Legitimacy, stewardship and the pursuit of justice</h2>
+<p class="section-intro">
         Onias III served as High Priest of the Jerusalem Temple in the second century BCE, approximately
         from 187 to 175 BCE. The historical tradition presents him as one of the last legitimate high priests
         of the Zadokite line. The Second Book of Maccabees is reported as describing him as a good man who
         sought justice.
       </p>
-
-      <div class="grid-3">
-        <article class="card">
-          <div class="card-kicker">Legitimacy</div>
-          <h3>Zadokite continuity</h3>
-          <p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Legitimacy</div>
+<h3>Zadokite continuity</h3>
+<p>
             Onias III belonged to the Oniad high-priestly family associated with the Zadokite line.
             His removal from office took place in a period when religious authority, political power
             and royal intervention were increasingly entangled.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Integrity</div>
-          <h3>A reputation for justice</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Integrity</div>
+<h3>A reputation for justice</h3>
+<p>
             Ancient tradition preserved in the sources portrays Onias III as a good man committed to justice.
             This reputation is central to the historical memory adopted by Osnias Clearing.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Stewardship</div>
-          <h3>Custody of entrusted wealth</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Stewardship</div>
+<h3>Custody of entrusted wealth</h3>
+<p>
             As High Priest, Onias III was connected with the administration and protection of the Temple treasury,
             including funds deposited there by third parties. His office therefore carried both religious and civil responsibility.
           </p>
-        </article>
-      </div>
-
-      <div class="notice">
-        <strong>Historical point.</strong>
+</article>
+</div>
+<div class="notice">
+<strong>Historical point.</strong>
         The surviving sources support Onias III's high-priestly office, his association with the Temple treasury,
         and his reputation for justice. They do not establish that he personally operated a modern-style clearing register.
       </div>
-    </section>
-
-    <section id="onias-iv">
-      <div class="section-label">02 · Onias IV</div>
-      <h2>Leontopolis: continuity beyond Jerusalem</h2>
-
-      <p class="section-intro">
+</section>
+<section id="onias-iv">
+<div class="section-label">02 · Onias IV</div>
+<h2>Leontopolis: continuity beyond Jerusalem</h2>
+<p class="section-intro">
         Onias IV, son of Onias III, left Judea for Ptolemaic Egypt. With the permission of Ptolemy VI,
         he established a temple in Egypt, traditionally dated to the middle of the second century BCE.
         The sanctuary became known as the Temple of Onias and gave the Oniad tradition an institutional
         continuation outside Jerusalem.
       </p>
-
-      <div class="grid-3">
-        <article class="card">
-          <div class="card-kicker">Transmission</div>
-          <h3>From father to son</h3>
-          <p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Transmission</div>
+<h3>From father to son</h3>
+<p>
             Onias IV inherited the prestige and expectations attached to the Oniad high-priestly family,
             even though the high priesthood in Jerusalem passed into other hands.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Leontopolis</div>
-          <h3>A new institutional center</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Leontopolis</div>
+<h3>A new institutional center</h3>
+<p>
             In Egypt, Onias IV founded a temple modeled on the Jerusalem sanctuary.
             The site associated with this temple is Tell el-Yahudiya, one of the places historically called Leontopolis.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Continuity</div>
-          <h3>An Oniad community in Egypt</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Continuity</div>
+<h3>An Oniad community in Egypt</h3>
+<p>
             Sources describe an Oniad presence in Egypt that acquired political and military importance,
             with territory later remembered as the “land of Onias.”
           </p>
-        </article>
-      </div>
-    </section>
-
-    <section id="timeline">
-      <div class="section-label">03 · Historical Continuity</div>
-      <h2>Jerusalem, Antioch and Egypt</h2>
-
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-date">c. 187–175 BCE</div>
-          <div>
-            <h3>Onias III as High Priest</h3>
-            <p>
+</article>
+</div>
+</section>
+<section id="timeline">
+<div class="section-label">03 · Historical Continuity</div>
+<h2>Jerusalem, Antioch and Egypt</h2>
+<div class="timeline">
+<div class="timeline-item">
+<div class="timeline-date">c. 187–175 BCE</div>
+<div>
+<h3>Onias III as High Priest</h3>
+<p>
               Onias III holds the high-priestly office in Jerusalem and is associated with the last known
               phase of recognized Oniad/Zadokite high-priestly legitimacy.
             </p>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-date">c. 171–170 BCE</div>
-          <div>
-            <h3>Death of Onias III</h3>
-            <p>
+</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-date">c. 171–170 BCE</div>
+<div>
+<h3>Death of Onias III</h3>
+<p>
               After his deposition and exile, Onias III is killed near Antioch.
               His death becomes part of the memory of a displaced legitimate priestly order.
             </p>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-date">Mid-2nd century BCE</div>
-          <div>
-            <h3>Onias IV in Egypt</h3>
-            <p>
+</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-date">Mid-2nd century BCE</div>
+<div>
+<h3>Onias IV in Egypt</h3>
+<p>
               Onias IV establishes the Temple of Onias in Ptolemaic Egypt, creating a durable institutional
               expression of the Oniad tradition outside Judea.
             </p>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-date">Until 73 CE</div>
-          <div>
-            <h3>The Temple of Onias remains active</h3>
-            <p>
+</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-date">Until 73 CE</div>
+<div>
+<h3>The Temple of Onias remains active</h3>
+<p>
               The Egyptian sanctuary survives for more than two centuries before being closed by order of Vespasian.
             </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="qumran">
-      <div class="section-label">04 · Qumran &amp; the Zadokite Memory</div>
-      <h2>A historical connection — but not a proven direct transmission</h2>
-
-      <p class="section-intro">
+</div>
+</div>
+</div>
+</section>
+<section id="qumran">
+<div class="section-label">04 · Qumran &amp; the Zadokite Memory</div>
+<h2>A historical connection — but not a proven direct transmission</h2>
+<p class="section-intro">
         The Qumran communities and the Dead Sea Scrolls preserve a strong Zadokite identity and a pronounced concern
         for ordered sacred time. Some twentieth-century scholars proposed identifying Onias III with the
         “Teacher of Righteousness” mentioned in the Qumran texts. That identification was once influential,
         but it has largely been abandoned and remains unproven.
       </p>
-
-      <div class="notice caution">
-        <strong>Source discipline.</strong>
+<div class="notice caution">
+<strong>Source discipline.</strong>
         The cited historical sources do not prove that Onias III or Onias IV personally transmitted
         the 364-day calendar, Jubilee rules, or a specific system of registers to Qumran.
         Osnias Clearing therefore treats this relationship as an intellectual and symbolic lineage,
         not as a demonstrated chain of documentary transmission.
       </div>
-    </section>
-
-    <section id="time">
-      <div class="section-label">05 · Time, Record and Word</div>
-      <h2>The institutional meaning adopted by Osnias Clearing</h2>
-
-      <p class="section-intro">
+</section>
+<section id="time">
+<div class="section-label">05 · Time, Record and Word</div>
+<h2>The institutional meaning adopted by Osnias Clearing</h2>
+<p class="section-intro">
         In the ancient high-priestly world, the Temple was not only a sanctuary. It was also an institution
         in which entrusted wealth, obligations, public authority and sacred time converged.
         Osnias Clearing draws from this historical setting three modern principles.
       </p>
-
-      <div class="grid-3">
-        <article class="card">
-          <div class="card-kicker">Record</div>
-          <h3>Keep an accountable register</h3>
-          <p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Record</div>
+<h3>Keep an accountable register</h3>
+<p>
             A clearing system must preserve a traceable and reconcilable record of positions.
             The register is not the wealth itself; it records claims, movements and settlement states.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Word</div>
-          <h3>Honor commitments</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Word</div>
+<h3>Honor commitments</h3>
+<p>
             Clearing transforms reciprocal promises into an ordered process of reconciliation.
             The protocol gives participants time to perform, exchange and offset positions before final settlement.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Time</div>
-          <h3>Give settlement a rhythm</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Time</div>
+<h3>Give settlement a rhythm</h3>
+<p>
             Osnias Clearing treats time as part of economic architecture.
             Immediate computation does not require immediate final settlement.
           </p>
-        </article>
-      </div>
-    </section>
-
-    <section id="jubilee">
-      <div class="section-label">06 · The Jubilee Clearing Legacy</div>
-      <h2>A modern clearing rhythm inspired by periodic release</h2>
-
-      <p class="section-intro">
+</article>
+</div>
+</section>
+<section id="jubilee">
+<div class="section-label">06 · The Jubilee Clearing Legacy</div>
+<h2>A modern clearing rhythm inspired by periodic release</h2>
+<p class="section-intro">
         Osnias Clearing does not reproduce an ancient legal calendar. It translates the Jubilee idea
         into a modern operational principle: economic positions should have time to circulate and compensate,
         while the system periodically closes, reconciles and releases.
       </p>
-
-      <div class="cycle-box">
-        <div class="cycle-figures">
-          <div class="cycle-figure">
-            <strong>52 weeks</strong>
-            <span>Four 13-week clearing cycles form a 364-day operating year.</span>
-          </div>
-
-          <div class="cycle-figure">
-            <strong>4 × 91 days</strong>
-            <span>Each cycle gives participants time to exchange, rebalance and compensate positions.</span>
-          </div>
-
-          <div class="cycle-figure">
-            <strong>7th year</strong>
-            <span>A dedicated Jubilee Week closes the seven-year Clearing Epoch and releases the expiring framework.</span>
-          </div>
-        </div>
-
-        <div class="notice">
-          <strong>Modern doctrine.</strong>
+<div class="cycle-box">
+<div class="cycle-figures">
+<div class="cycle-figure">
+<strong>52 weeks</strong>
+<span>Four 13-week clearing cycles form a 364-day operating year.</span>
+</div>
+<div class="cycle-figure">
+<strong>4 × 91 days</strong>
+<span>Each cycle gives participants time to exchange, rebalance and compensate positions.</span>
+</div>
+<div class="cycle-figure">
+<strong>7th year</strong>
+<span>A dedicated Jubilee Week closes the seven-year Clearing Epoch and releases the expiring framework.</span>
+</div>
+</div>
+<div class="notice">
+<strong>Modern doctrine.</strong>
           Value is created by circulation, reciprocal exchange and compensation over time — not by the clearing token itself.
           The 91-day cycle is therefore a deliberate economic breathing space, not a technical delay.
         </div>
-      </div>
-    </section>
-
-    <section id="osnias-clearing">
-      <div class="section-label">07 · Why the Name Osnias Clearing?</div>
-      <h2>Walking in the footsteps of an institutional tradition</h2>
-
-      <p class="section-intro">
+</div>
+</section>
+<section id="osnias-clearing">
+<div class="section-label">07 · Why the Name Osnias Clearing?</div>
+<h2>Walking in the footsteps of an institutional tradition</h2>
+<p class="section-intro">
         The name Osnias Clearing is a deliberate reference to the Oniad tradition: integrity in office,
         responsibility for entrusted value, continuity of institutions and disciplined treatment of time.
         The protocol translates those themes into an EVM clearing architecture designed for the twenty-first century.
       </p>
-
-      <div class="grid-2">
-        <article class="card">
-          <div class="card-kicker">Ancient inspiration</div>
-          <h3>Integrity, stewardship and ordered time</h3>
-          <p>
+<div class="grid-2">
+<article class="card">
+<div class="card-kicker">Ancient inspiration</div>
+<h3>Integrity, stewardship and ordered time</h3>
+<p>
             Onias III and Onias IV belong to an historical world in which priestly legitimacy,
             entrusted assets and institutional continuity were inseparable from the ordering of communal life.
           </p>
-        </article>
-
-        <article class="card">
-          <div class="card-kicker">Modern implementation</div>
-          <h3>Registry, clearing and periodic reconciliation</h3>
-          <p>
+</article>
+<article class="card">
+<div class="card-kicker">Modern implementation</div>
+<h3>Registry, clearing and periodic reconciliation</h3>
+<p>
             Osnias Clearing uses blockchain infrastructure to record positions, reconcile them over time
             and settle residual balances through explicit clearing cycles while separating clearing from custody, lending and credit.
           </p>
-        </article>
-      </div>
-    </section>
-
-    <section id="sources">
-      <div class="section-label">08 · Historical Sources</div>
-      <h2>Sources used for this page</h2>
-
-      <p class="section-intro">
+</article>
+</div>
+</section>
+<section id="sources">
+<div class="section-label">08 · Historical Sources</div>
+<h2>Sources used for this page</h2>
+<p class="section-intro">
         The historical statements on this page are based on the following public reference articles.
         Interpretive passages describing the philosophy of Osnias Clearing are explicitly modern and should not be read as claims about ancient technical practice.
       </p>
-
-      <div class="sources">
-        <div class="source-card">
-          <strong>Onias III</strong>
-          <p>High priesthood, Zadokite lineage, Temple treasury, reputation for justice and the debated Qumran hypothesis.</p>
-          <a class="btn" href="https://fr.wikipedia.org/wiki/Onias_III" target="_blank" rel="noopener noreferrer">Open source ↗</a>
-        </div>
-
-        <div class="source-card">
-          <strong>Onias IV</strong>
-          <p>Migration to Ptolemaic Egypt, foundation of the Temple of Onias and the Egyptian Oniad community.</p>
-          <a class="btn" href="https://fr.wikipedia.org/wiki/Onias_IV" target="_blank" rel="noopener noreferrer">Open source ↗</a>
-        </div>
-
-        <div class="source-card">
-          <strong>Leontopolis</strong>
-          <p>Geographical and historical context for the Egyptian sanctuary associated with Onias IV.</p>
-          <a class="btn" href="https://fr.wikipedia.org/wiki/L%C3%A9ontopolis" target="_blank" rel="noopener noreferrer">Open source ↗</a>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
-    <div class="container footer-grid">
-      <div>Osnias Clearing · Historical Foundations</div>
-      <div>
-        <a href="/osnias-clearing/index.html">Home</a>
-        &nbsp;·&nbsp;
+<div class="sources">
+<div class="source-card">
+<strong>Onias III</strong>
+<p>High priesthood, Zadokite lineage, Temple treasury, reputation for justice and the debated Qumran hypothesis.</p>
+<a class="btn" href="https://fr.wikipedia.org/wiki/Onias_III" rel="noopener noreferrer" target="_blank">Open source ↗</a>
+</div>
+<div class="source-card">
+<strong>Onias IV</strong>
+<p>Migration to Ptolemaic Egypt, foundation of the Temple of Onias and the Egyptian Oniad community.</p>
+<a class="btn" href="https://fr.wikipedia.org/wiki/Onias_IV" rel="noopener noreferrer" target="_blank">Open source ↗</a>
+</div>
+<div class="source-card">
+<strong>Leontopolis</strong>
+<p>Geographical and historical context for the Egyptian sanctuary associated with Onias IV.</p>
+<a class="btn" href="https://fr.wikipedia.org/wiki/L%C3%A9ontopolis" rel="noopener noreferrer" target="_blank">Open source ↗</a>
+</div>
+</div>
+</section>
+</main>
+<footer>
+<div class="container footer-grid">
+<div>Osnias Clearing · Historical Foundations</div>
+<div>
+<a href="/osnias-clearing/index.html">Home</a>
+         · 
         <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
-        &nbsp;·&nbsp;
+         · 
         <a href="#sources">Sources</a>
-      </div>
-    </div>
-  </footer>
+</div>
+</div>
+</footer>
 </body>
 </html>
