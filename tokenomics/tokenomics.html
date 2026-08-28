@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>OSNIAS Tokenomics — Allocation, Vesting & Governance</title>
+  <meta name="description" content="OSNIAS tokenomics: fixed genesis supply of 100,000,000 OSNIAS, allocation, vesting schedules, lending partner programme, Strategic Reserve governance and supply invariants." />
+  <meta name="theme-color" content="#050814" />
+
+  <meta property="og:title" content="OSNIAS Tokenomics" />
+  <meta property="og:description" content="Genesis Allocation · Vesting · Lending Partners · Strategic Reserve · Governance" />
+  <meta property="og:type" content="website" />
+
+  <style>
+    :root {
+      --bg: #050814;
+      --panel: rgba(8, 12, 28, 0.94);
+      --panel-2: rgba(15, 24, 48, 0.78);
+      --accent: #3fd1ff;
+      --accent-soft: #1a9fd0;
+      --text: #f5f7ff;
+      --muted: #9aa3c2;
+      --border: #1b2338;
+      --ok: #64e6b2;
+      --max: 1120px;
+
+      --alloc-private: #3fd1ff;
+      --alloc-lending: #64e6b2;
+      --alloc-founder: #9d7cff;
+      --alloc-reserve: #f0b45b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at 82% 0%, rgba(63,209,255,.10), transparent 29rem),
+        radial-gradient(circle at 10% 5%, rgba(63,209,255,.05), transparent 23rem),
+        var(--bg);
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover, a:focus-visible { text-decoration: underline; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(5,8,20,.98), rgba(11,16,32,.96));
+    }
+
+    .topbar {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.2rem;
+    }
+
+    .brand {
+      font-size: .94rem;
+      font-weight: 760;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .brand span { color: var(--accent); }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      color: var(--muted);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .hero {
+      padding: 5rem 0 4.2rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: .76rem;
+      font-weight: 680;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(3.8rem, 10vw, 6.8rem);
+      line-height: .92;
+      letter-spacing: .035em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-role {
+      font-size: clamp(1.25rem, 3vw, 1.8rem);
+      font-weight: 650;
+      margin-bottom: 1rem;
+    }
+
+    .hero-lead {
+      max-width: 50rem;
+      color: var(--muted);
+      font-size: 1.04rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      margin-top: 1.65rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 43px;
+      padding: .66rem 1.12rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(5,8,20,.72);
+      color: var(--text);
+      font-size: .77rem;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: .075em;
+    }
+
+    .btn:hover {
+      text-decoration: none;
+      border-color: var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+      border-color: var(--accent);
+      color: #03101a;
+    }
+
+    .panel, .card, .notice, .resource {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 1rem;
+    }
+
+    .panel { padding: 1.4rem; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: .8rem;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: .8rem;
+      background: var(--panel-2);
+      padding: .9rem;
+    }
+
+    .stat small {
+      display: block;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .075em;
+      font-size: .67rem;
+      margin-bottom: .22rem;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1rem;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: .74rem;
+    }
+
+    main { padding: 3rem 0 4rem; }
+    section { margin-bottom: 4rem; }
+
+    .section-label {
+      color: var(--accent);
+      font-size: .73rem;
+      font-weight: 670;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      margin-bottom: .45rem;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem,4vw,2.3rem);
+      line-height: 1.2;
+      margin-bottom: .8rem;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      max-width: 58rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 1.1rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 1.2rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 1.2rem;
+    }
+
+    .card { padding: 1.15rem; }
+
+    .card-kicker {
+      color: var(--muted);
+      font-size: .67rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      margin-bottom: .28rem;
+    }
+
+    .card h3 {
+      font-size: .98rem;
+      margin-bottom: .52rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .list {
+      list-style: none;
+      color: var(--muted);
+      font-size: .82rem;
+      margin-top: .75rem;
+    }
+
+    .list li { margin: .34rem 0; }
+
+    .list li::before {
+      content: "•";
+      color: var(--accent);
+      margin-right: .45rem;
+    }
+
+    .notice {
+      margin-top: 1.25rem;
+      padding: 1rem 1.1rem;
+      border-left: 3px solid var(--accent-soft);
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    .notice strong { color: var(--text); }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.2rem;
+      overflow: hidden;
+      border-radius: .9rem;
+      background: var(--panel);
+    }
+
+    .spec-table th,
+    .spec-table td {
+      padding: .8rem .9rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: .82rem;
+    }
+
+    .spec-table th {
+      color: var(--text);
+      font-weight: 650;
+    }
+
+    .spec-table td { color: var(--muted); }
+
+    .spec-table tr:last-child th,
+    .spec-table tr:last-child td { border-bottom: 0; }
+
+    .allocation-wrap {
+      display: grid;
+      grid-template-columns: minmax(300px, .9fr) minmax(0, 1.1fr);
+      gap: 2rem;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+
+    .donut-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .donut {
+      width: min(390px, 82vw);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      position: relative;
+      background:
+        conic-gradient(
+          var(--alloc-private) 0 10%,
+          var(--alloc-lending) 10% 30%,
+          var(--alloc-founder) 30% 60%,
+          var(--alloc-reserve) 60% 100%
+        );
+      box-shadow: 0 0 55px rgba(63,209,255,.08);
+    }
+
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 24%;
+      border-radius: 50%;
+      background: #080c1c;
+      border: 1px solid var(--border);
+      box-shadow: inset 0 0 30px rgba(255,255,255,.02);
+    }
+
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .donut-center strong {
+      font-size: clamp(1.55rem, 4vw, 2.15rem);
+      line-height: 1;
+      margin-bottom: .35rem;
+    }
+
+    .donut-center span {
+      color: var(--muted);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .legend {
+      display: grid;
+      gap: .75rem;
+    }
+
+    .legend-item {
+      display: grid;
+      grid-template-columns: 14px minmax(0,1fr) auto;
+      gap: .75rem;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: .8rem;
+      background: var(--panel-2);
+      padding: .85rem .95rem;
+    }
+
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+
+    .legend-text strong {
+      display: block;
+      font-size: .9rem;
+    }
+
+    .legend-text span {
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    .legend-share {
+      text-align: right;
+    }
+
+    .legend-share strong {
+      display: block;
+      font-size: 1rem;
+    }
+
+    .legend-share span {
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .resources {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: .9rem;
+      margin-top: 1.3rem;
+    }
+
+    .resource {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem;
+      align-items: center;
+    }
+
+    .resource:hover {
+      text-decoration: none;
+      border-color: var(--accent-soft);
+    }
+
+    .resource strong {
+      display: block;
+      color: var(--text);
+      font-size: .86rem;
+      margin-bottom: .12rem;
+    }
+
+    .resource span {
+      color: var(--muted);
+      font-size: .74rem;
+    }
+
+    .resource-type {
+      color: var(--accent);
+      white-space: nowrap;
+      font-size: .74rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.8rem 0 2.2rem;
+      color: var(--muted);
+      font-size: .77rem;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .site-nav-fixed {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(5,8,20,.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: .7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .site-nav-brand {
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-right: auto;
+    }
+
+    .site-nav-brand span { color: var(--accent); }
+
+    .site-nav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      justify-content: flex-end;
+    }
+
+    .site-nav-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: .48rem .74rem;
+      border: 1px solid rgba(255,255,255,.38);
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      font-size: .69rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav-buttons a:hover,
+    .site-nav-buttons a:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: #fff;
+      text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+      .grid-4, .grid-3, .grid-2, .allocation-wrap {
+        grid-template-columns: 1fr;
+      }
+      .stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      nav { display: none; }
+      .resources { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .site-nav-inner { padding: .65rem 1rem; }
+      .site-nav-brand { width: 100%; margin-right: 0; }
+      .site-nav-buttons { justify-content: flex-start; }
+    }
+
+    @media (max-width: 560px) {
+      .container { padding: 0 1rem; }
+      .hero { padding: 3.5rem 0 3rem; }
+      .stats { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
+      .resource { align-items: flex-start; flex-direction: column; }
+      .legend-item { grid-template-columns: 12px minmax(0,1fr); }
+      .legend-share { grid-column: 2; text-align: left; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+        OSNIAS <span>CLEARING</span>
+      </a>
+
+      <nav class="site-nav-buttons" aria-label="Main site navigation">
+        <a href="/osnias-clearing/history/history.html">History</a>
+        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
+        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
+        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
+        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
+        <a href="/osnias-clearing/tokenomics/tokenomics.html">Tokenomics</a>
+        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
+        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
+      </nav>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand">OSNIAS <span>Tokenomics</span></div>
+
+        <nav aria-label="Tokenomics navigation">
+          <a href="#parameters">Parameters</a>
+          <a href="#allocation">Allocation</a>
+          <a href="#vesting">Vesting</a>
+          <a href="#partners">Partners</a>
+          <a href="#reserve">Reserve</a>
+          <a href="#governance">Governance</a>
+        </nav>
+      </div>
+
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Genesis Allocation · Vesting · Strategic Reserve</div>
+
+            <h1>OSNIAS</h1>
+            <div class="hero-role">Tokenomics of the Osnias Clearing governance token</div>
+
+            <p class="hero-lead">
+              OSNIAS has a fixed genesis supply of 100,000,000 tokens with 6 decimals.
+              Its tokenomics are structured around four tranches: Private Investors,
+              Lending Partners, the Founder allocation and a governance-gated Strategic Reserve.
+            </p>
+
+            <div class="actions">
+              <a class="btn btn-primary" href="/osnias-clearing/osnias/osnias.html">
+                OSNIAS Token →
+              </a>
+
+              <a class="btn"
+                 href="https://doi.org/10.5281/zenodo.22139986"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                Zenodo DOI · OSNIAS ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section id="parameters">
+      <div class="section-label">01 · Essential Parameters</div>
+      <aside class="panel">
+        <div class="stats">
+          <div class="stat">
+            <small>Genesis supply</small>
+            <strong>100,000,000 OSNIAS</strong>
+            <span>Fixed at genesis</span>
+          </div>
+
+          <div class="stat">
+            <small>Decimals</small>
+            <strong>6</strong>
+            <span>On-chain precision</span>
+          </div>
+
+          <div class="stat">
+            <small>Canonical governance</small>
+            <strong>Sei</strong>
+            <span>Voting state</span>
+          </div>
+
+          <div class="stat">
+            <small>Economic supply expansion</small>
+            <strong>Impossible</strong>
+            <span>OFT mechanics do not increase aggregate supply</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="allocation">
+      <div class="section-label">02 · Genesis Supply Allocation</div>
+      <h2>One fixed supply, four strategic tranches</h2>
+
+      <p class="section-intro">
+        The 100,000,000 OSNIAS genesis supply is divided between private investors,
+        lending protocol partners, the founder and a Strategic Reserve controlled by governance.
+      </p>
+
+      <div class="allocation-wrap">
+        <div class="donut-wrap">
+          <div class="donut" role="img" aria-label="OSNIAS allocation: 10 percent Private Investors, 20 percent Lending Partners, 30 percent Founder, 40 percent Strategic Reserve">
+            <div class="donut-center">
+              <strong>100M</strong>
+              <span>OSNIAS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--alloc-private)"></div>
+            <div class="legend-text">
+              <strong>Private Investors</strong>
+              <span>Subject to vesting</span>
+            </div>
+            <div class="legend-share">
+              <strong>10%</strong>
+              <span>10,000,000</span>
+            </div>
+          </div>
+
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--alloc-lending)"></div>
+            <div class="legend-text">
+              <strong>Lending Partners</strong>
+              <span>Up to 20 initial protocol partners</span>
+            </div>
+            <div class="legend-share">
+              <strong>20%</strong>
+              <span>20,000,000</span>
+            </div>
+          </div>
+
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--alloc-founder)"></div>
+            <div class="legend-text">
+              <strong>Founder</strong>
+              <span>Long-term vesting alignment</span>
+            </div>
+            <div class="legend-share">
+              <strong>30%</strong>
+              <span>30,000,000</span>
+            </div>
+          </div>
+
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--alloc-reserve)"></div>
+            <div class="legend-text">
+              <strong>Strategic Reserve</strong>
+              <span>Governance-gated allocation</span>
+            </div>
+            <div class="legend-share">
+              <strong>40%</strong>
+              <span>40,000,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="spec-table">
+        <tr>
+          <th>Tranche</th>
+          <th>OSNIAS</th>
+          <th>Share</th>
+          <th>Notes</th>
+        </tr>
+        <tr>
+          <td>Private Investors</td>
+          <td>10,000,000</td>
+          <td>10%</td>
+          <td>Vesting applies.</td>
+        </tr>
+        <tr>
+          <td>Lending Partners</td>
+          <td>20,000,000</td>
+          <td>20%</td>
+          <td>1,000,000 OSNIAS per initial partner, up to 20 partners.</td>
+        </tr>
+        <tr>
+          <td>Founder</td>
+          <td>30,000,000</td>
+          <td>30%</td>
+          <td>Vesting applies.</td>
+        </tr>
+        <tr>
+          <td>Strategic Reserve</td>
+          <td>40,000,000</td>
+          <td>40%</td>
+          <td>Governance vote required for allocation or burn.</td>
+        </tr>
+      </table>
+
+      <div class="notice">
+        <strong>Strategic Reserve invariant.</strong>
+        No allocation or burn from the 40,000,000 OSNIAS Strategic Reserve may occur
+        without a formal governance vote by eligible OSNIAS holders on the canonical Sei state.
+        Governance may permanently burn all or part of this reserve, but it cannot burn
+        third-party holder balances.
+      </div>
+    </section>
+
+    <section id="vesting">
+      <div class="section-label">03 · Vesting Schedules</div>
+      <h2>Long-term alignment from mainnet deployment</h2>
+
+      <p class="section-intro">
+        Vesting periods are measured from mainnet deployment on Sei EVM.
+        Individual agreements may include additional contractual terms.
+      </p>
+
+      <table class="spec-table">
+        <tr>
+          <th>Tranche</th>
+          <th>Allocation</th>
+          <th>Cliff</th>
+          <th>Release</th>
+        </tr>
+        <tr>
+          <td>Private Investors</td>
+          <td>10,000,000 OSNIAS</td>
+          <td>12 months</td>
+          <td>Linear over 36 months post-cliff</td>
+        </tr>
+        <tr>
+          <td>Founder</td>
+          <td>30,000,000 OSNIAS</td>
+          <td>12 months</td>
+          <td>Linear over 48 months post-cliff</td>
+        </tr>
+        <tr>
+          <td>Lending Partners</td>
+          <td>20,000,000 OSNIAS</td>
+          <td>None</td>
+          <td>On partnership agreement signing</td>
+        </tr>
+        <tr>
+          <td>Strategic Reserve</td>
+          <td>40,000,000 OSNIAS</td>
+          <td>N/A</td>
+          <td>Governance vote required for allocation or burn</td>
+        </tr>
+      </table>
+
+      <div class="grid-2" style="margin-top:1.3rem;">
+        <article class="card">
+          <div class="card-kicker">Private Investors</div>
+          <h3>12-month cliff + 36-month release</h3>
+          <p>
+            The private investor allocation is subject to a 12-month cliff followed by
+            linear monthly release over 36 months.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Founder</div>
+          <h3>12-month cliff + 48-month release</h3>
+          <p>
+            The founder allocation is released over a longer horizon, reflecting the founder's
+            contribution to the architecture, research and development of the protocol.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Long-horizon alignment.</strong>
+        The founder vesting period is designed to align long-term interests with
+        the protocol's multi-year Jubilee Epoch architecture.
+      </div>
+    </section>
+
+    <section id="partners">
+      <div class="section-label">04 · Lending Partner Programme</div>
+      <h2>Up to 20 initial DeFi lending partners</h2>
+
+      <p class="section-intro">
+        The lending partner allocation is designed to onboard independent DeFi lending protocols
+        as infrastructure partners of Osnias Clearing.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Initial allocation</div>
+          <h3>20 × 1,000,000 OSNIAS</h3>
+          <p>
+            Up to 20 initial lending partners may each receive 1,000,000 OSNIAS
+            upon execution of the applicable partnership agreement.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Additional partners</div>
+          <h3>Strategic Reserve</h3>
+          <p>
+            Future partner allocations beyond the initial programme may be sourced
+            from the Strategic Reserve, subject to governance approval.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Infrastructure separation</div>
+          <h3>Independent custody</h3>
+          <p>
+            Partner protocols remain responsible for collateral custody, escrow management
+            and credit risk within their own infrastructure.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Clearing is not custody.</strong>
+        Osnias Clearing does not hold client funds or operate lending positions.
+      </div>
+    </section>
+
+    <section id="reserve">
+      <div class="section-label">05 · Strategic Reserve</div>
+      <h2>40,000,000 OSNIAS under governance</h2>
+
+      <p class="section-intro">
+        The Strategic Reserve represents 40% of the genesis supply.
+        It is intended to preserve long-term flexibility across the operating lifetime of the protocol.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <h3>Potential uses</h3>
+          <ul class="list">
+            <li>Additional lending partner incentives beyond the initial 20 allocations.</li>
+            <li>Protocol development grants and ecosystem incentives.</li>
+            <li>Strategic partnerships and institutional relationships.</li>
+            <li>Jubilee Epoch transition reserves and long-term operational continuity.</li>
+            <li>Any future allocation approved by governance.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Governance gate</h3>
+          <p>
+            The reserve may not be allocated, transferred, deployed or burned unilaterally.
+            Eligible OSNIAS holders on the canonical Sei state may vote either to allocate
+            reserve tokens for an approved purpose or to burn permanently all or part of
+            the governance-controlled reserve.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="governance">
+      <div class="section-label">06 · Governance & Supply Invariants</div>
+      <h2>Rules that constrain the token economy</h2>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Supply</div>
+          <h3>Fixed genesis supply</h3>
+          <p>
+            The genesis supply is fixed at 100,000,000 OSNIAS.
+            No additional economic supply can be created after genesis.
+            OFT mint/burn operations, where technically required for omnichain transfers,
+            do not increase the aggregate OSNIAS supply.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Voting</div>
+          <h3>Canonical Sei governance</h3>
+          <p>
+            Governance voting power is recognized only on the canonical Sei state.
+            OSNIAS on other supported networks may carry economic value but no voting rights.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Burn</div>
+          <h3>Holder self-burn & governance reserve burn</h3>
+          <p>
+            Individual holders may voluntarily burn their own OSNIAS.
+            In addition, the community may approve by governance vote the permanent burn
+            of all or part of the OSNIAS held in the Strategic Reserve.
+            No administrative burn of third-party holder balances is part of the model.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Reserve</div>
+          <h3>Governance controls allocation and burn</h3>
+          <p>
+            Strategic Reserve allocations require governance approval.
+            The community may also vote to burn permanently all or part of the 40,000,000 OSNIAS reserve.
+            The founder or management cannot unilaterally allocate or burn this governance-controlled tranche.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Security</div>
+          <h3>Privileged-role protection</h3>
+          <p>
+            Production privileged roles are intended to be protected by multisignature architecture
+            and documented recovery mechanisms.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Economic architecture</div>
+          <h3>Governance token</h3>
+          <p>
+            OSNIAS is the governance token of Osnias Clearing.
+            Its allocation architecture is designed to balance protocol development,
+            strategic integration and long-term governance continuity.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="documentation">
+      <div class="section-label">07 · Documentation</div>
+      <h2>OSNIAS technical and tokenomics references</h2>
+
+      <p class="section-intro">
+        The tokenomics page complements the technical OSNIAS token page.
+        Together they describe the token's technical role, governance architecture,
+        genesis allocation and long-term distribution rules.
+        A dedicated Tokenomics PDF may be added here once the final document is published.
+      </p>
+
+      <div class="resources">
+        <a class="resource" href="/osnias-clearing/osnias/osnias.html">
+          <div>
+            <strong>OSNIAS Token</strong>
+            <span>Technical role, governance and token architecture</span>
+          </div>
+          <div class="resource-type">PAGE →</div>
+        </a>
+
+        <a class="resource"
+           href="https://doi.org/10.5281/zenodo.22139986"
+           target="_blank"
+           rel="noopener noreferrer">
+          <div>
+            <strong>Zenodo — OSNIAS Archive</strong>
+            <span>Permanent archive · DOI 10.5281/zenodo.22139986</span>
+          </div>
+          <div class="resource-type">DOI ↗</div>
+        </a>
+
+      </div>
+
+      <div class="notice">
+        <strong>Pre-mainnet reference.</strong>
+        This page describes the intended token allocation architecture prior to mainnet deployment.
+        Allocation schedules and governance rules remain subject to finalisation before production deployment.
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>OSNIAS · Tokenomics</div>
+      <div>
+        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
+        &nbsp;·&nbsp;
+        <a href="#allocation">Allocation</a>
+        &nbsp;·&nbsp;
+        <a href="#vesting">Vesting</a>
+        &nbsp;·&nbsp;
+        <a href="#reserve">Reserve</a>
+        &nbsp;·&nbsp;
+        <a href="https://doi.org/10.5281/zenodo.22139986" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22139986</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
