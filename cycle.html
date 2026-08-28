@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Osnias Clearing — 91-Day Clearing & Jubilee Cycle</title>
+  <meta name="description" content="How the Osnias Clearing 91-day cycle works: continuous clearing, public blockchain register, dated statement, review window, final net settlement and the broader Jubilee-cycle framework." />
+  <meta name="theme-color" content="#050814" />
+
+  <meta property="og:title" content="Osnias Clearing — 91-Day Clearing & Jubilee Cycle" />
+  <meta property="og:description" content="Clearing over time: immediate recording and compensation, final net settlement at the end of a 91-day cycle." />
+  <meta property="og:type" content="website" />
+
+  <style>
+    :root {
+      --bg:#050814;
+      --panel:rgba(8,12,28,.94);
+      --panel2:rgba(15,24,48,.78);
+      --accent:#3fd1ff;
+      --accent2:#1a9fd0;
+      --text:#f5f7ff;
+      --muted:#9aa3c2;
+      --border:#1b2338;
+      --ok:#64e6b2;
+      --max:1120px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      line-height:1.6;
+      background:
+        radial-gradient(circle at 80% 0%,rgba(63,209,255,.10),transparent 28rem),
+        radial-gradient(circle at 10% 6%,rgba(63,209,255,.05),transparent 24rem),
+        var(--bg);
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover,a:focus-visible{text-decoration:underline}
+    .container{max-width:var(--max);margin:0 auto;padding:0 1.5rem}
+
+    header{
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(135deg,rgba(5,8,20,.98),rgba(11,16,32,.96));
+    }
+
+    .topbar{
+      min-height:68px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1.2rem;
+    }
+
+    .brand{
+      font-size:.94rem;
+      font-weight:760;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:var(--text);
+    }
+    .brand span{color:var(--accent)}
+
+    nav{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:flex-end}
+    nav a{
+      color:var(--muted);
+      font-size:.76rem;
+      text-transform:uppercase;
+      letter-spacing:.09em;
+    }
+
+    .hero{padding:5rem 0 4.2rem}
+    .hero-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.35fr) minmax(330px,.85fr);
+      gap:3rem;
+      align-items:center;
+    }
+
+    .eyebrow{
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:.76rem;
+      font-weight:680;
+      margin-bottom:1rem;
+    }
+
+    h1{
+      font-size:clamp(2.8rem,7vw,5.2rem);
+      line-height:.98;
+      letter-spacing:.02em;
+      margin-bottom:1rem;
+    }
+
+    .lead{
+      max-width:48rem;
+      color:var(--muted);
+      font-size:1.05rem;
+      margin-bottom:1.5rem;
+    }
+
+    .tags,.actions,.badges{display:flex;flex-wrap:wrap;gap:.55rem}
+    .tag,.badge{
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:rgba(15,24,48,.65);
+      color:var(--muted);
+    }
+    .tag{padding:.3rem .72rem;font-size:.73rem;text-transform:uppercase;letter-spacing:.075em}
+    .tag.accent{color:var(--accent);border-color:var(--accent2)}
+    .badge{padding:.15rem .58rem;font-size:.7rem}
+    .badge.ok{color:var(--ok);border-color:rgba(100,230,178,.48)}
+
+    .actions{margin-top:1.6rem}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:43px;
+      padding:.66rem 1.12rem;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--text);
+      background:rgba(5,8,20,.72);
+      font-size:.77rem;
+      font-weight:650;
+      text-transform:uppercase;
+      letter-spacing:.075em;
+    }
+    .btn:hover{text-decoration:none;border-color:var(--accent2);transform:translateY(-1px)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent2),var(--accent));border-color:var(--accent);color:#03101a}
+
+    .panel,.card,.notice,.step{
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:1rem;
+    }
+
+    .panel{padding:1.4rem}
+    .panel-title{
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-size:.74rem;
+      margin-bottom:1rem;
+    }
+
+    .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+    .stat{
+      border:1px solid var(--border);
+      border-radius:.8rem;
+      background:var(--panel2);
+      padding:.9rem;
+    }
+    .stat small{
+      display:block;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.075em;
+      font-size:.67rem;
+      margin-bottom:.22rem;
+    }
+    .stat strong{display:block;font-size:1rem}
+    .stat span{color:var(--muted);font-size:.74rem}
+
+    main{padding:3rem 0 4rem}
+    section{margin-bottom:4rem}
+    .section-label{
+      color:var(--accent);
+      font-size:.73rem;
+      font-weight:670;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      margin-bottom:.45rem;
+    }
+    h2{font-size:clamp(1.65rem,4vw,2.3rem);line-height:1.2;margin-bottom:.8rem}
+    .section-intro{color:var(--muted);max-width:58rem;margin-bottom:1.5rem}
+
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem}
+    .card{padding:1.15rem}
+    .card-kicker{
+      color:var(--muted);
+      font-size:.67rem;
+      text-transform:uppercase;
+      letter-spacing:.09em;
+      margin-bottom:.28rem;
+    }
+    .card h3{font-size:.98rem;margin-bottom:.52rem}
+    .card p{color:var(--muted);font-size:.85rem}
+
+    .timeline{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:1rem;
+      margin-top:1.4rem;
+    }
+
+    .step{padding:1.1rem;position:relative}
+    .step .day{
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-size:.69rem;
+      font-weight:700;
+      margin-bottom:.35rem;
+    }
+    .step strong{display:block;margin-bottom:.4rem}
+    .step p{color:var(--muted);font-size:.82rem}
+
+    .notice{
+      margin-top:1.25rem;
+      padding:1rem 1.1rem;
+      border-left:3px solid var(--accent2);
+      color:var(--muted);
+      font-size:.84rem;
+    }
+    .notice strong{color:var(--text)}
+
+    .formula{
+      text-align:center;
+      border:1px solid var(--border);
+      background:var(--panel2);
+      border-radius:1rem;
+      padding:1.3rem;
+      margin-top:1.3rem;
+      font-size:1rem;
+    }
+    .formula strong{color:var(--accent)}
+
+    .list{list-style:none;color:var(--muted);font-size:.82rem;margin-top:.75rem}
+    .list li{margin:.34rem 0}
+    .list li::before{content:"•";color:var(--accent);margin-right:.45rem}
+
+    footer{
+      border-top:1px solid var(--border);
+      padding:1.8rem 0 2.2rem;
+      color:var(--muted);
+      font-size:.77rem;
+    }
+    .footer-grid{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+    @media(max-width:900px){
+      .hero-grid,.grid-3,.grid-2,.timeline{grid-template-columns:1fr}
+      nav{display:none}
+    }
+    @media(max-width:560px){
+      .container{padding:0 1rem}
+      .hero{padding:3.5rem 0 3rem}
+      .stats{grid-template-columns:1fr}
+      .actions{flex-direction:column}
+      .btn{width:100%}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand">OSNIAS <span>Clearing Cycle</span></div>
+        <nav aria-label="Cycle navigation">
+          <a href="#principle">Principle</a>
+          <a href="#economic-principle">Exchange</a>
+          <a href="#timeline">91 days</a>
+          <a href="#reference-deposit">Reference Deposit</a>
+          <a href="#blockchain">Blockchain</a>
+          <a href="#oracle">Oracle</a>
+          <a href="#jubilee">Jubilee</a>
+          <a href="#calendar">Calendar</a>
+          <a href="#settlement">Settlement</a>
+        </nav>
+      </div>
+
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Clearing over time · 91-day operating cycle</div>
+            <h1>91-Day Clearing & Jubilee Cycle</h1>
+
+            <p class="lead">
+              Osnias Clearing operates on a 91-day clearing cycle structured in three phases:
+              a 3-day Burn Triduum, an 85-day issuance and P2P circulation window, and a 3-day Compensation Triduum.
+              Four identical cycles form a 364-day annual Jubilee calendar.
+            </p>
+
+            <div class="tags">
+              <span class="tag accent">91-day clearing cycle</span>
+              <span class="tag">Immediate recording</span>
+              <span class="tag">Progressive compensation</span>
+              <span class="tag">Final net settlement</span>
+              <span class="tag">Jubilee-cycle framework</span>
+            </div>
+
+            <div class="actions">
+              <a class="btn primary" href="#timeline">See the cycle →</a>
+              <a class="btn" href="/cycle/onias-clearing-calendrier.pdf">Official Calendar PDF</a>
+              <a class="btn" href="../index.html">Back to Osnias Clearing</a>
+            </div>
+          </div>
+
+          <aside class="panel">
+            <div class="panel-title">Cycle at a glance</div>
+            <div class="stats">
+              <div class="stat">
+                <small>Operating cycle</small>
+                <strong>91 days</strong>
+                <span>Time allowed for compensation</span>
+              </div>
+              <div class="stat">
+                <small>Movement recording</small>
+                <strong>Immediate</strong>
+                <span>Blockchain register</span>
+              </div>
+              <div class="stat">
+                <small>Burn Triduum</small>
+                <strong>Days 1–3</strong>
+                <span>Burn open · Mint & P2P closed</span>
+              </div>
+              <div class="stat">
+                <small>Issuance window</small>
+                <strong>Days 4–88</strong>
+                <span>Mint open · P2P active</span>
+              </div>
+              <div class="stat">
+                <small>Compensation Triduum</small>
+                <strong>Days 89–91</strong>
+                <span>Mint, Burn & P2P closed</span>
+              </div>
+              <div class="stat">
+                <small>Annual framework</small>
+                <strong>364 days</strong>
+                <span>4 × 91-day cycles · 52 weeks</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section id="principle">
+      <div class="section-label">01 · Core principle</div>
+      <h2>Separate transaction time from settlement time</h2>
+
+      <p class="section-intro">
+        Modern digital networks can record a transfer in seconds. Economic activity, however, unfolds over longer periods:
+        firms sell goods, receive invoices, collect payments, restock and generate new reciprocal claims.
+        Osnias Clearing therefore treats time as part of the clearing mechanism rather than as a technical inconvenience.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Exchange</div>
+          <h3>Immediate movement</h3>
+          <p>Participants can exchange and record clearing movements without waiting for the end of the cycle.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Compensation</div>
+          <h3>Positions circulate</h3>
+          <p>During the 91-day window, incoming and outgoing positions can offset each other naturally through economic activity.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Settlement</div>
+          <h3>Only the residual is final</h3>
+          <p>The purpose of the cycle is to settle the remaining net position after compensation, rather than repeatedly settling every gross movement.</p>
+        </article>
+      </div>
+
+      <div class="formula">
+        <strong>Immediate exchange</strong> + time for reciprocal compensation → <strong>final net settlement</strong>
+      </div>
+    </section>
+
+
+    <section id="economic-principle">
+      <div class="section-label">02 · Economic principle</div>
+      <h2>Value comes from circulation, not from the clearing token</h2>
+
+      <p class="section-intro">
+        ORUSD and OEURO are designed as clearing instruments, not as assets whose economic purpose depends on scarcity,
+        speculative appreciation or passive holding. Their function is to circulate between participants during the active
+        clearing window so that reciprocal commitments can progressively offset before final settlement.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Clearing instrument</div>
+          <h3>The token is a support for exchange</h3>
+          <p>
+            The clearing token represents a transferable clearing position inside the cycle. Its economic role is functional:
+            it carries value between participants and records the movement in the clearing register.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Circulation</div>
+          <h3>Exchange creates clearing value</h3>
+          <p>
+            A position that circulates can meet reciprocal obligations, return through other transactions and reduce what must
+            ultimately be settled. The usefulness of the system therefore comes from exchange velocity and netting capacity.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Final settlement</div>
+          <h3>Only the residual remains</h3>
+          <p>
+            The objective is not to settle every gross movement independently, but to allow economic activity to reduce the
+            residual balance that remains at the end of the cycle.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Osnias Clearing doctrine.</strong>
+        Value is created by exchange and reciprocal compensation, not by the clearing token itself.
+        A clearing token is useful because it circulates.
+      </div>
+    </section>
+
+    <section id="timeline">
+      <div class="section-label">03 · The 91-day cycle</div>
+      <h2>From reference deposit to final compensation</h2>
+
+      <p class="section-intro">
+        The 91-day cycle is not a single settlement event. It is a sequence of operating windows designed to let positions
+        circulate, establish a stable reference base, close the register, validate partner escrow states and finally perform
+        compensation.
+      </p>
+
+      <div class="timeline">
+        <div class="step">
+          <div class="day">Days 1–3</div>
+          <strong>Burn & collateral release window</strong>
+          <p>
+            Users may request the burn of clearing tokens in order to release collateral from the relevant escrow.
+            Mint and P2P circulation remain closed during this opening window.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="day">Day 4</div>
+          <strong>Reference Deposit snapshot</strong>
+          <p>
+            After possible burns have been executed, the collateral balance remaining in each user escrow is recorded.
+            This Day-4 snapshot becomes the Reference Deposit for the next burn window.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="day">Days 4–88</div>
+          <strong>Escrow, Mint & P2P active</strong>
+          <p>
+            Collateral funding and mint operations are open and clearing tokens may circulate P2P.
+            Positions minted early in the cycle have time to participate meaningfully in reciprocal exchange and clearing.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="day">Day 89 · 00:00:00 GMT</div>
+          <strong>Registry snapshot</strong>
+          <p>
+            The register is photographed at cycle close. For each user, the system computes the balance from the complete set
+            of cycle transactions and prepares a proposed collateral funding or withdrawal instruction for the relevant
+            lending/escrow protocol.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="day">Day 90</div>
+          <strong>Escrow / lending validation</strong>
+          <p>
+            Partner protocols validate the proposed funding and withdrawal instructions and reconcile their escrow states with
+            the clearing register before final compensation.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="day">Day 91</div>
+          <strong>Final compensation</strong>
+          <p>
+            Netting is performed first within each lending protocol, then between participating lending protocols.
+            Escrow balances, clearing positions and the quantity of clearing tokens in circulation are aligned and verified.
+          </p>
+        </div>
+      </div>
+
+      <div class="notice">
+        <strong>Clearing requires reconciliation time.</strong>
+        Even when calculations are automated, the closing process must align the clearing register, partner lending/escrow
+        positions and the clearing-token supply. The Day-89 to Day-91 window exists precisely to provide the operational time
+        required for that reconciliation.
+      </div>
+    </section>
+
+
+    <section id="reference-deposit">
+      <div class="section-label">04 · Reference Deposit & withdrawal discipline</div>
+      <h2>Withdrawal capacity follows demonstrated participation in the cycle</h2>
+
+      <p class="section-intro">
+        The Reference Deposit is not measured at the end of the cycle. It is fixed on Day 4, immediately after the Day-1 to
+        Day-3 burn window. This prevents a participant from depositing collateral late in the cycle, minting near Day 87 and
+        using that last-minute position to create an artificially large withdrawal capacity at the beginning of the next cycle.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Reference base</div>
+          <h3>Day-4 escrow snapshot</h3>
+          <p>
+            The collateral remaining in the user escrow on Day 4 becomes the Reference Deposit used for the following
+            burn/release window.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Burn protection</div>
+          <h3>Maximum 3× Reference Deposit</h3>
+          <p>
+            During Days 1–3 of the following cycle, collateral-release requests are capped at three times the Reference Deposit
+            established at Day 4 of the preceding cycle.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Late-cycle minting</div>
+          <h3>No instant withdrawal advantage</h3>
+          <p>
+            Collateral added later in the cycle may support valid minting, but it does not retroactively increase the reference
+            base for the immediately following burn window.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Why Day 4 matters.</strong>
+        Tokens minted from collateral present at Day 4 can circulate through almost the entire active window.
+        A token minted near Day 87 is technically valid, but has little time to contribute to exchange or reciprocal clearing
+        before the Day-89 snapshot. Withdrawal capacity therefore follows sustained clearing participation rather than
+        last-minute minting.
+      </div>
+    </section>
+
+    <section id="blockchain">
+      <div class="section-label">05 · Role of blockchain</div>
+      <h2>A public register, not a reason to accelerate economic time</h2>
+
+      <p class="section-intro">
+        Blockchain provides an immutable and auditable register of movements.
+        Its technical speed does not force the economic cycle to settle immediately.
+        Osnias Clearing uses blockchain to make the state observable while preserving a longer clearing horizon.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Transparency</div>
+          <h3>Public register</h3>
+          <p>Clearing movements and relevant state transitions can be independently observed and audited.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Execution</div>
+          <h3>Immediate recording</h3>
+          <p>The technology can record movements immediately even though final settlement remains deferred until cycle close.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Finality</div>
+          <h3>Deferred net settlement</h3>
+          <p>Blockchain finality for an individual movement is distinct from the economic finality of the entire clearing cycle.</p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Architecture principle.</strong>
+        Technical immediacy and economic finality are different concepts.
+        Osnias Clearing deliberately preserves that distinction.
+      </div>
+    </section>
+
+    <section id="settlement">
+      <div class="section-label">06 · Final net position</div>
+      <h2>Settle the balance, not the entire history</h2>
+
+      <p class="section-intro">
+        The cycle does not erase transaction history. Gross movements remain recorded while reciprocal positions can offset during the active circulation window.
+        During Days 89–91, Mint, Burn and P2P are suspended so that register alignment, multilateral netting and final cycle closure can occur.
+        Compensation is performed first within each participating lending protocol, then between lending protocols, before the final escrow and clearing-token states are confirmed.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <h3>During the cycle</h3>
+          <ul class="list">
+            <li>Movements are recorded.</li>
+            <li>Positions evolve continuously.</li>
+            <li>Incoming and outgoing commitments can compensate each other.</li>
+            <li>Participants remain economically active.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>At cycle close</h3>
+          <ul class="list">
+            <li>A dated position has been communicated.</li>
+            <li>The review period has elapsed.</li>
+            <li>The residual net position is established.</li>
+            <li>Final settlement is executed according to the applicable settlement rules.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+
+    <section id="oracle">
+      <div class="section-label">07 · Oracle coordination</div>
+      <h2>Automated instructions, controlled execution</h2>
+
+      <p class="section-intro">
+        The dedicated Mint/Burn oracle coordinates the operational flow between the clearing register and the relevant
+        lending/escrow protocols. Its role is to submit and transmit the required mint, burn, funding and withdrawal
+        instructions according to the rules of the cycle.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <h3>During the active window</h3>
+          <ul class="list">
+            <li>Receive or attest escrow funding information.</li>
+            <li>Submit eligible mint requests.</li>
+            <li>Track the relationship between escrow state and circulating clearing tokens.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>During cycle close</h3>
+          <ul class="list">
+            <li>Support Day-89 balance computation and proposed instructions.</li>
+            <li>Transmit data required for Day-90 lending/escrow validation.</li>
+            <li>Support the Day-91 reconciliation and final compensation workflow.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Human time remains part of the architecture.</strong>
+        Automation accelerates calculation and transmission, but does not eliminate the need for operational validation,
+        reconciliation and exception handling before final settlement.
+      </div>
+    </section>
+
+    <section id="jubilee">
+      <div class="section-label">08 · Jubilee framework</div>
+      <h2>The short clearing cycle inside a longer rhythm</h2>
+
+      <p class="section-intro">
+        The 91-day mechanism is the operating quarter of Osnias Clearing.
+        Four quarters form a 364-day annual calendar: 13 weeks × 7 days × 4 quarters.
+        This regular structure sits within the broader Jubilee-cycle framework, where economic activity is organized around recurring periods of release, circulation, compensation and closure.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Quarterly rhythm</div>
+          <h3>91-day clearing</h3>
+          <p>Each quarter follows the same three-phase structure: Burn Triduum, issuance/P2P window and Compensation Triduum.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Annual rhythm</div>
+          <h3>364-day calendar</h3>
+          <p>Four cycles of 91 days form a complete 364-day year, or 52 exact seven-day weeks.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Long horizon</div>
+          <h3>Jubilee inspiration</h3>
+          <p>The broader framework treats periodic release, circulation, compensation and reset as recurring structural principles.</p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Important distinction.</strong>
+        The Jubilee reference describes the long-term temporal philosophy of the system.
+        The 91-day cycle is the operational clearing mechanism.
+        The two should not be confused: one gives the architecture its long rhythm; the other defines how clearing works day to day.
+      </div>
+    </section>
+
+
+    <section id="calendar">
+      <div class="section-label">09 · Official calendar</div>
+      <h2>Official 364-Day Jubilee Cycle Calendar</h2>
+
+      <p class="section-intro">
+        The official annual matrix documents the four 91-day quarters, the 13-week structure of each quarter,
+        and the operating status of Burn, Mint and P2P functions for every day of the 364-day year.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Reference document</div>
+          <h3>Annual Jubilee Cycle Calendar</h3>
+          <p>
+            13 weeks × 7 days × 4 quarters, with Burn Triduum on Days 1–3,
+            issuance/P2P on Days 4–88, and Compensation Triduum on Days 89–91.
+          </p>
+          <div class="badges" style="margin-top:.8rem;">
+            <a class="badge ok" href="/cycle/onias-clearing-calendrier.pdf">Open official PDF →</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Annual structure</div>
+          <h3>4 × 91 = 364 days</h3>
+          <p>
+            The calendar uses four identical 91-day cycles, giving a regular 52-week annual matrix
+            and a stable operational rhythm for clearing and compensation.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="summary">
+      <div class="section-label">10 · Summary</div>
+      <h2>Clearing needs time</h2>
+
+      <div class="grid-3">
+        <article class="card">
+          <h3>Exchange</h3>
+          <p>Creates the economic usefulness of the system by allowing reciprocal clearing positions to circulate and offset.</p>
+        </article>
+        <article class="card">
+          <h3>91 days</h3>
+          <p>Provides the operational and human time required for circulation, reconciliation and compensation.</p>
+        </article>
+        <article class="card">
+          <h3>Final settlement</h3>
+          <p>Closes the cycle only after the register, escrow positions and circulating clearing-token supply have been aligned.</p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Osnias Clearing doctrine.</strong>
+        The fastest possible ledger does not require the fastest possible economic settlement.
+        Exchange creates the clearing value, circulation creates the opportunity for netting, and time reduces what ultimately
+        needs to be settled.
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>Osnias Clearing · 91-Day & Jubilee Cycle</div>
+      <div>
+        <a href="../index.html">Home</a>
+        &nbsp;·&nbsp;
+        <a href="#timeline">91-Day Cycle</a>
+        &nbsp;·&nbsp;
+        <a href="#jubilee">Jubilee Framework</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
