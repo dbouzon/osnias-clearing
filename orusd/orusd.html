@@ -452,20 +452,129 @@
       .btn { width: 100%; }
       .resource { align-items: flex-start; flex-direction: column; }
     }
+  
+    /* Fixed site-wide navigation bar */
+    .site-nav-fixed {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(5,8,20,.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: .7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .site-nav-brand {
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-right: auto;
+    }
+
+    .site-nav-brand span { color: var(--accent); }
+
+    .site-nav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      justify-content: flex-end;
+    }
+
+    .site-nav-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: .48rem .74rem;
+      border: 1px solid rgba(255,255,255,.38);
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      font-size: .69rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav-buttons a:hover,
+    .site-nav-buttons a:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: #fff;
+      text-decoration: none;
+    }
+
+    @media (max-width: 760px) {
+      .site-nav-inner { padding: .65rem 1rem; }
+      .site-nav-brand { width: 100%; margin-right: 0; }
+      .site-nav-buttons { justify-content: flex-start; }
+    }
+
+    /* Same content frame as the OSNIAS page */
+    .hero-grid { grid-template-columns: 1fr !important; }
+
+    .essential-parameters { margin-bottom: 3rem; }
+    .essential-parameters .panel { width: 100%; }
+    .essential-parameters .stats {
+      grid-template-columns: repeat(4, minmax(0,1fr));
+    }
+
+    @media (max-width: 900px) {
+      .essential-parameters .stats {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .essential-parameters .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 
 <body>
+
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+        OSNIAS <span>CLEARING</span>
+      </a>
+
+      <nav class="site-nav-buttons" aria-label="Main site navigation">
+        <a href="/osnias-clearing/history/history.html">History</a>
+        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
+        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
+        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
+        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
+        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
+        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
+      </nav>
+    </div>
+  </div>
+
   <header>
     <div class="container">
       <div class="topbar">
         <div class="brand">ORUSD <span>Clearing Token</span></div>
 
-        <nav aria-label="Navigation ORUSD">
+        <nav aria-label="ORUSD navigation">
           <a href="#role">Role</a>
           <a href="#p2p">P2P</a>
           <a href="#oracle">Oracle</a>
-          <a href="#collateral">Collatéral</a>
+          <a href="#collateral">Collateral</a>
           <a href="#specification">Specification</a>
           <a href="#resources">Transparency</a>
         </nav>
@@ -483,26 +592,33 @@
               ORUSD is a USD-denominated clearing register token. Its design prioritizes direct P2P circulation between EOA accounts, controlled minting and burning, traceable oracle requests, non-replayable external proofs and final settlement under manager authority.
             </p>
 
-            <div class="tags">
-              <span class="tag tag-accent">USD Clearing Token</span>
-              <span class="tag">6 decimals</span>
-              <span class="tag">EOA → EOA</span>
-              <span class="tag">0.15% transfer fee</span>
-              <span class="tag">0.501 ORUSD minimum</span>
-              <span class="tag">24h oracle validity</span>
-              <span class="tag">Sei production</span>
-            </div>
-
             <div class="actions">
-              <a class="btn btn-primary" href="#resources">View public files →</a>
-              <a class="btn" href="https://doi.org/10.5281/zenodo.22140272" target="_blank" rel="noopener noreferrer">Zenodo DOI</a>
-              <a class="btn" href="#specification">Technical specification</a>
-              <a class="btn" href="#oracle">Oracle architecture</a>
+              <a class="btn btn-primary"
+                 href="/osnias-clearing/orusd/ORUsd_Technical.pdf"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                Local Technical Documentation · PDF ↗
+              </a>
+
+              <a class="btn"
+                 href="https://doi.org/10.5281/zenodo.22140272"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                Zenodo DOI · Permanent Archive ↗
+              </a>
             </div>
           </div>
+        </div>
+      </section>
+    </div>
+  </header>
 
-          <aside class="panel">
-            <div class="panel-title">ORUSD — paramètres essentiels</div>
+  <main class="container">
+
+
+    <section class="essential-parameters" aria-label="ORUSD essential parameters">
+      <aside class="panel">
+            <div class="section-label">01 · ORUSD — Essential Parameters</div>
 
             <div class="stats">
               <div class="stat">
@@ -513,19 +629,19 @@
 
               <div class="stat">
                 <small>P2P fee</small>
-                <strong>0,15 %</strong>
+                <strong>0.15%</strong>
                 <span>Deducted from the transferred amount</span>
               </div>
 
               <div class="stat">
                 <small>Gross minimum</small>
-                <strong>0,501 ORUSD</strong>
+                <strong>0.501 ORUSD</strong>
                 <span>Ordinary P2P transfer</span>
               </div>
 
               <div class="stat">
                 <small>Oracle request</small>
-                <strong>24 heures</strong>
+                <strong>24 hours</strong>
                 <span>Execution window</span>
               </div>
 
@@ -548,15 +664,28 @@
               </div>
             </div>
           </aside>
-        </div>
-      </section>
-    </div>
-  </header>
+    </section>
 
-  <main class="container">
+
+    <section class="testnet-status" aria-label="ORUSD Ethereum Sepolia testnet status">
+      <div class="notice" style="margin-top:0; margin-bottom:3rem;">
+        <div class="section-label" style="margin-bottom:.7rem;">02 · ORUSD on Ethereum Sepolia Testnet</div>
+        ORUSD already has a public reference implementation on Ethereum Sepolia for development,
+        integration testing and pre-audit validation. Sepolia is the test environment used to exercise
+        the clearing-token logic before the intended production deployment on Sei EVM.
+        Testnet balances, proofs and administrative operations create no production entitlement on Sei.
+        <br /><br />
+        <a class="btn btn-primary"
+           href="https://sepolia.etherscan.io/"
+           target="_blank"
+           rel="noopener noreferrer">
+          View Ethereum Sepolia Explorer →
+        </a>
+      </div>
+    </section>
 
     <section id="role">
-      <div class="section-label">01 · Role technique</div>
+      <div class="section-label">03 · Technical Role</div>
       <h2>A clearing register, not a market token</h2>
 
       <p class="section-intro">
@@ -596,7 +725,7 @@
     </section>
 
     <section id="p2p">
-      <div class="section-label">02 · P2P circulation</div>
+      <div class="section-label">04 · P2P Circulation</div>
       <h2>Gross debited / net received model</h2>
 
       <p class="section-intro">
@@ -605,17 +734,17 @@
 
       <div class="flow">
         <div class="flow-box">
-          <strong>1 000,000000 ORUSD</strong>
+          <strong>1,000.000000 ORUSD</strong>
           <p>Gross amount requested by the sender.</p>
         </div>
 
         <div class="flow-box">
-          <strong>1,500000 ORUSD</strong>
+          <strong>1.500000 ORUSD</strong>
           <p>0.15% protocol fee credited to the feeRecipient.</p>
         </div>
 
         <div class="flow-box">
-          <strong>998,500000 ORUSD</strong>
+          <strong>998.500000 ORUSD</strong>
           <p>Net amount received by the beneficiary.</p>
         </div>
       </div>
@@ -640,8 +769,8 @@
           <h3>Disabled paths</h3>
           <ul class="list">
             <li>Ordinary transfer to a smart contract rejected.</li>
-            <li>approve() désactivé.</li>
-            <li>transferFrom() désactivé.</li>
+            <li>approve() disabled.</li>
+            <li>transferFrom() disabled.</li>
             <li>Minting to a smart contract is not part of the reference model.</li>
           </ul>
         </article>
@@ -649,7 +778,7 @@
     </section>
 
     <section id="oracle">
-      <div class="section-label">03 · Oracle & settlement</div>
+      <div class="section-label">05 · Oracle & Settlement</div>
       <h2>The oracle attests. The manager settles.</h2>
 
       <p class="section-intro">
@@ -695,7 +824,7 @@
     </section>
 
     <section id="collateral">
-      <div class="section-label">04 · Collateral & segregation</div>
+      <div class="section-label">06 · Collateral & Segregation</div>
       <h2>USDC as collateral, outside ORUSD custody</h2>
 
       <p class="section-intro">
@@ -729,8 +858,16 @@
     </section>
 
     <section id="specification">
-      <div class="section-label">05 · Technical specification</div>
-      <h2>Specification du token ORUSD</h2>
+      <div class="section-label">07 · Technical Specification</div>
+      <h2>ORUSD token specification</h2>
+      <div class="actions" style="margin-top:.8rem; margin-bottom:1.2rem;">
+        <a class="btn btn-primary"
+           href="/osnias-clearing/orusd/ORUsd_Technical.pdf"
+           target="_blank"
+           rel="noopener noreferrer">
+          Open ORUSD Technical Documentation · PDF ↗
+        </a>
+      </div>
 
       <table class="spec-table">
         <tr>
@@ -739,10 +876,10 @@
         </tr>
         <tr>
           <th>Solidity</th>
-          <td>^0.8.22 dans l’implémentation de référence.</td>
+          <td>^0.8.22 in the reference implementation.</td>
         </tr>
         <tr>
-          <th>Symbole</th>
+          <th>Symbol</th>
           <td>ORUSD.</td>
         </tr>
         <tr>
@@ -751,15 +888,15 @@
         </tr>
         <tr>
           <th>Minimum P2P transfer</th>
-          <td>0,501000 ORUSD brut.</td>
+          <td>0.501000 ORUSD gross.</td>
         </tr>
         <tr>
           <th>Protocol fee</th>
-          <td>15 points de base, soit 0,15 %, déduits du montant transféré.</td>
+          <td>15 points de base, soit 0.15%, déduits du montant transféré.</td>
         </tr>
         <tr>
           <th>Circulation</th>
-          <td>Direct transfer EOA → EOA, sous réserve des règles de destinataires et de montant.</td>
+          <td>Direct EOA → EOA transfer, subject to recipient and amount rules.</td>
         </tr>
         <tr>
           <th>approve / transferFrom</th>
@@ -797,7 +934,7 @@
     </section>
 
     <section id="security">
-      <div class="section-label">06 · Security</div>
+      <div class="section-label">08 · Security</div>
       <h2>Explicit trust boundaries</h2>
 
       <div class="grid-3">
@@ -840,7 +977,7 @@
     </section>
 
     <section id="resources">
-      <div class="section-label">07 · Transparency</div>
+      <div class="section-label">09 · Transparency</div>
       <h2>The code and documentation are public</h2>
 
       <p class="section-intro">
@@ -863,7 +1000,7 @@
           <div class="resource-type">DOI ↗</div>
         </a>
 
-        <a class="resource" href="/orusd/Orusd-testnet.sol">
+        <a class="resource" href="/osnias-clearing/orusd/Orusd-testnet.sol">
           <div>
             <strong>/orusd/Orusd-testnet.sol</strong>
             <span>Reference testnet Solidity contract</span>
@@ -871,7 +1008,7 @@
           <div class="resource-type">SOURCE ↗</div>
         </a>
 
-        <a class="resource" href="/orusd/ORUsd-testnet.abi">
+        <a class="resource" href="/osnias-clearing/orusd/ORUsd-testnet.abi">
           <div>
             <strong>/orusd/ORUsd-testnet.abi</strong>
             <span>Public ORUSD contract ABI</span>
@@ -879,7 +1016,7 @@
           <div class="resource-type">ABI ↗</div>
         </a>
 
-        <a class="resource" href="/orusd/ORUsd-testnet-flat.sol">
+        <a class="resource" href="/osnias-clearing/orusd/ORUsd-testnet-flat.sol">
           <div>
             <strong>/orusd/ORUsd-testnet-flat.sol</strong>
             <span>Flattened source published for technical review</span>
@@ -887,7 +1024,7 @@
           <div class="resource-type">FLAT ↗</div>
         </a>
 
-        <a class="resource" href="/orusd/ORUsd_Technical.pdf">
+        <a class="resource" href="/osnias-clearing/orusd/ORUsd_Technical.pdf">
           <div>
             <strong>/orusd/ORUsd_Technical.pdf</strong>
             <span>Technical white paper & audit reference</span>
