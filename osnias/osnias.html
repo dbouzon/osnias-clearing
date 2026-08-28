@@ -471,10 +471,140 @@
       .btn { width: 100%; }
       .resource { align-items: flex-start; flex-direction: column; }
     }
+  
+    /* Fixed site-wide navigation bar */
+    .site-nav-fixed {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(5,8,20,.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: .7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .site-nav-brand {
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-right: auto;
+    }
+
+    .site-nav-brand span {
+      color: var(--accent);
+    }
+
+    .site-nav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      justify-content: flex-end;
+    }
+
+    .site-nav-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: .48rem .74rem;
+      border: 1px solid rgba(255,255,255,.38);
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      font-size: .69rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav-buttons a:hover,
+    .site-nav-buttons a:focus-visible {
+      background: rgba(255,255,255,.13);
+      border-color: #fff;
+      text-decoration: none;
+    }
+
+    @media (max-width: 760px) {
+      .site-nav-inner {
+        padding: .65rem 1rem;
+      }
+
+      .site-nav-brand {
+        width: 100%;
+        margin-right: 0;
+      }
+
+      .site-nav-buttons {
+        justify-content: flex-start;
+      }
+    }
+
+  
+    /* Full-width essential parameters section */
+    .hero-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    .essential-parameters {
+      margin-bottom: 3rem;
+    }
+
+    .essential-parameters .panel {
+      width: 100%;
+    }
+
+    .essential-parameters .stats {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @media (max-width: 900px) {
+      .essential-parameters .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .essential-parameters .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 
 <body>
+
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+        OSNIAS <span>CLEARING</span>
+      </a>
+
+      <nav class="site-nav-buttons" aria-label="Main site navigation">
+        <a href="/osnias-clearing/history/history.html">History</a>
+        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
+        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
+        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
+        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
+        <a href="/osnias-clearing/osnias/OSNIAS_Technical.pdf" target="_blank" rel="noopener noreferrer">OSNIAS Technical Docs</a>
+        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
+        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
+      </nav>
+    </div>
+  </div>
+
   <header>
     <div class="container">
       <div class="topbar">
@@ -518,9 +648,17 @@
               <a class="btn" href="#governance">Governance rules</a>
             </div>
           </div>
+        </div>
+      </section>
+    </div>
+  </header>
 
-          <aside class="panel">
-            <div class="panel-title">OSNIAS — essential parameters</div>
+  <main class="container">
+
+
+    <section class="essential-parameters" aria-label="OSNIAS essential parameters">
+      <aside class="panel">
+            <div class="section-label">01 · OSNIAS — Essential Parameters</div>
 
             <div class="stats">
               <div class="stat">
@@ -566,15 +704,29 @@
               </div>
             </div>
           </aside>
-        </div>
-      </section>
-    </div>
-  </header>
+    </section>
 
-  <main class="container">
+
+    <section class="testnet-status" aria-label="OSNIAS Ethereum Sepolia testnet status">
+      <div class="notice" style="margin-top:0; margin-bottom:3rem;">
+        <div class="section-label" style="margin-bottom:.7rem;">02 · OSNIAS on Ethereum Sepolia Testnet</div>
+        OSNIAS already has a reference deployment on Ethereum Sepolia for development,
+        integration testing and pre-audit validation. This public test environment is used to
+        exercise the token implementation before the intended production deployment on Sei.
+        The Sepolia deployment uses a simplified administrative configuration suitable for testing;
+        production privileged roles are intended to move to the mainnet multisignature security model.
+        <br /><br />
+        <a class="btn btn-primary"
+           href="https://sepolia.etherscan.io/"
+           target="_blank"
+           rel="noopener noreferrer">
+          View Ethereum Sepolia Explorer →
+        </a>
+      </div>
+    </section>
 
     <section id="utility">
-      <div class="section-label">01 · Utility</div>
+      <div class="section-label">03 · Utility</div>
       <h2>What is OSNIAS used for?</h2>
 
       <p class="section-intro">
@@ -609,7 +761,7 @@
     </section>
 
     <section id="governance">
-      <div class="section-label">02 · Governance</div>
+      <div class="section-label">04 · Governance</div>
       <h2>A single canonical governance domain on Sei</h2>
 
       <p class="section-intro">
@@ -639,7 +791,7 @@
     </section>
 
     <section id="specification">
-      <div class="section-label">03 · Technical specification</div>
+      <div class="section-label">05 · Technical Specification</div>
       <h2>Design du token</h2>
 
       <p class="section-intro">
@@ -695,7 +847,7 @@
     </section>
 
     <section id="omnichain">
-      <div class="section-label">04 · Economic mobility</div>
+      <div class="section-label">06 · Economic Mobility</div>
       <h2>OSNIAS can circulate outside its governance chain</h2>
 
       <p class="section-intro">
@@ -724,7 +876,7 @@
     </section>
 
     <section id="security">
-      <div class="section-label">05 · Invariants</div>
+      <div class="section-label">07 · Invariants</div>
       <h2>What the contract must not allow to be bypassed</h2>
 
       <div class="grid-3">
@@ -772,7 +924,7 @@
     </section>
 
     <section id="resources">
-      <div class="section-label">06 · Transparency</div>
+      <div class="section-label">08 · Transparency</div>
       <h2>Technical files are public</h2>
 
       <p class="section-intro">
@@ -795,7 +947,7 @@
           <div class="resource-type">DOI ↗</div>
         </a>
 
-        <a class="resource" href="/osnias/OSNIAS-testnet.sol">
+        <a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet.sol">
           <div>
             <strong>/osnias/OSNIAS-testnet.sol</strong>
             <span>Reference testnet Solidity contract</span>
@@ -803,7 +955,7 @@
           <div class="resource-type">SOURCE ↗</div>
         </a>
 
-        <a class="resource" href="/osnias/OSNIAS-testnet.abi">
+        <a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet.abi">
           <div>
             <strong>/osnias/OSNIAS-testnet.abi</strong>
             <span>Public contract ABI</span>
@@ -811,7 +963,7 @@
           <div class="resource-type">ABI ↗</div>
         </a>
 
-        <a class="resource" href="/osnias/OSNIAS-testnet-flat.sol">
+        <a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet-flat.sol">
           <div>
             <strong>/osnias/OSNIAS-testnet-flat.sol</strong>
             <span>Flattened Solidity source for review and audit</span>
@@ -819,7 +971,7 @@
           <div class="resource-type">FLAT ↗</div>
         </a>
 
-        <a class="resource" href="/osnias/OSNIAS_Technical.pdf">
+        <a class="resource" href="/osnias-clearing/osnias/OSNIAS_Technical.pdf">
           <div>
             <strong>/osnias/OSNIAS_Technical.pdf</strong>
             <span>Technical white paper & audit reference (PDF)</span>
