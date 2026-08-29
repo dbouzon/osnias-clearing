@@ -12,569 +12,9 @@
   <meta property="og:description" content="Genesis Allocation · Vesting · Lending Partners · Strategic Reserve · Governance" />
   <meta property="og:type" content="website" />
 
-  <style>
-    :root {
-      --bg: #050814;
-      --panel: rgba(8, 12, 28, 0.94);
-      --panel-2: rgba(15, 24, 48, 0.78);
-      --accent: #3fd1ff;
-      --accent-soft: #1a9fd0;
-      --text: #f5f7ff;
-      --muted: #9aa3c2;
-      --border: #1b2338;
-      --ok: #64e6b2;
-      --max: 1120px;
-
-      --alloc-private: #3fd1ff;
-      --alloc-lending: #64e6b2;
-      --alloc-founder: #9d7cff;
-      --alloc-reserve: #f0b45b;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      line-height: 1.6;
-      background:
-        radial-gradient(circle at 82% 0%, rgba(63,209,255,.10), transparent 29rem),
-        radial-gradient(circle at 10% 5%, rgba(63,209,255,.05), transparent 23rem),
-        var(--bg);
-    }
-
-    a { color: var(--accent); text-decoration: none; }
-    a:hover, a:focus-visible { text-decoration: underline; }
-
-    .container {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    header {
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(135deg, rgba(5,8,20,.98), rgba(11,16,32,.96));
-    }
-
-    .topbar {
-      min-height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.2rem;
-    }
-
-    .brand {
-      font-size: .94rem;
-      font-weight: 760;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-
-    .brand span { color: var(--accent); }
-
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.25rem;
-      justify-content: flex-end;
-    }
-
-    nav a {
-      color: var(--muted);
-      font-size: .76rem;
-      text-transform: uppercase;
-      letter-spacing: .09em;
-    }
-
-    nav a:hover {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    .hero {
-      padding: 5rem 0 4.2rem;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3rem;
-      align-items: center;
-    }
-
-    .eyebrow {
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: .16em;
-      font-size: .76rem;
-      font-weight: 680;
-      margin-bottom: 1rem;
-    }
-
-    h1 {
-      font-size: clamp(3.8rem, 10vw, 6.8rem);
-      line-height: .92;
-      letter-spacing: .035em;
-      margin-bottom: 1rem;
-    }
-
-    .hero-role {
-      font-size: clamp(1.25rem, 3vw, 1.8rem);
-      font-weight: 650;
-      margin-bottom: 1rem;
-    }
-
-    .hero-lead {
-      max-width: 50rem;
-      color: var(--muted);
-      font-size: 1.04rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .55rem;
-      margin-top: 1.65rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 43px;
-      padding: .66rem 1.12rem;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(5,8,20,.72);
-      color: var(--text);
-      font-size: .77rem;
-      font-weight: 650;
-      text-transform: uppercase;
-      letter-spacing: .075em;
-    }
-
-    .btn:hover {
-      text-decoration: none;
-      border-color: var(--accent-soft);
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-soft), var(--accent));
-      border-color: var(--accent);
-      color: #03101a;
-    }
-
-    .panel, .card, .notice, .resource {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      border-radius: 1rem;
-    }
-
-    .panel { padding: 1.4rem; }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4,minmax(0,1fr));
-      gap: .8rem;
-    }
-
-    .stat {
-      border: 1px solid var(--border);
-      border-radius: .8rem;
-      background: var(--panel-2);
-      padding: .9rem;
-    }
-
-    .stat small {
-      display: block;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .075em;
-      font-size: .67rem;
-      margin-bottom: .22rem;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 1rem;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: .74rem;
-    }
-
-    main { padding: 3rem 0 4rem; }
-    section { margin-bottom: 4rem; }
-
-    .section-label {
-      color: var(--accent);
-      font-size: .73rem;
-      font-weight: 670;
-      text-transform: uppercase;
-      letter-spacing: .14em;
-      margin-bottom: .45rem;
-    }
-
-    h2 {
-      font-size: clamp(1.65rem,4vw,2.3rem);
-      line-height: 1.2;
-      margin-bottom: .8rem;
-    }
-
-    .section-intro {
-      color: var(--muted);
-      max-width: 58rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4,minmax(0,1fr));
-      gap: 1.1rem;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap: 1.2rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: 1.2rem;
-    }
-
-    .card { padding: 1.15rem; }
-
-    .card-kicker {
-      color: var(--muted);
-      font-size: .67rem;
-      text-transform: uppercase;
-      letter-spacing: .09em;
-      margin-bottom: .28rem;
-    }
-
-    .card h3 {
-      font-size: .98rem;
-      margin-bottom: .52rem;
-    }
-
-    .card p {
-      color: var(--muted);
-      font-size: .85rem;
-    }
-
-    .list {
-      list-style: none;
-      color: var(--muted);
-      font-size: .82rem;
-      margin-top: .75rem;
-    }
-
-    .list li { margin: .34rem 0; }
-
-    .list li::before {
-      content: "•";
-      color: var(--accent);
-      margin-right: .45rem;
-    }
-
-    .notice {
-      margin-top: 1.25rem;
-      padding: 1rem 1.1rem;
-      border-left: 3px solid var(--accent-soft);
-      color: var(--muted);
-      font-size: .84rem;
-    }
-
-    .notice strong { color: var(--text); }
-
-    .spec-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1.2rem;
-      overflow: hidden;
-      border-radius: .9rem;
-      background: var(--panel);
-    }
-
-    .spec-table th,
-    .spec-table td {
-      padding: .8rem .9rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-      font-size: .82rem;
-    }
-
-    .spec-table th {
-      color: var(--text);
-      font-weight: 650;
-    }
-
-    .spec-table td { color: var(--muted); }
-
-    .spec-table tr:last-child th,
-    .spec-table tr:last-child td { border-bottom: 0; }
-
-    .allocation-wrap {
-      display: grid;
-      grid-template-columns: minmax(300px, .9fr) minmax(0, 1.1fr);
-      gap: 2rem;
-      align-items: center;
-      margin-top: 1.5rem;
-    }
-
-    .donut-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-    }
-
-    .donut {
-      width: min(390px, 82vw);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      position: relative;
-      background:
-        conic-gradient(
-          var(--alloc-private) 0 10%,
-          var(--alloc-lending) 10% 30%,
-          var(--alloc-founder) 30% 60%,
-          var(--alloc-reserve) 60% 100%
-        );
-      box-shadow: 0 0 55px rgba(63,209,255,.08);
-    }
-
-    .donut::after {
-      content: "";
-      position: absolute;
-      inset: 24%;
-      border-radius: 50%;
-      background: #080c1c;
-      border: 1px solid var(--border);
-      box-shadow: inset 0 0 30px rgba(255,255,255,.02);
-    }
-
-    .donut-center {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      pointer-events: none;
-    }
-
-    .donut-center strong {
-      font-size: clamp(1.55rem, 4vw, 2.15rem);
-      line-height: 1;
-      margin-bottom: .35rem;
-    }
-
-    .donut-center span {
-      color: var(--muted);
-      font-size: .8rem;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
-
-    .legend {
-      display: grid;
-      gap: .75rem;
-    }
-
-    .legend-item {
-      display: grid;
-      grid-template-columns: 14px minmax(0,1fr) auto;
-      gap: .75rem;
-      align-items: center;
-      border: 1px solid var(--border);
-      border-radius: .8rem;
-      background: var(--panel-2);
-      padding: .85rem .95rem;
-    }
-
-    .legend-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-    }
-
-    .legend-text strong {
-      display: block;
-      font-size: .9rem;
-    }
-
-    .legend-text span {
-      color: var(--muted);
-      font-size: .75rem;
-    }
-
-    .legend-share {
-      text-align: right;
-    }
-
-    .legend-share strong {
-      display: block;
-      font-size: 1rem;
-    }
-
-    .legend-share span {
-      color: var(--muted);
-      font-size: .72rem;
-    }
-
-    .resources {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: .9rem;
-      margin-top: 1.3rem;
-    }
-
-    .resource {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 1rem;
-      align-items: center;
-    }
-
-    .resource:hover {
-      text-decoration: none;
-      border-color: var(--accent-soft);
-    }
-
-    .resource strong {
-      display: block;
-      color: var(--text);
-      font-size: .86rem;
-      margin-bottom: .12rem;
-    }
-
-    .resource span {
-      color: var(--muted);
-      font-size: .74rem;
-    }
-
-    .resource-type {
-      color: var(--accent);
-      white-space: nowrap;
-      font-size: .74rem;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 1.8rem 0 2.2rem;
-      color: var(--muted);
-      font-size: .77rem;
-    }
-
-    .footer-grid {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .site-nav-fixed {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: rgba(5,8,20,.97);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-    }
-
-    .site-nav-inner {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: .7rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .site-nav-brand {
-      color: #fff;
-      font-size: .82rem;
-      font-weight: 800;
-      letter-spacing: .09em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      margin-right: auto;
-    }
-
-    .site-nav-brand span { color: var(--accent); }
-
-    .site-nav-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .5rem;
-      justify-content: flex-end;
-    }
-
-    .site-nav-buttons a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 34px;
-      padding: .48rem .74rem;
-      border: 1px solid rgba(255,255,255,.38);
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      color: #fff;
-      font-size: .69rem;
-      font-weight: 700;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .site-nav-buttons a:hover,
-    .site-nav-buttons a:focus-visible {
-      background: rgba(255,255,255,.13);
-      border-color: #fff;
-      text-decoration: none;
-    }
-
-    @media (max-width: 900px) {
-      .grid-4, .grid-3, .grid-2, .allocation-wrap {
-        grid-template-columns: 1fr;
-      }
-      .stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
-      nav { display: none; }
-      .resources { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 760px) {
-      .site-nav-inner { padding: .65rem 1rem; }
-      .site-nav-brand { width: 100%; margin-right: 0; }
-      .site-nav-buttons { justify-content: flex-start; }
-    }
-
-    @media (max-width: 560px) {
-      .container { padding: 0 1rem; }
-      .hero { padding: 3.5rem 0 3rem; }
-      .stats { grid-template-columns: 1fr; }
-      .actions { flex-direction: column; }
-      .btn { width: 100%; }
-      .resource { align-items: flex-start; flex-direction: column; }
-      .legend-item { grid-template-columns: 12px minmax(0,1fr); }
-      .legend-share { grid-column: 2; text-align: left; }
-    }
-  </style>
+  
+<link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css"/>
+<script src="/osnias-clearing/assets/js/osnias-nav.js" defer></script>
 </head>
 
 <body>
@@ -585,7 +25,7 @@
         OSNIAS <span>CLEARING</span>
       </a>
 
-      <nav class="site-nav-buttons" aria-label="Main site navigation">
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation">
         <a href="/osnias-clearing/history/history.html">History</a>
         <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
         <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
@@ -594,27 +34,15 @@
         <a href="/osnias-clearing/tokenomics/tokenomics.html">Tokenomics</a>
         <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
         <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
+        <a href="/osnias-clearing/regulation/regulation.html">Regulation</a>
       </nav>
     </div>
   </div>
 
   <header>
     <div class="container">
-      <div class="topbar">
-        <div class="brand">OSNIAS <span>Tokenomics</span></div>
-
-        <nav aria-label="Tokenomics navigation">
-          <a href="#parameters">Parameters</a>
-          <a href="#allocation">Allocation</a>
-          <a href="#vesting">Vesting</a>
-          <a href="#partners">Partners</a>
-          <a href="#reserve">Reserve</a>
-          <a href="#governance">Governance</a>
-        </nav>
-      </div>
-
-      <section class="hero">
-        <div class="hero-grid">
+<section class="hero">
+        <div class="hero-grid single">
           <div>
             <div class="eyebrow">Genesis Allocation · Vesting · Strategic Reserve</div>
 
@@ -687,65 +115,30 @@
         lending protocol partners, the founder and a Strategic Reserve controlled by governance.
       </p>
 
-      <div class="allocation-wrap">
-        <div class="donut-wrap">
-          <div class="donut" role="img" aria-label="OSNIAS allocation: 10 percent Private Investors, 20 percent Lending Partners, 30 percent Founder, 40 percent Strategic Reserve">
-            <div class="donut-center">
-              <strong>100M</strong>
-              <span>OSNIAS</span>
-            </div>
-          </div>
-        </div>
+      <div class="grid-4">
+        <article class="card">
+          <div class="card-kicker">Private Investors</div>
+          <h3>10%</h3>
+          <p><strong>10,000,000 OSNIAS</strong><br/>Subject to vesting.</p>
+        </article>
 
-        <div class="legend">
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--alloc-private)"></div>
-            <div class="legend-text">
-              <strong>Private Investors</strong>
-              <span>Subject to vesting</span>
-            </div>
-            <div class="legend-share">
-              <strong>10%</strong>
-              <span>10,000,000</span>
-            </div>
-          </div>
+        <article class="card">
+          <div class="card-kicker">Lending Partners</div>
+          <h3>20%</h3>
+          <p><strong>20,000,000 OSNIAS</strong><br/>Up to 20 initial protocol partners.</p>
+        </article>
 
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--alloc-lending)"></div>
-            <div class="legend-text">
-              <strong>Lending Partners</strong>
-              <span>Up to 20 initial protocol partners</span>
-            </div>
-            <div class="legend-share">
-              <strong>20%</strong>
-              <span>20,000,000</span>
-            </div>
-          </div>
+        <article class="card">
+          <div class="card-kicker">Founder</div>
+          <h3>30%</h3>
+          <p><strong>30,000,000 OSNIAS</strong><br/>Long-term vesting alignment.</p>
+        </article>
 
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--alloc-founder)"></div>
-            <div class="legend-text">
-              <strong>Founder</strong>
-              <span>Long-term vesting alignment</span>
-            </div>
-            <div class="legend-share">
-              <strong>30%</strong>
-              <span>30,000,000</span>
-            </div>
-          </div>
-
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--alloc-reserve)"></div>
-            <div class="legend-text">
-              <strong>Strategic Reserve</strong>
-              <span>Governance-gated allocation</span>
-            </div>
-            <div class="legend-share">
-              <strong>40%</strong>
-              <span>40,000,000</span>
-            </div>
-          </div>
-        </div>
+        <article class="card">
+          <div class="card-kicker">Strategic Reserve</div>
+          <h3>40%</h3>
+          <p><strong>40,000,000 OSNIAS</strong><br/>Governance-gated allocation or burn.</p>
+        </article>
       </div>
 
       <table class="spec-table">
@@ -832,7 +225,7 @@
         </tr>
       </table>
 
-      <div class="grid-2" style="margin-top:1.3rem;">
+      <div class="grid-2">
         <article class="card">
           <div class="card-kicker">Private Investors</div>
           <h3>12-month cliff + 36-month release</h3>
