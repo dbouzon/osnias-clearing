@@ -4,11 +4,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>OSNIAS — Governance Token</title>
-<meta content="Official presentation of the OSNIAS governance token: utility, design, canonical governance on Sei, fixed supply, omnichain EVM mobility, technical specification and public technical resources." name="description"/>
+<title>Osnias Clearing — 91-Day Clearing &amp; Jubilee Cycle</title>
+<meta content="How the Osnias Clearing 91-day cycle works: continuous clearing, public blockchain register, dated statement, review window, final net settlement and the broader Jubilee-cycle framework." name="description"/>
 <meta content="#050814" name="theme-color"/>
-<meta content="OSNIAS — Governance Token" property="og:title"/>
-<meta content="Governance token · Fixed genesis supply · Sei canonical governance · Omnichain EVM mobility · Public technical resources." property="og:description"/>
+<meta content="Osnias Clearing — 91-Day Clearing &amp; Jubilee Cycle" property="og:title"/>
+<meta content="Clearing over time: immediate recording and compensation, final net settlement at the end of a 91-day cycle." property="og:description"/>
 <meta content="website" property="og:type"/>
 
 <link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css"/>
@@ -28,323 +28,528 @@
 <section class="hero">
 <div class="hero-grid single">
 <div>
-<div class="eyebrow">Governance token · Public technical reference</div>
-<h1>OSNIAS</h1>
-<div class="hero-role">The governance token of the OSNIAS ecosystem</div>
+<div class="eyebrow">Clearing over time · 91-day operating cycle</div>
+<h1>91-Day Clearing &amp; Jubilee Cycle</h1>
 <p class="hero-lead">
-              OSNIAS is designed to carry governance rights, long-term economic alignment and the strategic reserve associated with the token. Its design prioritizes a fixed supply, simple ownership rights, canonical governance on Sei and omnichain economic mobility across compatible EVM networks.
-            </p>
+              Osnias Clearing operates on a 91-day clearing cycle structured in three phases:
+              a 3-day Burn Triduum, an 85-day issuance and P2P circulation window, and a 3-day Compensation Triduum.
+              Four identical cycles form a 364-day annual Jubilee calendar.
+            </p><figure class="hero-illustration"><img alt="Four-season 91-day clearing cycle: 13 weeks per season, 4 seasons per 364-day year" decoding="async" height="533" loading="eager" src="/osnias-clearing/cycle/cycle.jpg" width="533"/><figcaption>Four seasons · 13 weeks per season · 91 days per clearing cycle</figcaption></figure><aside class="panel essential-parameters">
+<div class="panel-title">Cycle at a glance</div>
+<div class="stats">
+<div class="stat">
+<small>Operating cycle</small>
+<strong>91 days</strong>
+<span>Time allowed for compensation</span>
+</div>
+<div class="stat">
+<small>Movement recording</small>
+<strong>Immediate</strong>
+<span>Blockchain register</span>
+</div>
+<div class="stat">
+<small>Burn Triduum</small>
+<strong>Days 1–3</strong>
+<span>Burn open · Mint &amp; P2P closed</span>
+</div>
+<div class="stat">
+<small>Issuance window</small>
+<strong>Days 4–88</strong>
+<span>Mint open · P2P active</span>
+</div>
+<div class="stat">
+<small>Compensation Triduum</small>
+<strong>Days 89–91</strong>
+<span>Mint, Burn &amp; P2P closed</span>
+</div>
+<div class="stat">
+<small>Annual framework</small>
+<strong>364 days</strong>
+<span>4 × 91-day cycles · 52 weeks</span>
+</div>
+</div>
+</aside>
+<div class="tags">
+<span class="tag tag-accent">91-day clearing cycle</span>
+<span class="tag">Immediate recording</span>
+<span class="tag">Progressive compensation</span>
+<span class="tag">Final net settlement</span>
+<span class="tag">7-year Clearing Epoch</span>
+<span class="tag">Week 53 Jubilee Reset</span>
+</div>
 <div class="actions">
-<a class="btn btn-primary" href="/osnias-clearing/osnias/OSNIAS_Technical.pdf" rel="noopener noreferrer" target="_blank">
-                Local Technical Documentation · PDF ↗
-              </a>
-<a class="btn" href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank">
-                Zenodo DOI · Permanent Archive ↗
-              </a>
+<a class="btn btn-primary" href="#timeline">See the cycle →</a>
+<a class="btn" href="/osnias-clearing/cycle/onias-clearing-calendrier.pdf">Official Calendar PDF</a>
+<a class="btn" href="/osnias-clearing/index.html">Back to Osnias Clearing</a>
 </div>
 </div>
+
 </div>
 </section>
 </div>
 </header>
 <main class="container">
-<section aria-label="OSNIAS essential parameters" class="essential-parameters">
-<aside class="panel">
-<div class="section-label">01 · OSNIAS — Essential Parameters</div>
-<div class="stats">
-<div class="stat">
-<small>Initial supply</small>
-<strong>100,000,000</strong>
-<span>Created at genesis</span>
-</div>
-<div class="stat">
-<small>Decimals</small>
-<strong>6</strong>
-<span>Explicit precision</span>
-</div>
-<div class="stat">
-<small>Governance</small>
-<strong>Sei</strong>
-<span>Canonical voting state</span>
-</div>
-<div class="stat">
-<small>Interoperability</small>
-<strong>OFT</strong>
-<span>Omnichain EVM mobility</span>
-</div>
-<div class="stat">
-<small>Vote</small>
-<strong>ERC20Votes</strong>
-<span>Delegation &amp; checkpoints</span>
-</div>
-<div class="stat">
-<small>Burn</small>
-<strong>Self-burn</strong>
-<span>The holder burns their own tokens</span>
-</div>
-<div class="stat">
-<small>Permanent archive</small>
-<strong>Zenodo DOI</strong>
-<span>10.5281/zenodo.22139986</span>
-</div>
-</div>
-</aside>
-</section>
-<section aria-label="OSNIAS Ethereum Sepolia testnet status" class="testnet-status">
-<div class="notice">
-<div class="section-label">02 · OSNIAS on Ethereum Sepolia Testnet</div>
-        OSNIAS already has a reference deployment on Ethereum Sepolia for development,
-        integration testing and pre-audit validation. This public test environment is used to
-        exercise the token implementation before the intended production deployment on Sei.
-        The Sepolia deployment uses a simplified administrative configuration suitable for testing;
-        production privileged roles are intended to move to the mainnet multisignature security model.
-        <br/><br/>
-<a class="btn btn-primary" href="https://sepolia.etherscan.io/" rel="noopener noreferrer" target="_blank">
-          View Ethereum Sepolia Explorer →
-        </a>
-</div>
-</section>
-<section id="utility">
-<div class="section-label">03 · Utility</div>
-<h2>What is OSNIAS used for?</h2>
+<section id="principle">
+<div class="section-label">01 · Core principle</div>
+<h2>Separate transaction time from settlement time</h2>
 <p class="section-intro">
-        OSNIAS is primarily a governance token. Its function is to represent economic and decision-making power within OSNIAS governance, while remaining a transferable and technically composable EVM asset.
+        Modern digital networks can record a transfer in seconds. Economic activity, however, unfolds over longer periods:
+        firms sell goods, receive invoices, collect payments, restock and generate new reciprocal claims.
+        Osnias Clearing therefore treats time as part of the clearing mechanism rather than as a technical inconvenience.
       </p>
 <div class="grid-3">
 <article class="card">
-<div class="card-kicker">Governance</div>
-<h3>Governance rights</h3>
-<p>
-            Eligible OSNIAS held on the canonical Sei chain can contribute to voting power according to the applicable governance rules.
-          </p>
+<div class="card-kicker">Exchange</div>
+<h3>Immediate movement</h3>
+<p>Participants can exchange and record clearing movements without waiting for the end of the cycle.</p>
 </article>
 <article class="card">
-<div class="card-kicker">Strategic alignment</div>
-<h3>Long-term alignment</h3>
-<p>
-            The token aligns holders, governance and strategic management without turning every operational decision into an on-chain vote.
-          </p>
+<div class="card-kicker">Compensation</div>
+<h3>Positions circulate</h3>
+<p>During the 91-day window, incoming and outgoing positions can offset each other naturally through economic activity.</p>
 </article>
 <article class="card">
-<div class="card-kicker">Strategic reserve</div>
-<h3>Strategic reserve</h3>
-<p>
-            The technical specification provides for a strategic-reserve role, with major uses potentially subject to reserved governance matters.
-          </p>
+<div class="card-kicker">Settlement</div>
+<h3>Only the residual is final</h3>
+<p>The purpose of the cycle is to settle the remaining net position after compensation, rather than repeatedly settling every gross movement.</p>
 </article>
 </div>
-</section>
-<section id="governance">
-<div class="section-label">04 · Governance</div>
-<h2>A single canonical governance domain on Sei</h2>
-<p class="section-intro">
-        The rule is simple: OSNIAS economic mobility may be multichain, but governance power remains localized on Sei. This architecture is designed to preserve an observable and deterministic electorate without reconstructing votes across multiple networks.
-      </p>
-<div class="governance-rule">
-<div class="rule-box canonical">
-<strong>OSNIAS on Sei</strong>
-<p>Economic value + governance eligibility, subject to the applicable voting and delegation rules.</p>
+<div class="notice text-center">
+<strong>Immediate exchange</strong> + time for reciprocal compensation → <strong>final net settlement</strong>
 </div>
-<div class="rule-center">
-          Single canonical<br/>governance state
-        </div>
-<div class="rule-box">
-<strong>OSNIAS outside Sei</strong>
-<p>Economic value only. Positions held on other networks do not generate OSNIAS voting power.</p>
-</div>
-</div>
-<div class="notice">
-<strong>Governance Locality Invariant.</strong>
-        A token must not be able to exercise voting power simultaneously on Sei and on another blockchain. Governance does not aggregate remote votes, external staking positions or custodied representations outside Sei.
-      </div>
 </section>
-<section id="specification">
-<div class="section-label">05 · Technical Specification</div>
-<h2>Design du token</h2>
+<section id="economic-principle">
+<div class="section-label">02 · Economic principle</div>
+<h2>Value comes from circulation, not from the clearing token</h2>
 <p class="section-intro">
-        OSNIAS favors a relatively simple, readable and auditable contract. Native functions serve token ownership, governance and omnichain mobility; external financial uses remain the responsibility of third-party protocols.
-      </p>
-<table class="spec-table">
-<tr>
-<th>Name</th>
-<td>OSNIAS</td>
-</tr>
-<tr>
-<th>Nature</th>
-<td>ERC-20 governance and strategic-reserve token.</td>
-</tr>
-<tr>
-<th>Genesis supply</th>
-<td>100,000,000 OSNIAS.</td>
-</tr>
-<tr>
-<th>Decimals</th>
-<td>6 decimals.</td>
-</tr>
-<tr>
-<th>Token creation</th>
-<td>No arbitrary post-genesis token creation should be possible beyond the technical mechanisms required by the OFT design.</td>
-</tr>
-<tr>
-<th>Burn</th>
-<td>Voluntary self-burn of the holder’s own tokens; no confiscation or administrative burn of third-party balances.</td>
-</tr>
-<tr>
-<th>Vote</th>
-<td>ERC20Votes with delegation and checkpoints; governance power recognized on the canonical Sei state.</td>
-</tr>
-<tr>
-<th>Permit</th>
-<td>ERC-2612 Permit for compatible signed approvals.</td>
-</tr>
-<tr>
-<th>Omnichain</th>
-<td>LayerZero V2 OFT for economic mobility across supported EVM networks.</td>
-</tr>
-<tr>
-<th>Management</th>
-<td>Constrained operational management: hard invariants are non-negotiable; reserved matters require the applicable governance vote.</td>
-</tr>
-<tr>
-<th>Mainnet architecture</th>
-<td>Privileged administration intended to be protected by multisig, cold/emergency keys and an external registry.</td>
-</tr>
-</table>
-</section>
-<section id="omnichain">
-<div class="section-label">06 · Economic Mobility</div>
-<h2>OSNIAS can circulate outside its governance chain</h2>
-<p class="section-intro">
-        The OFT design allows OSNIAS to be used as an economic asset on compatible EVM networks without duplicating governance power. This separation between economic mobility and governance authority is a core characteristic of the token.
+        ORUSD and OEURO are designed as clearing instruments, not as assets whose economic purpose depends on scarcity,
+        speculative appreciation or passive holding. Their function is to circulate between participants during the active
+        clearing window so that reciprocal commitments can progressively offset before final settlement.
       </p>
 <div class="grid-3">
 <article class="card">
-<div class="card-kicker">Self-custody</div>
-<h3>Transfer &amp; custody</h3>
-<p>OSNIAS can be transferred and held in wallets or custody solutions compatible with supported networks.</p>
+<div class="card-kicker">Clearing instrument</div>
+<h3>The token is a support for exchange</h3>
+<p>
+            The clearing token represents a transferable clearing position inside the cycle. Its economic role is functional:
+            it carries value between participants and records the movement in the clearing register.
+          </p>
 </article>
 <article class="card">
-<div class="card-kicker">External composability</div>
-<h3>Third-party integrations</h3>
-<p>Third-party protocols may technically use OSNIAS for staking, farming, lending, escrow, liquidity, collateral or other compatible EVM use cases.</p>
+<div class="card-kicker">Circulation</div>
+<h3>Exchange creates clearing value</h3>
+<p>
+            A position that circulates can meet reciprocal obligations, return through other transactions and reduce what must
+            ultimately be settled. The usefulness of the system therefore comes from exchange velocity and netting capacity.
+          </p>
 </article>
 <article class="card">
-<div class="card-kicker">No protocol promise</div>
-<h3>No market guarantee</h3>
-<p>Technical compatibility does not constitute a promise of yield, liquidity, listing, market depth or price appreciation.</p>
+<div class="card-kicker">Final settlement</div>
+<h3>Only the residual remains</h3>
+<p>
+            The objective is not to settle every gross movement independently, but to allow economic activity to reduce the
+            residual balance that remains at the end of the cycle.
+          </p>
 </article>
 </div>
+<div class="notice">
+<strong>Osnias Clearing doctrine.</strong>
+        Value is created by exchange and reciprocal compensation, not by the clearing token itself.
+        A clearing token is useful because it circulates.
+      </div>
 </section>
-<section id="security">
-<div class="section-label">07 · Invariants</div>
-<h2>What the contract must not allow to be bypassed</h2>
+<section id="timeline">
+<div class="section-label">03 · The 91-day cycle</div>
+<h2>From reference deposit to final compensation</h2>
+<p class="section-intro">
+        The 91-day cycle is not a single settlement event. It is a sequence of operating windows designed to let positions
+        circulate, establish a stable reference base, close the register, validate partner escrow states and finally perform
+        compensation.
+      </p>
 <div class="grid-3">
 <article class="card">
-<div class="card-kicker">Supply integrity</div>
-<h3>Protected supply</h3>
-<p>No management authority may arbitrarily create tokens beyond the intended model.</p>
+<div class="card-kicker">Days 1–3</div>
+<strong>Burn &amp; collateral release window</strong>
+<p>
+            Users may request the burn of clearing tokens in order to release collateral from the relevant escrow.
+            Mint and P2P circulation remain closed during this opening window.
+          </p>
 </article>
 <article class="card">
-<div class="card-kicker">Holder rights</div>
-<h3>Holder ownership</h3>
-<p>No arbitrary seizure or burn of balances held by third parties.</p>
+<div class="card-kicker">Day 4</div>
+<strong>Reference Deposit snapshot</strong>
+<p>
+            After possible burns have been executed, the collateral balance remaining in each user escrow is recorded.
+            This Day-4 snapshot becomes the Reference Deposit for the next burn window.
+          </p>
 </article>
 <article class="card">
-<div class="card-kicker">Governance locality</div>
-<h3>Voting only on Sei</h3>
-<p>Governance power remains attached to the eligible canonical representation on Sei.</p>
+<div class="card-kicker">Days 4–88</div>
+<strong>Escrow, Mint &amp; P2P active</strong>
+<p>
+            Collateral funding and mint operations are open and clearing tokens may circulate P2P.
+            Positions minted early in the cycle have time to participate meaningfully in reciprocal exchange and clearing.
+          </p>
 </article>
 <article class="card">
-<div class="card-kicker">OFT conservation</div>
-<h3>Omnichain accounting</h3>
-<p>Cross-chain movements must preserve the intended global supply accounting.</p>
+<div class="card-kicker">Day 89 · 00:00:00 GMT</div>
+<strong>Registry snapshot</strong>
+<p>
+            The register is photographed at cycle close. For each user, the system computes the balance from the complete set
+            of cycle transactions and prepares a proposed collateral funding or withdrawal instruction for the relevant
+            lending/escrow protocol.
+          </p>
 </article>
 <article class="card">
-<div class="card-kicker">Reserved matters</div>
-<h3>Management limits</h3>
-<p>Decisions classified as reserved matters must follow the applicable governance procedure.</p>
+<div class="card-kicker">Day 90</div>
+<strong>Escrow / lending validation</strong>
+<p>
+            Partner protocols validate the proposed funding and withdrawal instructions and reconcile their escrow states with
+            the clearing register before final compensation.
+          </p>
 </article>
 <article class="card">
-<div class="card-kicker">Operational security</div>
-<h3>Mainnet multisig</h3>
-<p>The production model is intended to replace sensitive single-key authorities with a multisignature architecture and separate recovery mechanisms.</p>
+<div class="card-kicker">Day 91</div>
+<strong>Final compensation</strong>
+<p>
+            Netting is performed first within each lending protocol, then between participating lending protocols.
+            Escrow balances, clearing positions and the quantity of clearing tokens in circulation are aligned and verified.
+          </p>
 </article>
 </div>
 <div class="notice">
-<strong>Design principle.</strong>
-        Governance should constrain management without replacing day-to-day management: smart contracts protect non-negotiable invariants; governance decides reserved strategic matters; the Token Manager retains execution discretion within approved limits.
+<strong>Clearing requires reconciliation time.</strong>
+        Even when calculations are automated, the closing process must align the clearing register, partner lending/escrow
+        positions and the clearing-token supply. The Day-89 to Day-91 window exists precisely to provide the operational time
+        required for that reconciliation.
       </div>
 </section>
-<section id="resources">
-<div class="section-label">08 · Transparency</div>
-<h2>Technical files are public</h2>
+<section id="reference-deposit">
+<div class="section-label">04 · Reference Deposit &amp; withdrawal discipline</div>
+<h2>Withdrawal capacity follows demonstrated participation in the cycle</h2>
 <p class="section-intro">
-        This page is not intended to ask visitors to rely on a commercial presentation. The contract, ABI, flattened source and technical reference document can be reviewed directly in the public <strong>/osnias/</strong> directory.
+        The Reference Deposit is not measured at the end of the cycle. It is fixed on Day 4, immediately after the Day-1 to
+        Day-3 burn window. This prevents a participant from depositing collateral late in the cycle, minting near Day 87 and
+        using that last-minute position to create an artificially large withdrawal capacity at the beginning of the next cycle.
       </p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Reference base</div>
+<h3>Day-4 escrow snapshot</h3>
+<p>
+            The collateral remaining in the user escrow on Day 4 becomes the Reference Deposit used for the following
+            burn/release window.
+          </p>
+</article>
+<article class="card">
+<div class="card-kicker">Burn protection</div>
+<h3>Maximum 3× Reference Deposit</h3>
+<p>
+            During Days 1–3 of the following cycle, collateral-release requests are capped at three times the Reference Deposit
+            established at Day 4 of the preceding cycle.
+          </p>
+</article>
+<article class="card">
+<div class="card-kicker">Late-cycle minting</div>
+<h3>No instant withdrawal advantage</h3>
+<p>
+            Collateral added later in the cycle may support valid minting, but it does not retroactively increase the reference
+            base for the immediately following burn window.
+          </p>
+</article>
+</div>
 <div class="notice">
-<strong>Permanent technical archive — Zenodo.</strong>
-        The published OSNIAS technical package is permanently archived under DOI
-        <a href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank"><strong>10.5281/zenodo.22139986</strong></a>.
-        This archive contains the Solidity source code, ABI, flattened source and technical reference document.
+<strong>Why Day 4 matters.</strong>
+        Tokens minted from collateral present at Day 4 can circulate through almost the entire active window.
+        A token minted near Day 87 is technically valid, but has little time to contribute to exchange or reciprocal clearing
+        before the Day-89 snapshot. Withdrawal capacity therefore follows sustained clearing participation rather than
+        last-minute minting.
       </div>
-<div class="resources">
-<a class="resource" href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank">
-<div>
-<strong>Zenodo — OSNIAS Token Technical Archive</strong>
-<span>Permanent archive · DOI 10.5281/zenodo.22139986</span>
-</div>
-<div class="resource-type">DOI ↗</div>
-</a>
-<a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet.sol">
-<div>
-<strong>/osnias/OSNIAS-testnet.sol</strong>
-<span>Reference testnet Solidity contract</span>
-</div>
-<div class="resource-type">SOURCE ↗</div>
-</a>
-<a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet.abi">
-<div>
-<strong>/osnias/OSNIAS-testnet.abi</strong>
-<span>Public contract ABI</span>
-</div>
-<div class="resource-type">ABI ↗</div>
-</a>
-<a class="resource" href="/osnias-clearing/osnias/OSNIAS-testnet-flat.sol">
-<div>
-<strong>/osnias/OSNIAS-testnet-flat.sol</strong>
-<span>Flattened Solidity source for review and audit</span>
-</div>
-<div class="resource-type">FLAT ↗</div>
-</a>
-<a class="resource" href="/osnias-clearing/osnias/OSNIAS_Technical.pdf">
-<div>
-<strong>/osnias/OSNIAS_Technical.pdf</strong>
-<span>Technical white paper &amp; audit reference (PDF)</span>
-</div>
-<div class="resource-type">PDF ↗</div>
-</a>
+</section>
+<section id="blockchain">
+<div class="section-label">05 · Role of blockchain</div>
+<h2>A public register, not a reason to accelerate economic time</h2>
+<p class="section-intro">
+        Blockchain provides an immutable and auditable register of movements.
+        Its technical speed does not force the economic cycle to settle immediately.
+        Osnias Clearing uses blockchain to make the state observable while preserving a longer clearing horizon.
+      </p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Transparency</div>
+<h3>Public register</h3>
+<p>Clearing movements and relevant state transitions can be independently observed and audited.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Execution</div>
+<h3>Immediate recording</h3>
+<p>The technology can record movements immediately even though final settlement remains deferred until cycle close.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Finality</div>
+<h3>Deferred net settlement</h3>
+<p>Blockchain finality for an individual movement is distinct from the economic finality of the entire clearing cycle.</p>
+</article>
 </div>
 <div class="notice">
-<strong>Transparency technique.</strong>
-        The testnet files document the current reference implementation. The production configuration — addresses, multisig, privileged roles, endpoints and OFT peers — should be published separately at mainnet deployment.
+<strong>Architecture principle.</strong>
+        Technical immediacy and economic finality are different concepts.
+        Osnias Clearing deliberately preserves that distinction.
+      </div>
+</section>
+<section id="settlement">
+<div class="section-label">06 · Final net position</div>
+<h2>Settle the balance, not the entire history</h2>
+<p class="section-intro">
+        The cycle does not erase transaction history. Gross movements remain recorded while reciprocal positions can offset during the active circulation window.
+        During Days 89–91, Mint, Burn and P2P are suspended so that register alignment, multilateral netting and final cycle closure can occur.
+        Compensation is performed first within each participating lending protocol, then between lending protocols, before the final escrow and clearing-token states are confirmed.
+      </p>
+<div class="grid-2">
+<article class="card">
+<h3>During the cycle</h3>
+<ul class="list">
+<li>Movements are recorded.</li>
+<li>Positions evolve continuously.</li>
+<li>Incoming and outgoing commitments can compensate each other.</li>
+<li>Participants remain economically active.</li>
+</ul>
+</article>
+<article class="card">
+<h3>At cycle close</h3>
+<ul class="list">
+<li>A dated position has been communicated.</li>
+<li>The review period has elapsed.</li>
+<li>The residual net position is established.</li>
+<li>Final settlement is executed according to the applicable settlement rules.</li>
+</ul>
+</article>
+</div>
+</section>
+<section id="oracle">
+<div class="section-label">07 · Oracle coordination</div>
+<h2>Automated instructions, controlled execution</h2>
+<p class="section-intro">
+        The dedicated Mint/Burn oracle coordinates the operational flow between the clearing register and the relevant
+        lending/escrow protocols. Its role is to submit and transmit the required mint, burn, funding and withdrawal
+        instructions according to the rules of the cycle.
+      </p>
+<div class="grid-2">
+<article class="card">
+<h3>During the active window</h3>
+<ul class="list">
+<li>Receive or attest escrow funding information.</li>
+<li>Submit eligible mint requests.</li>
+<li>Track the relationship between escrow state and circulating clearing tokens.</li>
+</ul>
+</article>
+<article class="card">
+<h3>During cycle close</h3>
+<ul class="list">
+<li>Support Day-89 balance computation and proposed instructions.</li>
+<li>Transmit data required for Day-90 lending/escrow validation.</li>
+<li>Support the Day-91 reconciliation and final compensation workflow.</li>
+</ul>
+</article>
+</div>
+<div class="notice">
+<strong>Human time remains part of the architecture.</strong>
+        Automation accelerates calculation and transmission, but does not eliminate the need for operational validation,
+        reconciliation and exception handling before final settlement.
+      </div>
+</section>
+<section id="jubilee">
+<div class="section-label">08 · Jubilee Epoch</div>
+<h2>Seven years of clearing, then a terminal Jubilee Week</h2>
+<p class="section-intro">
+        Osnias Clearing groups its operating years into seven-year Clearing Epochs. Each normal year contains four
+        91-day clearing cycles, or 364 days in total. At the end of the seventh year, a 53rd week is inserted as a
+        Jubilee Week dedicated to terminal reconciliation, extinction of the expiring clearing token and release of
+        all associated escrows.
+      </p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Operating unit</div>
+<h3>91-day clearing cycle</h3>
+<p>
+            Four cycles form one 364-day operating year. During each cycle, positions circulate, offset and are
+            finally reconciled through the Day-89 to Day-91 closing process.
+          </p>
+</article>
+<article class="card">
+<div class="card-kicker">Long cycle</div>
+<h3>7-year Clearing Epoch</h3>
+<p>
+            The same clearing token and its associated registry belong to one seven-year epoch. The epoch gives a
+            defined lifetime to the clearing instrument rather than allowing positions to continue indefinitely.
+          </p>
+</article>
+<article class="card">
+<div class="card-kicker">Terminal week</div>
+<h3>Week 53 — Jubilee Week</h3>
+<p>
+            The additional week is not another clearing cycle. It is the terminal settlement week of the seven-year
+            epoch: ordinary circulation stops, remaining positions are reconciled, escrows are released and the
+            expiring token is permanently retired.
+          </p>
+</article>
+</div>
+<div class="notice text-center">
+<strong>91 days</strong> → 4 cycles = <strong>364-day year</strong> → 7 years = <strong>Clearing Epoch</strong> → <strong>Week 53 Jubilee Reset</strong>
+</div>
+<div class="notice">
+<strong>Jubilee Reset Principle.</strong>
+        At the end of Jubilee Week, every clearing token belonging to the expiring epoch is burned or made
+        permanently invalid, all associated escrows are released, and the closing register becomes final.
+        No clearing-token balance is automatically migrated into the following epoch.
+      </div>
+</section>
+<section id="jubilee-week">
+<div class="section-label">09 · Week 53 — terminal settlement</div>
+<h2>Close the old epoch before opening the new one</h2>
+<p class="section-intro">
+        During Jubilee Week, ordinary economic circulation of the expiring clearing token is closed. Only the
+        operations required for terminal settlement, burn, reconciliation and escrow release remain available.
+        This prevents the terminal snapshot from continuing to move while the system is being closed.
+      </p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Jubilee Days 1–3</div>
+<strong>Terminal burn &amp; release</strong>
+<p>
+            Users may complete terminal burn/restitution operations. Associated collateral escrows are progressively
+            released while the final registry is reconciled.
+          </p>
+</article>
+<article class="card">
+<div class="card-kicker">Jubilee Days 4–5</div>
+<strong>Residual reconciliation</strong>
+<p>
+            Remaining positions, operational exceptions and escrow states are aligned. Ordinary P2P circulation and
+            new minting remain closed.
+          </p>
+</article>
+<article class="card">
+<div class="card-kicker">Jubilee Day 6</div>
+<strong>Token extinction</strong>
+<p>
+            Any remaining units of the expiring clearing token are terminally retired or made permanently invalid
+            through the dedicated Jubilee close mechanism.
+          </p>
+</article>
+<article class="card">
+<div class="card-kicker">Jubilee Day 7</div>
+<strong>Epoch closed</strong>
+<p>
+            All escrows of the old epoch are released, the registry becomes final and immutable, and the old clearing
+            token has no further circulation role.
+          </p>
+</article>
+</div>
+<div class="notice">
+<strong>No automatic rollover.</strong>
+        The Jubilee is a real economic and technical closure. The old token is not wrapped, bridged or automatically
+        converted into the new token. Historical records remain auditable, but clearing balances do not carry forward.
+      </div>
+</section>
+<section id="new-epoch">
+<div class="section-label">10 · New Clearing Epoch</div>
+<h2>A new token, a new register, a new seven-year cycle</h2>
+<p class="section-intro">
+        Once Jubilee Week has fully released the old escrows and retired the previous clearing token, Osnias Clearing
+        initializes the following epoch with a new clearing token and a new active registry. The previous epoch remains
+        available only as an immutable historical record.
+      </p>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Old epoch</div>
+<h3>Final and historical</h3>
+<p>The old registry is preserved for auditability, while the old clearing token is permanently non-circulating.</p>
+</article>
+<article class="card">
+<div class="card-kicker">New epoch</div>
+<h3>Fresh clearing token</h3>
+<p>A newly initialized clearing token becomes the instrument of circulation for the next seven-year epoch.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Reset</div>
+<h3>No inherited clearing balance</h3>
+<p>New escrows and new reference positions are established without automatically carrying the old epoch's clearing balances forward.</p>
+</article>
+</div>
+<div class="notice">
+<strong>Epoch identity.</strong>
+        Public names such as ORUSD or OEURO may remain stable, while the protocol and registry identify the technical
+        epoch explicitly so that an expiring token cannot be confused with its successor.
+      </div>
+</section>
+<section id="calendar">
+<div class="section-label">11 · Official calendar</div>
+<h2>Official 364-Day Jubilee Cycle Calendar</h2>
+<p class="section-intro">
+        The official annual matrix documents the four 91-day quarters, the 13-week structure of each quarter,
+        and the operating status of Burn, Mint and P2P functions for every day of the 364-day year.
+        The seven-year epoch model extends this annual matrix with a terminal Week 53 in Year 7 for Jubilee closure.
+      </p>
+<div class="grid-2">
+<article class="card">
+<div class="card-kicker">Reference document</div>
+<h3>Annual Jubilee Cycle Calendar</h3>
+<p>
+            13 weeks × 7 days × 4 quarters, with Burn Triduum on Days 1–3,
+            issuance/P2P on Days 4–88, and Compensation Triduum on Days 89–91.
+          </p>
+<div class="badges mt-1">
+<a class="badge badge-ok" href="/osnias-clearing/cycle/onias-clearing-calendrier.pdf">Open official PDF →</a>
+</div>
+</article>
+<article class="card">
+<div class="card-kicker">Annual structure</div>
+<h3>4 × 91 = 364 days</h3>
+<p>
+            The calendar uses four identical 91-day cycles, giving a regular 52-week annual matrix
+            and a stable operational rhythm for clearing and compensation.
+          </p>
+</article>
+</div>
+</section>
+<section id="summary">
+<div class="section-label">12 · Summary</div>
+<h2>Clearing needs time</h2>
+<div class="grid-3">
+<article class="card">
+<h3>Exchange</h3>
+<p>Creates the economic usefulness of the system by allowing reciprocal clearing positions to circulate and offset.</p>
+</article>
+<article class="card">
+<h3>91 days</h3>
+<p>Provides the operational and human time required for circulation, reconciliation and compensation.</p>
+</article>
+<article class="card">
+<h3>Final settlement</h3>
+<p>Closes the cycle only after the register, escrow positions and circulating clearing-token supply have been aligned.</p>
+</article>
+</div>
+<div class="notice">
+<strong>Osnias Clearing doctrine.</strong>
+        The fastest possible ledger does not require the fastest possible economic settlement.
+        Exchange creates the clearing value, circulation creates the opportunity for netting, and time reduces what ultimately
+        needs to be settled.
       </div>
 </section>
 </main>
 <footer>
 <div class="container footer-grid">
-<div>OSNIAS · Governance Token</div>
+<div>Osnias Clearing · 91-Day &amp; Jubilee Cycle</div>
 <div>
-<a href="#governance">Governance</a>
+<a href="/osnias-clearing/index.html">Home</a>
          · 
-        <a href="#specification">Specification</a>
+        <a href="#timeline">91-Day Cycle</a>
          · 
-        <a href="#resources">Public files</a>
-         · 
-        <a href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank">DOI 10.5281/zenodo.22139986</a>
+        <a href="#jubilee">Jubilee Framework</a>
 </div>
 </div>
 </footer>
 </body>
 </html>
-
 
