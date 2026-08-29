@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Osnias Oracles — Clearing Observation, Verification & Security</title>
+  <meta name="description" content="Public architecture of the Osnias Oracles: private security domain on Sei, passive blockchain-side observation, partner-adapted lender and escrow interfaces, clearing register integrity and protected security infrastructure." />
+  <meta name="theme-color" content="#050814" />
+
+  <meta property="og:title" content="Osnias Oracles" />
+  <meta property="og:description" content="Transparent registers · Protected oracle security · Passive EVM observation · Canonical clearing on Sei." />
+  <meta property="og:type" content="website" />
+
+  <link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css">
+  <script src="/osnias-clearing/assets/js/osnias-nav.js" defer></script>
+</head>
+
+<body>
+
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+        OSNIAS <span>CLEARING</span>
+      </a>
+
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation">
+        <a href="/osnias-clearing/history/history.html">History</a>
+        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
+        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
+        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
+        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
+        <a href="/osnias-clearing/tokenomics/tokenomics.html">Tokenomics</a>
+        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
+        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
+        <a href="/osnias-clearing/regulation/regulation.html">Regulation</a>
+      </nav>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <section class="hero">
+        <div class="hero-grid single">
+          <div>
+            <div class="eyebrow">Observation · Verification · Clearing Integrity · Security Separation</div>
+
+            <h1>Osnias Oracles</h1>
+
+            <div class="hero-role">
+              Transparent clearing records. Protected security infrastructure.
+            </div>
+
+            <p class="hero-lead">
+              Osnias Clearing uses a distributed Osnias Oracle architecture to connect the canonical clearing environment on Sei
+              with approved lender and escrow infrastructures across participating EVM blockchains.
+            </p>
+
+            <p class="hero-lead">
+              The architecture is designed around strict separation of powers. Osnias Oracles verify and exchange authenticated
+              information, while lenders and escrow protocols retain exclusive authority over their own smart contracts and collateral.
+            </p>
+
+            <div class="actions">
+              <a class="btn btn-primary" href="#architecture">Oracle Architecture →</a>
+              <a class="btn" href="#security">Security Model</a>
+              <a class="btn" href="#transparency">Transparency</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="essential-parameters" aria-label="Osnias Oracle architecture at a glance">
+      <div class="section-label">01 · Architecture Status</div>
+      <h2>Defined architecture · Production implementation in development</h2>
+
+      <p class="section-intro">
+        The functional architecture and security boundaries of the Osnias Oracles are defined.
+        Production implementations remain under development, integration review and security testing.
+      </p>
+
+      <aside class="panel">
+        <div class="stats">
+          <div class="stat">
+            <small>Canonical network</small>
+            <strong>Sei</strong>
+            <span>Clearing register and protected oracle domain</span>
+          </div>
+
+          <div class="stat">
+            <small>External networks</small>
+            <strong>EVM blockchains</strong>
+            <span>Passive observation and request exchange</span>
+          </div>
+
+          <div class="stat">
+            <small>Collateral control</small>
+            <strong>Lender / Escrow</strong>
+            <span>Never controlled by Osnias</span>
+          </div>
+
+          <div class="stat">
+            <small>Security status</small>
+            <strong>Under development</strong>
+            <span>Production deployment pending qualification</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="architecture">
+      <div class="section-label">02 · Osnias Oracle Architecture</div>
+      <h2>Two environments, one strict separation model</h2>
+
+      <p class="section-intro">
+        Osnias Clearing distinguishes between Osnias Oracles operating inside the protected Sei security domain
+        and Osnias Oracles operating on external EVM blockchains.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Sei</div>
+          <h3>Osnias Oracles on Sei</h3>
+          <p>
+            Osnias Oracles on Sei support the canonical clearing environment. Their responsibilities include
+            mint / burn processing, clearing-register integrity verification and the production of periodic registry snapshots
+            used by the Osnias clearing cycle.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Participating EVM blockchains</div>
+          <h3>Blockchain-side Osnias Oracles</h3>
+          <p>
+            A blockchain-side Osnias Oracle operates as a passive observation and communication component.
+            It listens to approved smart contracts, verifies relevant state and exchanges authenticated requests with
+            the Osnias clearing environment.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Separation principle.</strong>
+        Osnias Oracles may observe, verify and exchange requests. They do not acquire administrative authority over
+        independent lender or escrow smart contracts.
+      </div>
+    </section>
+
+    <section id="sei-oracles">
+      <div class="section-label">03 · Osnias Oracles on Sei</div>
+      <h2>Protected canonical clearing infrastructure</h2>
+
+      <p class="section-intro">
+        The Osnias Oracles on Sei belong to the private security domain of Osnias Clearing.
+        They support the integrity and continuity of the canonical clearing register.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Mint / Burn</div>
+          <h3>Clearing-token supply processing</h3>
+          <p>
+            Dedicated Osnias Oracles on Sei support the controlled mint and burn processes associated with the
+            canonical clearing register.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Register integrity</div>
+          <h3>Continuous verification</h3>
+          <p>
+            Osnias Oracles verify consistency of the canonical register and help detect conditions that could affect
+            clearing integrity.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Clearing snapshots</div>
+          <h3>Periodic registry state</h3>
+          <p>
+            Osnias Oracles support the production and verification of registry snapshots required by the clearing cycle.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Private security domain.</strong>
+        The internal architecture, operational configuration and sensitive implementation details of the Osnias Oracles on Sei
+        are not intended for public disclosure.
+      </div>
+    </section>
+
+    <section id="blockchain-oracles">
+      <div class="section-label">04 · Blockchain-Side Osnias Oracles</div>
+      <h2>Open, passive and adapted to each partner environment</h2>
+
+      <p class="section-intro">
+        Osnias Oracles operating on external EVM blockchains follow a passive model.
+        Their purpose is to observe and verify relevant smart-contract state and communicate with approved lender / escrow infrastructures.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Observe</div>
+          <h3>Read approved smart contracts</h3>
+          <p>
+            A blockchain-side Osnias Oracle may inspect approved lender or escrow smart-contract state required for
+            clearing verification.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Verify</div>
+          <h3>Validate relevant conditions</h3>
+          <p>
+            The Osnias Oracle verifies that the observed state is coherent with the authenticated request being exchanged.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Communicate</div>
+          <h3>Exchange authenticated requests</h3>
+          <p>
+            The Osnias Oracle communicates verified requests and state information without obtaining execution authority
+            over the partner protocol.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Passive-by-design invariant.</strong>
+        A blockchain-side Osnias Oracle does not move collateral, release escrow, originate credit,
+        liquidate positions or execute financial operations on behalf of a lender or escrow provider.
+      </div>
+    </section>
+
+    <section id="partners">
+      <div class="section-label">05 · Partner-Specific Implementation</div>
+      <h2>Designed with each lender / escrow infrastructure</h2>
+
+      <p class="section-intro">
+        Osnias does not impose a single generic external oracle connector on every protocol.
+        Each blockchain-side Osnias Oracle implementation will be discussed with the relevant lender / escrow partner
+        and adapted to the technical and security requirements of the environment concerned.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Blockchain security</div>
+          <h3>Network-specific rules</h3>
+          <p>
+            The Osnias Oracle implementation must respect the security characteristics, operational practices and
+            technical constraints of the EVM blockchain on which it operates.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Lender security</div>
+          <h3>Partner-specific controls</h3>
+          <p>
+            Where necessary, the Osnias Oracle interface is adapted to the security requirements, contract architecture
+            and governance model of the lender concerned.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Escrow security</div>
+          <h3>No transfer of authority</h3>
+          <p>
+            Integration does not transfer custody or administrative authority to Osnias.
+            The escrow provider remains responsible for its own contracts and assets.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Partner integration principle.</strong>
+        Blockchain-side Osnias Oracle interfaces are partner-specific and will be designed in consultation with each
+        lender / escrow infrastructure.
+      </div>
+    </section>
+
+    <section id="separation">
+      <div class="section-label">06 · Bidirectional Separation of Powers</div>
+      <h2>Neither domain controls the other</h2>
+
+      <p class="section-intro">
+        The Osnias clearing domain and the lender / escrow domain are intentionally separated.
+        They can exchange information and authenticated requests without acquiring privileged authority over one another.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Osnias domain</div>
+          <h3>No authority over collateral</h3>
+          <ul class="list">
+            <li>No administrative control over lender smart contracts.</li>
+            <li>No authority to release escrowed assets.</li>
+            <li>No authority to transfer collateral.</li>
+            <li>No authority to originate lender credit.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Lender / Escrow domain</div>
+          <h3>No authority over Osnias clearing supply</h3>
+          <ul class="list">
+            <li>No control over Osnias Oracles on Sei.</li>
+            <li>No direct authority over mint / burn processing.</li>
+            <li>No administrative control over the canonical clearing register.</li>
+            <li>No unilateral authority over clearing-token supply.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Bidirectional control-separation invariant.</strong>
+        Osnias controls its clearing domain. Independent lenders and escrows control their collateral domain.
+        Neither controls the other.
+      </div>
+    </section>
+
+    <section id="user-control">
+      <div class="section-label">07 · End-User Control</div>
+      <h2>Critical release actions remain voluntary</h2>
+
+      <p class="section-intro">
+        The architecture preserves end-user control over the actions that initiate or finalize the release of collateral.
+        Osnias does not substitute itself for the user on the lender / escrow interface.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Osnias side</div>
+          <h3>Voluntary user action</h3>
+          <p>
+            The end user initiates the relevant clearing-side action voluntarily through the Osnias environment.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Lender / Escrow side</div>
+          <h3>Independent voluntary action</h3>
+          <p>
+            The end user separately interacts with the lender / escrow environment to initiate and finalize
+            collateral release according to the partner protocol's own rules.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Dual-user-action principle.</strong>
+        Osnias cannot release collateral on behalf of the user, and a lender cannot substitute itself for
+        the user inside the Osnias clearing domain.
+      </div>
+    </section>
+
+    <section id="security">
+      <div class="section-label">08 · Security Model</div>
+      <h2>Private security on Sei · passive integration externally</h2>
+
+      <p class="section-intro">
+        Osnias applies different disclosure and implementation policies to the canonical Sei security domain
+        and to external blockchain-side Osnias Oracles.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Sei security</div>
+          <h3>Private security domain</h3>
+          <p>
+            Sensitive implementation details of the Osnias Oracles on Sei remain protected and are not part of the
+            public technical disclosure layer.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">External EVM security</div>
+          <h3>Partner-adapted implementation</h3>
+          <p>
+            Blockchain-side Osnias Oracles are implemented according to the security model of the relevant blockchain
+            and, where appropriate, the specific requirements of each lender / escrow partner.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Verification</div>
+          <h3>Continuous separation controls</h3>
+          <p>
+            Static analysis, invariant testing and deployment monitoring are intended to verify that no unauthorized
+            control path appears between the clearing domain and external lender / escrow infrastructure.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="transparency">
+      <div class="section-label">09 · Transparency & Confidentiality</div>
+      <h2>Transparent registers. Protected oracle security.</h2>
+
+      <p class="section-intro">
+        Osnias Clearing aims for maximum transparency where transparency improves auditability:
+        public register state, published contract rules, verifiable clearing records and observable protocol outcomes.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Public</div>
+          <h3>What should be auditable</h3>
+          <ul class="list">
+            <li>Clearing-register state.</li>
+            <li>Published smart-contract rules.</li>
+            <li>Verifiable clearing outcomes.</li>
+            <li>Public technical documentation.</li>
+            <li>Published production contract references.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Protected</div>
+          <h3>What remains private</h3>
+          <ul class="list">
+            <li>Internal Osnias Oracle security architecture on Sei.</li>
+            <li>Sensitive operational configuration.</li>
+            <li>Private security procedures.</li>
+            <li>Protected infrastructure details.</li>
+            <li>Information whose disclosure would increase attack surface.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Regulatory access.</strong>
+        Protected security information may be made available to a competent regulatory authority where appropriate,
+        subject to suitable confidentiality, controlled-access and reciprocal security safeguards.
+      </div>
+    </section>
+
+    <section id="contract">
+      <div class="section-label">10 · Security Philosophy</div>
+      <h2>Our security is our contract.</h2>
+
+      <p class="section-intro">
+        Public trust in Osnias Clearing is intended to rest on verifiable contracts, transparent registers,
+        explicit rules and auditable outcomes — not on publication of sensitive security infrastructure.
+      </p>
+
+      <div class="notice">
+        <strong>Our security is our contract.</strong>
+        Osnias Clearing publishes what must be auditable and protects what must remain secure.
+      </div>
+    </section>
+
+    <section id="summary">
+      <div class="section-label">11 · Summary</div>
+      <h2>One architecture, clearly separated responsibilities</h2>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Sei</div>
+          <h3>Canonical protected domain</h3>
+          <p>Osnias Oracles support mint / burn processing, register integrity and clearing snapshots.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">EVM blockchains</div>
+          <h3>Passive Osnias Oracles</h3>
+          <p>Observe approved smart contracts, verify state and exchange authenticated requests.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Lenders / Escrows</div>
+          <h3>Independent authority</h3>
+          <p>Retain exclusive control over collateral, escrow contracts and their own financial operations.</p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Current status.</strong>
+        The Osnias Oracle architecture is defined. Production Osnias Oracle implementations remain under development
+        and will be deployed only after security qualification and partner integration review.
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>Osnias Clearing · Osnias Oracle Architecture</div>
+        <div>
+          <a href="/osnias-clearing/index.html">Home</a>
+          &nbsp;·&nbsp;
+          <a href="/osnias-clearing/sei/sei.html">Sei</a>
+          &nbsp;·&nbsp;
+          <a href="/osnias-clearing/regulation/regulation.html">Regulation</a>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        This page describes the public functional architecture of the Osnias Oracles.
+        Sensitive implementation and operational-security details are intentionally excluded.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
