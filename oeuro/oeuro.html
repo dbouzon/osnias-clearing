@@ -12,526 +12,9 @@
   <meta property="og:description" content="Restricted EUR clearing register · P2P settlement · Oracle attestation · Manager-gated settlement · Public technical documentation." />
   <meta property="og:type" content="website" />
 
-  <style>
-    :root {
-      --bg: #050814;
-      --panel: rgba(8, 12, 28, 0.94);
-      --panel-2: rgba(15, 24, 48, 0.78);
-      --accent: #3fd1ff;
-      --accent-soft: #1a9fd0;
-      --text: #f5f7ff;
-      --muted: #9aa3c2;
-      --border: #1b2338;
-      --ok: #64e6b2;
-      --max: 1120px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      line-height: 1.6;
-      background:
-        radial-gradient(circle at 82% 0%, rgba(63,209,255,.10), transparent 29rem),
-        radial-gradient(circle at 10% 5%, rgba(63,209,255,.05), transparent 23rem),
-        var(--bg);
-    }
-
-    a { color: var(--accent); text-decoration: none; }
-    a:hover, a:focus-visible { text-decoration: underline; }
-
-    .container {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    header {
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(135deg, rgba(5,8,20,.98), rgba(11,16,32,.96));
-    }
-
-    .topbar {
-      min-height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.2rem;
-    }
-
-    .brand {
-      font-size: .94rem;
-      font-weight: 760;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-
-    .brand span { color: var(--accent); }
-
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.25rem;
-      justify-content: flex-end;
-    }
-
-    nav a {
-      color: var(--muted);
-      font-size: .76rem;
-      text-transform: uppercase;
-      letter-spacing: .09em;
-    }
-
-    nav a:hover {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    .hero {
-      padding: 5rem 0 4.2rem;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0,1.35fr) minmax(330px,.85fr);
-      gap: 3rem;
-      align-items: center;
-    }
-
-    .eyebrow {
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: .16em;
-      font-size: .76rem;
-      font-weight: 680;
-      margin-bottom: 1rem;
-    }
-
-    h1 {
-      font-size: clamp(3.8rem, 10vw, 6.8rem);
-      line-height: .92;
-      letter-spacing: .035em;
-      margin-bottom: 1rem;
-    }
-
-    .hero-role {
-      font-size: clamp(1.25rem, 3vw, 1.8rem);
-      font-weight: 650;
-      margin-bottom: 1rem;
-    }
-
-    .hero-lead {
-      max-width: 47rem;
-      color: var(--muted);
-      font-size: 1.04rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .tags, .badges, .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .55rem;
-    }
-
-    .tag, .badge {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(15,24,48,.65);
-      color: var(--muted);
-    }
-
-    .tag {
-      padding: .3rem .72rem;
-      font-size: .73rem;
-      text-transform: uppercase;
-      letter-spacing: .075em;
-    }
-
-    .tag-accent {
-      color: var(--accent);
-      border-color: var(--accent-soft);
-    }
-
-    .actions { margin-top: 1.65rem; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 43px;
-      padding: .66rem 1.12rem;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(5,8,20,.72);
-      color: var(--text);
-      font-size: .77rem;
-      font-weight: 650;
-      text-transform: uppercase;
-      letter-spacing: .075em;
-    }
-
-    .btn:hover {
-      text-decoration: none;
-      border-color: var(--accent-soft);
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-soft), var(--accent));
-      border-color: var(--accent);
-      color: #03101a;
-    }
-
-    .panel, .card, .notice, .resource {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      border-radius: 1rem;
-    }
-
-    .panel { padding: 1.4rem; }
-
-    .panel-title {
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      font-size: .74rem;
-      margin-bottom: 1rem;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: .8rem;
-    }
-
-    .stat {
-      border: 1px solid var(--border);
-      border-radius: .8rem;
-      background: var(--panel-2);
-      padding: .9rem;
-    }
-
-    .stat small {
-      display: block;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .075em;
-      font-size: .67rem;
-      margin-bottom: .22rem;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 1rem;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: .74rem;
-    }
-
-    main { padding: 3rem 0 4rem; }
-    section { margin-bottom: 4rem; }
-
-    .section-label {
-      color: var(--accent);
-      font-size: .73rem;
-      font-weight: 670;
-      text-transform: uppercase;
-      letter-spacing: .14em;
-      margin-bottom: .45rem;
-    }
-
-    h2 {
-      font-size: clamp(1.65rem,4vw,2.3rem);
-      line-height: 1.2;
-      margin-bottom: .8rem;
-    }
-
-    .section-intro {
-      color: var(--muted);
-      max-width: 55rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap: 1.2rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: 1.2rem;
-    }
-
-    .card { padding: 1.15rem; }
-
-    .card-kicker {
-      color: var(--muted);
-      font-size: .67rem;
-      text-transform: uppercase;
-      letter-spacing: .09em;
-      margin-bottom: .28rem;
-    }
-
-    .card h3 {
-      font-size: .98rem;
-      margin-bottom: .52rem;
-    }
-
-    .card p {
-      color: var(--muted);
-      font-size: .85rem;
-    }
-
-    .list {
-      list-style: none;
-      color: var(--muted);
-      font-size: .82rem;
-      margin-top: .75rem;
-    }
-
-    .list li { margin: .34rem 0; }
-
-    .list li::before {
-      content: "•";
-      color: var(--accent);
-      margin-right: .45rem;
-    }
-
-    .flow {
-      display: grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap: 1rem;
-      margin-top: 1.35rem;
-    }
-
-    .flow-box {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      border-radius: .9rem;
-      padding: 1.05rem;
-    }
-
-    .flow-box strong {
-      display: block;
-      margin-bottom: .35rem;
-    }
-
-    .flow-box p {
-      color: var(--muted);
-      font-size: .82rem;
-    }
-
-    .notice {
-      margin-top: 1.25rem;
-      padding: 1rem 1.1rem;
-      border-left: 3px solid var(--accent-soft);
-      color: var(--muted);
-      font-size: .84rem;
-    }
-
-    .notice strong { color: var(--text); }
-
-    .spec-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1.2rem;
-      overflow: hidden;
-      border-radius: .9rem;
-      background: var(--panel);
-    }
-
-    .spec-table th,
-    .spec-table td {
-      padding: .8rem .9rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-      font-size: .82rem;
-    }
-
-    .spec-table th {
-      color: var(--text);
-      font-weight: 650;
-      width: 30%;
-    }
-
-    .spec-table td { color: var(--muted); }
-
-    .spec-table tr:last-child th,
-    .spec-table tr:last-child td { border-bottom: 0; }
-
-    .resources {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: .9rem;
-      margin-top: 1.3rem;
-    }
-
-    .resource {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 1rem;
-      align-items: center;
-    }
-
-    .resource:hover {
-      text-decoration: none;
-      border-color: var(--accent-soft);
-    }
-
-    .resource strong {
-      display: block;
-      color: var(--text);
-      font-size: .86rem;
-      margin-bottom: .12rem;
-    }
-
-    .resource span {
-      color: var(--muted);
-      font-size: .74rem;
-    }
-
-    .resource-type {
-      color: var(--accent);
-      white-space: nowrap;
-      font-size: .74rem;
-    }
-
-    .pending {
-      opacity: .62;
-      cursor: default;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 1.8rem 0 2.2rem;
-      color: var(--muted);
-      font-size: .77rem;
-    }
-
-    .footer-grid {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    @media (max-width: 900px) {
-      .hero-grid, .grid-3, .grid-2, .flow {
-        grid-template-columns: 1fr;
-      }
-
-      nav { display: none; }
-      .resources { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 560px) {
-      .container { padding: 0 1rem; }
-      .hero { padding: 3.5rem 0 3rem; }
-      .stats { grid-template-columns: 1fr; }
-      .actions { flex-direction: column; }
-      .btn { width: 100%; }
-      .resource { align-items: flex-start; flex-direction: column; }
-    }
   
-    /* Fixed site-wide navigation bar */
-    .site-nav-fixed {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: rgba(5,8,20,.97);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-    }
-
-    .site-nav-inner {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: .7rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .site-nav-brand {
-      color: #fff;
-      font-size: .82rem;
-      font-weight: 800;
-      letter-spacing: .09em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      margin-right: auto;
-    }
-
-    .site-nav-brand span { color: var(--accent); }
-
-    .site-nav-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .5rem;
-      justify-content: flex-end;
-    }
-
-    .site-nav-buttons a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 34px;
-      padding: .48rem .74rem;
-      border: 1px solid rgba(255,255,255,.38);
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      color: #fff;
-      font-size: .69rem;
-      font-weight: 700;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .site-nav-buttons a:hover,
-    .site-nav-buttons a:focus-visible {
-      background: rgba(255,255,255,.13);
-      border-color: #fff;
-      text-decoration: none;
-    }
-
-    @media (max-width: 760px) {
-      .site-nav-inner { padding: .65rem 1rem; }
-      .site-nav-brand { width: 100%; margin-right: 0; }
-      .site-nav-buttons { justify-content: flex-start; }
-    }
-
-    /* Same content frame as OSNIAS / ORUSD */
-    .hero-grid { grid-template-columns: 1fr !important; }
-
-    .essential-parameters { margin-bottom: 3rem; }
-    .essential-parameters .panel { width: 100%; }
-    .essential-parameters .stats {
-      grid-template-columns: repeat(4, minmax(0,1fr));
-    }
-
-    @media (max-width: 900px) {
-      .essential-parameters .stats {
-        grid-template-columns: repeat(2, minmax(0,1fr));
-      }
-    }
-
-    @media (max-width: 560px) {
-      .essential-parameters .stats {
-        grid-template-columns: 1fr;
-      }
-    }
-
-  </style>
+<link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css"/>
+<script src="/osnias-clearing/assets/js/osnias-nav.js" defer></script>
 </head>
 
 <body>
@@ -542,7 +25,7 @@
         OSNIAS <span>CLEARING</span>
       </a>
 
-      <nav class="site-nav-buttons" aria-label="Main site navigation">
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation">
         <a href="/osnias-clearing/history/history.html">History</a>
         <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
         <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
@@ -556,21 +39,8 @@
 
   <header>
     <div class="container">
-      <div class="topbar">
-        <div class="brand">OEURO <span>Clearing Token</span></div>
-
-        <nav aria-label="OEURO navigation">
-          <a href="#role">Role</a>
-          <a href="#p2p">P2P</a>
-          <a href="#oracle">Oracle</a>
-          <a href="#specification">Specification</a>
-          <a href="#security">Security</a>
-          <a href="#resources">Transparency</a>
-        </nav>
-      </div>
-
-      <section class="hero">
-        <div class="hero-grid">
+<section class="hero">
+        <div class="hero-grid single">
           <div>
             <div class="eyebrow">EUR Clearing Register · Public Technical Reference</div>
 
@@ -659,15 +129,15 @@
 
 
     <section class="testnet-status" aria-label="OEURO Ethereum Sepolia testnet status">
-      <div class="notice" style="margin-top:0; margin-bottom:3rem;">
-        <div class="section-label" style="margin-bottom:.7rem;">02 · OEURO on Ethereum Sepolia Testnet</div>
+      <div class="notice">
+        <div class="section-label">02 · OEURO on Ethereum Sepolia Testnet</div>
         OEURO already has a public reference deployment on Ethereum Sepolia for development,
         integration testing and pre-audit validation. The deployed testnet contract provides a
         directly inspectable implementation of the current OEURO clearing-token logic before the
         intended production architecture is finalized.
         <br /><br />
         <strong>Reference address:</strong>
-        <span style="word-break:break-all;">0xd3CC962AA559f28B4411c60F7c01ea14fccb25D8</span>
+        <span class="mono">0xd3CC962AA559f28B4411c60F7c01ea14fccb25D8</span>
         <br /><br />
         <a class="btn btn-primary"
            href="https://sepolia.etherscan.io/address/0xd3CC962AA559f28B4411c60F7c01ea14fccb25D8#code"
@@ -741,7 +211,7 @@
         The transfer-fee mechanism redistributes existing OEURO and does not create additional supply.
       </div>
 
-      <div class="grid-2" style="margin-top:1.25rem">
+      <div class="grid-2 mt-1">
         <article class="card">
           <h3>Ordinary circulation</h3>
           <ul class="list">
@@ -791,7 +261,7 @@
         </div>
       </div>
 
-      <div class="grid-3" style="margin-top:1.25rem">
+      <div class="grid-3 mt-1">
         <article class="card">
           <div class="card-kicker">Oracle authority</div>
           <h3>Request only</h3>
@@ -815,7 +285,7 @@
     <section id="specification">
       <div class="section-label">06 · Technical Specification</div>
       <h2>OEURO token design</h2>
-      <div class="actions" style="margin-top:.8rem; margin-bottom:1.2rem;">
+      <div class="actions mb-1">
         <a class="btn btn-primary"
            href="/osnias-clearing/oeuro/oeuro_technical.pdf"
            target="_blank"
@@ -940,7 +410,7 @@
         The links below point to the current public technical package.
       </p>
 
-      <div class="notice" style="margin-bottom:1.25rem;">
+      <div class="notice">
         <strong>Permanent technical archive — Zenodo.</strong>
         The published OEURO technical package is permanently archived under DOI
         <a href="https://doi.org/10.5281/zenodo.22140908" target="_blank" rel="noopener noreferrer"><strong>10.5281/zenodo.22140908</strong></a>.
