@@ -4,17 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>ORUSD — USD Clearing Token</title>
-  <meta name="description" content="Technical presentation of ORUSD, a USD clearing token: P2P EOA circulation, 6 decimals, 0.15% fee, attestation-based oracle, anti-replay protection, manager-gated settlement, segregated USDC collateral and Sei production." />
+  <title>ORUSD — USD Clearing Token · Version 2.0 · Sei Testnet</title>
+  <meta name="description" content="ORUSD Version 2.0 — USD-denominated clearing token on Sei: direct EOA-to-EOA settlement, 6 decimals, 0.15% protocol fee, 24-hour oracle requests, anti-replay protection, manager-gated mint/burn, segregated external USDC collateral and verified Sei Testnet deployment." />
   <meta name="theme-color" content="#050814" />
 
-  <meta property="og:title" content="ORUSD — USD Clearing Token" />
-  <meta property="og:description" content="Restricted USD clearing register · P2P settlement · Oracle attestation · USDC collateral segregation · Sei-native production." />
+  <meta property="og:title" content="ORUSD — USD Clearing Token · Version 2.0" />
+  <meta property="og:description" content="Restricted USD clearing register · Sei Testnet verified deployment · P2P settlement · Oracle attestation · external USDC collateral segregation · public technical documentation." />
   <meta property="og:type" content="website" />
 
-  
-<link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css">
-<script src="/osnias-clearing/assets/js/osnias-nav.js" defer></script>
+  <link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css">
+  <script src="/osnias-clearing/assets/js/osnias-nav.js" defer></script>
 </head>
 
 <body>
@@ -43,25 +42,27 @@
       <section class="hero">
         <div class="hero-grid single">
           <div>
-            <div class="eyebrow">USD Clearing Register · Public Technical Reference</div>
+            <div class="eyebrow">USD Clearing Register · Version 2.0 · Sei Testnet Public Technical Reference</div>
 
             <h1>ORUSD</h1>
             <div class="hero-role">A token designed for direct account-to-account clearing</div>
 
             <p class="hero-lead">
-              ORUSD is a USD-denominated clearing register token. Its design prioritizes direct P2P circulation between EOA accounts, controlled minting and burning, traceable oracle requests, non-replayable external proofs and final settlement under manager authority.
+              ORUSD is a USD-denominated clearing register token designed for direct P2P circulation between EOA accounts on Sei.
+              Version 2.0 combines controlled minting and burning, traceable oracle requests, non-replayable external proofs
+              and final settlement under manager authority. The public reference deployment is verified on Sei Testnet.
             </p>
 
             <div class="actions">
               <a class="btn btn-primary"
-                 href="/osnias-clearing/orusd/ORUsd_Technical.pdf"
+                 href="/osnias-clearing/orusd/ORUSD_Technical_White_Paper.pdf"
                  target="_blank"
                  rel="noopener noreferrer">
                 Local Technical Documentation · PDF ↗
               </a>
 
               <a class="btn"
-                 href="https://doi.org/10.5281/zenodo.22140272"
+                 href="https://doi.org/10.5281/zenodo.22200260"
                  target="_blank"
                  rel="noopener noreferrer">
                 Zenodo DOI · Permanent Archive ↗
@@ -75,72 +76,90 @@
 
   <main class="container">
 
-
     <section class="essential-parameters" aria-label="ORUSD essential parameters">
       <aside class="panel">
-            <div class="section-label">01 · ORUSD — Essential Parameters</div>
+        <div class="section-label">01 · ORUSD — Essential Parameters</div>
 
-            <div class="stats">
-              <div class="stat">
-                <small>Decimals</small>
-                <strong>6</strong>
-                <span>On-chain precision</span>
-              </div>
+        <div class="stats">
+          <div class="stat">
+            <small>Decimals</small>
+            <strong>6</strong>
+            <span>On-chain precision</span>
+          </div>
 
-              <div class="stat">
-                <small>P2P fee</small>
-                <strong>0.15%</strong>
-                <span>Deducted from the transferred amount</span>
-              </div>
+          <div class="stat">
+            <small>P2P fee</small>
+            <strong>0.15%</strong>
+            <span>Deducted from the transferred amount</span>
+          </div>
 
-              <div class="stat">
-                <small>Gross minimum</small>
-                <strong>0.501 ORUSD</strong>
-                <span>Ordinary P2P transfer</span>
-              </div>
+          <div class="stat">
+            <small>Gross minimum</small>
+            <strong>0.501 ORUSD</strong>
+            <span>Ordinary P2P transfer</span>
+          </div>
 
-              <div class="stat">
-                <small>Oracle request</small>
-                <strong>24 hours</strong>
-                <span>Execution window</span>
-              </div>
+          <div class="stat">
+            <small>Oracle request</small>
+            <strong>24 hours</strong>
+            <span>Execution window</span>
+          </div>
 
-              <div class="stat">
-                <small>Circulation</small>
-                <strong>EOA → EOA</strong>
-                <span>Delegated transfers disabled</span>
-              </div>
+          <div class="stat">
+            <small>Circulation</small>
+            <strong>EOA → EOA</strong>
+            <span>Delegated transfers disabled</span>
+          </div>
 
-              <div class="stat">
-                <small>Target mainnet</small>
-                <strong>Sei EVM</strong>
-                <span>Canonical production state</span>
-              </div>
+          <div class="stat">
+            <small>Reference testnet</small>
+            <strong>Sei Testnet · 1328</strong>
+            <span>Verified public deployment</span>
+          </div>
 
-              <div class="stat">
-                <small>Permanent archive</small>
-                <strong>Zenodo DOI</strong>
-                <span>10.5281/zenodo.22140272</span>
-              </div>
-            </div>
-          </aside>
+          <div class="stat">
+            <small>Permanent archive</small>
+            <strong>Zenodo DOI</strong>
+            <span>10.5281/zenodo.22200260</span>
+          </div>
+        </div>
+      </aside>
     </section>
 
-
-    <section class="testnet-status" aria-label="ORUSD Ethereum Sepolia testnet status">
+    <section class="testnet-status" aria-label="ORUSD Sei Testnet status">
       <div class="notice">
-        <div class="section-label">02 · ORUSD on Ethereum Sepolia Testnet</div>
-        ORUSD already has a public reference implementation on Ethereum Sepolia for development,
-        integration testing and pre-audit validation. Sepolia is the test environment used to exercise
-        the clearing-token logic before the intended production deployment on Sei EVM.
-        Testnet balances, proofs and administrative operations create no production entitlement on Sei.
+        <div class="section-label">02 · ORUSD on Sei Testnet</div>
+        ORUSD Version 2.0 has a public reference deployment on <strong>Sei Testnet</strong>
+        for development, integration testing, wallet validation and pre-audit review.
+        The deployed source is publicly inspectable and has been verified on SeiScan as an
+        <strong>Exact Match</strong>.
         <br /><br />
-        <a class="btn btn-primary"
-           href="https://sepolia.etherscan.io/"
-           target="_blank"
-           rel="noopener noreferrer">
-          View Ethereum Sepolia Explorer →
-        </a>
+        <strong>Cosmos chain ID:</strong> <span class="mono">atlantic-2</span><br />
+        <strong>EVM Chain ID:</strong> <span class="mono">1328 (0x530)</span><br />
+        <strong>Native gas asset:</strong> SEI<br />
+        <strong>RPC:</strong> <span class="mono">https://evm-rpc-testnet.sei-apis.com</span><br />
+        <strong>Contract:</strong> <span class="mono">OsniasClearing_Orusd</span><br />
+        <strong>Contract address:</strong>
+        <span class="mono">0x0c3a19455b898913A1DaD93d724c24062293dB5F</span><br />
+        <strong>Creation transaction:</strong>
+        <span class="mono">0xce15b298a4f1b0474e9c704996fd6d08c8d939d09def0eba8205998112c1ff15</span>
+        <br /><br />
+
+        <div class="actions">
+          <a class="btn btn-primary"
+             href="https://testnet.seiscan.io/address/0x0c3a19455b898913A1DaD93d724c24062293dB5F#code"
+             target="_blank"
+             rel="noopener noreferrer">
+            View verified ORUSD contract on SeiScan →
+          </a>
+
+          <a class="btn"
+             href="https://testnet.seiscan.io/tx/0xce15b298a4f1b0474e9c704996fd6d08c8d939d09def0eba8205998112c1ff15"
+             target="_blank"
+             rel="noopener noreferrer">
+            View creation transaction →
+          </a>
+        </div>
       </div>
     </section>
 
@@ -149,38 +168,35 @@
       <h2>A clearing register, not a market token</h2>
 
       <p class="section-intro">
-        ORUSD is designed for one specific function: representing and transferring a clearing unit between user accounts. Its design does not seek to reproduce the functions of a market token, a lending product or a custody infrastructure.
+        ORUSD is designed for one specific function: representing and transferring a USD-denominated clearing unit between user accounts.
+        The token contract intentionally avoids the ordinary integration surfaces used by market, lending and DeFi tokens.
       </p>
 
       <div class="grid-3">
         <article class="card">
           <div class="card-kicker">Clearing</div>
           <h3>Direct transfer</h3>
-          <p>
-            The normal operational path is a direct transfer from one user EOA account to another user EOA account.
-          </p>
+          <p>The normal operational path is a direct transfer from one user-controlled EOA to another user-controlled EOA.</p>
         </article>
 
         <article class="card">
           <div class="card-kicker">Controlled supply</div>
           <h3>Explicit mint / burn</h3>
-          <p>
-            Supply changes only through explicit mint or burn paths under manager control, either manually or following a valid oracle request.
-          </p>
+          <p>Supply changes only through explicit mint or burn paths under manager control, either manually or following a valid oracle request.</p>
         </article>
 
         <article class="card">
           <div class="card-kicker">Network locality</div>
-          <h3>Local production on Sei</h3>
-          <p>
-            The production model provides for a Sei-native ORUSD, with no bridge, OFT, wrapping, migration or balance continuity from Sepolia.
-          </p>
+          <h3>Sei-native reference</h3>
+          <p>The public reference implementation is Sei-native and exposes no bridge, OFT, wrapping, cross-chain transfer or balance-migration mechanism.</p>
         </article>
       </div>
 
       <div class="notice">
-        <strong>Canonical state.</strong>
-        Ethereum Sepolia is the public reference and test environment. The intended production deployment is separate on Sei EVM. Sepolia balances, proofs and administrative operations create no production entitlement on Sei.
+        <strong>Canonical-state principle.</strong>
+        Sei Testnet is the current public technical reference. Any future Sei Mainnet production instance will be deployed independently
+        with its own production address, privileged-role configuration and operational-security controls.
+        Testnet balances and administrative actions create no Mainnet entitlement.
       </div>
     </section>
 
@@ -189,7 +205,9 @@
       <h2>Gross debited / net received model</h2>
 
       <p class="section-intro">
-        For an ordinary user transfer, the sender is debited the stated gross amount. The protocol deducts 0.15% within that amount and credits it to the feeRecipient; the beneficiary receives the net balance.
+        For an ordinary user transfer, the sender is debited the stated gross amount.
+        The protocol deducts 0.15% within that amount and credits it to the feeRecipient;
+        the beneficiary receives the net balance.
       </p>
 
       <div class="flow">
@@ -211,7 +229,8 @@
 
       <div class="notice">
         <strong>Transfer invariant.</strong>
-        For an ordinary user transfer: sender debit = beneficiary credit + feeRecipient credit. The fee mechanism creates no additional ORUSD.
+        Sender debit = beneficiary credit + feeRecipient credit.
+        The fee mechanism creates no additional ORUSD.
       </div>
 
       <div class="grid-2 mt-1">
@@ -220,8 +239,8 @@
           <ul class="list">
             <li>EOA → EOA.</li>
             <li>Gross amount ≥ 0.501 ORUSD.</li>
-            <li>Fee rules apply.</li>
-            <li>Restricted recipient rules apply.</li>
+            <li>0.15% protocol fee.</li>
+            <li>Restricted-recipient rules apply.</li>
           </ul>
         </article>
 
@@ -231,7 +250,7 @@
             <li>Ordinary transfer to a smart contract rejected.</li>
             <li>approve() disabled.</li>
             <li>transferFrom() disabled.</li>
-            <li>Minting to a smart contract is not part of the reference model.</li>
+            <li>Minting to a smart-contract recipient rejected by the reference implementation.</li>
           </ul>
         </article>
       </div>
@@ -242,7 +261,9 @@
       <h2>The oracle attests. The manager settles.</h2>
 
       <p class="section-intro">
-        An authorized oracle cannot directly create or destroy ORUSD. It submits a MINT or BURN request based on an identifiable external proof. The request becomes visible on-chain before any supply change.
+        An authorized oracle cannot directly create or destroy ORUSD.
+        It submits a MINT or BURN request based on identifiable external evidence.
+        The request becomes visible on-chain before any supply change.
       </p>
 
       <div class="flow">
@@ -272,57 +293,62 @@
         <article class="card">
           <div class="card-kicker">Anti-replay</div>
           <h3>Single-use proof</h3>
-          <p>The same external clearing reference can create only one ORUSD request. Rejection does not release the proof for reuse.</p>
+          <p>The same sourceChain / externalRef pair can be consumed only once. Rejection does not release the proof for reuse.</p>
         </article>
 
         <article class="card">
           <div class="card-kicker">Finality</div>
           <h3>Terminal status</h3>
-          <p>An executed or rejected request retains an identifiable final state in the audit history.</p>
+          <p>An executed or rejected request retains an identifiable final state in the on-chain audit history.</p>
         </article>
       </div>
     </section>
 
     <section id="collateral">
-      <div class="section-label">06 · Collateral & Segregation</div>
-      <h2>USDC as collateral, outside ORUSD custody</h2>
+      <div class="section-label">06 · Clearing / Custody Segregation</div>
+      <h2>USDC by Circle recommended for external escrow</h2>
 
       <p class="section-intro">
-        The ORUSD specification contemplates USDC as the sole collateral asset. This collateral is neither received, held nor managed by the ORUSD contract. Deposits and lending positions remain within infrastructures operated by independent partners.
+        The ORUSD smart contract is a clearing register and does not receive or hold customer deposits.
+        Where an external USD-denominated escrow or custody layer is used,
+        USDC issued by Circle is the recommended collateral asset.
+        Deposit, custody, lending and collateral-management functions remain within independent partner infrastructures.
       </p>
 
       <div class="grid-3">
         <article class="card">
-          <div class="card-kicker">Collateral asset</div>
-          <h3>USDC</h3>
-          <p>USDC is the collateral asset contemplated by the ORUSD architecture. ORUSD itself does not hold this collateral.</p>
+          <div class="card-kicker">Clearing layer</div>
+          <h3>ORUSD</h3>
+          <p>ORUSD records and settles USD-denominated clearing units. It does not hold customer USDC collateral.</p>
         </article>
 
         <article class="card">
-          <div class="card-kicker">Partner lenders</div>
-          <h3>External custody</h3>
-          <p>Lending partners remain responsible for their deposit, custody or escrow mechanisms, risk management and collateral contracts.</p>
+          <div class="card-kicker">External collateral layer</div>
+          <h3>USDC by Circle</h3>
+          <p>USDC issued by Circle is recommended for external USD-denominated escrow or custody arrangements.</p>
         </article>
 
         <article class="card">
           <div class="card-kicker">Structural separation</div>
-          <h3>No unilateral client access</h3>
-          <p>The design requires that ORUSD have no unilateral authority to withdraw a client’s collateral from a partner infrastructure.</p>
+          <h3>Distinct authorities</h3>
+          <p>Custody of USDC confers no ORUSD mint, burn, oracle or manager authority.</p>
         </article>
       </div>
 
       <div class="notice">
-        <strong>Clearing–custody segregation.</strong>
-        The ORUSD register and client collateral are distinct domains. A collateral event may produce a clearing instruction through the oracle, but it does not transfer custody of the collateral to the ORUSD contract.
+        <strong>Strict clearing / custody segregation.</strong>
+        ORUSD performs clearing; external escrow or custody partners perform deposit and collateral functions.
+        A collateral event may produce a clearing instruction through the oracle, but it does not transfer custody of USDC to the ORUSD contract.
       </div>
     </section>
 
     <section id="specification">
       <div class="section-label">07 · Technical Specification</div>
       <h2>ORUSD token specification</h2>
+
       <div class="actions mb-1">
         <a class="btn btn-primary"
-           href="/osnias-clearing/orusd/ORUsd_Technical.pdf"
+           href="/osnias-clearing/orusd/ORUSD_Technical_White_Paper.pdf"
            target="_blank"
            rel="noopener noreferrer">
           Open ORUSD Technical Documentation · PDF ↗
@@ -335,12 +361,20 @@
           <td>Restricted USD-denominated clearing register token.</td>
         </tr>
         <tr>
-          <th>Solidity</th>
-          <td>^0.8.22 in the reference implementation.</td>
+          <th>Contract name</th>
+          <td>OsniasClearing_Orusd.</td>
         </tr>
         <tr>
           <th>Symbol</th>
           <td>ORUSD.</td>
+        </tr>
+        <tr>
+          <th>Solidity</th>
+          <td>^0.8.22; verified with v0.8.22+commit.4fc1097e.</td>
+        </tr>
+        <tr>
+          <th>Base standard</th>
+          <td>OpenZeppelin ERC-20 with Ownable2Step administration.</td>
         </tr>
         <tr>
           <th>Decimals</th>
@@ -352,7 +386,7 @@
         </tr>
         <tr>
           <th>Protocol fee</th>
-          <td>15 basis points, i.e. 0.15%, deducted from the transferred amount.</td>
+          <td>15 basis points = 0.15%, deducted from the transferred amount.</td>
         </tr>
         <tr>
           <th>Circulation</th>
@@ -364,31 +398,43 @@
         </tr>
         <tr>
           <th>Mint / burn</th>
-          <td>Explicit paths under manager authority; the oracle cannot mint or burn directly.</td>
+          <td>Explicit manager-controlled paths; the oracle cannot mint or burn directly.</td>
         </tr>
         <tr>
           <th>Oracle request</th>
-          <td>MINT or BURN request, 24-hour validity, pending / executed / rejected state.</td>
+          <td>MINT or BURN request, 24-hour validity, NONE / PENDING / EXECUTED / REJECTED lifecycle.</td>
         </tr>
         <tr>
           <th>Anti-replay</th>
-          <td>An external clearing reference can be consumed only once.</td>
+          <td>A sourceChain + externalRef proof pair can be consumed only once.</td>
         </tr>
         <tr>
-          <th>Infrastructure recipients</th>
-          <td>The initial manager, GasPool and authorized oracles are restricted as ordinary recipients under the reference contract.</td>
+          <th>Recommended external escrow collateral</th>
+          <td>USDC issued by Circle, managed outside ORUSD by independent partners.</td>
         </tr>
         <tr>
-          <th>Contemplated collateral</th>
-          <td>USDC, managed outside the ORUSD contract by independent partners.</td>
+          <th>Public reference network</th>
+          <td>Sei Testnet · atlantic-2 · EVM Chain ID 1328 (0x530) · native gas asset SEI.</td>
         </tr>
         <tr>
-          <th>Public test environment</th>
-          <td>Ethereum Sepolia.</td>
+          <th>Verified contract</th>
+          <td><span class="mono">0x0c3a19455b898913A1DaD93d724c24062293dB5F</span></td>
+        </tr>
+        <tr>
+          <th>Creation transaction</th>
+          <td><span class="mono">0xce15b298a4f1b0474e9c704996fd6d08c8d939d09def0eba8205998112c1ff15</span></td>
+        </tr>
+        <tr>
+          <th>Compiler / optimizer</th>
+          <td>v0.8.22+commit.4fc1097e · optimizer enabled · 200 runs · EVM target Paris.</td>
+        </tr>
+        <tr>
+          <th>Explorer verification</th>
+          <td>SeiScan · Source Code Verified — Exact Match.</td>
         </tr>
         <tr>
           <th>Intended production</th>
-          <td>Sei EVM, in a single network domain with no bridge, OFT, wrapping or migration.</td>
+          <td>Separate Sei Mainnet deployment, with no bridge, OFT, wrapping or balance migration.</td>
         </tr>
       </table>
     </section>
@@ -401,13 +447,13 @@
         <article class="card">
           <div class="card-kicker">Supply</div>
           <h3>No hidden path</h3>
-          <p>Supply creation and destruction must remain limited to explicitly defined and authorized functions.</p>
+          <p>Supply creation and destruction remain limited to explicitly defined manager-authorized functions.</p>
         </article>
 
         <article class="card">
           <div class="card-kicker">Oracle</div>
           <h3>Separation of powers</h3>
-          <p>Compromise of an oracle alone must not be sufficient to create or destroy ORUSD.</p>
+          <p>Compromise of an oracle alone is insufficient to create or destroy ORUSD.</p>
         </article>
 
         <article class="card">
@@ -419,19 +465,19 @@
         <article class="card">
           <div class="card-kicker">P2P accounting</div>
           <h3>Conservation</h3>
-          <p>An ordinary transfer redistributes existing ORUSD between the beneficiary and the feeRecipient without fee-induced inflation.</p>
+          <p>An ordinary transfer redistributes existing ORUSD between the beneficiary and feeRecipient without fee-induced inflation.</p>
         </article>
 
         <article class="card">
           <div class="card-kicker">Collateral</div>
           <h3>Asset segregation</h3>
-          <p>Compromise of the ORUSD register must not provide access to client collateral held by a partner.</p>
+          <p>Compromise of the ORUSD register does not itself provide access to USDC collateral held by an external partner.</p>
         </article>
 
         <article class="card">
           <div class="card-kicker">Production</div>
           <h3>Privileged-key security</h3>
-          <p>Production privileged keys must be treated as critical authorities and protected by the published mainnet security architecture.</p>
+          <p>Future Mainnet privileged roles must use the separately published production security architecture.</p>
         </article>
       </div>
     </section>
@@ -441,61 +487,107 @@
       <h2>The code and documentation are public</h2>
 
       <p class="section-intro">
-        The Solidity contract, its ABI, the flattened source and the technical reference document are directly accessible in the public <strong>/orusd/</strong> directory. The links below use the exact filenames currently present in the repository.
+        The Solidity contract, ABI, flattened source and Version 2.0 technical white paper are directly accessible
+        in the public <strong>/orusd/</strong> repository directory.
       </p>
 
       <div class="notice">
         <strong>Permanent technical archive — Zenodo.</strong>
-        The published ORUSD technical package is permanently archived under DOI
-        <a href="https://doi.org/10.5281/zenodo.22140272" target="_blank" rel="noopener noreferrer"><strong>10.5281/zenodo.22140272</strong></a>.
-        The archive contains the Solidity source code, ABI, flattened contract and the ORUSD technical white paper.
+        ORUSD Version 2.0 is archived under DOI
+        <a href="https://doi.org/10.5281/zenodo.22200260" target="_blank" rel="noopener noreferrer">
+          <strong>10.5281/zenodo.22200260</strong>
+        </a>.
+        The archive contains the Solidity source code, ABI, flattened contract and ORUSD Technical White Paper &amp; Audit Reference.
       </div>
 
       <div class="resources">
-        <a class="resource" href="https://doi.org/10.5281/zenodo.22140272" target="_blank" rel="noopener noreferrer">
+        <a class="resource" href="https://zenodo.org/records/22200260" target="_blank" rel="noopener noreferrer">
           <div>
             <strong>Zenodo — ORUSD Technical Archive</strong>
-            <span>Permanent archive · DOI 10.5281/zenodo.22140272</span>
+            <span>Record 22200260 · DOI 10.5281/zenodo.22200260</span>
           </div>
           <div class="resource-type">DOI ↗</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/orusd/Orusd-testnet.sol">
+        <a class="resource" href="/osnias-clearing/orusd/orusd-sei-testnet.sol">
           <div>
-            <strong>/orusd/Orusd-testnet.sol</strong>
-            <span>Reference testnet Solidity contract</span>
+            <strong>/orusd/orusd-sei-testnet.sol</strong>
+            <span>Sei Testnet Solidity source</span>
           </div>
           <div class="resource-type">SOURCE ↗</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/orusd/ORUsd-testnet.abi">
+        <a class="resource" href="/osnias-clearing/orusd/orusd-sei-testnet.abi">
           <div>
-            <strong>/orusd/ORUsd-testnet.abi</strong>
+            <strong>/orusd/orusd-sei-testnet.abi</strong>
             <span>Public ORUSD contract ABI</span>
           </div>
           <div class="resource-type">ABI ↗</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/orusd/ORUsd-testnet-flat.sol">
+        <a class="resource" href="/osnias-clearing/orusd/orusd-sei-testnet-flat.sol">
           <div>
-            <strong>/orusd/ORUsd-testnet-flat.sol</strong>
-            <span>Flattened source published for technical review</span>
+            <strong>/orusd/orusd-sei-testnet-flat.sol</strong>
+            <span>Flattened Sei Testnet source for verification and technical review</span>
           </div>
           <div class="resource-type">FLAT ↗</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/orusd/ORUsd_Technical.pdf">
+        <a class="resource" href="/osnias-clearing/orusd/ORUSD_Technical_White_Paper.pdf" target="_blank" rel="noopener noreferrer">
           <div>
-            <strong>/orusd/ORUsd_Technical.pdf</strong>
-            <span>Technical white paper & audit reference</span>
+            <strong>/orusd/ORUSD_Technical_White_Paper.pdf</strong>
+            <span>ORUSD Technical White Paper &amp; Audit Reference — Version 2.0</span>
           </div>
           <div class="resource-type">PDF ↗</div>
+        </a>
+
+        <a class="resource"
+           href="https://testnet.seiscan.io/address/0x0c3a19455b898913A1DaD93d724c24062293dB5F#code"
+           target="_blank"
+           rel="noopener noreferrer">
+          <div>
+            <strong>Sei Testnet — verified ORUSD contract</strong>
+            <span>0x0c3a19455b898913A1DaD93d724c24062293dB5F</span>
+          </div>
+          <div class="resource-type">SEISCAN ↗</div>
         </a>
       </div>
 
       <div class="notice">
-        <strong>Reference deployment.</strong>
-        The current technical document identifies Ethereum Sepolia as the public reference environment and Sei EVM as the intended production environment. Production addresses and roles must be published separately in the official registry at mainnet deployment.
+        <strong>Reference deployment — Sei Testnet.</strong>
+        ORUSD Version 2.0 reference address:
+        <a href="https://testnet.seiscan.io/address/0x0c3a19455b898913A1DaD93d724c24062293dB5F#code"
+           target="_blank"
+           rel="noopener noreferrer">
+          <strong>0x0c3a19455b898913A1DaD93d724c24062293dB5F</strong>
+        </a>.
+        SeiScan reports the deployed source as <strong>Exact Match</strong>.
+      </div>
+
+      <div class="notice">
+        <strong>Document scope.</strong>
+        The ORUSD Technical White Paper describes the token architecture, deployment model,
+        smart-contract behavior, operational roles, security boundaries and audit invariants.
+        Legal, regulatory, contractual and compliance matters are addressed separately
+        in dedicated Osnias Clearing regulatory documentation.
+      </div>
+
+      <div class="notice">
+        <strong>Publication metadata.</strong><br />
+        Version 2.0 · 31 August 2026<br />
+        Author / Rédacteur: <strong>Denis Bouzon</strong> · ORCID
+        <a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer">
+          <strong>0009-0007-8894-8902</strong>
+        </a><br />
+        Zenodo record:
+        <a href="https://zenodo.org/records/22200260" target="_blank" rel="noopener noreferrer">
+          <strong>22200260</strong>
+        </a><br />
+        DOI:
+        <a href="https://doi.org/10.5281/zenodo.22200260" target="_blank" rel="noopener noreferrer">
+          <strong>10.5281/zenodo.22200260</strong>
+        </a><br />
+        <strong>Copyright © 2026 Denis Bouzon — Osnias Clearing. All rights reserved.</strong>
       </div>
     </section>
 
@@ -503,17 +595,19 @@
 
   <footer>
     <div class="container footer-grid">
-      <div>ORUSD · USD Clearing Token</div>
+      <div>ORUSD · USD Clearing Token · Version 2.0 · © 2026 Denis Bouzon — Osnias Clearing · All rights reserved.</div>
       <div>
         <a href="#p2p">P2P</a>
         &nbsp;·&nbsp;
         <a href="#oracle">Oracle</a>
         &nbsp;·&nbsp;
+        <a href="#collateral">Collateral</a>
+        &nbsp;·&nbsp;
         <a href="#specification">Specification</a>
         &nbsp;·&nbsp;
         <a href="#resources">Public files</a>
         &nbsp;·&nbsp;
-        <a href="https://doi.org/10.5281/zenodo.22140272" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22140272</a>
+        <a href="https://doi.org/10.5281/zenodo.22200260" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22200260</a>
       </div>
     </div>
   </footer>
