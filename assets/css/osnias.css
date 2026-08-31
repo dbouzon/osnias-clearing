@@ -3,6 +3,12 @@
   --accent:#3fd1ff;--accent-soft:#1a9fd0;--text:#f5f7ff;--muted:#aab4d2;
   --border:#1b2338;--ok:#64e6b2;--warning:#e8b84a;--max:1120px;--radius:1rem;
 }
+
+/* Utilities */
+.text-center{text-align:center}
+.mt-1{margin-top:1rem}
+.mb-1{margin-bottom:1rem}
+
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
@@ -29,9 +35,13 @@ a:hover,a:focus-visible{text-decoration:underline}
 }
 .site-nav-brand{
   color:#fff;font-size:.82rem;font-weight:800;letter-spacing:.09em;
-  text-transform:uppercase;white-space:nowrap;margin-right:auto
+  text-transform:uppercase;white-space:nowrap
 }
 .site-nav-brand span{color:var(--accent)}
+.site-nav-notice{
+  color:var(--warning);font-size:.68rem;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;white-space:nowrap;margin-right:auto
+}
 .site-nav-buttons{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end;align-items:center}
 .site-nav-buttons a{
   display:inline-flex;align-items:center;justify-content:center;min-height:34px;
@@ -188,7 +198,8 @@ footer{border-top:1px solid var(--border);padding:1.8rem 0 2.2rem;color:var(--mu
 }
 @media(max-width:760px){
   .site-nav-inner{padding:.65rem 1rem}
-  .site-nav-brand{width:100%;margin-right:0}
+  .site-nav-brand{width:100%}
+  .site-nav-notice{width:100%;margin-right:0;white-space:normal}
   .site-nav-buttons{justify-content:flex-start}
 }
 @media(max-width:560px){
