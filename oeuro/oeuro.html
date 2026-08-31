@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>OEURO — EUR Clearing Token · Version 2.0 · Sei Testnet</title>
+  <meta name="description" content="OEURO Version 2.0 — EUR-denominated clearing token on Sei: direct EOA-to-EOA settlement, 6 decimals, 0.15% protocol fee, 24-hour oracle requests, anti-replay protection, manager-gated mint/burn and verified Sei Testnet deployment." />
+  <meta name="theme-color" content="#050814" />
+
+  <meta property="og:title" content="OEURO — EUR Clearing Token · Version 2.0" />
+  <meta property="og:description" content="Restricted EUR clearing register · Sei Testnet verified deployment · P2P settlement · Oracle attestation · Manager-gated settlement · Public technical documentation." />
+  <meta property="og:type" content="website" />
+
+  
+<link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css">
+<script src="/osnias-clearing/assets/js/osnias-nav.js" defer></script>
+</head>
+
+<body>
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+        OSNIAS <span>CLEARING</span>
+      </a>
+
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation">
+        <a href="/osnias-clearing/history/history.html">History</a>
+        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
+        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
+        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
+        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
+        <a href="/osnias-clearing/tokenomics/tokenomics.html">Tokenomics</a>
+        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
+        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
+        <a href="/osnias-clearing/regulation/regulation.html">Regulation</a>
+      </nav>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <section class="hero">
+        <div class="hero-grid single">
+          <div>
+            <div class="eyebrow">EUR Clearing Register · Version 2.0 · Sei Testnet Public Technical Reference</div>
+
+            <h1>OEURO</h1>
+            <div class="hero-role">A token designed for direct EUR-denominated clearing</div>
+
+            <p class="hero-lead">
+              OEURO is a EUR-denominated clearing register token designed for direct P2P circulation between EOA accounts on Sei.
+              Version 2.0 combines controlled mint and burn, traceable oracle requests, non-replayable external proofs
+              and final settlement under manager authority. The public reference deployment is verified on Sei Testnet.
+            </p>
+
+            <div class="actions">
+              <a class="btn btn-primary"
+                 href="/osnias-clearing/oeuro/oeuro_technical.pdf"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                Local Technical Documentation · PDF ↗
+              </a>
+
+              <a class="btn"
+                 href="https://doi.org/10.5281/zenodo.22195130"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                Zenodo DOI · Permanent Archive ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+
+
+    <section class="essential-parameters" aria-label="OEURO essential parameters">
+      <aside class="panel">
+            <div class="section-label">01 · OEURO — Essential Parameters</div>
+
+            <div class="stats">
+              <div class="stat">
+                <small>Decimals</small>
+                <strong>6</strong>
+                <span>On-chain precision</span>
+              </div>
+
+              <div class="stat">
+                <small>P2P fee</small>
+                <strong>0.15%</strong>
+                <span>Deducted from transferred amount</span>
+              </div>
+
+              <div class="stat">
+                <small>Gross minimum</small>
+                <strong>0.501 OEURO</strong>
+                <span>Ordinary P2P transfer</span>
+              </div>
+
+              <div class="stat">
+                <small>Oracle request</small>
+                <strong>24 hours</strong>
+                <span>Execution window</span>
+              </div>
+
+              <div class="stat">
+                <small>Circulation</small>
+                <strong>EOA → EOA</strong>
+                <span>Delegated transfers disabled</span>
+              </div>
+
+              <div class="stat">
+                <small>Settlement</small>
+                <strong>Manager-gated</strong>
+                <span>Oracle cannot mint or burn directly</span>
+              </div>
+
+              <div class="stat">
+                <small>Reference testnet</small>
+                <strong>Sei Testnet · Chain ID 1328</strong>
+                <span>0x49A0D9D353e9b9860B137DFAA7f24ab83E14c7f7</span>
+              </div>
+            </div>
+          </aside>
+    </section>
+
+
+    <section class="testnet-status" aria-label="OEURO Sei Testnet status">
+      <div class="notice">
+        <div class="section-label">02 · OEURO on Sei Testnet</div>
+        OEURO Version 2.0 has a public reference deployment on <strong>Sei Testnet</strong>
+        for development, integration testing, wallet validation and pre-audit review.
+        The deployed contract is publicly inspectable and its source has been verified on SeiScan
+        with matching bytecode and ABI.
+        <br /><br />
+        <strong>Network:</strong> Sei Testnet · EVM Chain ID <span class="mono">1328 (0x530)</span><br />
+        <strong>Native gas asset:</strong> SEI<br />
+        <strong>Contract:</strong> <span class="mono">OsniasClearing_Oeuro</span><br />
+        <strong>Contract address:</strong>
+        <span class="mono">0x49A0D9D353e9b9860B137DFAA7f24ab83E14c7f7</span><br />
+        <strong>Creation transaction:</strong>
+        <span class="mono">0x97dfa508843181c4649215389c6be24f626b3510bb507d531a73e36255c37043</span>
+        <br /><br />
+        <div class="actions">
+          <a class="btn btn-primary"
+             href="https://testnet.seiscan.io/address/0x49A0D9D353e9b9860B137DFAA7f24ab83E14c7f7#code"
+             target="_blank"
+             rel="noopener noreferrer">
+            View verified OEURO contract on SeiScan →
+          </a>
+          <a class="btn"
+             href="https://testnet.seiscan.io/tx/0x97dfa508843181c4649215389c6be24f626b3510bb507d531a73e36255c37043"
+             target="_blank"
+             rel="noopener noreferrer">
+            View creation transaction →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="role">
+      <div class="section-label">03 · Technical Role</div>
+      <h2>A clearing register, not a market token</h2>
+
+      <p class="section-intro">
+        OEURO is designed for one specific function: representing and transferring a EUR-denominated clearing unit between user accounts.
+        The token contract is intentionally restricted so that its ordinary circulation remains focused on direct account-to-account clearing.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Clearing</div>
+          <h3>Direct P2P transfer</h3>
+          <p>The normal operational path is a direct transfer from one EOA user account to another EOA user account.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Controlled supply</div>
+          <h3>Explicit mint / burn</h3>
+          <p>Supply changes only through explicit mint and burn paths controlled by the manager, either manually or after a valid oracle request.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Restricted integration</div>
+          <h3>No delegated transfer path</h3>
+          <p>The reference implementation disables approve() and transferFrom() and rejects ordinary transfers to smart-contract recipients.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="p2p">
+      <div class="section-label">04 · P2P Circulation</div>
+      <h2>Gross debited / net received</h2>
+
+      <p class="section-intro">
+        For an ordinary user transfer, the sender is debited exactly the gross amount entered.
+        A 0.15% protocol fee is deducted inside that amount and credited to the feeRecipient.
+        The beneficiary receives the remaining net amount.
+      </p>
+
+      <div class="flow">
+        <div class="flow-box">
+          <strong>1,000.000000 OEURO</strong>
+          <p>Gross amount requested by the sender.</p>
+        </div>
+
+        <div class="flow-box">
+          <strong>1.500000 OEURO</strong>
+          <p>0.15% protocol fee credited to the feeRecipient.</p>
+        </div>
+
+        <div class="flow-box">
+          <strong>998.500000 OEURO</strong>
+          <p>Net amount received by the beneficiary.</p>
+        </div>
+      </div>
+
+      <div class="notice">
+        <strong>Transfer invariant.</strong>
+        Sender debit = beneficiary credit + feeRecipient credit.
+        The transfer-fee mechanism redistributes existing OEURO and does not create additional supply.
+      </div>
+
+      <div class="grid-2 mt-1">
+        <article class="card">
+          <h3>Ordinary circulation</h3>
+          <ul class="list">
+            <li>EOA → EOA transfers.</li>
+            <li>Gross amount ≥ 0.501 OEURO.</li>
+            <li>0.15% protocol fee.</li>
+            <li>Restricted-recipient rules apply.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Disabled paths</h3>
+          <ul class="list">
+            <li>approve() is disabled.</li>
+            <li>transferFrom() is disabled.</li>
+            <li>Ordinary transfer to a smart contract is rejected.</li>
+            <li>Minting to a smart-contract address is rejected by the reference implementation.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="custody">
+      <div class="section-label">05 · Clearing / Custody Segregation</div>
+      <h2>Clearing and deposit are separate operational domains</h2>
+
+      <p class="section-intro">
+        The OEURO smart contract is a clearing register. It does not receive or hold customer deposits
+        and contains no customer-custody, lending, collateral-management, withdrawal or bank-account logic.
+        Deposit and custody functions remain outside OEURO and are handled by separately identified external partners.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Clearing layer</div>
+          <h3>OEURO</h3>
+          <p>
+            OEURO records and settles EUR-denominated clearing units between eligible user-controlled accounts.
+            Its supply and settlement functions remain governed by the OEURO manager/oracle architecture.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">External collateral layer</div>
+          <h3>EURC by Circle — recommended</h3>
+          <p>
+            Where an external EUR-denominated escrow or custody arrangement is used,
+            EURC issued by Circle is the recommended collateral asset.
+            EURC custody, redemption and collateral management remain outside the OEURO smart contract
+            and confer no mint, burn, oracle or manager authority over OEURO.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Strict segregation principle.</strong>
+        OEURO performs clearing; external escrow/custody partners perform deposit and collateral functions.
+        The two operational domains are deliberately separated.
+      </div>
+    </section>
+
+    <section id="oracle">
+      <div class="section-label">06 · Oracle & Settlement</div>
+      <h2>The oracle attests. The manager settles.</h2>
+
+      <p class="section-intro">
+        An authorized oracle cannot directly mint or burn OEURO.
+        It creates an on-chain MINT or BURN request after observing or verifying an external event.
+        Only the manager can execute or permanently reject that request.
+      </p>
+
+      <div class="flow">
+        <div class="flow-box">
+          <strong>1 · Attestation</strong>
+          <p>An authorized oracle validates an external event and submits a request containing the account, amount, source chain and external reference.</p>
+        </div>
+
+        <div class="flow-box">
+          <strong>2 · Pending</strong>
+          <p>The request is recorded on-chain with a timestamp and remains executable for 24 hours.</p>
+        </div>
+
+        <div class="flow-box">
+          <strong>3 · Settlement</strong>
+          <p>The manager executes or rejects the request. An expired request can no longer be executed.</p>
+        </div>
+      </div>
+
+      <div class="grid-3 mt-1">
+        <article class="card">
+          <div class="card-kicker">Oracle authority</div>
+          <h3>Request only</h3>
+          <p>The oracle can attest and request; it cannot directly modify OEURO supply.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Anti-replay</div>
+          <h3>Single-use proof</h3>
+          <p>The same source-chain / external-reference pair can be consumed only once. Rejection does not make the proof reusable.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Finality</div>
+          <h3>Terminal state</h3>
+          <p>Executed and rejected requests remain identifiable through their final on-chain status and emitted events.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="specification">
+      <div class="section-label">07 · Technical Specification</div>
+      <h2>OEURO token design</h2>
+      <div class="actions mb-1">
+        <a class="btn btn-primary"
+           href="/osnias-clearing/oeuro/oeuro_technical.pdf"
+           target="_blank"
+           rel="noopener noreferrer">
+          Open OEURO Technical Documentation · PDF ↗
+        </a>
+      </div>
+
+      <table class="spec-table">
+        <tr>
+          <th>Full name</th>
+          <td>Osnias Euro Clearing.</td>
+        </tr>
+        <tr>
+          <th>Symbol</th>
+          <td>OEuro.</td>
+        </tr>
+        <tr>
+          <th>Solidity</th>
+          <td>^0.8.22 in the reference implementation.</td>
+        </tr>
+        <tr>
+          <th>Public reference network</th>
+          <td>Sei Testnet · EVM Chain ID 1328 (0x530) · native gas asset SEI.</td>
+        </tr>
+        <tr>
+          <th>Verified contract</th>
+          <td><span class="mono">0x49A0D9D353e9b9860B137DFAA7f24ab83E14c7f7</span></td>
+        </tr>
+        <tr>
+          <th>Creation transaction</th>
+          <td><span class="mono">0x97dfa508843181c4649215389c6be24f626b3510bb507d531a73e36255c37043</span></td>
+        </tr>
+        <tr>
+          <th>Compiler / optimizer</th>
+          <td>Solidity v0.8.22+commit.4fc1097e · optimizer enabled · 200 runs · EVM target Paris.</td>
+        </tr>
+        <tr>
+          <th>Explorer verification</th>
+          <td>SeiScan · matching bytecode and ABI.</td>
+        </tr>
+        <tr>
+          <th>External escrow collateral</th>
+          <td>EURC issued by Circle is recommended for external EUR-denominated escrow/custody arrangements; custody remains outside OEURO.</td>
+        </tr>
+        <tr>
+          <th>Base standard</th>
+          <td>OpenZeppelin ERC-20 with Ownable2Step administration.</td>
+        </tr>
+        <tr>
+          <th>Decimals</th>
+          <td>6.</td>
+        </tr>
+        <tr>
+          <th>Minimum ordinary transfer</th>
+          <td>501,000 base units = 0.501000 OEURO gross.</td>
+        </tr>
+        <tr>
+          <th>Protocol fee</th>
+          <td>15 basis points = 0.15%, deducted from the gross transferred amount.</td>
+        </tr>
+        <tr>
+          <th>Ordinary circulation</th>
+          <td>Direct EOA → EOA transfer, subject to minimum amount and recipient restrictions.</td>
+        </tr>
+        <tr>
+          <th>approve / transferFrom</th>
+          <td>Disabled in the reference implementation.</td>
+        </tr>
+        <tr>
+          <th>Manual mint / burn</th>
+          <td>Manager-only.</td>
+        </tr>
+        <tr>
+          <th>Oracle request</th>
+          <td>MINT or BURN request, valid for 24 hours.</td>
+        </tr>
+        <tr>
+          <th>Oracle settlement</th>
+          <td>Execution or rejection reserved to the manager.</td>
+        </tr>
+        <tr>
+          <th>Anti-replay</th>
+          <td>A sourceChain + externalRef proof pair can be consumed only once.</td>
+        </tr>
+        <tr>
+          <th>Fee recipient</th>
+          <td>Configurable by the manager; must be an EOA in the reference implementation.</td>
+        </tr>
+        <tr>
+          <th>Restricted recipients</th>
+          <td>The initial manager, GasPool and authorized oracles are prevented from receiving ordinary OEURO transfers under the current reference design.</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id="security">
+      <div class="section-label">08 · Security Invariants</div>
+      <h2>Explicit trust boundaries</h2>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Supply</div>
+          <h3>Explicit supply paths</h3>
+          <p>Minting and burning are limited to clearly identified manager-authorized functions.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Oracle</div>
+          <h3>Separation of powers</h3>
+          <p>Compromise of an oracle alone is insufficient to mint or burn OEURO because final settlement remains manager-gated.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Proof integrity</div>
+          <h3>Anti-replay</h3>
+          <p>An external proof cannot be used to create multiple OEURO requests.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Transfer accounting</div>
+          <h3>Conservation</h3>
+          <p>Ordinary transfer fees redistribute existing OEURO between the beneficiary and feeRecipient without fee-induced inflation.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Recipient policy</div>
+          <h3>EOA-focused design</h3>
+          <p>Ordinary transfers to smart contracts are rejected, keeping the normal clearing path account-to-account.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Administration</div>
+          <h3>Two-step ownership</h3>
+          <p>Ownable2Step provides an explicit acceptance step when administrative ownership is transferred.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="resources">
+      <div class="section-label">09 · Transparency</div>
+      <h2>Public source, ABI and flattened contract</h2>
+
+      <p class="section-intro">
+        OEURO technical files are publicly accessible from the <strong>/oeuro/</strong> repository directory.
+        The links below point to the current public technical package.
+      </p>
+
+      <div class="notice">
+        <strong>Permanent technical archive — Zenodo.</strong>
+        OEURO Version 2.0 is permanently archived on Zenodo under DOI
+        <a href="https://doi.org/10.5281/zenodo.22195130" target="_blank" rel="noopener noreferrer"><strong>10.5281/zenodo.22195130</strong></a>.
+        The archive contains the Solidity source code, ABI, flattened contract and the OEURO Technical White Paper &amp; Audit Reference.
+      </div>
+
+      <div class="resources">
+        <a class="resource" href="/osnias-clearing/oeuro/oeuro-testnet.sol">
+          <div>
+            <strong>oeuro-testnet.sol</strong>
+            <span>Reference Solidity source</span>
+          </div>
+          <div class="resource-type">SOURCE ↗</div>
+        </a>
+
+        <a class="resource" href="/osnias-clearing/oeuro/oeuro-testnet.abi">
+          <div>
+            <strong>oeuro-testnet.abi</strong>
+            <span>Public contract ABI</span>
+          </div>
+          <div class="resource-type">ABI ↗</div>
+        </a>
+
+        <a class="resource" href="/osnias-clearing/oeuro/oeuro-testnet-flat.sol">
+          <div>
+            <strong>oeuro-testnet-flat.sol</strong>
+            <span>Flattened Solidity source for technical review</span>
+          </div>
+          <div class="resource-type">FLAT ↗</div>
+        </a>
+
+        <a class="resource" href="https://testnet.seiscan.io/address/0x49A0D9D353e9b9860B137DFAA7f24ab83E14c7f7#code" target="_blank" rel="noopener noreferrer">
+          <div>
+            <strong>Sei Testnet — verified OEURO contract</strong>
+            <span>0x49A0D9D353e9b9860B137DFAA7f24ab83E14c7f7</span>
+          </div>
+          <div class="resource-type">SEISCAN ↗</div>
+        </a>
+
+        <a class="resource" href="/osnias-clearing/oeuro/oeuro_technical.pdf" target="_blank" rel="noopener noreferrer">
+          <div>
+            <strong>oeuro_technical.pdf</strong>
+            <span>OEURO Technical White Paper &amp; Audit Reference</span>
+          </div>
+          <div class="resource-type">PDF ↗</div>
+        </a>
+      </div>
+
+      <div class="notice">
+        <strong>Reference testnet deployment — Sei Testnet.</strong>
+        OEURO Version 2.0 reference address:
+        <a href="https://testnet.seiscan.io/address/0x49A0D9D353e9b9860B137DFAA7f24ab83E14c7f7#code" target="_blank" rel="noopener noreferrer"><strong>0x49A0D9D353e9b9860B137DFAA7f24ab83E14c7f7</strong></a>.
+        Source verification on SeiScan produced matching bytecode and ABI.
+        The creation transaction is
+        <a href="https://testnet.seiscan.io/tx/0x97dfa508843181c4649215389c6be24f626b3510bb507d531a73e36255c37043" target="_blank" rel="noopener noreferrer"><strong>0x97dfa508843181c4649215389c6be24f626b3510bb507d531a73e36255c37043</strong></a>.
+      </div>
+
+      <div class="notice">
+        <strong>Document scope.</strong>
+        The OEURO Technical White Paper describes the token architecture, deployment model,
+        smart-contract behavior, operational roles, security boundaries and audit invariants.
+        Legal, regulatory, contractual and compliance matters are addressed separately
+        in dedicated Osnias Clearing regulatory documentation.
+      </div>
+
+      <div class="notice">
+        <strong>Publication metadata.</strong><br />
+        Version 2.0 · 31 August 2026<br />
+        Author / Rédacteur: <strong>Denis Bouzon</strong> · ORCID
+        <a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer"><strong>0009-0007-8894-8902</strong></a><br />
+        Zenodo record:
+        <a href="https://zenodo.org/records/22195130" target="_blank" rel="noopener noreferrer"><strong>22195130</strong></a><br />
+        <strong>© 2026 Osnias Clearing. All rights reserved.</strong>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>OEURO · EUR Clearing Token · Version 2.0 · © 2026 Osnias Clearing · All rights reserved.</div>
+      <div>
+        <a href="/osnias-clearing/index.html">Osnias Clearing</a>
+        &nbsp;·&nbsp;
+        <a href="#p2p">P2P</a>
+        &nbsp;·&nbsp;
+        <a href="#oracle">Oracle</a>
+        &nbsp;·&nbsp;
+        <a href="#specification">Specification</a>
+        &nbsp;·&nbsp;
+        <a href="#resources">Public files</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
