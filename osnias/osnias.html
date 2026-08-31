@@ -4,33 +4,93 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 
-<title>OSNIAS — Governance Token · Sei Testnet Deployment</title>
-<meta content="Official technical presentation of the OSNIAS governance token: fixed 100,000,000 genesis supply, 6 decimals, Sei canonical governance, LayerZero V2 OFT mobility and public Sei Testnet deployment data." name="description"/>
-<meta content="#050814" name="theme-color"/>
-<meta content="OSNIAS — Governance Token · Sei Testnet Deployment" property="og:title"/>
-<meta content="Governance token · Fixed genesis supply · Sei canonical governance · LayerZero V2 OFT · Public Sei Testnet deployment." property="og:description"/>
-<meta content="website" property="og:type"/>
+<title>OSNIAS Governance Token — Sei Testnet Deployment | Osnias Clearing</title>
+<meta name="description" content="Official technical presentation of the OSNIAS governance token: fixed 100,000,000 genesis supply, 6 decimals, canonical governance on Sei, LayerZero V2 OFT mobility and public Sei Testnet deployment data."/>
+<meta name="author" content="Denis Bouzon"/>
+<meta name="creator" content="Denis Bouzon"/>
+<meta name="publisher" content="Osnias Clearing"/>
+<meta name="robots" content="index, follow, max-image-preview:large"/>
+<meta name="theme-color" content="#050814"/>
 
-<link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css"/>
-<script src="/osnias-clearing/assets/js/osnias-nav.js" defer></script>
+<link rel="canonical" href="https://www.osnias-clearing.com/osnias/osnias.html"/>
+<link rel="author" href="https://orcid.org/0009-0007-8894-8902"/>
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml"/>
+
+<meta property="og:title" content="OSNIAS Governance Token — Sei Testnet Deployment | Osnias Clearing"/>
+<meta property="og:description" content="Governance token · Fixed genesis supply · Sei canonical governance · LayerZero V2 OFT · Public Sei Testnet deployment."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://www.osnias-clearing.com/osnias/osnias.html"/>
+<meta property="og:site_name" content="Osnias Clearing"/>
+<meta property="og:image" content="https://www.osnias-clearing.com/index-picture.png"/>
+<meta property="og:image:alt" content="Osnias Clearing multichain clearing architecture"/>
+
+<meta name="citation_author" content="Denis Bouzon"/>
+<meta name="citation_title" content="OSNIAS — Governance Token · Sei Testnet Deployment"/>
+<meta name="citation_publication_date" content="2026-08-31"/>
+
+<link rel="stylesheet" href="/assets/css/osnias.css"/>
+<script src="/assets/js/osnias-nav.js" defer></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.osnias-clearing.com/#denis-bouzon",
+      "name": "Denis Bouzon",
+      "sameAs": ["https://orcid.org/0009-0007-8894-8902"]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://www.osnias-clearing.com/#organization",
+      "name": "Osnias Clearing",
+      "url": "https://www.osnias-clearing.com/",
+      "email": "contact@osnias-clearing.com",
+      "sameAs": ["https://github.com/dbouzon/osnias-clearing"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.osnias-clearing.com/#website",
+      "url": "https://www.osnias-clearing.com/",
+      "name": "Osnias Clearing",
+      "publisher": {"@id": "https://www.osnias-clearing.com/#organization"},
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.osnias-clearing.com/osnias/osnias.html#article",
+      "headline": "OSNIAS — Governance Token · Sei Testnet Deployment",
+      "name": "OSNIAS Governance Token — Sei Testnet Deployment",
+      "description": "Official technical presentation of the OSNIAS governance token and its public Sei Testnet deployment.",
+      "url": "https://www.osnias-clearing.com/osnias/osnias.html",
+      "author": {"@id": "https://www.osnias-clearing.com/#denis-bouzon"},
+      "publisher": {"@id": "https://www.osnias-clearing.com/#organization"},
+      "dateModified": "2026-08-31",
+      "inLanguage": "en",
+      "isPartOf": {"@id": "https://www.osnias-clearing.com/#website"}
+    }
+  ]
+}
+</script>
 </head>
 
 <body>
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
-<a class="site-nav-brand" href="/osnias-clearing/index.html">
+<a class="site-nav-brand" href="/index.html">
 OSNIAS <span>CLEARING</span>
 </a>
 <nav id="mainNav" aria-label="Main site navigation" class="site-nav-buttons">
-<a href="/osnias-clearing/history/history.html">History</a>
-<a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
-<a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
-<a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
-<a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
-<a href="/osnias-clearing/tokenomics/tokenomics.html">Tokenomics</a>
-<a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
-<a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
-<a href="/osnias-clearing/regulation/regulation.html">Regulation</a>
+<a href="/history/history.html">History</a>
+<a href="/cycle/cycle.html">Jubilee Cycle</a>
+<a href="/sei/sei.html">SEI Mainnet</a>
+<a href="/oracle/oracle.html">Oracle</a>
+<a href="/osnias/osnias.html">OSNIAS Token</a>
+<a href="/tokenomics/tokenomics.html">Tokenomics</a>
+<a href="/orusd/orusd.html">ORUSD Clearing Token</a>
+<a href="/oeuro/oeuro.html">OEURO Clearing Token</a>
+<a href="/regulation/regulation.html">Regulation</a>
 </nav>
 </div>
 </div>
@@ -53,7 +113,7 @@ The current public reference implementation is deployed on Sei Testnet.
 
 <div class="actions">
 <a class="btn btn-primary"
-   href="/osnias-clearing/osnias/OSNIAS_Technical_White.pdf"
+   href="/osnias/OSNIAS_Technical_White.pdf"
    rel="noopener noreferrer"
    target="_blank">
 Local Technical Documentation · PDF ↗
@@ -533,7 +593,7 @@ The DOI will be updated on this page if a new Version 2.0 Zenodo record supersed
 <div class="resource-type">DOI ↗</div>
 </a>
 
-<a class="resource" href="/osnias-clearing/osnias/osnias-sei-testnet.sol">
+<a class="resource" href="/osnias/osnias-sei-testnet.sol">
 <div>
 <strong>/osnias/osnias-sei-testnet.sol</strong>
 <span>Reference Solidity source</span>
@@ -541,7 +601,7 @@ The DOI will be updated on this page if a new Version 2.0 Zenodo record supersed
 <div class="resource-type">SOURCE ↗</div>
 </a>
 
-<a class="resource" href="/osnias-clearing/osnias/osnias-sei-testnet.abi">
+<a class="resource" href="/osnias/osnias-sei-testnet.abi">
 <div>
 <strong>/osnias/osnias-sei-testnet.abi</strong>
 <span>Public contract ABI</span>
@@ -549,7 +609,7 @@ The DOI will be updated on this page if a new Version 2.0 Zenodo record supersed
 <div class="resource-type">ABI ↗</div>
 </a>
 
-<a class="resource" href="/osnias-clearing/osnias/osnias-sei-testnet-flat.sol">
+<a class="resource" href="/osnias/osnias-sei-testnet-flat.sol">
 <div>
 <strong>/osnias/osnias-sei-testnet-flat.sol</strong>
 <span>Flattened Solidity source for review and audit</span>
@@ -557,7 +617,7 @@ The DOI will be updated on this page if a new Version 2.0 Zenodo record supersed
 <div class="resource-type">FLAT ↗</div>
 </a>
 
-<a class="resource" href="/osnias-clearing/osnias/OSNIAS_Technical_White.pdf">
+<a class="resource" href="/osnias/OSNIAS_Technical_White.pdf">
 <div>
 <strong>/osnias/OSNIAS_Technical_White.pdf</strong>
 <span>Technical white paper &amp; audit reference</span>
@@ -599,9 +659,12 @@ ORCID:
 </main>
 
 <footer>
-<div class="container footer-grid">
-<div>OSNIAS · Governance Token · Sei Testnet · 0x129C294D476748E5b4D67B6EC403c97c399b756d</div>
+<div class="container">
+<div class="footer-grid">
+<div>© 2026 Osnias Clearing · OSNIAS Governance Token · Sei Testnet · Denis Bouzon · Last update: 31 August 2026</div>
 <div>
+<a href="/">Home</a>
+&nbsp;·&nbsp;
 <a href="#governance">Governance</a>
 &nbsp;·&nbsp;
 <a href="#specification">Specification</a>
@@ -613,6 +676,13 @@ ORCID:
 <a href="https://doi.org/10.5281/zenodo.22139986" rel="noopener noreferrer" target="_blank">
 DOI 10.5281/zenodo.22139986
 </a>
+</div>
+</div>
+<div class="footer-legal">
+Author: Denis Bouzon · ORCID
+<a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer">0009-0007-8894-8902</a>
+&nbsp;·&nbsp;
+<a href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a>
 </div>
 </div>
 </footer>
