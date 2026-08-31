@@ -4,37 +4,108 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Osnias Clearing — Multichain Clearing Project</title>
-  <meta name="description" content="Osnias Clearing is a blockchain-based clearing house operating on Sei EVM, with a common clearing registry, strict separation from custody and lending, and public technical documentation.">
+  <title>Osnias Clearing — Multichain Clearing Project on Sei EVM</title>
+
+  <meta name="description" content="Osnias Clearing is a Sei EVM clearing infrastructure with restricted USD and EUR clearing registers, canonical governance, strict separation from custody and lending, public technical documentation and auditable testnet deployments.">
+  <meta name="author" content="Denis Bouzon">
+  <meta name="creator" content="Denis Bouzon">
+  <meta name="publisher" content="Osnias Clearing">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#050814">
-  <meta name="robots" content="index, follow">
+
+  <link rel="canonical" href="https://www.osnias-clearing.com/">
+  <link rel="author" href="https://orcid.org/0009-0007-8894-8902">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
   <meta property="og:title" content="Osnias Clearing — Multichain Clearing Project">
-  <meta property="og:description" content="Programmable clearing infrastructure on Sei EVM with separate governance, clearing, custody and lending domains.">
+  <meta property="og:description" content="Programmable clearing infrastructure on Sei EVM with separate governance, clearing, custody and lending domains. Public technical documentation by Denis Bouzon.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.osnias-clearing.com/">
+  <meta property="og:site_name" content="Osnias Clearing">
+  <meta property="og:image" content="https://www.osnias-clearing.com/index-picture.png">
+  <meta property="og:image:alt" content="Osnias Clearing multichain clearing architecture">
 
-  <link rel="stylesheet" href="/osnias-clearing/assets/css/osnias.css">
-  <script src="/osnias-clearing/assets/js/osnias-nav.js" defer></script>
+  <meta name="citation_author" content="Denis Bouzon">
+  <meta name="citation_title" content="Osnias Clearing — Multichain Clearing Project">
+  <meta name="citation_publication_date" content="2026-08-31">
+
+  <link rel="stylesheet" href="/assets/css/osnias.css">
+  <script src="/assets/js/osnias-nav.js" defer></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://www.osnias-clearing.com/#denis-bouzon",
+        "name": "Denis Bouzon",
+        "url": "https://www.osnias-clearing.com/",
+        "sameAs": [
+          "https://orcid.org/0009-0007-8894-8902"
+        ]
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://www.osnias-clearing.com/#organization",
+        "name": "Osnias Clearing",
+        "url": "https://www.osnias-clearing.com/",
+        "email": "contact@osnias-clearing.com",
+        "sameAs": [
+          "https://github.com/dbouzon/osnias-clearing"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.osnias-clearing.com/#website",
+        "url": "https://www.osnias-clearing.com/",
+        "name": "Osnias Clearing",
+        "publisher": {
+          "@id": "https://www.osnias-clearing.com/#organization"
+        },
+        "inLanguage": "en"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://www.osnias-clearing.com/#webpage",
+        "url": "https://www.osnias-clearing.com/",
+        "name": "Osnias Clearing — Multichain Clearing Project",
+        "description": "Public technical presentation of the Osnias Clearing architecture on Sei EVM.",
+        "isPartOf": {
+          "@id": "https://www.osnias-clearing.com/#website"
+        },
+        "about": {
+          "@id": "https://www.osnias-clearing.com/#organization"
+        },
+        "author": {
+          "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+        },
+        "dateModified": "2026-08-31",
+        "inLanguage": "en"
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
 
   <div class="site-nav-fixed">
     <div class="site-nav-inner">
-      <a class="site-nav-brand" href="/osnias-clearing/index.html">
+      <a class="site-nav-brand" href="/">
         OSNIAS <span>CLEARING</span>
       </a>
 
       <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation">
-        <a href="/osnias-clearing/history/history.html">History</a>
-        <a href="/osnias-clearing/cycle/cycle.html">Jubilee Cycle</a>
-        <a href="/osnias-clearing/sei/sei.html">SEI Mainnet</a>
-        <a href="/osnias-clearing/oracle/oracle.html">Oracle</a>
-        <a href="/osnias-clearing/osnias/osnias.html">OSNIAS Token</a>
-        <a href="/osnias-clearing/tokenomics/tokenomics.html">Tokenomics</a>
-        <a href="/osnias-clearing/orusd/orusd.html">ORUSD Clearing Token</a>
-        <a href="/osnias-clearing/oeuro/oeuro.html">OEURO Clearing Token</a>
-        <a href="/osnias-clearing/regulation/regulation.html">Regulation</a>
+        <a href="/history/history.html">History</a>
+        <a href="/cycle/cycle.html">Jubilee Cycle</a>
+        <a href="/sei/sei.html">SEI Mainnet</a>
+        <a href="/oracle/oracle.html">Oracle</a>
+        <a href="/osnias/osnias.html">OSNIAS Token</a>
+        <a href="/tokenomics/tokenomics.html">Tokenomics</a>
+        <a href="/orusd/orusd.html">ORUSD Clearing Token</a>
+        <a href="/oeuro/oeuro.html">OEURO Clearing Token</a>
+        <a href="/regulation/regulation.html">Regulation</a>
       </nav>
     </div>
   </div>
@@ -64,7 +135,7 @@
 
             <figure class="hero-illustration">
               <img
-                src="/osnias-clearing/index-picture.png"
+                src="/index-picture.png"
                 alt="Osnias Clearing at the centre of a multichain EVM network"
                 width="533"
                 height="400"
@@ -107,7 +178,7 @@
 
         <article class="card">
           <div class="card-kicker">Independent Partners</div>
-          <h3>Custody & Lending</h3>
+          <h3>Custody &amp; Lending</h3>
           <p>
             Collateral custody, lending, credit decisions and risk management remain with independent protocols.
           </p>
@@ -125,47 +196,47 @@
       </p>
 
       <div class="resources">
-        <a class="resource" href="/osnias-clearing/history/history.html">
+        <a class="resource" href="/history/history.html">
           <div><strong>History</strong><span>Origins · Onias · Leontopolis</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/cycle/cycle.html">
+        <a class="resource" href="/cycle/cycle.html">
           <div><strong>Jubilee Cycle</strong><span>91-day clearing architecture and seven-year epoch</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/sei/sei.html">
+        <a class="resource" href="/sei/sei.html">
           <div><strong>Sei EVM</strong><span>Why Sei was selected as the canonical execution layer</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/oracle/oracle.html">
+        <a class="resource" href="/oracle/oracle.html">
           <div><strong>Osnias Oracles</strong><span>Observation, verification, clearing integrity and security separation</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/osnias/osnias.html">
+        <a class="resource" href="/osnias/osnias.html">
           <div><strong>OSNIAS Token</strong><span>Governance token architecture</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/tokenomics/tokenomics.html">
+        <a class="resource" href="/tokenomics/tokenomics.html">
           <div><strong>OSNIAS Tokenomics</strong><span>Allocation · Vesting · Strategic Reserve</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/orusd/orusd.html">
+        <a class="resource" href="/orusd/orusd.html">
           <div><strong>ORUSD</strong><span>USD clearing register</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/oeuro/oeuro.html">
+        <a class="resource" href="/oeuro/oeuro.html">
           <div><strong>OEURO</strong><span>EUR clearing register</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/osnias-clearing/regulation/regulation.html">
+        <a class="resource" href="/regulation/regulation.html">
           <div><strong>Regulation</strong><span>Functional perimeter and regulatory positioning</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
@@ -182,7 +253,7 @@
           <h3>91-day clearing cycle</h3>
           <p>Economic positions are given time to circulate, offset and rebalance before final net settlement.</p>
           <div class="actions">
-            <a class="btn" href="/osnias-clearing/cycle/cycle.html">Explore the cycle →</a>
+            <a class="btn" href="/cycle/cycle.html">Explore the cycle →</a>
           </div>
         </article>
 
@@ -191,7 +262,7 @@
           <h3>No deposits · No credit · No leverage</h3>
           <p>Osnias focuses on clearing. Custody, lending and collateral management remain outside the clearing-house function.</p>
           <div class="actions">
-            <a class="btn" href="/osnias-clearing/regulation/regulation.html">Explore the perimeter →</a>
+            <a class="btn" href="/regulation/regulation.html">Explore the perimeter →</a>
           </div>
         </article>
 
@@ -200,7 +271,7 @@
           <h3>Built on Sei EVM</h3>
           <p>Sei provides the intended high-performance EVM execution layer for an auditable, high-volume clearing register.</p>
           <div class="actions">
-            <a class="btn" href="/osnias-clearing/sei/sei.html">Why Sei? →</a>
+            <a class="btn" href="/sei/sei.html">Why Sei? →</a>
           </div>
         </article>
       </div>
@@ -213,7 +284,7 @@
 
     <section id="status">
       <div class="section-label">04 · Current Status</div>
-      <h2>Public architecture, active testing, no clearing Mainnet yet</h2>
+      <h2>Public architecture, active Sei Testnet deployments, no clearing Mainnet yet</h2>
 
       <aside class="panel">
         <div class="stats">
@@ -224,9 +295,9 @@
           </div>
 
           <div class="stat">
-            <small>Clearing testnet</small>
-            <strong>Active testing</strong>
-            <span>Public reference implementations</span>
+            <small>Sei Testnet</small>
+            <strong>Deployed</strong>
+            <span>ORUSD, OEURO and OSNIAS public references</span>
           </div>
 
           <div class="stat">
@@ -269,14 +340,25 @@
         Technical, institutional, regulatory or partnership enquiries can be directed through the public Osnias Clearing channels.
       </p>
 
-      <div class="grid-2">
+      <div class="grid-3">
         <article class="card">
           <div class="card-kicker">Website</div>
           <h3>Osnias Clearing</h3>
           <p>Official project website and public documentation.</p>
           <div class="actions">
-            <a class="btn btn-primary" href="https://www.osnias-clearing.com/" target="_blank" rel="noopener noreferrer">
-              www.osnias-clearing.com ↗
+            <a class="btn btn-primary" href="/">
+              www.osnias-clearing.com
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Email</div>
+          <h3>Contact</h3>
+          <p>Technical, institutional, regulatory and partnership enquiries.</p>
+          <div class="actions">
+            <a class="btn" href="mailto:contact@osnias-clearing.com">
+              contact@osnias-clearing.com
             </a>
           </div>
         </article>
@@ -291,6 +373,14 @@
             </a>
           </div>
         </article>
+      </div>
+
+      <div class="notice">
+        <strong>Author.</strong>
+        Denis Bouzon · ORCID
+        <a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer">
+          0009-0007-8894-8902
+        </a>
       </div>
     </section>
 
@@ -310,20 +400,21 @@
   <footer>
     <div class="container">
       <div class="footer-grid">
-        <div>© Osnias Clearing · Multichain Clearing Project</div>
+        <div>© 2026 Osnias Clearing · Multichain Clearing Project · Denis Bouzon · Last update: 31 August 2026</div>
         <div>
-          <a href="/osnias-clearing/cycle/cycle.html">Cycle</a>
+          <a href="/cycle/cycle.html">Cycle</a>
           &nbsp;·&nbsp;
-          <a href="/osnias-clearing/sei/sei.html">Sei</a>
+          <a href="/sei/sei.html">Sei</a>
           &nbsp;·&nbsp;
-          <a href="/osnias-clearing/oracle/oracle.html">Osnias Oracles</a>
+          <a href="/oracle/oracle.html">Osnias Oracles</a>
           &nbsp;·&nbsp;
-          <a href="/osnias-clearing/regulation/regulation.html">Regulation</a>
+          <a href="/regulation/regulation.html">Regulation</a>
         </div>
       </div>
 
       <div class="footer-legal">
         Osnias Clearing provides public technical information for research, development, review and audit purposes.
+        Author: Denis Bouzon · ORCID 0009-0007-8894-8902.
         No production clearing contract should be considered active unless identified in the official production registry.
       </div>
     </div>
