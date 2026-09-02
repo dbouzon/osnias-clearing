@@ -1,185 +1,256 @@
-(function(){
+
+ (function(){
   "use strict";
 
-  function norm(path){
-    return (path || "/")
-      .replace(/\/index\.html$/,"/")
-      .replace(/\/+$/,"/");
-  }
+  const defaults = {
+    title: "Osnias Clearing — Blockchain Clearing Infrastructure",
 
-  function addPitchButton(){
-    const nav = document.querySelector(".site-nav-buttons");
-    if(!nav) return;
+    description:
+      "Osnias Clearing is a multichain blockchain clearing infrastructure project built around Sei EVM, on-chain clearing registries, institutional settlement, oracle-controlled execution, restricted EOA-to-EOA transfers and public smart-contract deployment verification.",
 
-    if(nav.querySelector('a[data-osnias-pitch="true"]')) return;
+    keywords: [
+      "Osnias Clearing",
+      "blockchain clearing",
+      "blockchain clearing infrastructure",
+      "onchain clearing",
+      "on-chain clearing",
+      "clearing protocol",
+      "clearing registry",
+      "crypto clearing registry",
+      "blockchain registry",
+      "digital asset clearing",
+      "crypto settlement infrastructure",
+      "institutional settlement",
+      "institutional blockchain infrastructure",
+      "financial market infrastructure blockchain",
+      "tokenized settlement",
+      "distributed ledger clearing",
+      "DLT clearing",
+      "EVM clearing",
+      "EVM clearing infrastructure",
+      "EVM compatible clearing",
+      "multichain clearing",
+      "multichain clearing infrastructure",
+      "multi-chain clearing",
+      "Sei",
+      "Sei blockchain",
+      "Sei EVM",
+      "Sei EVM clearing",
+      "Sei clearing infrastructure",
+      "Sei settlement infrastructure",
+      "Sei institutional finance",
+      "Sei financial infrastructure",
+      "Sei testnet",
+      "Sei mainnet",
+      "oracle-controlled clearing",
+      "oracle-controlled registry",
+      "blockchain oracle settlement",
+      "oracle settlement infrastructure",
+      "P2P clearing",
+      "P2P blockchain clearing",
+      "peer-to-peer clearing",
+      "peer-to-peer settlement",
+      "clearing-only blockchain",
+      "clearing-only protocol",
+      "non-DeFi clearing",
+      "non-DeFi financial infrastructure",
+      "EOA-only",
+      "EOA-only token",
+      "EOA-to-EOA transfer",
+      "restricted ERC-20",
+      "restricted clearing token",
+      "blockchain compensation registry",
+      "clearing register token",
+      "USD clearing token",
+      "EUR clearing token",
+      "governance token Sei",
+      "crypto clearing infrastructure",
+      "blockchain settlement layer",
+      "public deployment registry",
+      "official deployment registry",
+      "smart contract deployment registry",
+      "verified smart contract",
+      "SeiScan verified contract",
+      "ORUSD",
+      "OEURO",
+      "OSNIAS"
+    ].join(", "),
 
-    const path = window.location.pathname || "/";
-    const prefix = path.startsWith("/osnias-clearing/")
-      ? "/osnias-clearing"
-      : "";
+    siteName: "Osnias Clearing",
+    type: "website"
+  };
 
-    const link = document.createElement("a");
-    link.href = prefix + "/pitch/pitch.html";
-    link.textContent = "Pitch";
-    link.setAttribute("data-osnias-pitch","true");
+  function upsertMeta(name, content){
+    if(!content) return;
 
-    nav.appendChild(link);
-  }
-
-  function markActive(){
-    const current = norm(window.location.pathname);
-
-    document
-      .querySelectorAll(".site-nav-buttons a[href]")
-      .forEach(function(link){
-
-        try{
-          const target = norm(
-            new URL(
-              link.href,
-              window.location.origin
-            ).pathname
-          );
-
-          const dir = target.replace(/[^/]+$/,"");
-
-          if(
-            current === target ||
-            (
-              dir !== "/" &&
-              current.startsWith(dir)
-            )
-          ){
-            link.setAttribute(
-              "aria-current",
-              "page"
-            );
-          }else{
-            link.removeAttribute(
-              "aria-current"
-            );
-          }
-
-        }catch(e){}
-      });
-  }
-
-  function setupMenu(){
-    const toggle =
-      document.getElementById("menuToggle");
-
-    const nav =
-      document.getElementById("mainNav");
-
-    if(!toggle || !nav) return;
-
-    toggle.addEventListener(
-      "click",
-      function(){
-
-        const open =
-          nav.classList.toggle("open");
-
-        toggle.setAttribute(
-          "aria-expanded",
-          open ? "true" : "false"
-        );
-
-        toggle.textContent =
-          open ? "Close" : "Menu";
-      }
+    let el = document.querySelector(
+      'meta[name="' + name + '"]'
     );
 
-    nav
-      .querySelectorAll("a")
-      .forEach(function(link){
+    if(!el){
+      el = document.createElement("meta");
+      el.setAttribute("name", name);
+      document.head.appendChild(el);
+    }
 
-        link.addEventListener(
-          "click",
-          function(){
-
-            nav.classList.remove("open");
-
-            toggle.setAttribute(
-              "aria-expanded",
-              "false"
-            );
-
-            toggle.textContent = "Menu";
-          }
-        );
-
-      });
+    el.setAttribute("content", content);
   }
 
-  function secureBlankLinks(){
+  function upsertProperty(property, content){
+    if(!content) return;
 
-    document
-      .querySelectorAll(
-        'a[target="_blank"]'
-      )
-      .forEach(function(link){
+    let el = document.querySelector(
+      'meta[property="' + property + '"]'
+    );
 
-        const rel = new Set(
-          (
-            link.getAttribute("rel") || ""
-          )
-          .split(/\s+/)
-          .filter(Boolean)
-        );
+    if(!el){
+      el = document.createElement("meta");
+      el.setAttribute("property", property);
+      document.head.appendChild(el);
+    }
 
-        rel.add("noopener");
-        rel.add("noreferrer");
-
-        link.setAttribute(
-          "rel",
-          Array.from(rel).join(" ")
-        );
-
-      });
+    el.setAttribute("content", content);
   }
 
-  function addDevNotice(){
+  function getPageConfig(){
+    return window.OSNIAS_SEO || {};
+  }
 
-    if(
+  function canonicalUrl(){
+    const canonical =
       document.querySelector(
-        ".site-nav-notice"
-      )
-    ) return;
-
-    const brand =
-      document.querySelector(
-        ".site-nav-brand"
+        'link[rel="canonical"]'
       );
 
-    if(!brand) return;
+    if(canonical && canonical.href){
+      return canonical.href;
+    }
 
-    const notice =
-      document.createElement("span");
+    return window.location.href
+      .split("#")[0]
+      .split("?")[0];
+  }
 
-    notice.className =
-      "site-nav-notice";
+  function ensureCanonical(url){
+    let canonical =
+      document.querySelector(
+        'link[rel="canonical"]'
+      );
 
-    notice.textContent =
-      "UNDER DEVELOPMENT · NO TOKEN SALE ·";
+    if(!canonical){
+      canonical =
+        document.createElement("link");
 
-    brand.insertAdjacentElement(
-      "afterend",
-      notice
+      canonical.setAttribute(
+        "rel",
+        "canonical"
+      );
+
+      document.head.appendChild(
+        canonical
+      );
+    }
+
+    canonical.setAttribute(
+      "href",
+      url
     );
   }
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    function(){
+  function applySEO(){
+    const page = getPageConfig();
 
-      addPitchButton();
-      markActive();
-      setupMenu();
-      secureBlankLinks();
-      addDevNotice();
+    const title =
+      page.title ||
+      document.title ||
+      defaults.title;
 
-    }
-  );
+    const description =
+      page.description ||
+      document
+        .querySelector(
+          'meta[name="description"]'
+        )
+        ?.getAttribute("content") ||
+      defaults.description;
+
+    const keywords =
+      page.keywords ||
+      defaults.keywords;
+
+    const url =
+      page.canonical ||
+      canonicalUrl();
+
+    document.title = title;
+
+    upsertMeta(
+      "description",
+      description
+    );
+
+    upsertMeta(
+      "keywords",
+      keywords
+    );
+
+    upsertMeta(
+      "robots",
+      page.robots || "index,follow"
+    );
+
+    ensureCanonical(url);
+
+    upsertProperty(
+      "og:title",
+      title
+    );
+
+    upsertProperty(
+      "og:description",
+      description
+    );
+
+    upsertProperty(
+      "og:type",
+      page.type || defaults.type
+    );
+
+    upsertProperty(
+      "og:site_name",
+      defaults.siteName
+    );
+
+    upsertProperty(
+      "og:url",
+      url
+    );
+
+    upsertMeta(
+      "twitter:card",
+      "summary"
+    );
+
+    upsertMeta(
+      "twitter:title",
+      title
+    );
+
+    upsertMeta(
+      "twitter:description",
+      description
+    );
+  }
+
+  if(
+    document.readyState === "loading"
+  ){
+    document.addEventListener(
+      "DOMContentLoaded",
+      applySEO
+    );
+  }else{
+    applySEO();
+  }
 
 })();
