@@ -9,6 +9,7 @@
   <meta name="robots" content="index,follow" />
   <meta name="author" content="Denis Bouzon" />
   <link rel="stylesheet" href="/assets/css/osnias.css" />
+  <script src="/assets/js/osnias-seo.js" defer></script>
   <script src="/assets/js/osnias-nav.js" defer></script>
   <style>
     .pitch-hero{padding:2.4rem 0 3rem}
@@ -42,7 +43,14 @@
   </style>
 </head>
 <body>
-  <div id="site-nav"></div>
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/">
+        OSNIAS <span>CLEARING</span>
+      </a>
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
+    </div>
+  </div>
 
   <header>
     <div class="container">
@@ -153,7 +161,7 @@
           <div><strong>OSNIAS — Zenodo Technical Archive</strong><span>Permanent archive · DOI 10.5281/zenodo.22139986</span></div><div class="pitch-resource-type">DOI ↗</div>
         </a>
 
-        <a class="pitch-resource" href="/orusd/ORUsd_Technical.pdf">
+        <a class="pitch-resource" href="/orusd/ORUSD_Technical_White_Paper.pdf">
           <div><strong>ORUSD Technical White Paper</strong><span>USD clearing register · Technical & audit reference</span></div><div class="pitch-resource-type">PDF ↗</div>
         </a>
 
@@ -161,7 +169,7 @@
           <div><strong>ORUSD — Zenodo Technical Archive</strong><span>Permanent archive · DOI 10.5281/zenodo.22200260</span></div><div class="pitch-resource-type">DOI ↗</div>
         </a>
 
-        <a class="pitch-resource" href="/oeuro/oeuro_technical.pdf">
+        <a class="pitch-resource" href="/oeuro/OEURO_Technical_White_Paper.pdf">
           <div><strong>OEURO Technical White Paper</strong><span>EUR clearing register · Technical & audit reference</span></div><div class="pitch-resource-type">PDF ↗</div>
         </a>
 
@@ -217,5 +225,10 @@
   <footer>
     <div class="container">Osnias Clearing · Public Project Pitch · 2026</div>
   </footer>
+<script
+  data-goatcounter="https://denis-osnias.goatcounter.com/count"
+  async
+  src="//gc.zgo.at/count.js">
+</script>
 </body>
 </html>
