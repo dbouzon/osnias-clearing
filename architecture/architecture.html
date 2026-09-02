@@ -91,6 +91,36 @@
       color:var(--muted);
       font-size:.82rem;
     }
+    .arch-diagram{
+      margin:1.25rem 0 0;
+      padding:1rem;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:1rem;
+      overflow:hidden;
+    }
+    .arch-diagram img{
+      display:block;
+      width:100%;
+      height:auto;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    .arch-diagram figcaption{
+      max-width:1200px;
+      margin:.8rem auto 0;
+      color:#374151;
+      font-size:.8rem;
+      line-height:1.55;
+    }
+    .arch-note{
+      margin-top:1rem;
+      border-left:3px solid var(--accent);
+      padding:.75rem 1rem;
+      background:var(--panel);
+      color:var(--muted);
+      font-size:.88rem;
+    }
     @media(max-width:900px){
       .arch-grid,.arch-flow{grid-template-columns:1fr 1fr}
     }
@@ -198,8 +228,37 @@
       </div>
     </section>
 
+    <section id="interrail">
+      <div class="section-label">03 · Inter-Rail Architecture</div>
+      <h2>A hard boundary between clearing and external DeFi protocols</h2>
+      <p class="section-intro">
+        The diagram below is a simplified pedagogical view of the protocol boundary. The Osnias clearing rail remains
+        confined to Sei EVM and P2P clearing-register circulation, while external EVM protocols operate on independent
+        rails. Cross-EVM interaction is informational and oracle-based; it is not an asset bridge.
+      </p>
+
+      <figure class="arch-diagram">
+        <img
+          src="/assets/img/osnias-interrail-architecture.png"
+          alt="Simplified Osnias Clearing inter-rail architecture showing the Sei EVM clearing rail, a protocol security boundary, and independent external EVM DeFi protocol rails."
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>
+          Simplified principle diagram — not a contract interaction map. ORUSD and OEURO remain on the canonical clearing
+          rail. External smart contracts, lenders and escrow providers remain outside the clearing domain; the cross-EVM
+          Osnias oracle is read-only on the external protocol side.
+        </figcaption>
+      </figure>
+
+      <div class="arch-note">
+        <strong>Architectural invariant:</strong> ORUSD and OEURO never leave the canonical clearing rail. The cross-EVM
+        element is informational/oracular, not an asset bridge.
+      </div>
+    </section>
+
     <section id="separation">
-      <div class="section-label">03 · Functional Separation</div>
+      <div class="section-label">04 · Functional Separation</div>
       <h2>Clearing is not custody, lending or DeFi</h2>
       <p class="section-intro">
         The clearing-register contracts do not implement customer deposits, custody, lending, collateral valuation,
@@ -227,7 +286,7 @@
     </section>
 
     <section id="cycle">
-      <div class="section-label">04 · Clearing Time Architecture</div>
+      <div class="section-label">05 · Clearing Time Architecture</div>
       <h2>91-Day Clearing Cycle</h2>
       <p class="section-intro">
         Osnias Clearing deliberately separates transaction recording from economic settlement. A 91-day operating cycle
@@ -248,7 +307,7 @@
     </section>
 
     <section id="history">
-      <div class="section-label">05 · Historical Foundations</div>
+      <div class="section-label">06 · Historical Foundations</div>
       <h2>Why the name Osnias?</h2>
       <p class="section-intro">
         The historical section documents the Oniad inspiration behind the project: institutional continuity,
@@ -269,7 +328,7 @@
     </section>
 
     <section id="references">
-      <div class="section-label">06 · Architecture References</div>
+      <div class="section-label">07 · Architecture References</div>
       <h2>Continue to the technical evidence</h2>
 
       <div class="arch-links">
