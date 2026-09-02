@@ -31,6 +31,7 @@
   <meta name="citation_publication_date" content="2026-08-31">
 
   <link rel="stylesheet" href="/assets/css/osnias.css">
+  <script src="/assets/js/osnias-seo.js" defer></script>
   <script src="/assets/js/osnias-nav.js" defer></script>
 
   <script type="application/ld+json">
@@ -81,7 +82,7 @@
         "author": {
           "@id": "https://www.osnias-clearing.com/#denis-bouzon"
         },
-        "dateModified": "2026-08-31",
+        "dateModified": "2026-09-02",
         "inLanguage": "en"
       }
     ]
@@ -97,17 +98,7 @@
         OSNIAS <span>CLEARING</span>
       </a>
 
-      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation">
-        <a href="/history/history.html">History</a>
-        <a href="/cycle/cycle.html">Jubilee Cycle</a>
-        <a href="/sei/sei.html">SEI Mainnet</a>
-        <a href="/oracle/oracle.html">Oracle</a>
-        <a href="/osnias/osnias.html">OSNIAS Token</a>
-        <a href="/tokenomics/tokenomics.html">Tokenomics</a>
-        <a href="/orusd/orusd.html">ORUSD Clearing Token</a>
-        <a href="/oeuro/oeuro.html">OEURO Clearing Token</a>
-        <a href="/regulation/regulation.html">Regulation</a>
-      </nav>
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
     </div>
   </div>
 
@@ -196,53 +187,33 @@
       <h2>Explore Osnias Clearing</h2>
 
       <p class="section-intro">
-        Each domain has its own public page, technical scope and documentation.
-        Start with the topic you want to understand.
+        The public site is organized around five primary entry points.
+        Each page leads to the underlying technical references, sub-pages and verification material.
       </p>
 
       <div class="resources">
-        <a class="resource" href="/history/history.html">
-          <div><strong>History</strong><span>Origins · Onias · Leontopolis</span></div>
+        <a class="resource" href="/architecture/architecture.html">
+          <div><strong>Architecture</strong><span>Sei EVM · Clearing domains · Oracle · 91-day cycle · Historical foundations</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
-        <a class="resource" href="/cycle/cycle.html">
-          <div><strong>Jubilee Cycle</strong><span>91-day clearing architecture and seven-year epoch</span></div>
-          <div class="resource-type">OPEN →</div>
+        <a class="resource" href="/deployment/deployment.html">
+          <div><strong>Official Deployment</strong><span>Contract addresses · Transaction hashes · Verification status · DOI references</span></div>
+          <div class="resource-type">VERIFY →</div>
         </a>
 
-        <a class="resource" href="/sei/sei.html">
-          <div><strong>Sei EVM</strong><span>Why Sei was selected as the canonical execution layer</span></div>
-          <div class="resource-type">OPEN →</div>
-        </a>
-
-        <a class="resource" href="/oracle/oracle.html">
-          <div><strong>Osnias Oracles</strong><span>Observation, verification, clearing integrity and security separation</span></div>
-          <div class="resource-type">OPEN →</div>
-        </a>
-
-        <a class="resource" href="/osnias/osnias.html">
-          <div><strong>OSNIAS Token</strong><span>Governance token architecture</span></div>
-          <div class="resource-type">OPEN →</div>
-        </a>
-
-        <a class="resource" href="/tokenomics/tokenomics.html">
-          <div><strong>OSNIAS Tokenomics</strong><span>Allocation · Vesting · Strategic Reserve</span></div>
-          <div class="resource-type">OPEN →</div>
-        </a>
-
-        <a class="resource" href="/orusd/orusd.html">
-          <div><strong>ORUSD</strong><span>USD clearing register</span></div>
-          <div class="resource-type">OPEN →</div>
-        </a>
-
-        <a class="resource" href="/oeuro/oeuro.html">
-          <div><strong>OEURO</strong><span>EUR clearing register</span></div>
+        <a class="resource" href="/security/security.html">
+          <div><strong>Security</strong><span>Temporal security · Dispute containment · Key separation · Pre-audit validation</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
         <a class="resource" href="/regulation/regulation.html">
-          <div><strong>Regulation</strong><span>Functional perimeter and regulatory positioning</span></div>
+          <div><strong>Regulation</strong><span>Functional perimeter · Regulatory submissions · Jurisdiction-specific guidance</span></div>
+          <div class="resource-type">OPEN →</div>
+        </a>
+
+        <a class="resource" href="/documentation/documentation.html">
+          <div><strong>Documentation</strong><span>Technical white papers · Zenodo DOI archives · Source code · Public references</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
       </div>
@@ -258,7 +229,7 @@
           <h3>91-day clearing cycle</h3>
           <p>Economic positions are given time to circulate, offset and rebalance before final net settlement.</p>
           <div class="actions">
-            <a class="btn" href="/cycle/cycle.html">Explore the cycle →</a>
+            <a class="btn" href="/architecture/architecture.html#cycle">Explore the cycle →</a>
           </div>
         </article>
 
@@ -276,7 +247,7 @@
           <h3>Built on Sei EVM</h3>
           <p>Sei provides the intended high-performance EVM execution layer for an auditable, high-volume clearing register.</p>
           <div class="actions">
-            <a class="btn" href="/sei/sei.html">Why Sei? →</a>
+            <a class="btn" href="/architecture/architecture.html#execution">Why Sei? →</a>
           </div>
         </article>
       </div>
@@ -324,16 +295,16 @@
           </div>
 
           <div class="stat">
-            <small>Production registry</small>
-            <strong>Pending</strong>
-            <span>Published only after validated deployment</span>
+            <small>Official deployment registry</small>
+            <strong>Published</strong>
+            <span>Current Sei Testnet references publicly listed</span>
           </div>
         </div>
       </aside>
 
       <div class="notice">
         <strong>Production rule.</strong>
-        No clearing Mainnet address should be considered official until it appears in the Osnias Clearing public production registry.
+        Only contracts listed in the Osnias Clearing Official Deployment Registry should be considered official public deployments. No Sei Mainnet clearing contract is currently listed as production.
       </div>
     </section>
 
@@ -405,15 +376,17 @@
   <footer>
     <div class="container">
       <div class="footer-grid">
-        <div>© 2026 Osnias Clearing · Multichain Clearing Project · Denis Bouzon · Last update: 31 August 2026</div>
+        <div>© 2026 Osnias Clearing · Multichain Clearing Project · Last update: 2 September 2026</div>
         <div>
-          <a href="/cycle/cycle.html">Cycle</a>
+          <a href="/architecture/architecture.html">Architecture</a>
           &nbsp;·&nbsp;
-          <a href="/sei/sei.html">Sei</a>
+          <a href="/deployment/deployment.html">Official Deployment</a>
           &nbsp;·&nbsp;
-          <a href="/oracle/oracle.html">Osnias Oracles</a>
+          <a href="/security/security.html">Security</a>
           &nbsp;·&nbsp;
           <a href="/regulation/regulation.html">Regulation</a>
+          &nbsp;·&nbsp;
+          <a href="/documentation/documentation.html">Documentation</a>
         </div>
       </div>
 
