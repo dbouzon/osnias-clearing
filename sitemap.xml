@@ -1,63 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <url>
     <loc>https://www.osnias-clearing.com/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <url>
+    <loc>https://www.osnias-clearing.com/architecture/architecture.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://www.osnias-clearing.com/deployment/deployment.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://www.osnias-clearing.com/security/security.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://www.osnias-clearing.com/regulation/regulation.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://www.osnias-clearing.com/documentation/documentation.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <url>
     <loc>https://www.osnias-clearing.com/history/history.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.65</priority>
   </url>
+
   <url>
     <loc>https://www.osnias-clearing.com/cycle/cycle.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.75</priority>
   </url>
+
   <url>
     <loc>https://www.osnias-clearing.com/sei/sei.html</loc>
     <lastmod>2026-08-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
   </url>
+
   <url>
     <loc>https://www.osnias-clearing.com/oracle/oracle.html</loc>
     <lastmod>2026-08-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
   </url>
+
   <url>
     <loc>https://www.osnias-clearing.com/osnias/osnias.html</loc>
     <lastmod>2026-08-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
   </url>
+
   <url>
     <loc>https://www.osnias-clearing.com/tokenomics/tokenomics.html</loc>
     <lastmod>2026-08-31</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.60</priority>
   </url>
+
   <url>
     <loc>https://www.osnias-clearing.com/orusd/orusd.html</loc>
     <lastmod>2026-08-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
   </url>
+
   <url>
     <loc>https://www.osnias-clearing.com/oeuro/oeuro.html</loc>
     <lastmod>2026-08-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
   </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/regulation/regulation.html</loc>
-    <lastmod>2026-08-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
+
 </urlset>
