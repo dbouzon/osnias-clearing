@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>Architecture — Osnias Clearing</title>
+  <meta name="description" content="Osnias Clearing architecture: Sei EVM canonical state, ORUSD and OEURO clearing registers, OSNIAS governance separation, oracle coordination, 91-day clearing cycle and historical foundations."/>
+  <meta name="robots" content="index, follow, max-image-preview:large"/>
+  <meta name="author" content="Denis Bouzon"/>
+  <meta name="theme-color" content="#050814"/>
+
+  <link rel="canonical" href="https://www.osnias-clearing.com/architecture/architecture.html"/>
+  <link rel="stylesheet" href="/assets/css/osnias.css"/>
+
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+
+  <style>
+    .arch-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:1rem;
+    }
+    .arch-card{
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:1rem;
+      padding:1.15rem;
+    }
+    .arch-card h3{
+      margin:.2rem 0 .45rem;
+      font-size:1.02rem;
+    }
+    .arch-card p{
+      color:var(--muted);
+      font-size:.88rem;
+    }
+    .arch-kicker{
+      color:var(--accent);
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-weight:700;
+    }
+    .arch-links{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1rem;
+      margin-top:1rem;
+    }
+    .arch-link{
+      display:block;
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:1rem;
+      padding:1.1rem;
+      text-decoration:none!important;
+    }
+    .arch-link:hover{
+      border-color:var(--accent-soft);
+    }
+    .arch-link strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:.3rem;
+    }
+    .arch-link span{
+      color:var(--muted);
+      font-size:.84rem;
+    }
+    .arch-flow{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:.8rem;
+      margin-top:1.2rem;
+    }
+    .arch-step{
+      border:1px solid var(--border);
+      border-radius:.9rem;
+      background:var(--panel);
+      padding:1rem;
+      text-align:center;
+    }
+    .arch-step strong{
+      display:block;
+      color:var(--accent);
+      margin-bottom:.25rem;
+    }
+    .arch-step span{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+    @media(max-width:900px){
+      .arch-grid,.arch-flow{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:640px){
+      .arch-grid,.arch-links,.arch-flow{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div id="site-nav"></div>
+
+  <header>
+    <div class="container">
+      <section class="hero">
+        <div class="eyebrow">Protocol architecture · Clearing · Time · Governance separation</div>
+        <h1>Architecture</h1>
+        <p class="hero-lead">
+          Osnias Clearing is designed as a blockchain clearing infrastructure with a canonical Sei EVM execution layer,
+          restricted clearing-register tokens, oracle-controlled settlement boundaries and a strict separation between
+          clearing, governance, custody and lending.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/deployment/deployment.html">Official Deployment</a>
+          <a class="btn" href="#core">Core Architecture</a>
+          <a class="btn" href="#cycle">91-Day Cycle</a>
+          <a class="btn" href="#history">Historical Foundations</a>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section id="core">
+      <div class="section-label">01 · Core Architecture</div>
+      <h2>Four separate protocol domains</h2>
+      <p class="section-intro">
+        Osnias Clearing separates the accounting register, governance, oracle coordination and external custody functions.
+        The objective is to keep each trust domain narrow, observable and independently auditable.
+      </p>
+
+      <div class="arch-grid">
+        <article class="arch-card">
+          <div class="arch-kicker">Clearing register</div>
+          <h3>ORUSD / OEURO</h3>
+          <p>
+            Restricted USD- and EUR-denominated clearing-register tokens. Normal circulation is EOA-to-EOA,
+            with controlled mint/burn authority and no native delegated-transfer or smart-contract routing path.
+          </p>
+        </article>
+
+        <article class="arch-card">
+          <div class="arch-kicker">Governance</div>
+          <h3>OSNIAS</h3>
+          <p>
+            Governance and strategic-reserve token. Governance eligibility is canonical on Sei and remains
+            economically and administratively separated from the ORUSD/OEURO clearing domain.
+          </p>
+        </article>
+
+        <article class="arch-card">
+          <div class="arch-kicker">Coordination</div>
+          <h3>Oracle layer</h3>
+          <p>
+            Authorized oracle infrastructure may create attestational requests, but settlement execution remains
+            manager-gated. Oracle observation and supply-changing execution are distinct authority domains.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="execution">
+      <div class="section-label">02 · Execution Layer</div>
+      <h2>Canonical state on Sei EVM</h2>
+      <p class="section-intro">
+        Sei provides the reference EVM execution environment for the current public testnet deployments and is the
+        intended canonical production environment. The shared execution layer does not merge the economic domains
+        of governance and clearing.
+      </p>
+
+      <div class="arch-flow">
+        <div class="arch-step"><strong>Sei EVM</strong><span>Canonical execution layer</span></div>
+        <div class="arch-step"><strong>Oracle</strong><span>Attestation and request coordination</span></div>
+        <div class="arch-step"><strong>Clearing Register</strong><span>ORUSD / OEURO P2P state</span></div>
+        <div class="arch-step"><strong>Cycle Close</strong><span>Reconciliation and net settlement</span></div>
+      </div>
+
+      <div class="arch-links">
+        <a class="arch-link" href="/sei/sei.html">
+          <strong>Sei Architecture →</strong>
+          <span>Canonical network, deployment environment and EVM integration.</span>
+        </a>
+        <a class="arch-link" href="/oracle/oracle.html">
+          <strong>Oracle Architecture →</strong>
+          <span>Mint/burn request, attestation and settlement coordination model.</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="separation">
+      <div class="section-label">03 · Functional Separation</div>
+      <h2>Clearing is not custody, lending or DeFi</h2>
+      <p class="section-intro">
+        The clearing-register contracts do not implement customer deposits, custody, lending, collateral valuation,
+        liquidity pools, farming or native conversion between OSNIAS and ORUSD/OEURO. External custody or escrow
+        arrangements remain outside the clearing-token contracts.
+      </p>
+
+      <div class="arch-grid">
+        <article class="arch-card">
+          <div class="arch-kicker">Inside protocol</div>
+          <h3>Clearing</h3>
+          <p>Register, controlled issuance/destruction, P2P circulation, reconciliation and settlement state.</p>
+        </article>
+        <article class="arch-card">
+          <div class="arch-kicker">Outside clearing contract</div>
+          <h3>Custody / escrow</h3>
+          <p>Collateral custody and deposit arrangements remain with independent external counterparties.</p>
+        </article>
+        <article class="arch-card">
+          <div class="arch-kicker">Economic firewall</div>
+          <h3>No native DeFi path</h3>
+          <p>No protocol-native swap, AMM, farming, LP or collateral dependency between OSNIAS and clearing registers.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="cycle">
+      <div class="section-label">04 · Clearing Time Architecture</div>
+      <h2>91-Day Clearing Cycle</h2>
+      <p class="section-intro">
+        Osnias Clearing deliberately separates transaction recording from economic settlement. A 91-day operating cycle
+        gives reciprocal positions time to circulate and compensate before final reconciliation.
+      </p>
+
+      <div class="arch-link">
+        <strong>Open the complete 91-Day & Jubilee Cycle →</strong>
+        <span>
+          Burn window, Day-4 reference deposit, Days 4–88 circulation, Day-89 registry snapshot,
+          Day-90 validation, Day-91 compensation and the seven-year epoch framework.
+        </span>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="/cycle/cycle.html">Open Cycle Architecture</a>
+        <a class="btn" href="/cycle/onias-clearing-calendrier.pdf">Official Calendar PDF</a>
+      </div>
+    </section>
+
+    <section id="history">
+      <div class="section-label">05 · Historical Foundations</div>
+      <h2>Why the name Osnias?</h2>
+      <p class="section-intro">
+        The historical section documents the Oniad inspiration behind the project: institutional continuity,
+        stewardship, ordered time and periodic reconciliation. It is presented as historical and intellectual
+        context, not as a claim that an ancient clearing system is being reproduced.
+      </p>
+
+      <div class="arch-link">
+        <strong>Open Historical Foundations →</strong>
+        <span>
+          Onias III, Onias IV, Leontopolis, Zadokite memory, Qumran context and the modern interpretation
+          adopted by Osnias Clearing.
+        </span>
+      </div>
+      <div class="actions">
+        <a class="btn" href="/history/history.html">Open Historical Foundations</a>
+      </div>
+    </section>
+
+    <section id="references">
+      <div class="section-label">06 · Architecture References</div>
+      <h2>Continue to the technical evidence</h2>
+
+      <div class="arch-links">
+        <a class="arch-link" href="/deployment/deployment.html">
+          <strong>Official Deployment Registry →</strong>
+          <span>Contract addresses, creation transactions, verification status and public on-chain references.</span>
+        </a>
+
+        <a class="arch-link" href="/documentation/documentation.html">
+          <strong>Documentation →</strong>
+          <span>Technical white papers, Zenodo DOI archives, source code and supporting documentation.</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      © 2026 Osnias Clearing · Architecture · Public Technical Documentation
+    </div>
+  </footer>
+</body>
+</html>
