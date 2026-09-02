@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Security & Dispute Management — Osnias Clearing</title>
+  <meta name="description" content="Security architecture of Osnias Clearing: restricted clearing tokens, temporal security, dispute escrow, controlled mint and burn, AI-assisted cyberattack containment, operational separation, pre-audit validation and external dispute resolution.">
+  <meta name="theme-color" content="#050814">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="Denis Bouzon">
+
+  <link rel="canonical" href="https://www.osnias-clearing.com/security/security.html">
+  <link rel="stylesheet" href="/assets/css/osnias.css">
+
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+</head>
+
+<body>
+
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/index.html">
+        OSNIAS <span>CLEARING</span>
+      </a>
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <section class="hero">
+        <div class="hero-grid single">
+          <div>
+            <div class="eyebrow">Security · Temporal Control · Dispute Containment</div>
+
+            <h1>Security & Dispute Management</h1>
+
+            <div class="hero-role">
+              A clearing architecture designed to contain anomalies before final settlement.
+            </div>
+
+            <p class="hero-lead">
+              Osnias Clearing deliberately limits the functions available to its clearing tokens.
+              The objective is not maximum composability, but a controlled and auditable clearing rail
+              in which abnormal or disputed operations can be detected, isolated and resolved during the clearing cycle.
+            </p>
+
+            <p class="hero-lead">
+              The clearing cycle creates time for verification. This temporal layer is a security feature:
+              automated attacks can operate quickly, but disputed value does not have to become economically final at the same speed.
+            </p>
+
+            <div class="tags">
+              <span class="tag tag-accent">Restricted clearing tokens</span>
+              <span class="tag">Temporal security</span>
+              <span class="tag">Dispute escrow</span>
+              <span class="tag">Controlled mint / burn</span>
+              <span class="tag">EOA-only clearing</span>
+              <span class="tag">External dispute resolution</span>
+            </div>
+
+            <div class="actions">
+              <a class="btn btn-primary" href="#temporal">Temporal security →</a>
+              <a class="btn" href="#escrow">Dispute escrow</a>
+              <a class="btn" href="#validation">Security validation</a>
+              <a class="btn" href="/deployment/deployment.html">Official Deployment</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section id="principle">
+      <div class="section-label">01 · Security Principle</div>
+      <h2>Reduce the attack surface before trying to defend it</h2>
+
+      <p class="section-intro">
+        ORUSD and OEURO are clearing instruments, not open DeFi assets.
+        Their technical perimeter is intentionally narrow in order to reduce external dependencies,
+        unauthorized integrations and attack paths.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Restricted</div>
+          <h3>No unrestricted DeFi use</h3>
+          <p>
+            Clearing tokens are not designed for unrestricted swaps, farming, leverage,
+            lending pools or arbitrary smart-contract integrations.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Controlled</div>
+          <h3>Manager-gated mint / burn</h3>
+          <p>
+            Issuance and destruction remain controlled operations.
+            This permits a defined administrative response to erroneous, fraudulent or disputed positions.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Auditable</div>
+          <h3>Explicit state transitions</h3>
+          <p>
+            Security-sensitive actions must remain attributable, logged and reviewable,
+            with a clear distinction between normal clearing, dispute containment and final resolution.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Design rule.</strong>
+        The clearing token is intentionally less composable than a conventional DeFi asset.
+        Reduced composability is treated as a security property.
+      </div>
+    </section>
+
+    <section id="temporal">
+      <div class="section-label">02 · Temporal Security Layer</div>
+      <h2>The clearing cycle creates a security window</h2>
+
+      <p class="section-intro">
+        High-speed automated attacks benefit from immediate finality.
+        Osnias Clearing uses the opposite logic: clearing positions circulate within a defined cycle before final settlement.
+        This creates time to identify anomalies, receive a contestation and isolate a disputed amount.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Detect</div>
+          <h3>Anomaly appears</h3>
+          <p>
+            Monitoring, participants or the manager may identify an operation that appears unauthorized,
+            abnormal or inconsistent with the expected clearing activity.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Contain</div>
+          <h3>Disputed value can be isolated</h3>
+          <p>
+            During the clearing cycle, the disputed amount may be removed from normal circulation
+            and placed into an internal escrow state.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Resolve</div>
+          <h3>Settlement waits for resolution</h3>
+          <p>
+            The affected value remains immobilized until the parties agree on an outcome
+            or an applicable external decision determines the result.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Temporal security.</strong>
+        Speed is an advantage for an attacker only when speed also produces irreversible economic finality.
+        The clearing cycle deliberately separates those two events.
+      </div>
+    </section>
+
+    <section id="cyber">
+      <div class="section-label">03 · AI-Assisted Cyberattack Resilience</div>
+      <h2>Designed against high-speed automated exploitation</h2>
+
+      <p class="section-intro">
+        AI-assisted attackers may automate reconnaissance, vulnerability discovery, transaction generation,
+        social engineering and repeated exploitation attempts. Osnias therefore treats machine-speed attacks
+        as a design assumption rather than an exceptional event.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Attack surface</div>
+          <h3>Fewer external execution paths</h3>
+          <p>
+            By excluding unrestricted swaps, lending, farming, leverage and arbitrary contract use,
+            the clearing rail avoids many attack paths created by open protocol composability.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Containment</div>
+          <h3>No requirement for instant economic finality</h3>
+          <p>
+            A suspicious transaction does not necessarily become an irreversible loss immediately.
+            Within the protocol rules, the disputed amount can be isolated while facts are reviewed.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Administrative security</div>
+          <h3>Fast containment, slow structural change</h3>
+          <p>
+            Emergency actions should be narrowly scoped. Critical governance, upgrade and treasury powers
+            should remain separated from operational incident response.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Mainnet objective</div>
+          <h3>Cold and multisignature controls</h3>
+          <p>
+            Production architecture is intended to separate online operational systems from dormant
+            multisignature and cold-storage controls used for critical recovery or structural actions.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Important.</strong>
+        Temporal containment is not a substitute for secure code, audits, key management or incident-response procedures.
+        It is an additional defensive layer that limits the ability of a fast attack to become an immediate irreversible loss.
+      </div>
+    </section>
+
+    <section id="escrow">
+      <div class="section-label">04 · Internal Dispute Escrow</div>
+      <h2>A disputed amount can be isolated inside the clearing cycle</h2>
+
+      <p class="section-intro">
+        Commercial disagreements and unauthorized operations can occur even when the underlying infrastructure is functioning correctly.
+        Osnias therefore distinguishes a disputed amount from the remainder of a participant's position.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Request</div>
+          <h3>One party raises a dispute</h3>
+          <p>
+            A participant may request the conservative isolation of a clearly identified amount linked to a specific operation.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Escrow</div>
+          <h3>Only the disputed amount is immobilized</h3>
+          <p>
+            The manager may place the contested amount into protocol escrow.
+            The purpose is preservation, not adjudication or confiscation.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Neutrality</div>
+          <h3>Osnias does not decide the dispute</h3>
+          <p>
+            Osnias does not determine which party is legally right.
+            It provides a technical mechanism that preserves the disputed value while the parties resolve the matter.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Core rule.</strong>
+        The manager may immobilize disputed value but does not acquire beneficial ownership of it
+        and does not exercise a judicial or arbitral function.
+      </div>
+    </section>
+
+    <section id="human-error">
+      <div class="section-label">05 · Human Error & Address Misrouting</div>
+      <h2>A clearing cycle can also contain ordinary human mistakes</h2>
+
+      <p class="section-intro">
+        Not every abnormal transaction is fraudulent. A wrong click, an incorrectly copied address
+        or selection of the wrong participant can create a genuine misrouting error.
+        Osnias Clearing therefore treats human error as a distinct operational-security case.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Identifiable participant</div>
+          <h3>The destination address must be attributable</h3>
+          <p>
+            An address alone does not identify its controller. Within the clearing perimeter,
+            participating addresses should therefore be registered or otherwise attributable
+            to an identified participant so that the relevant party can be contacted.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Acknowledgement</div>
+          <h3>The recipient confirms the erroneous receipt</h3>
+          <p>
+            A simple addressing mistake is not corrected unilaterally by Osnias.
+            The participant controlling the destination address must acknowledge that the amount
+            was received in error, or the parties must otherwise establish a mutually agreed correction.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Correction</div>
+          <h3>Controlled burn / mint return</h3>
+          <p>
+            Once the error is acknowledged, the manager may execute the agreed correction by burning
+            the identified amount from the erroneous destination address and minting the same amount
+            back to the originating or otherwise agreed correct address.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Human-error rule.</strong>
+        A wrong click does not automatically justify administrative reversal.
+        Correction requires an identifiable destination participant and documented recognition
+        of the error, mutual agreement, or another applicable external basis.
+      </div>
+    </section>
+
+    <section id="mint-burn">
+      <div class="section-label">06 · Controlled Escrow Relocation</div>
+      <h2>Burn and mint can implement a traceable escrow relocation</h2>
+
+      <p class="section-intro">
+        Where the clearing-token implementation permits manager-controlled burn and mint on identified addresses,
+        an escrow relocation can be performed by burning the disputed amount from the contested address
+        and minting the same amount to the designated escrow account.
+      </p>
+
+      <table class="spec-table">
+        <tr>
+          <th>Step</th>
+          <th>Action</th>
+          <th>Economic effect</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>Identify the disputed operation and exact amount</td>
+          <td>No change</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Burn the disputed amount from the contested address</td>
+          <td>Temporary reduction before corresponding escrow mint</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Mint the identical amount to the designated escrow account</td>
+          <td>Supply-neutral administrative relocation when executed as one controlled operation</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Immobilize the escrow position until resolution</td>
+          <td>Disputed amount unavailable for normal clearing</td>
+        </tr>
+      </table>
+
+      <div class="notice">
+        <strong>Mainnet implementation objective.</strong>
+        Where technically feasible, escrow relocation should be implemented atomically so that burn and corresponding mint
+        either complete together or fail together.
+      </div>
+    </section>
+
+    <section id="amicable">
+      <div class="section-label">07 · Amicable Resolution</div>
+      <h2>The parties decide; Osnias records and executes</h2>
+
+      <p class="section-intro">
+        Once value is safely isolated, the preferred path is a direct negotiated settlement between the parties.
+        Osnias may invite them to reach an amicable resolution but does not impose the terms.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Negotiate</div>
+          <h3>Parties remain autonomous</h3>
+          <p>
+            The parties may agree on restitution, attribution, partial allocation or another technically executable outcome.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Record</div>
+          <h3>Osnias takes note of the agreement</h3>
+          <p>
+            The agreed resolution is documented and linked to the corresponding dispute record before execution.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Execute</div>
+          <h3>Technical implementation</h3>
+          <p>
+            The manager executes the mutually agreed outcome through the permitted clearing-token mechanisms.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="external">
+      <div class="section-label">08 · External Dispute Resolution</div>
+      <h2>If there is no agreement, the dispute remains external to Osnias</h2>
+
+      <p class="section-intro">
+        If the parties do not reach an amicable settlement, they remain free to refer the dispute to a competent court,
+        arbitral body or other external mechanism available to them under applicable law or contract.
+      </p>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-kicker">Pending</div>
+          <h3>Escrow remains in place</h3>
+          <p>
+            The disputed amount remains immobilized while the external procedure is pending,
+            subject to the protocol rules and any applicable legal requirements.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Outcome</div>
+          <h3>Applicable decision is executed</h3>
+          <p>
+            Once an enforceable or otherwise applicable external decision is presented and verified,
+            the manager executes the corresponding technical disposition of the escrowed amount.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>No internal court.</strong>
+        Osnias Clearing provides containment and execution infrastructure.
+        It does not replace courts, arbitrators or other competent external dispute-resolution bodies.
+      </div>
+    </section>
+
+    <section id="resolution">
+      <div class="section-label">09 · Resolution Paths</div>
+      <h2>One escrow, several controlled outcomes</h2>
+
+      <table class="spec-table">
+        <tr>
+          <th>Resolution</th>
+          <th>Authority for outcome</th>
+          <th>Protocol action</th>
+        </tr>
+        <tr>
+          <td>Full restitution</td>
+          <td>Mutual agreement or applicable external decision</td>
+          <td>Escrow amount returned to the designated address</td>
+        </tr>
+        <tr>
+          <td>Full attribution</td>
+          <td>Mutual agreement or applicable external decision</td>
+          <td>Escrow amount assigned to the designated recipient</td>
+        </tr>
+        <tr>
+          <td>Split allocation</td>
+          <td>Mutual agreement or applicable external decision</td>
+          <td>Escrow amount redistributed according to the documented allocation</td>
+        </tr>
+        <tr>
+          <td>Final destruction</td>
+          <td>Only where explicitly authorized by the applicable resolution and protocol rules</td>
+          <td>Burn without corresponding remint</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id="governance">
+      <div class="section-label">10 · Operational Separation</div>
+      <h2>No single online component should control the entire system</h2>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Operations</div>
+          <h3>Day-to-day clearing</h3>
+          <p>
+            Routine clearing operations should use narrowly scoped permissions and avoid exposure of structural control keys.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Emergency</div>
+          <h3>Containment powers</h3>
+          <p>
+            Emergency functions should prioritize freezing or limiting risk rather than transferring value or modifying governance.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Recovery</div>
+          <h3>Dormant critical controls</h3>
+          <p>
+            Multisignature, cold-storage, cryptographic backups and an external production registry are intended
+            to protect critical recovery and deployment authority.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Administrative domain separation.</strong>
+        Compromise of an OSNIAS privileged role must not, by design, grant manager, oracle, mint, burn
+        or fee-recipient authority over ORUSD or OEURO.
+      </div>
+    </section>
+
+    <section id="validation">
+      <div class="section-label">11 · Security Validation Pipeline</div>
+      <h2>Static analysis is one layer, not the audit itself</h2>
+
+      <p class="section-intro">
+        Security review is intended to combine reproducible compilation, static analysis, unit tests,
+        fuzzing, invariant testing, integration testing and manual review. Slither supports pre-audit analysis,
+        but does not replace an independent security audit or production monitoring.
+      </p>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-kicker">Static analysis</div>
+          <h3>Slither</h3>
+          <p>
+            Map privilege surfaces, externally callable state-changing functions, supply paths,
+            dangerous external calls and unexpected routing surfaces.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Behavioral testing</div>
+          <h3>Unit · Fuzz · Invariants</h3>
+          <p>
+            Test oracle authorization, proof replay, request expiry, mint/burn accounting,
+            fee conservation, EOA-only restrictions and holder-property constraints.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-kicker">Integration</div>
+          <h3>Sei Testnet</h3>
+          <p>
+            Exercise the verified public reference deployments, wallet behavior, oracle lifecycle,
+            governance locality and cross-contract separation before any production deployment.
+          </p>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Pre-mainnet objective.</strong>
+        An external audit remains a required institutional milestone before production qualification.
+        Current public contracts are testnet reference deployments.
+      </div>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="/deployment/deployment.html">Verify Official Deployments</a>
+        <a class="btn" href="/documentation/documentation.html">Open Technical Documentation</a>
+      </div>
+    </section>
+
+    <section id="scope">
+      <div class="section-label">12 · Security Scope</div>
+      <h2>Security by layered containment</h2>
+
+      <aside class="panel">
+        <div class="stats">
+          <div class="stat">
+            <small>Clearing token</small>
+            <strong>Restricted</strong>
+            <span>No unrestricted DeFi composability</span>
+          </div>
+
+          <div class="stat">
+            <small>Settlement</small>
+            <strong>Time-aware</strong>
+            <span>Cycle provides detection and contestation time</span>
+          </div>
+
+          <div class="stat">
+            <small>Disputes</small>
+            <strong>Escrowed</strong>
+            <span>Only the contested amount is isolated</span>
+          </div>
+
+          <div class="stat">
+            <small>Osnias role</small>
+            <strong>Neutral</strong>
+            <span>Containment and execution, not adjudication</span>
+          </div>
+
+          <div class="stat">
+            <small>AI attacks</small>
+            <strong>Contained</strong>
+            <span>Machine speed does not require machine-speed finality</span>
+          </div>
+
+          <div class="stat">
+            <small>Mainnet controls</small>
+            <strong>Separated</strong>
+            <span>Operational, emergency and recovery powers are distinct</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="notice">
+      <div class="section-label">13 · Important Notice</div>
+
+      <div class="notice">
+        <strong>Security architecture, not a guarantee.</strong>
+        No blockchain system can guarantee the absence of cyberattack, operational error or dispute.
+        The mechanisms described on this page are intended to reduce attack surface, improve containment,
+        preserve disputed value and provide a controlled path to resolution before or during clearing settlement.
+        Security controls remain subject to implementation, testing, independent audit and production qualification.
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>© 2026 Osnias Clearing · Security & Dispute Management</div>
+        <div>
+          <a href="/architecture/architecture.html">Architecture</a>
+          &nbsp;·&nbsp;
+          <a href="/deployment/deployment.html">Official Deployment</a>
+          &nbsp;·&nbsp;
+          <a href="/documentation/documentation.html">Documentation</a>
+          &nbsp;·&nbsp;
+          <a href="/regulation/regulation.html">Regulation</a>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        Osnias Clearing provides public technical information for research, development, review and audit purposes.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
