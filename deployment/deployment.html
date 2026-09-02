@@ -7,6 +7,10 @@
   <meta name="description" content="Official Osnias Clearing deployment registry for ORUSD, OEURO and OSNIAS on Sei Testnet. Contract addresses, transaction hashes, verification status and technical references.">
   <meta name="robots" content="index,follow">
 
+  <link rel="stylesheet" href="/assets/css/osnias.css">
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+
   <style>
     :root{
       --bg:#07111d;
@@ -245,15 +249,14 @@
 
 <body>
 
-<header>
-  <div class="wrap">
-    <nav class="site-nav" id="mainNav" aria-label="Main navigation">
-      <a class="site-nav-brand" href="/">Osnias Clearing</a>
-      <button id="menuToggle" type="button" aria-expanded="false">Menu</button>
-      <div class="site-nav-buttons"></div>
-    </nav>
+<div class="site-nav-fixed">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="/">
+      OSNIAS <span>CLEARING</span>
+    </a>
+    <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
   </div>
-</header>
+</div>
 
 <main>
   <div class="wrap">
@@ -394,7 +397,10 @@
     Osnias Clearing · Official Deployment Registry · Public technical reference
   </div>
 </footer>
-
-<script src="/assets/js/osnias-nav.js"></script>
+<script
+  data-goatcounter="https://denis-osnias.goatcounter.com/count"
+  async
+  src="//gc.zgo.at/count.js">
+</script>
 </body>
 </html>
