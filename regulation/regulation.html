@@ -29,6 +29,7 @@
   <meta name="citation_publication_date" content="2026-08-31" />
 
   <link rel="stylesheet" href="/assets/css/osnias.css"/>
+  <script src="/assets/js/osnias-seo.js" defer></script>
   <script src="/assets/js/osnias-nav.js" defer></script>
 
   <script type="application/ld+json">
@@ -82,17 +83,7 @@
     <a class="site-nav-brand" href="/index.html">
       OSNIAS <span>CLEARING</span>
     </a>
-    <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation">
-      <a href="/history/history.html">History</a>
-      <a href="/cycle/cycle.html">Jubilee Cycle</a>
-      <a href="/sei/sei.html">SEI Mainnet</a>
-      <a href="/oracle/oracle.html">Oracle</a>
-      <a href="/osnias/osnias.html">OSNIAS Token</a>
-      <a href="/tokenomics/tokenomics.html">Tokenomics</a>
-      <a href="/orusd/orusd.html">ORUSD Clearing Token</a>
-      <a href="/oeuro/oeuro.html">OEURO Clearing Token</a>
-      <a href="/regulation/regulation.html">Regulation</a>
-    </nav>
+    <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
   </div>
 </div>
 
@@ -101,7 +92,7 @@
 <section class="hero">
         <div class="hero-grid single">
           <div>
-            <div class="eyebrow">Regulatory Positioning · Request for Guidance</div>
+            <div class="eyebrow">Regulatory Positioning · Public Guidance Record</div>
 
             <h1>Regulatory Positioning</h1>
             <div class="hero-role">A functional description before legal qualification</div>
@@ -109,7 +100,7 @@
             <p class="hero-lead">
               This page describes the operational perimeter of the Osnias architecture and the intended roles of its tokens.
               It does not claim a universal legal classification. Regulatory treatment may differ by jurisdiction, activity, counterparties and implementation.
-              Osnias intends to submit jurisdiction-specific requests for guidance to the relevant authorities.
+              Osnias Clearing is submitting jurisdiction-specific requests for guidance to relevant authorities and records the status of those approaches publicly where appropriate.
             </p>
 
             <div class="tags">
@@ -125,6 +116,7 @@
               <a class="btn btn-primary" href="#perimeter">Functional perimeter →</a>
               <a class="btn" href="#jurisdictions">Jurisdictions</a>
               <a class="btn" href="#guidance">Request for guidance</a>
+              <a class="btn" href="/deployment/deployment.html">Official Deployment</a>
             </div>
           </div>
 
@@ -320,46 +312,72 @@
       <h2>Regulatory dialogue by authority</h2>
 
       <p class="section-intro">
-        The same technical architecture can receive different legal treatment depending on jurisdiction.
-        Osnias therefore intends to prepare a separate factual presentation and request for guidance for each relevant authority.
+        The same technical architecture may receive different legal treatment depending on jurisdiction,
+        activity, counterparties and implementation. Osnias therefore uses separate factual submissions
+        rather than assuming a universal classification.
       </p>
 
       <div class="grid-3">
         <article class="card">
-          <h3>United States</h3>
-          <p>Initial analysis to address securities, commodities, money transmission, custody and lending boundaries.</p>
-          <span class="badge">SEC / CFTC / FinCEN — planned</span>
-</article>
-
-        <article class="card">
           <h3>France</h3>
-          <p>Initial analysis to address crypto-asset services, payment/banking boundaries, governance token treatment and clearing architecture.</p>
-          <span class="badge">AMF / ACPR — planned</span>
-</article>
-
-        <article class="card">
-          <h3>European Union</h3>
-          <p>Initial analysis to address MiCA perimeter, payment/e-money boundaries and the treatment of governance and restricted clearing tokens.</p>
-          <span class="badge">ESMA / EBA — planned</span>
-</article>
-
-        <article class="card">
-          <h3>Switzerland</h3>
-          <p>Initial analysis to address token classification, financial-market infrastructure, custody and lending boundaries.</p>
-          <span class="badge">FINMA — planned</span>
-</article>
+          <p>
+            A request for regulatory guidance has been submitted to the Autorité des marchés financiers (AMF).
+            The submission presents the functional perimeter, token separation, testnet status and absence of customer-deposit,
+            credit and protocol-leverage activity.
+          </p>
+          <span class="badge badge-ok">AMF — submitted</span>
+        </article>
 
         <article class="card">
           <h3>Andorra</h3>
-          <p>Initial analysis to address digital-asset, financial-services and local authorization perimeter.</p>
-          <span class="badge">AFA — planned</span>
-</article>
+          <p>
+            A jurisdiction-specific request for guidance has been submitted to the Andorran financial authority
+            using the same factual architecture and functional-separation principles.
+          </p>
+          <span class="badge badge-ok">AFA — submitted</span>
+        </article>
+
+        <article class="card">
+          <h3>Spain</h3>
+          <p>
+            A Spanish-language regulatory package has been prepared for submission.
+            The objective is to obtain jurisdiction-specific guidance before any production deployment or local activity.
+          </p>
+          <span class="badge">Spain — package prepared</span>
+        </article>
+
+        <article class="card">
+          <h3>Switzerland</h3>
+          <p>
+            A FINMA-oriented package is being prepared, subject to confirming the appropriate access and jurisdictional
+            route for a project that is not yet operating from Switzerland.
+          </p>
+          <span class="badge">FINMA — route under review</span>
+        </article>
+
+        <article class="card">
+          <h3>European Union</h3>
+          <p>
+            EU-level analysis remains relevant for MiCA, payment/e-money boundaries and the treatment of restricted clearing-register
+            tokens. National submissions are used first to obtain concrete jurisdictional feedback.
+          </p>
+          <span class="badge">EU perimeter — ongoing analysis</span>
+        </article>
 
         <article class="card">
           <h3>Other jurisdictions</h3>
-          <p>Additional regulatory submissions may be prepared where partners, users or infrastructure deployments create a material nexus.</p>
+          <p>
+            Additional submissions may be opened where network integrations, partners or production activity create a material nexus.
+            Each filing will remain factual and jurisdiction-specific.
+          </p>
           <span class="badge">Open review</span>
-</article>
+        </article>
+      </div>
+
+      <div class="notice">
+        <strong>Status principle.</strong>
+        “Submitted” means that a request for guidance has been transmitted to the relevant authority.
+        It does not mean that the authority has approved, authorized or classified Osnias Clearing.
       </div>
     </section>
 
@@ -421,7 +439,7 @@
           <h3>OSNIAS</h3>
           <p>Governance-token technical archive and source package.</p>
           <div class="badges">
-            <span class="badge">DOI 10.5281/zenodo.22139986</span>
+            <a class="badge" href="https://doi.org/10.5281/zenodo.22139986" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22139986 ↗</a>
           </div>
         </article>
 
@@ -429,7 +447,7 @@
           <h3>ORUSD</h3>
           <p>USD-clearing-token technical archive and source package.</p>
           <div class="badges">
-            <span class="badge">DOI 10.5281/zenodo.22140272</span>
+            <a class="badge" href="https://doi.org/10.5281/zenodo.22200260" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22200260 ↗</a>
           </div>
         </article>
 
@@ -437,9 +455,14 @@
           <h3>OEURO</h3>
           <p>EUR-clearing-token technical archive and source package.</p>
           <div class="badges">
-            <span class="badge">DOI 10.5281/zenodo.22140908</span>
+            <a class="badge" href="https://doi.org/10.5281/zenodo.22195130" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22195130 ↗</a>
           </div>
         </article>
+      </div>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="/deployment/deployment.html">Verify Official Deployments</a>
+        <a class="btn" href="/documentation/documentation.html">Open Documentation</a>
       </div>
     </section>
 
@@ -447,7 +470,7 @@
   <footer>
     <div class="container">
       <div class="footer-grid">
-        <div>© 2026 Osnias Clearing · Regulatory Positioning · Denis Bouzon · Last update: 31 August 2026</div>
+        <div>© 2026 Osnias Clearing · Regulatory Positioning · Last update: 2 September 2026</div>
         <div>
           <a href="/">Home</a>
           &nbsp;·&nbsp;
