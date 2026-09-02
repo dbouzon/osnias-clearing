@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Documentation — Osnias Clearing</title>
+  <meta name="description" content="Official public documentation for Osnias Clearing: technical white papers, deployment references, Zenodo DOI archives, architecture, regulation, source code and verification resources." />
+  <meta name="theme-color" content="#050814" />
+  <meta name="robots" content="index,follow" />
+  <meta name="author" content="Denis Bouzon" />
+  <link rel="stylesheet" href="/assets/css/osnias.css" />
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+  <style>
+    .pitch-hero{padding:2.4rem 0 3rem}
+    .pitch-hero h1{font-size:clamp(2.5rem,7vw,4.8rem);line-height:.98;margin:.35rem 0 1rem}
+    .pitch-lead{max-width:60rem;color:var(--muted);font-size:1.06rem}
+    .pitch-actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.5rem}
+    .pitch-grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+    .pitch-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+    .pitch-card,.pitch-resource,.pitch-notice{border:1px solid var(--border);background:var(--panel);border-radius:1rem}
+    .pitch-card{padding:1.15rem}
+    .pitch-card h3{font-size:1rem;margin-bottom:.45rem}
+    .pitch-card p{color:var(--muted);font-size:.86rem}
+    .pitch-metric{font-size:1.35rem;font-weight:800;color:var(--accent);margin-bottom:.25rem}
+    .pitch-notice{padding:1rem 1.1rem;border-left:3px solid var(--accent-soft);color:var(--muted)}
+    .pitch-notice strong{color:var(--text)}
+    .pitch-resources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem;margin-top:1.2rem}
+    .pitch-resource{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem;text-decoration:none!important}
+    .pitch-resource:hover{border-color:var(--accent-soft)}
+    .pitch-resource strong{display:block;color:var(--text);font-size:.88rem;margin-bottom:.12rem}
+    .pitch-resource span{display:block;color:var(--muted);font-size:.75rem}
+    .pitch-resource-type{color:var(--accent);font-size:.72rem;white-space:nowrap}
+    .pitch-subtitle{color:var(--accent);text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;font-weight:700;margin-bottom:.45rem}
+    .pitch-intro{color:var(--muted);max-width:60rem;margin-bottom:1.3rem}
+    .pitch-section{margin-bottom:3.7rem}
+    .pitch-list{list-style:none;color:var(--muted);font-size:.86rem}
+    .pitch-list li{margin:.38rem 0}
+    .pitch-list li::before{content:"•";color:var(--accent);margin-right:.45rem}
+    .pitch-status{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:.28rem .7rem;color:var(--muted);font-size:.72rem;margin-top:.9rem}
+    @media(max-width:900px){.pitch-grid-3,.pitch-grid-2,.pitch-resources{grid-template-columns:1fr}}
+    @media(max-width:560px){.pitch-actions{flex-direction:column}.pitch-actions .btn{width:100%}.pitch-resource{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div id="site-nav"></div>
+
+  <header>
+    <div class="container">
+      <section class="pitch-hero">
+        <div class="eyebrow">Official public documentation · Technical reference</div>
+        <h1>Documentation</h1>
+        <p class="pitch-lead">
+          This page is the public documentation index for Osnias Clearing. It provides direct access to technical white papers, official deployment references, permanent Zenodo DOI archives, architecture, regulation, source code and independent verification resources.
+        </p>
+        <div class="pitch-actions">
+          <a class="btn btn-primary" href="/deployment/deployment.html">Official Deployment</a>
+          <a class="btn" href="mailto:contact@osnias-clearing.com">Contact Osnias Clearing</a>
+          <a class="btn" href="https://github.com/dbouzon/osnias-clearing" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        </div>
+        <div class="pitch-status">Public documentation · Updated September 2026</div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="pitch-section">
+      <div class="pitch-subtitle">01 · Project Overview</div>
+      <h2>Osnias Clearing technical scope</h2>
+      <p class="pitch-intro">
+        Osnias Clearing is a blockchain clearing infrastructure project built around a 91-day clearing cycle, restricted clearing-register tokens, oracle-controlled settlement boundaries and a strict separation between clearing, custody, lending and governance.
+      </p>
+    </section>
+
+    <section class="pitch-section">
+      <div class="pitch-subtitle">02 · Architecture Summary</div>
+      <h2>Core architecture</h2>
+      <div class="pitch-grid-3">
+        <article class="pitch-card"><h3>91-Day Clearing Cycle</h3><p>Positions circulate during a defined operating cycle, allowing progressive compensation before final reconciliation.</p></article>
+        <article class="pitch-card"><h3>Multichain EVM Integration</h3><p>Participating EVM networks connect through integration layers while local lending and collateral custody remain with independent protocols.</p></article>
+        <article class="pitch-card"><h3>Strict Functional Separation</h3><p>Clearing, custody, lending and governance are separate domains with distinct technical roles and trust boundaries.</p></article>
+      </div>
+    </section>
+
+    <section class="pitch-section">
+      <div class="pitch-subtitle">03 · Clearing Principle</div>
+      <h2>Horizontal clearing leverage</h2>
+      <div class="pitch-notice">
+        <strong>Financial leverage increases simultaneous exposure. Clearing leverage increases cumulative economic throughput over time.</strong><br />
+        Osnias seeks capital efficiency through circulation and multilateral netting rather than by stacking immediate debt on top of the same collateral.
+      </div>
+    </section>
+
+    <section class="pitch-section">
+      <div class="pitch-subtitle">04 · Architecture</div>
+      <h2>Three distinct protocol domains</h2>
+      <div class="pitch-grid-3">
+        <article class="pitch-card"><div class="pitch-metric">OSNIAS</div><p>Governance and strategic-reserve token. Canonical governance state on Sei, with separate economic mobility across compatible EVM environments.</p></article>
+        <article class="pitch-card"><div class="pitch-metric">ORUSD</div><p>Restricted USD-denominated clearing-register token. EOA-focused circulation with explicit mint/burn and oracle settlement boundaries.</p></article>
+        <article class="pitch-card"><div class="pitch-metric">OEURO</div><p>Restricted EUR-denominated clearing-register token following the same clearing-only architecture and separation principles.</p></article>
+      </div>
+    </section>
+
+    <section class="pitch-section">
+      <div class="pitch-subtitle">05 · Development Status</div>
+      <h2>Public testnet and pre-audit stage</h2>
+      <div class="pitch-grid-3">
+        <article class="pitch-card"><div class="pitch-metric">Public</div><p>Architecture pages, technical white papers, source files and permanent archives are available for independent review.</p></article>
+        <article class="pitch-card"><div class="pitch-metric">Testnet</div><p>Reference contracts are deployed on Sei Testnet for development, integration testing and pre-audit validation.</p></article>
+        <article class="pitch-card"><div class="pitch-metric">Integration</div><p>The current phase focuses on ecosystem funding, network adapters, audits and initial lending / escrow protocol integrations.</p></article>
+      </div>
+    </section>
+
+    <section class="pitch-section">
+      <div class="pitch-subtitle">06 · Development Roadmap</div>
+      <h2>Technical and ecosystem milestones</h2>
+      <div class="pitch-grid-2">
+        <article class="pitch-card">
+          <h3>Technical deployment</h3>
+          <ul class="pitch-list">
+            <li>Security audits and invariant testing</li>
+            <li>EVM network integration adapters</li>
+            <li>Oracle and monitoring infrastructure</li>
+            <li>Testnet and production hardening</li>
+          </ul>
+        </article>
+        <article class="pitch-card">
+          <h3>Ecosystem deployment</h3>
+          <ul class="pitch-list">
+            <li>Lending and escrow protocol integrations</li>
+            <li>Partner onboarding and documentation</li>
+            <li>Public deployment registries</li>
+            <li>Implementation reports and measurable milestones</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="pitch-section" id="documents">
+      <div class="pitch-subtitle">07 · Technical Documents</div>
+      <h2>White papers, DOI archives and reference documentation</h2>
+      <p class="pitch-intro">Direct links to the principal public technical documents and permanent archives of the current Osnias Clearing publication set.</p>
+
+      <div class="pitch-resources">
+        <a class="pitch-resource" href="/deployment/deployment.html">
+          <div><strong>Official Deployment Registry</strong><span>Official Sei Testnet contract addresses, transaction hashes and verification status</span></div><div class="pitch-resource-type">REGISTRY ↗</div>
+        </a>
+        <a class="pitch-resource" href="/cycle/onias-clearing-calendrier.pdf">
+          <div><strong>91-Day & Jubilee Cycle Calendar</strong><span>Official annual clearing-cycle calendar</span></div><div class="pitch-resource-type">PDF ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/osnias/OSNIAS_Technical_White.pdf">
+          <div><strong>OSNIAS Technical White Paper</strong><span>Governance token · Technical & audit reference</span></div><div class="pitch-resource-type">PDF ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="https://doi.org/10.5281/zenodo.22139986" target="_blank" rel="noopener noreferrer">
+          <div><strong>OSNIAS — Zenodo Technical Archive</strong><span>Permanent archive · DOI 10.5281/zenodo.22139986</span></div><div class="pitch-resource-type">DOI ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/orusd/ORUSD_Technical_White_Paper.pdf">
+          <div><strong>ORUSD Technical White Paper</strong><span>USD clearing register · Technical & audit reference</span></div><div class="pitch-resource-type">PDF ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="https://doi.org/10.5281/zenodo.22200260" target="_blank" rel="noopener noreferrer">
+          <div><strong>ORUSD — Zenodo Technical Archive</strong><span>Permanent archive · DOI 10.5281/zenodo.22200260</span></div><div class="pitch-resource-type">DOI ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/oeuro/OEURO_Technical_White_Paper.pdf">
+          <div><strong>OEURO Technical White Paper</strong><span>EUR clearing register · Technical & audit reference</span></div><div class="pitch-resource-type">PDF ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="https://doi.org/10.5281/zenodo.22195130" target="_blank" rel="noopener noreferrer">
+          <div><strong>OEURO — Zenodo Technical Archive</strong><span>Permanent archive · DOI 10.5281/zenodo.22195130</span></div><div class="pitch-resource-type">DOI ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/tokenomics/tokenomics.html">
+          <div><strong>OSNIAS Tokenomics</strong><span>Supply, allocation, vesting and strategic reserve</span></div><div class="pitch-resource-type">HTML ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/regulation/regulation.html">
+          <div><strong>Regulatory Positioning</strong><span>Functional and regulatory boundaries of the architecture</span></div><div class="pitch-resource-type">HTML ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/oracle/oracle.html">
+          <div><strong>Oracle Architecture</strong><span>Mint / burn request and settlement coordination layer</span></div><div class="pitch-resource-type">HTML ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/sei/sei.html">
+          <div><strong>Sei Architecture</strong><span>Canonical governance and reference deployment environment</span></div><div class="pitch-resource-type">HTML ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/history/history.html">
+          <div><strong>Historical Foundations</strong><span>Historical framing of the Osnias Clearing project</span></div><div class="pitch-resource-type">HTML ↗</div>
+        </a>
+      </div>
+    </section>
+
+    <section class="pitch-section">
+      <div class="pitch-subtitle">08 · Source & Verification</div>
+      <h2>Review the implementation directly</h2>
+      <div class="pitch-resources">
+        <a class="pitch-resource" href="/osnias/osnias-sei-testnet.sol"><div><strong>OSNIAS Solidity Source</strong><span>Sei Testnet reference source</span></div><div class="pitch-resource-type">SOL ↗</div></a>
+        <a class="pitch-resource" href="/orusd/orusd-sei-testnet.sol"><div><strong>ORUSD Solidity Source</strong><span>Sei Testnet reference source</span></div><div class="pitch-resource-type">SOL ↗</div></a>
+        <a class="pitch-resource" href="https://testnet.seiscan.io/address/0x129C294D476748E5b4D67B6EC403c97c399b756d#code" target="_blank" rel="noopener noreferrer"><div><strong>OSNIAS on SeiScan</strong><span>0x129C294D476748E5b4D67B6EC403c97c399b756d</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+        <a class="pitch-resource" href="https://testnet.seiscan.io/address/0x0c3a19455b898913A1DaD93d724c24062293dB5F#code" target="_blank" rel="noopener noreferrer"><div><strong>ORUSD on SeiScan</strong><span>0x0c3a19455b898913A1DaD93d724c24062293dB5F</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+      </div>
+    </section>
+
+    <section class="pitch-section">
+      <div class="pitch-subtitle">09 · Project Contact</div>
+      <h2>Osnias Clearing</h2>
+      <div class="pitch-notice">
+        <strong>Project:</strong> Osnias Clearing<br />
+        <strong>Author:</strong> Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer">0009-0007-8894-8902</a><br />
+        <strong>Email:</strong> <a href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a><br />
+        <strong>GitHub:</strong> <a href="https://github.com/dbouzon/osnias-clearing" target="_blank" rel="noopener noreferrer">dbouzon/osnias-clearing</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">Osnias Clearing · Public Documentation · 2026</div>
+  </footer>
+</body>
+</html>
