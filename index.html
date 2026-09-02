@@ -88,6 +88,66 @@
     ]
   }
   </script>
+
+  <style>
+    /* Index-specific layout tuning */
+    .hero{
+      padding-top:2.3rem;
+      padding-bottom:2.5rem;
+    }
+
+    .hero h1{
+      font-size:clamp(2.5rem,5vw,4.2rem);
+      line-height:1;
+      margin:.35rem 0 .8rem;
+      max-width:15ch;
+    }
+
+    .hero-role{
+      font-size:clamp(1.15rem,2vw,1.7rem);
+      line-height:1.2;
+      margin-bottom:1rem;
+    }
+
+    .hero-lead{
+      max-width:58rem;
+    }
+
+    /* Keep the main navigation visible on desktop.
+       Mobile behavior remains controlled by the common asset/CSS. */
+    @media (min-width:901px){
+      .site-nav-inner{
+        display:flex;
+        align-items:center;
+        gap:1rem;
+      }
+
+      .site-nav-buttons{
+        display:flex !important;
+        align-items:center;
+        justify-content:flex-end;
+        gap:.45rem;
+        margin-left:auto;
+        flex-wrap:wrap;
+      }
+
+      .site-nav-buttons a{
+        white-space:nowrap;
+      }
+    }
+
+    @media (max-width:900px){
+      .hero{
+        padding-top:1.6rem;
+      }
+
+      .hero h1{
+        font-size:clamp(2.2rem,11vw,3.3rem);
+        max-width:none;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
