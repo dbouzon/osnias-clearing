@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 1.9.0
+  Version    : 2.0.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v1.9.0</title>
+  <title>Osnias Clearing — Mon Compte v2.0.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -558,7 +558,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.9.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.0.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -610,8 +610,8 @@
             <div class="balance-sub" style="margin-top:4px;">Encours total de clearing</div>
           </div>
           <div style="font-size:11px; font-family:var(--mono); color:#fff;">
-            <a href="https://testnet.seiscan.io/address/0x0c3a19455b898913A1DaD93d724c24062293dB5F"
-               target="_blank" style="color:var(--cyan);">0x0c3a...3dB5F</a>
+            <a href="https://testnet.seiscan.io/address/0xF3341E88977686BeA8FEa474C04095e81F124a0e"
+               target="_blank" style="color:var(--cyan);">0xF334...a0e — v7.0</a>
             · Sei Testnet
           </div>
         </div>
@@ -813,7 +813,7 @@
           <div class="modal-field">
             <label class="modal-label">Payer reference <span style="color:var(--red); font-size:11px;">*required</span></label>
             <input class="modal-input" id="p2pRef" type="text"
-              maxlength="64" placeholder="ex : invoice-2026-001…" />
+              maxlength="50" placeholder="ex : invoice-2026-001…" />
             <div style="font-family:var(--mono); font-size:11px; color:#fff; margin-top:4px;">
               Immutably recorded on-chain.
             </div>
@@ -821,7 +821,7 @@
           <div class="modal-field">
             <label class="modal-label">Nature of payment <span style="color:var(--red); font-size:11px;">*required</span></label>
             <input class="modal-input" id="p2pNature" type="text"
-              maxlength="128" placeholder="ex : settlement Q3, supplier payment…" />
+              maxlength="50" placeholder="ex : settlement Q3, supplier payment…" />
             <div style="font-family:var(--mono); font-size:11px; color:#fff; margin-top:4px;">
               Immutably recorded on-chain.
             </div>
@@ -897,7 +897,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v1.9.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v2.0.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -907,9 +907,7 @@
   const SEI_RPC        = 'https://evm-rpc-testnet.sei-apis.com';
   const SEI_EXPLORER   = 'https://testnet.seiscan.io';
 
-  const ORUSD_ADDRESS  = '0x0c3a19455b898913A1DaD93d724c24062293dB5F';
-
-  // ABI ORUSD minimal — balanceOf + Transfer event
+  const ORUSD_ADDRESS  = '0xF3341E88977686BeA8FEa474C04095e81F124a0e'; // ORUSD v7.0
   const ORUSD_ABI_BAL  = '0x70a08231'; // balanceOf(address)
 
   const NETWORKS = {
@@ -1387,11 +1385,36 @@
         return;
       }
 
-      // Encoder transfer(address,uint256) sans erreur d'arrondi float
+      // Encoder transferWithMemo(address,uint256,string,string)
+      // Sélecteur : 0x66b84a6c
       const amountRaw = toORUSD(amountStr);
-      const data = '0xa9059cbb'
-        + recipient.slice(2).padStart(64, '0')
-        + amountRaw.toString(16).padStart(64, '0');
+
+      // Encodage ABI manuel des strings ref et nature
+      const encodeString = (str) => {
+        const bytes = new TextEncoder().encode(str);
+        const len   = bytes.length;
+        // offset + length + data padded à 32 bytes
+        const lenHex  = len.toString(16).padStart(64, '0');
+        let   dataHex = '';
+        for (const b of bytes) dataHex += b.toString(16).padStart(2, '0');
+        dataHex = dataHex.padEnd(Math.ceil(len / 32) * 64, '0');
+        return lenHex + dataHex;
+      };
+
+      // Offsets fixes pour 2 strings après (address + uint256)
+      // to(32) + value(32) + offset_ref(32) + offset_nature(32) = 128 bytes avant les strings
+      const refEncoded    = encodeString(ref);
+      const natureEncoded = encodeString(nature);
+      const offset_ref    = (128).toString(16).padStart(64, '0');           // 0x80
+      const offset_nature = (128 + 32 + refEncoded.length / 2).toString(16).padStart(64, '0');
+
+      const data = '0x66b84a6c'
+        + recipient.slice(2).padStart(64, '0')          // address to
+        + amountRaw.toString(16).padStart(64, '0')       // uint256 value
+        + offset_ref                                     // offset ref
+        + offset_nature                                  // offset nature
+        + refEncoded                                     // string ref
+        + natureEncoded;                                 // string nature
 
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
