@@ -1046,20 +1046,33 @@
       // Bloc courant
       const blockHex = await rpc('eth_blockNumber', []);
       const blockNow = parseInt(blockHex, 16);
-      const fromBlock = '0x' + Math.max(0, blockNow - 5000).toString(16);
 
-      // Deux appels — adresse en from et en to
-      const [logsFrom, logsTo] = await Promise.all([
-        rpc('eth_getLogs', [{ fromBlock, toBlock: 'latest',
-          address: ORUSD_ADDRESS, topics: [TRANSFER_TOPIC, addrPadded] }]),
-        rpc('eth_getLogs', [{ fromBlock, toBlock: 'latest',
-          address: ORUSD_ADDRESS, topics: [TRANSFER_TOPIC, null, addrPadded] }]),
-      ]);
+      // RPC Sei limite à 2000 blocs par appel — on fait 5 tranches = ~6600 blocs (~44min)
+      const CHUNK = 2000;
+      const PASSES = 5;
+      let allLogs = [];
 
-      // Fusionner, dédupliquer, trier, limiter à 50
-      const seen = new Set();
-      const logs = [...logsFrom, ...logsTo]
-        .filter(l => { if (seen.has(l.transactionHash)) return false; seen.add(l.transactionHash); return true; })
+      for (let p = 0; p < PASSES; p++) {
+        const to   = '0x' + Math.max(0, blockNow - p * CHUNK).toString(16);
+        const from = '0x' + Math.max(0, blockNow - (p + 1) * CHUNK).toString(16);
+
+        const [logsFrom, logsTo] = await Promise.all([
+          rpc('eth_getLogs', [{ fromBlock: from, toBlock: to,
+            address: ORUSD_ADDRESS, topics: [TRANSFER_TOPIC, addrPadded] }]),
+          rpc('eth_getLogs', [{ fromBlock: from, toBlock: to,
+            address: ORUSD_ADDRESS, topics: [TRANSFER_TOPIC, null, addrPadded] }]),
+        ]);
+
+        const seen = new Set(allLogs.map(l => l.transactionHash));
+        const chunk = [...logsFrom, ...logsTo]
+          .filter(l => { if (seen.has(l.transactionHash)) return false; seen.add(l.transactionHash); return true; });
+
+        allLogs = [...allLogs, ...chunk];
+        if (allLogs.length >= 50) break;
+      }
+
+      // Trier par bloc décroissant et limiter à 50
+      const logs = allLogs
         .sort((a, b) => parseInt(b.blockNumber, 16) - parseInt(a.blockNumber, 16))
         .slice(0, 50);
 
