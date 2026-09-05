@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 2.0.0
+  Version    : 2.2.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v2.0.0</title>
+  <title>Osnias Clearing — Mon Compte v2.2.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -370,6 +370,42 @@
       border-top: 1px solid var(--border);
     }
 
+    /* ── Layout main avec panneau cycle ── */
+    main {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: flex-start;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Panneau cycle oracle ── */
+    .cycle-panel {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: #fff;
+      align-self: flex-start;
+    }
+
+    /* ── Zone principale (colonnes + registre) ── */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
     .empty-state {
       text-align: center;
       padding: 40px;
@@ -558,7 +594,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.0.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.2.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -566,6 +602,40 @@
   </header>
 
   <main>
+
+    <!-- Panneau cycle oracle Sei -->
+    <div class="cycle-panel" id="cyclePanel" style="display:none;">
+      <div style="font-size:11px; font-weight:600; letter-spacing:0.06em; color:#fff; border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:12px;">
+        CYCLE OSNIAS — ORACLE SEI
+      </div>
+
+      <div style="font-size:13px; color:#fff; margin-bottom:4px;">Oracle on-chain</div>
+      <div style="font-size:13px; margin-bottom:12px;">
+        <a href="https://testnet.seiscan.io/address/0xbD1eAf727f4E98DD23455317172034b5D35c955d"
+           target="_blank" style="color:var(--cyan);">0xbD1e...955d</a>
+      </div>
+
+      <div style="border-top:1px solid var(--border); padding-top:12px;">
+        <div style="font-size:11px; font-weight:600; letter-spacing:0.06em; color:#fff; margin-bottom:10px;">CYCLE STATUS</div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+          <span id="cycleDot" style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--border); flex-shrink:0;"></span>
+          <span id="cycleWindowLabel" style="font-family:var(--mono); font-size:15px; font-weight:700; color:#fff;">—</span>
+        </div>
+        <div id="cycleDetails" style="font-family:var(--mono); font-size:13px; color:#fff; line-height:2;"></div>
+      </div>
+
+      <div style="border-top:1px solid var(--border); padding-top:12px; margin-top:4px;">
+        <div style="font-size:11px; font-weight:600; letter-spacing:0.06em; color:#fff; margin-bottom:8px;">REMIND</div>
+        <div style="font-family:var(--mono); font-size:13px; color:#fff; line-height:1.9;">
+          Day 1 &nbsp;&nbsp;: Burn open / Mint close<br>
+          Day 2→6 : Burn close / Mint open<br>
+          Day 7 &nbsp;&nbsp;: Burn close / Mint close
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone principale -->
+    <div class="main-content">
 
     <!-- Ligne 1 : 3 colonnes -->
     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; align-items:start;">
@@ -610,8 +680,8 @@
             <div class="balance-sub" style="margin-top:4px;">Encours total de clearing</div>
           </div>
           <div style="font-size:11px; font-family:var(--mono); color:#fff;">
-            <a href="https://testnet.seiscan.io/address/0xF3341E88977686BeA8FEa474C04095e81F124a0e"
-               target="_blank" style="color:var(--cyan);">0xF334...a0e — v7.0</a>
+            <a href="https://testnet.seiscan.io/address/0xA4b51A41534Fd92E4C95AdEcec95B5a5E3236Aee"
+               target="_blank" style="color:var(--cyan);">0xA4b5...6Aee — v7.1</a>
             · Sei Testnet
           </div>
         </div>
@@ -724,6 +794,8 @@
         </table>
       </div>
     </div>
+
+    </div><!-- fin main-content -->
 
   </main>
 
@@ -897,7 +969,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v2.0.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v2.2.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -907,7 +979,7 @@
   const SEI_RPC        = 'https://evm-rpc-testnet.sei-apis.com';
   const SEI_EXPLORER   = 'https://testnet.seiscan.io';
 
-  const ORUSD_ADDRESS  = '0xF3341E88977686BeA8FEa474C04095e81F124a0e'; // ORUSD v7.0
+  const ORUSD_ADDRESS  = '0xA4b51A41534Fd92E4C95AdEcec95B5a5E3236Aee'; // ORUSD v7.1
   const ORUSD_ABI_BAL  = '0x70a08231'; // balanceOf(address)
 
   const NETWORKS = {
@@ -987,6 +1059,7 @@
     alertOk.classList.add('show');
     document.getElementById('col1').style.display = 'block';
     document.getElementById('col2').style.display = 'block';
+    document.getElementById('cyclePanel').style.display = 'block';
     cardPositions.style.display = 'block';
     btnConnect.style.display    = 'none';
     btnDisconnect.style.display = 'flex';
@@ -994,6 +1067,7 @@
 
     readBalanceSei();
     readORUSD();
+    readOracleSei();
     loadPositions();
   }
 
@@ -1036,6 +1110,62 @@
       console.error('[ORUSD]', err);
       orusdBalance.textContent = 'erreur';
     }
+  }
+
+  // ── Lecture oracle temporel Sei ──
+  async function readOracleSei() {
+    const ORACLE_SEI     = '0xbD1eAf727f4E98DD23455317172034b5D35c955d';
+    const SEL_WINDOW     = '0xba0bafb4'; // currentWindow()
+    const dotEl          = document.getElementById('cycleDot');
+    const labelEl        = document.getElementById('cycleWindowLabel');
+    const detailEl       = document.getElementById('cycleDetails');
+
+    try {
+      const hex = await rpcSei('eth_call', [{ to: ORACLE_SEI, data: SEL_WINDOW }, 'latest']);
+      const raw    = hex.slice(2);
+      const length = parseInt(raw.slice(64, 128), 16);
+      const strHex = raw.slice(128, 128 + length * 2);
+      const result = decodeURIComponent(
+        strHex.match(/.{2}/g).map(b => '%' + b).join('')
+      ).trim();
+
+      const jsDay    = new Date().getUTCDay();
+      const cycleDay = jsDay === 0 ? 7 : jsDay;
+      const dayLabel = 'Day ' + cycleDay + '/7';
+
+      const styles = {
+        'MINT':     { dot: '#3FB950', mintColor: '#3FB950', burnColor: '#F85149', mint: 'Open',  burn: 'Close' },
+        'BURN':     { dot: '#F85149', mintColor: '#F85149', burnColor: '#3FB950', mint: 'Close', burn: 'Open'  },
+        'CLEARING': { dot: '#555',    mintColor: '#F85149', burnColor: '#F85149', mint: 'Close', burn: 'Close' },
+      };
+      const s = styles[result] || styles['CLEARING'];
+
+      if (dotEl)   { dotEl.style.background = s.dot; dotEl.style.boxShadow = `0 0 8px ${s.dot}`; }
+      if (labelEl) { labelEl.textContent = dayLabel; labelEl.style.color = s.dot; }
+      if (detailEl) {
+        const mkDot = (c) => `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c};box-shadow:0 0 5px ${c};margin-right:6px;"></span>`;
+        detailEl.innerHTML =
+          `${mkDot(s.burnColor)}Burn : ${s.burn}<br>` +
+          `${mkDot(s.mintColor)}Mint : ${s.mint}`;
+      }
+
+      console.log('[Oracle Sei] fenêtre :', result, dayLabel);
+    } catch (err) {
+      console.error('[Oracle Sei]', err);
+      if (labelEl) labelEl.textContent = 'erreur oracle';
+    }
+  }
+
+  // Appel RPC Sei public pour l'oracle (sans MetaMask)
+  async function rpcSei(method, params) {
+    const res = await fetch('https://evm-rpc-testnet.sei-apis.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+    });
+    const json = await res.json();
+    if (json.error) throw new Error(json.error.message);
+    return json.result;
   }
 
   // ── Lecture des mouvements ORUSD via RPC Sei public (fetch direct) ──
