@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 2.8.0
+  Version    : 2.9.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v2.8.0</title>
+  <title>Osnias Clearing — Mon Compte v2.9.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -616,7 +616,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.8.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.9.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -788,6 +788,10 @@
         <span style="font-family:var(--mono); font-size:11px; color:#fff;">
           On going cycle — reading on-chain
         </span>
+        <div style="display:flex; gap:8px;">
+          <button id="btnRefresh" style="padding:6px 12px; background:transparent; border:1px solid var(--sei-blue); border-radius:6px; color:var(--sei-blue); cursor:pointer;">↻ Refresh</button>
+          <button id="btnExportCSV" style="padding:6px 12px; background:transparent; border:1px solid var(--green); border-radius:6px; color:var(--green); cursor:pointer;">↓ Export CSV</button>
+        </div>
       </div>
       <div class="card-body" style="padding:0;">
         <div id="positionsEmpty" class="empty-state">
@@ -991,7 +995,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v2.8.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v2.9.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -1190,13 +1194,84 @@
     return json.result;
   }
 
+  // ── Cache localStorage ──
+  const CACHE_KEY = () => `clearing_register_${account}`;
+
+  function saveCache(rows) {
+    try {
+      localStorage.setItem(CACHE_KEY(), JSON.stringify(rows));
+    } catch (e) {
+      console.warn('[Cache] erreur sauvegarde', e.message);
+    }
+  }
+
+  function loadCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY());
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  }
+
+  // ── Export CSV ──
+  function exportCSV(rows) {
+    const header = ['#','Date','Invoice ID','Nature','Amount to wire','Sign','Status','TxHash'];
+    const lines  = [header.join(',')];
+    rows.forEach((r, i) => {
+      lines.push([
+        i + 1,
+        `"${r.date}"`,
+        `"${r.invoiceId}"`,
+        `"${r.nature}"`,
+        r.amount,
+        r.sign,
+        `"${r.label}"`,
+        r.txHash
+      ].join(','));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `osnias_register_${account.slice(0,8)}_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Bouton Export CSV
+  document.getElementById('btnExportCSV').addEventListener('click', () => {
+    const cached = loadCache();
+    if (!cached || cached.length === 0) {
+      alert('Aucune donnée en cache — actualisez d\'abord le registre.');
+      return;
+    }
+    exportCSV(cached);
+  });
+
+  // Bouton Refresh — force RPC
+  document.getElementById('btnRefresh').addEventListener('click', () => {
+    posLoading = false;
+    loadPositions(true);
+  });
+
   // ── Lecture des mouvements ORUSD via RPC Sei public (fetch direct) ──
-  async function loadPositions() {
-    if (posLoading) return; // protection double appel
+  async function loadPositions(forceRPC = false) {
+    if (posLoading) return;
     posLoading = true;
     positionsEmpty.style.display = 'block';
     positionsTable.style.display = 'none';
-    positionsEmpty.textContent   = 'Lecture du registre on-chain…';
+
+    // ── Lire le cache localStorage d'abord ──
+    if (!forceRPC) {
+      const cached = loadCache();
+      if (cached && cached.length > 0) {
+        positionsEmpty.style.display = 'none';
+        renderRows(cached);
+        posLoading = false;
+        return;
+      }
+    }
+
+    positionsEmpty.textContent = 'Lecture du registre on-chain…';
 
     const RPC            = 'https://evm-rpc-testnet.sei-apis.com';
     const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
@@ -1322,70 +1397,72 @@
         return;
       }
 
-      positionsBody.innerHTML = '';
-      let i = 1;
-
+      // Construire les données structurées
+      const rows = [];
       for (const log of logs) {
         const from   = '0x' + log.topics[1].slice(26);
         const to     = '0x' + log.topics[2].slice(26);
         const amount = Number(BigInt(log.data)) / 1e6;
         const block  = parseInt(log.blockNumber, 16);
         const memo   = memoMap[log.transactionHash] || {};
-
-        // Timestamp approximatif Sei ~400ms/bloc
         const secsAgo = (blockNow - block) * 0.4;
         const date    = new Date(Date.now() - secsAgo * 1000)
                           .toISOString().slice(0, 16).replace('T', ' ') + ' UTC~';
 
         let color, label, sign, amountToWire;
-
         if (from.toLowerCase() === ZERO) {
-          color       = '#3FB950';
-          label       = '🟢 MINT';
-          sign        = '+';
-          amountToWire = amount;
+          color = '#3FB950'; label = 'MINT'; sign = '+'; amountToWire = amount;
         } else if (to.toLowerCase() === ZERO) {
-          color       = '#F85149';
-          label       = '🔴 BURN';
-          sign        = '−';
-          amountToWire = amount;
+          color = '#F85149'; label = 'BURN'; sign = '−'; amountToWire = amount;
         } else {
           const isSent = from.toLowerCase() === account.toLowerCase();
-          color        = '#fff';
-          label        = isSent ? '⇄ P2P envoyé' : '⇄ P2P reçu';
-          sign         = isSent ? '−' : '+';
-          // Pour P2P : amount to wire = montant brut depuis memo si disponible
+          color = '#fff';
+          label = isSent ? 'P2P sent' : 'P2P received';
+          sign  = isSent ? '−' : '+';
           amountToWire = memo.value || amount;
         }
 
-        const invoiceId = memo.ref    || '—';
-        const nature    = memo.nature || '—';
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td style="font-size:14px; color:#fff;">${i++}</td>
-          <td style="font-size:14px; color:#fff; white-space:nowrap;">${date}</td>
-          <td style="font-size:14px; color:#fff;">${invoiceId}</td>
-          <td style="font-size:14px; color:#fff;">${nature}</td>
-          <td style="font-size:14px; color:${color}; font-weight:700; text-align:right; white-space:nowrap;">
-            ${sign} ${amountToWire.toLocaleString('en-US', {minimumFractionDigits:6})} ORUSD
-          </td>
-          <td><span style="font-size:14px; color:${color}; font-weight:600;">${label}</span></td>
-          <td><a href="https://testnet.seiscan.io/tx/${log.transactionHash}"
-            target="_blank" style="font-size:14px; color:#4a9eff;">explorer →</a></td>`;
-        positionsBody.appendChild(tr);
+        rows.push({
+          date, invoiceId: memo.ref || '—', nature: memo.nature || '—',
+          amount: amountToWire, sign, label, color, txHash: log.transactionHash
+        });
       }
 
-      totalEncours.textContent = orusdBalance.textContent + ' ORUSD';
-      positionsEmpty.style.display = 'none';
-      positionsTable.style.display = 'table';
+      // Sauvegarder dans le cache
+      saveCache(rows);
+
+      // Afficher
+      renderRows(rows);
 
     } catch (err) {
       console.error('[Positions]', err);
       positionsEmpty.textContent = 'Erreur RPC : ' + err.message;
     } finally {
-      posLoading = false; // libérer le flag dans tous les cas
+      posLoading = false;
     }
+  }
+
+  // ── Rendu des lignes du tableau ──
+  function renderRows(rows) {
+    positionsBody.innerHTML = '';
+    rows.forEach((r, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${idx + 1}</td>
+        <td style="white-space:nowrap;">${r.date}</td>
+        <td>${r.invoiceId}</td>
+        <td>${r.nature}</td>
+        <td style="color:${r.color}; font-weight:700; text-align:right; white-space:nowrap;">
+          ${r.sign} ${r.amount.toLocaleString('en-US', {minimumFractionDigits:6})} ORUSD
+        </td>
+        <td style="color:${r.color}; font-weight:600;">${r.label}</td>
+        <td><a href="https://testnet.seiscan.io/tx/${r.txHash}"
+          target="_blank" style="color:#4a9eff;">explorer →</a></td>`;
+      positionsBody.appendChild(tr);
+    });
+    totalEncours.textContent = orusdBalance.textContent + ' ORUSD';
+    positionsEmpty.style.display = 'none';
+    positionsTable.style.display = 'table';
   }
 
   // ── Disconnect ──
