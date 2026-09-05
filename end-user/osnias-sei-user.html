@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 1.5.0
+  Version    : 1.7.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v1.5.0</title>
+  <title>Osnias Clearing — Mon Compte v1.7.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -558,7 +558,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.5.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.7.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -897,7 +897,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v1.5.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v1.7.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -1065,16 +1065,34 @@
       const blockHex = await rpc('eth_blockNumber', []);
       const blockNow = parseInt(blockHex, 16);
 
-      // Bloc de déploiement ORUSD v6 sur Sei Testnet — point de départ fixe
-      const DEPLOY_BLOCK = 269161482;
-      const CHUNK        = 1999;
-      let allLogs        = [];
+      // Interroger l'oracle Sei pour le bloc de début du cycle courant
+      const ORACLE_ADDRESS = '0xbD1eAf727f4E98DD23455317172034b5D35c955d';
 
-      // Cherche depuis le bloc de déploiement vers le bloc courant
-      for (let from = DEPLOY_BLOCK; from <= blockNow; from += CHUNK) {
-        const to     = Math.min(from + CHUNK - 1, blockNow);
+      // selector getCycleStartBlock() = keccak256("getCycleStartBlock()")[0:4]
+      let startBlock = 269161482; // fallback = bloc déploiement ORUSD
+
+      try {
+        const oracleRes = await rpc('eth_call', [{
+          to: ORACLE_ADDRESS,
+          data: '0x645661d4' // getCycleStartBlock()
+        }, 'latest']);
+        const parsed = parseInt(oracleRes, 16);
+        if (parsed > 0) startBlock = parsed;
+        console.log('[Oracle] bloc début cycle :', startBlock);
+      } catch (e) {
+        console.warn('[Oracle] snapshot non disponible, fallback DEPLOY_BLOCK', e.message);
+      }
+
+      const CHUNK = 1999;
+      let allLogs = [];
+
+      // Cherche du bloc courant vers le passé — s'arrête dès 50 tx trouvées
+      for (let to = blockNow; to >= startBlock; to -= CHUNK) {
+        const from    = Math.max(startBlock, to - CHUNK + 1);
         const toHex   = '0x' + to.toString(16);
         const fromHex = '0x' + from.toString(16);
+
+        positionsEmpty.textContent = `Lecture on-chain… bloc ${from.toLocaleString()} → ${to.toLocaleString()}`;
 
         const [logsFrom, logsTo] = await Promise.all([
           rpc('eth_getLogs', [{ fromBlock: fromHex, toBlock: toHex,
@@ -1088,6 +1106,9 @@
           .filter(l => { if (seen.has(l.transactionHash)) return false; seen.add(l.transactionHash); return true; });
 
         allLogs = [...allLogs, ...chunk];
+
+        // Dès 50 tx trouvées on arrête — on a les 50 plus récentes
+        if (allLogs.length >= 50) break;
       }
 
       // Trier par bloc décroissant — les 50 plus récentes
