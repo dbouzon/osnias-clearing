@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 1.3.0
+  Version    : 1.5.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v1.3.0</title>
+  <title>Osnias Clearing — Mon Compte v1.5.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -558,7 +558,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.3.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.5.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -897,7 +897,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v1.3.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v1.5.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -1065,16 +1065,16 @@
       const blockHex = await rpc('eth_blockNumber', []);
       const blockNow = parseInt(blockHex, 16);
 
-      // RPC Sei limite strictement à 2000 blocs par appel — on utilise 1999
-      const CHUNK  = 1999;
-      const PASSES = 5;
-      let allLogs  = [];
+      // Bloc de déploiement ORUSD v6 sur Sei Testnet — point de départ fixe
+      const DEPLOY_BLOCK = 269161482;
+      const CHUNK        = 1999;
+      let allLogs        = [];
 
-      for (let p = 0; p < PASSES; p++) {
-        const toBlock   = blockNow - (p * CHUNK);
-        const fromBlock = toBlock - CHUNK + 1; // écart exact = CHUNK - 1 = 1998 blocs
-        const toHex   = '0x' + Math.max(0, toBlock).toString(16);
-        const fromHex = '0x' + Math.max(0, fromBlock).toString(16);
+      // Cherche depuis le bloc de déploiement vers le bloc courant
+      for (let from = DEPLOY_BLOCK; from <= blockNow; from += CHUNK) {
+        const to     = Math.min(from + CHUNK - 1, blockNow);
+        const toHex   = '0x' + to.toString(16);
+        const fromHex = '0x' + from.toString(16);
 
         const [logsFrom, logsTo] = await Promise.all([
           rpc('eth_getLogs', [{ fromBlock: fromHex, toBlock: toHex,
@@ -1088,10 +1088,9 @@
           .filter(l => { if (seen.has(l.transactionHash)) return false; seen.add(l.transactionHash); return true; });
 
         allLogs = [...allLogs, ...chunk];
-        if (allLogs.length >= 50) break;
       }
 
-      // Trier par bloc décroissant et limiter à 50
+      // Trier par bloc décroissant — les 50 plus récentes
       const logs = allLogs
         .sort((a, b) => parseInt(b.blockNumber, 16) - parseInt(a.blockNumber, 16))
         .slice(0, 50);
