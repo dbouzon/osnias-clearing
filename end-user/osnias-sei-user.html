@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 1.7.0
+  Version    : 1.8.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v1.7.0</title>
+  <title>Osnias Clearing — Mon Compte v1.8.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -558,7 +558,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.7.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.8.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -897,7 +897,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v1.7.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v1.8.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -921,8 +921,10 @@
   };
 
   // ── État ──
-  let account = null;
-  let chainId = null;
+  let account    = null;
+  let chainId    = null;
+  let orusdRaw   = 0;
+  let posLoading = false; // protection double appel loadPositions
 
   // ── DOM ──
   const btnConnect     = document.getElementById('btnConnect');
@@ -1040,6 +1042,8 @@
 
   // ── Lecture des mouvements ORUSD via RPC Sei public (fetch direct) ──
   async function loadPositions() {
+    if (posLoading) return; // protection double appel
+    posLoading = true;
     positionsEmpty.style.display = 'block';
     positionsTable.style.display = 'none';
     positionsEmpty.textContent   = 'Lecture du registre on-chain…';
@@ -1175,6 +1179,8 @@
     } catch (err) {
       console.error('[Positions]', err);
       positionsEmpty.textContent = 'Erreur RPC : ' + err.message;
+    } finally {
+      posLoading = false; // libérer le flag dans tous les cas
     }
   }
 
