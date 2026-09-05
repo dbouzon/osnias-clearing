@@ -2,7 +2,7 @@
 
 <!--
   osnias-sei-user.html
-  Version    : 2.10.2
+  Version    : 2.10.3
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -13,7 +13,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Osnias Clearing — Mon Compte v2.10.2</title>
+<title>Osnias Clearing — Mon Compte v2.10.3</title>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
@@ -750,6 +750,9 @@
       const raw  = Number(BigInt(hex)) / 1e6;
       orusdRaw = raw;
       orusdBalance.textContent = raw.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+      // Le registre peut être rendu depuis le cache avant la fin de cette lecture.
+      // Mettre à jour le total dès que le balanceOf on-chain est disponible.
+      totalEncours.textContent = orusdBalance.textContent + ' ORUSD';
 
       // Snapshot = solde actuel (placeholder — sera lu depuis OsniasClearing à terme)
       document.getElementById('snapshotBalance').textContent = raw.toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + ' ORUSD';
@@ -820,7 +823,7 @@
   }
 
   // ── Cache localStorage ──
-  const CACHE_KEY = () => `clearing_register_${account}`;
+  const CACHE_KEY = () => `clearing_register_v2103_${account}`;
 
   function saveCache(rows) {
     try {
@@ -1044,21 +1047,37 @@
       };
 
       const rows = [];
+      // Un transferWithMemo est UNE instruction de clearing, même si le contrat
+      // émet plusieurs events Transfer (net bénéficiaire + frais protocole).
+      // On garde tous les logs pour l'analyse, mais une seule ligne métier par tx.
+      const renderedMemoTx = new Set();
+
       for (const log of logs) {
         const from   = '0x' + log.topics[1].slice(26);
         const to     = '0x' + log.topics[2].slice(26);
         const amount = Number(BigInt(log.data)) / 1e6;
         const block  = parseInt(log.blockNumber, 16);
         const memo   = memoMap[log.transactionHash] || {};
+
+        // Déduplication au niveau de l'instruction métier : les deux Transfer
+        // d'un P2P avec frais partagent le même txHash et le même TransferWithMemo.
+        // Le registre utilisateur doit afficher le paiement brut une seule fois.
+        const isMint = from.toLowerCase() === ZERO;
+        const isBurn = to.toLowerCase() === ZERO;
+        if (!isMint && !isBurn && memo.value !== undefined) {
+          if (renderedMemoTx.has(log.transactionHash)) continue;
+          renderedMemoTx.add(log.transactionHash);
+        }
+
         const blockTs = await getBlockTimestamp(block);
         const date = blockTs
           ? new Date(blockTs * 1000).toISOString().slice(0, 16).replace('T', ' ') + ' UTC'
           : '—';
 
         let color, label, sign, amountToWire;
-        if (from.toLowerCase() === ZERO) {
+        if (isMint) {
           color = '#3FB950'; label = 'MINT'; sign = '+'; amountToWire = amount;
-        } else if (to.toLowerCase() === ZERO) {
+        } else if (isBurn) {
           color = '#F85149'; label = 'BURN'; sign = '−'; amountToWire = amount;
         } else {
           const isSent = from.toLowerCase() === account.toLowerCase();
