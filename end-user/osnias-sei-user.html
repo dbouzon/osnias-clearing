@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 2.3.0
+  Version    : 2.4.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v2.3.0</title>
+  <title>Osnias Clearing — Mon Compte v2.4.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -595,7 +595,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.3.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.4.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -778,8 +778,9 @@
             <tr>
               <th>#</th>
               <th>Date</th>
-              <th>Référence</th>
-              <th style="text-align:right;">Montant ORUSD</th>
+              <th>Invoice ID</th>
+              <th>Nature</th>
+              <th style="text-align:right;">Amount to wire</th>
               <th>Statut</th>
               <th>Action</th>
             </tr>
@@ -787,7 +788,7 @@
           <tbody id="positionsBody"></tbody>
           <tfoot>
             <tr class="total-row">
-              <td colspan="3" style="font-family:var(--mono); font-size:13px;">TOTAL ENCOURS</td>
+              <td colspan="4" style="font-family:var(--mono); font-size:13px;">TOTAL ENCOURS</td>
               <td style="text-align:right; font-family:var(--mono); font-size:14px;" id="totalEncours">—</td>
               <td colspan="2"></td>
             </tr>
@@ -970,7 +971,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v2.3.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v2.4.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -1244,6 +1245,53 @@
         if (allLogs.length >= 50) break;
       }
 
+      // Topic de l'event TransferWithMemo
+      const MEMO_TOPIC = '0x761b938932b59d90e5d0ed0cf58c861d83103e01803044021df649f6e25ad29a';
+
+      // Lire les events TransferWithMemo sur la même fenêtre
+      // pour extraire ref et nature par txHash
+      const memoMap = {}; // txHash → { ref, nature, value, fee, net }
+      try {
+        for (let to = blockNow; to >= startBlock; to -= CHUNK) {
+          const from    = Math.max(startBlock, to - CHUNK + 1);
+          const toHex   = '0x' + to.toString(16);
+          const fromHex = '0x' + from.toString(16);
+          const memoLogs = await rpc('eth_getLogs', [{
+            fromBlock: fromHex, toBlock: toHex,
+            address: ORUSD_ADDRESS,
+            topics: [MEMO_TOPIC]
+          }]);
+          for (const ml of memoLogs) {
+            // Décoder les strings ref et nature depuis data ABI
+            try {
+              const d = ml.data.slice(2); // sans 0x
+              // Layout ABI data :
+              // [0:64]    value (uint256)
+              // [64:128]  fee   (uint256)
+              // [128:192] net   (uint256)
+              // [192:256] offset_ref    (en bytes depuis début data)
+              // [256:320] offset_nature (en bytes depuis début data)
+              // [320+]    strings encodées
+              const offsetRef    = parseInt(d.slice(192, 256), 16) * 2; // en chars
+              const offsetNature = parseInt(d.slice(256, 320), 16) * 2;
+              const refLen       = parseInt(d.slice(offsetRef, offsetRef + 64), 16);
+              const refHex       = d.slice(offsetRef + 64, offsetRef + 64 + refLen * 2);
+              const natureLen    = parseInt(d.slice(offsetNature, offsetNature + 64), 16);
+              const natureHex    = d.slice(offsetNature + 64, offsetNature + 64 + natureLen * 2);
+              const decodeHex    = h => h.match(/.{2}/g).map(b => String.fromCharCode(parseInt(b, 16))).join('');
+              const value        = Number(BigInt('0x' + d.slice(0, 64))) / 1e6;
+              memoMap[ml.transactionHash] = {
+                ref:    decodeHex(refHex),
+                nature: decodeHex(natureHex),
+                value:  value,
+              };
+            } catch {}
+          }
+        }
+      } catch (e) {
+        console.warn('[TransferWithMemo] lecture partielle :', e.message);
+      }
+
       // Trier par bloc décroissant — les 50 plus récentes
       const logs = allLogs
         .sort((a, b) => parseInt(b.blockNumber, 16) - parseInt(a.blockNumber, 16))
@@ -1262,37 +1310,45 @@
         const to     = '0x' + log.topics[2].slice(26);
         const amount = Number(BigInt(log.data)) / 1e6;
         const block  = parseInt(log.blockNumber, 16);
+        const memo   = memoMap[log.transactionHash] || {};
 
         // Timestamp approximatif Sei ~400ms/bloc
         const secsAgo = (blockNow - block) * 0.4;
         const date    = new Date(Date.now() - secsAgo * 1000)
                           .toISOString().slice(0, 16).replace('T', ' ') + ' UTC~';
 
-        let color, label, sign, counterpart;
+        let color, label, sign, amountToWire;
 
         if (from.toLowerCase() === ZERO) {
-          color = '#3FB950'; label = '🟢 MINT'; sign = '+';
-          counterpart = 'Manager → wallet';
+          color       = '#3FB950';
+          label       = '🟢 MINT';
+          sign        = '+';
+          amountToWire = amount;
         } else if (to.toLowerCase() === ZERO) {
-          color = '#F85149'; label = '🔴 BURN'; sign = '−';
-          counterpart = 'wallet → burn';
+          color       = '#F85149';
+          label       = '🔴 BURN';
+          sign        = '−';
+          amountToWire = amount;
         } else {
           const isSent = from.toLowerCase() === account.toLowerCase();
-          color = '#fff';
-          label = isSent ? '⇄ P2P envoyé' : '⇄ P2P reçu';
-          sign  = isSent ? '−' : '+';
-          counterpart = isSent
-            ? 'To: '   + to.slice(0,6)   + '…' + to.slice(-4)
-            : 'From: ' + from.slice(0,6) + '…' + from.slice(-4);
+          color        = '#fff';
+          label        = isSent ? '⇄ P2P envoyé' : '⇄ P2P reçu';
+          sign         = isSent ? '−' : '+';
+          // Pour P2P : amount to wire = montant brut depuis memo si disponible
+          amountToWire = memo.value || amount;
         }
+
+        const invoiceId = memo.ref    || '—';
+        const nature    = memo.nature || '—';
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td style="color:#fff;">${i++}</td>
           <td style="color:#fff; white-space:nowrap; font-size:12px;">${date}</td>
-          <td style="color:#fff;">${counterpart}</td>
+          <td style="color:#fff; font-size:12px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${invoiceId}">${invoiceId}</td>
+          <td style="color:#fff; font-size:12px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${nature}">${nature}</td>
           <td style="text-align:right; color:${color}; font-weight:700; white-space:nowrap;">
-            ${sign} ${amount.toLocaleString('en-US', {minimumFractionDigits:6})} ORUSD
+            ${sign} ${amountToWire.toLocaleString('en-US', {minimumFractionDigits:6})} ORUSD
           </td>
           <td><span style="background:${color}22; color:${color}; padding:3px 8px;
             border-radius:4px; font-size:11px; font-weight:600;">${label}</span></td>
