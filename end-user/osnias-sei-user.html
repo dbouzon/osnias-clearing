@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 2.6.0
+  Version    : 2.7.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,11 +12,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v2.6.0</title>
+  <title>Osnias Clearing — Mon Compte v2.7.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Règle globale — police unique 14px blanc ── */
+    * {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 14px !important;
+      color: #fff !important;
+      line-height: 1.6;
+    }
+
+    /* ── Exceptions couleurs ── */
+    a { color: #4A9EFF !important; }
+    .logo { color: #00D4FF !important; }
+    .logo span { color: #fff !important; opacity: 0.5; }
+    .dot.green, .dot.grey, .dot.orange { color: transparent !important; }
+    .btn-disconnect { color: #F85149 !important; }
+    .btn-switch     { color: #D29922 !important; }
+    .btn-p2p-action { color: #4A9EFF !important; }
+    .btn-burn-action{ color: #F85149 !important; }
+    .alert-error    { color: #FF7B72 !important; }
+    .alert-warn     { color: #E3B341 !important; }
+    .alert-ok       { color: #7EE787 !important; }
+
+    /* ── Exceptions tailles ── */
+    .balance-amount { font-size: 36px !important; }
+    .logo           { font-size: 15px !important; }
 
     :root {
       --bg:         #050814;
@@ -594,7 +619,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.6.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.7.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -969,7 +994,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v2.6.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v2.7.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
