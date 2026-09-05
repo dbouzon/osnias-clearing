@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 2.2.0
+  Version    : 2.3.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v2.2.0</title>
+  <title>Osnias Clearing — Mon Compte v2.3.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -589,12 +589,13 @@
     .btn-modal-confirm-p2p:hover { opacity: 0.85; }
     .btn-modal-confirm-p2p:disabled { opacity: 0.3; cursor: not-allowed; }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 </head>
 <body>
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.2.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.3.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -969,7 +970,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v2.2.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v2.3.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -1515,36 +1516,18 @@
         return;
       }
 
-      // Encoder transferWithMemo(address,uint256,string,string)
-      // Sélecteur : 0x66b84a6c
+      // Encoder transferWithMemo via ethers.js — encodage ABI correct
       const amountRaw = toORUSD(amountStr);
 
-      // Encodage ABI manuel des strings ref et nature
-      const encodeString = (str) => {
-        const bytes = new TextEncoder().encode(str);
-        const len   = bytes.length;
-        // offset + length + data padded à 32 bytes
-        const lenHex  = len.toString(16).padStart(64, '0');
-        let   dataHex = '';
-        for (const b of bytes) dataHex += b.toString(16).padStart(2, '0');
-        dataHex = dataHex.padEnd(Math.ceil(len / 32) * 64, '0');
-        return lenHex + dataHex;
-      };
-
-      // Offsets fixes pour 2 strings après (address + uint256)
-      // to(32) + value(32) + offset_ref(32) + offset_nature(32) = 128 bytes avant les strings
-      const refEncoded    = encodeString(ref);
-      const natureEncoded = encodeString(nature);
-      const offset_ref    = (128).toString(16).padStart(64, '0');           // 0x80
-      const offset_nature = (128 + 32 + refEncoded.length / 2).toString(16).padStart(64, '0');
-
-      const data = '0x66b84a6c'
-        + recipient.slice(2).padStart(64, '0')          // address to
-        + amountRaw.toString(16).padStart(64, '0')       // uint256 value
-        + offset_ref                                     // offset ref
-        + offset_nature                                  // offset nature
-        + refEncoded                                     // string ref
-        + natureEncoded;                                 // string nature
+      const iface = new ethers.Interface([
+        "function transferWithMemo(address to, uint256 value, string ref, string nature) returns (bool)"
+      ]);
+      const data = iface.encodeFunctionData("transferWithMemo", [
+        recipient,
+        amountRaw,
+        ref,
+        nature
+      ]);
 
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
