@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   osnias-sei-user.html
-  Version    : 2.4.0
+  Version    : 2.5.0
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — Tous droits réservés
   ORCID      : 0009-0007-8894-8902
@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v2.4.0</title>
+  <title>Osnias Clearing — Mon Compte v2.5.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -595,7 +595,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.4.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v2.5.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -690,7 +690,6 @@
 
       <!-- Colonne 3 : Connexion Wallet -->
       <div class="card" id="cardConnect">
-        <div class="card-header"><h2>CONNEXION WALLET</h2></div>
         <div class="card-body" style="display:flex; flex-direction:column; gap:16px;">
 
           <div class="alert alert-error" id="alertNoMM">
@@ -761,34 +760,34 @@
       </div>
     </div>
 
-    <!-- Ligne 2 : Registre des positions pleine largeur -->
+    <!-- Ligne 2 : Clearing Register pleine largeur -->
     <div class="card" id="cardPositions" style="display:none;">
       <div class="card-header">
-        <h2>REGISTRE DES POSITIONS</h2>
+        <h2>CLEARING REGISTER</h2>
         <span style="font-family:var(--mono); font-size:11px; color:#fff;">
-          Cycle en cours — lecture on-chain
+          On going cycle — reading on-chain
         </span>
       </div>
       <div class="card-body" style="padding:0;">
         <div id="positionsEmpty" class="empty-state">
-          Connexion en cours — lecture du registre…
+          Connecting — reading register…
         </div>
-        <table class="positions-table" id="positionsTable" style="display:none;">
+        <table class="positions-table" id="positionsTable" style="display:none; font-size:14px; color:#fff;">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Date</th>
-              <th>Invoice ID</th>
-              <th>Nature</th>
-              <th style="text-align:right;">Amount to wire</th>
-              <th>Statut</th>
-              <th>Action</th>
+              <th style="color:#fff; font-size:14px;">#</th>
+              <th style="color:#fff; font-size:14px;">Date</th>
+              <th style="color:#fff; font-size:14px;">Invoice ID</th>
+              <th style="color:#fff; font-size:14px;">Nature</th>
+              <th style="color:#fff; font-size:14px; text-align:right;">Amount to wire</th>
+              <th style="color:#fff; font-size:14px;">Status</th>
+              <th style="color:#fff; font-size:14px;">Action</th>
             </tr>
           </thead>
           <tbody id="positionsBody"></tbody>
           <tfoot>
             <tr class="total-row">
-              <td colspan="4" style="font-family:var(--mono); font-size:13px;">TOTAL ENCOURS</td>
+              <td colspan="4" style="font-family:var(--mono); font-size:14px; color:#fff;">TOTAL ENCOURS</td>
               <td style="text-align:right; font-family:var(--mono); font-size:14px;" id="totalEncours">—</td>
               <td colspan="2"></td>
             </tr>
@@ -971,7 +970,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v2.4.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
+  <footer>Osnias Clearing — Interface utilisateur v2.5.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -1343,17 +1342,16 @@
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="color:#fff;">${i++}</td>
-          <td style="color:#fff; white-space:nowrap; font-size:12px;">${date}</td>
-          <td style="color:#fff; font-size:12px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${invoiceId}">${invoiceId}</td>
-          <td style="color:#fff; font-size:12px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${nature}">${nature}</td>
-          <td style="text-align:right; color:${color}; font-weight:700; white-space:nowrap;">
+          <td style="font-size:14px; color:#fff;">${i++}</td>
+          <td style="font-size:14px; color:#fff; white-space:nowrap;">${date}</td>
+          <td style="font-size:14px; color:#fff;">${invoiceId}</td>
+          <td style="font-size:14px; color:#fff;">${nature}</td>
+          <td style="font-size:14px; color:${color}; font-weight:700; text-align:right; white-space:nowrap;">
             ${sign} ${amountToWire.toLocaleString('en-US', {minimumFractionDigits:6})} ORUSD
           </td>
-          <td><span style="background:${color}22; color:${color}; padding:3px 8px;
-            border-radius:4px; font-size:11px; font-weight:600;">${label}</span></td>
+          <td><span style="font-size:14px; color:${color}; font-weight:600;">${label}</span></td>
           <td><a href="https://testnet.seiscan.io/tx/${log.transactionHash}"
-            target="_blank" style="color:var(--cyan); font-size:12px;">explorer →</a></td>`;
+            target="_blank" style="font-size:14px; color:#4a9eff;">explorer →</a></td>`;
         positionsBody.appendChild(tr);
       }
 
