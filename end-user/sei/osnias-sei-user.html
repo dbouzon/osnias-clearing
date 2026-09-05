@@ -1,9 +1,18 @@
 <!DOCTYPE html>
+<!--
+  osnias-sei-user.html
+  Version    : 1.1.0
+  Copyright  : 2026 Denis Bouzon / Osnias Clearing
+  Licence    : UNLICENSED — Tous droits réservés
+  ORCID      : 0009-0007-8894-8902
+  Réseau     : Sei Atlantic-2 Testnet (Chain ID 1328)
+  Contrat    : ORUSD v6 — 0x0c3a19455b898913A1DaD93d724c24062293dB5F
+-->
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osnias Clearing — Mon Compte v1.0</title>
+  <title>Osnias Clearing — Mon Compte v1.1.0</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -549,7 +558,7 @@
 <div class="shell">
 
   <header>
-    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.0</span></div>
+    <div class="logo">osnias<span>/clearing</span> <span style="font-size:11px; ">v1.1.0</span></div>
     <div class="status-pill">
       <span class="dot grey" id="headerDot"></span>
       <span id="headerLabel">non connecté</span>
@@ -879,7 +888,7 @@
     </div>
   </div>
 
-  <footer>Osnias Clearing — Interface utilisateur v1.0 · Sei Testnet · © 2026 Denis Bouzon</footer>
+  <footer>Osnias Clearing — Interface utilisateur v1.1.0 · Sei Testnet · © 2026 Denis Bouzon — Tous droits réservés</footer>
 </div>
 
 <script>
@@ -1047,19 +1056,19 @@
       const blockHex = await rpc('eth_blockNumber', []);
       const blockNow = parseInt(blockHex, 16);
 
-      // RPC Sei limite à 2000 blocs par appel — on fait 5 tranches = ~6600 blocs (~44min)
-      const CHUNK = 2000;
+      // RPC Sei limite strictement à 2000 blocs par appel
+      const CHUNK = 1999; // strictement < 2000
       const PASSES = 5;
       let allLogs = [];
 
       for (let p = 0; p < PASSES; p++) {
-        const to   = '0x' + Math.max(0, blockNow - p * CHUNK).toString(16);
-        const from = '0x' + Math.max(0, blockNow - (p + 1) * CHUNK).toString(16);
+        const toBlock   = '0x' + Math.max(0, blockNow - p * CHUNK).toString(16);
+        const fromBlock = '0x' + Math.max(0, blockNow - (p + 1) * CHUNK - 1).toString(16);
 
         const [logsFrom, logsTo] = await Promise.all([
-          rpc('eth_getLogs', [{ fromBlock: from, toBlock: to,
+          rpc('eth_getLogs', [{ fromBlock, toBlock,
             address: ORUSD_ADDRESS, topics: [TRANSFER_TOPIC, addrPadded] }]),
-          rpc('eth_getLogs', [{ fromBlock: from, toBlock: to,
+          rpc('eth_getLogs', [{ fromBlock, toBlock,
             address: ORUSD_ADDRESS, topics: [TRANSFER_TOPIC, null, addrPadded] }]),
         ]);
 
