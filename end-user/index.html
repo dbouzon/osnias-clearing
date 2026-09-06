@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Dashboard
-  Version    : 3.0.0-testnet
+  Version    : 3.0.2-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -21,16 +21,16 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="./assets/end-user.css">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.2">
 
   <!-- ethers.js v6 — required by sei-provider.js, wallet-connect.js and payment-messages.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
   <!-- Shared Osnias assets -->
-  <script src="./assets/end-user-frame.js" defer></script>
-  <script src="./assets/sei-provider.js" defer></script>
-  <script src="./assets/wallet-connect.js" defer></script>
-  <script src="./assets/payment-messages.js" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.0.2" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.2" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.2" defer></script>
+  <script src="./assets/payment-messages.js?v=3.0.2" defer></script>
 </head>
 
 <body>
@@ -441,13 +441,13 @@
       const accountTopic = addressTopic(state.account);
 
       const [fromLogs, toLogs, memoLogs] = await Promise.all([
-        OsniasSei.getLogs({
+        OsniasSei.getLogsChunked({
           address: OsniasSei.config.contracts.orusd,
           fromBlock: state.cycle.cycleStartBlock,
           toBlock: state.cycle.currentBlock,
           topics: [TRANSFER_TOPIC, accountTopic]
         }),
-        OsniasSei.getLogs({
+        OsniasSei.getLogsChunked({
           address: OsniasSei.config.contracts.orusd,
           fromBlock: state.cycle.cycleStartBlock,
           toBlock: state.cycle.currentBlock,
@@ -456,7 +456,7 @@
         (async () => {
           const iface = new ethers.Interface(ORUSD_ABI);
           const topic = iface.getEvent("TransferWithMemo").topicHash;
-          return OsniasSei.getLogs({
+          return OsniasSei.getLogsChunked({
             address: OsniasSei.config.contracts.orusd,
             fromBlock: state.cycle.cycleStartBlock,
             toBlock: state.cycle.currentBlock,
