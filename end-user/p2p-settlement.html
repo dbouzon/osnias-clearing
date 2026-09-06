@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<!--
+  Osnias Clearing — End-User Console
+  Dashboard
+  Version    : 3.0.3-testnet
+  Copyright  : 2026 Denis Bouzon / Osnias Clearing
+  Licence    : UNLICENSED — All rights reserved
+  ORCID      : 0009-0007-8894-8902
+  Network    : Sei Atlantic-2 Testnet (Chain ID 1328)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Osnias Clearing end-user console on Sei Atlantic-2 Testnet.">
+  <title>Osnias Clearing — P2P Settlement</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.3">
+
+  <!-- ethers.js v6 — required by sei-provider.js, wallet-connect.js and payment-messages.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+
+  <!-- Shared Osnias assets -->
+  <script src="./assets/end-user-frame.js?v=3.0.3" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.3" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.3" defer></script>
+</head>
+
+<body><div id="osnias-header" data-active="dashboard"></div>
+<main class="osnias-main">
+
+      <section class="osnias-page-intro">
+        <p class="osnias-eyebrow">ORUSD Settlement</p>
+        <h1>P2P Settlement</h1>
+        <p>Direct wallet-to-wallet ORUSD settlement on Sei Atlantic-2 Testnet.</p>
+      </section>
+      <div class="osnias-modal-layer" id="p2pRecapLayer" hidden>
+  <div class="osnias-card" style="width:min(720px,calc(100vw - 28px));max-height:90vh;overflow:auto;">
+    <div class="osnias-card__head">
+      <h2 class="osnias-card__title">P2P Wire — Confirmation</h2>
+      <button class="osnias-btn osnias-btn--ghost osnias-btn--small" id="btnP2PRecapClose" type="button">✕</button>
+    </div>
+    
+</main>
+<div id="osnias-footer"></div>
+<script>
+(() => {
+  "use strict";
+
+  const ORUSD_ABI = [
+    "function balanceOf(address account) view returns (uint256)",
+    "function transferWithMemo(address to,uint256 value,string ref,string nature) returns (bool)",
+    "event Transfer(address indexed from,address indexed to,uint256 value)",
+    "event TransferWithMemo(address indexed from,address indexed to,uint256 value,uint256 fee,uint256 net,string ref,string nature)"
+  ];
+
+  const ORUSD_DECIMALS = 6;
+  const MIN_P2P = 501000n; // 0.501 ORUSD
+  const TRANSFER_TOPIC =
+    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+  const ZERO_ADDRESS =
+    "0x0000000000000000000000000000000000000000";
+
+  const state = {
+    account: null,
+    orusdBalance: 0n,
+    cycle: null,
+    rows: [],
+    loading: false
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  function setAlert(message, type = "") {
+    const el = $("dashboardAlert");
+    if (!message) {
+      el.hidden = true;
+      el.textContent = "";
+      el.className = "osnias-alert";
+      return;
+    }
+
+    el.hidden = false;
+    el.textContent = message;
+    el.className =
+      "osnias-alert" +
+      (type === "success" ? " osnias-alert--success" : "") +
+      (type === "danger" ? " osnias-alert--danger" : "");
+  }
+
+  function formatORUSD(value) {
+    return Number(ethers.formatUnits(value, ORUSD_DECIMALS))
+      .toLocaleString("en-US", {
+        minimumFractionDigits: 6,
+        maximumFractionDigits: 6
+      });
+  }
+
+  function byteLength(value) {
+    return new TextEncoder().encode(String(value || "")).length;
+  }
+
+  function registerCacheKey(account, cycleNumber) {
+    return `osnias:clearing-register:v300:${account.toLowerCase()}:cycle-${cycleNumber}`;
+  }
+
+  function saveRegisterCache() {
+    if (!state.account || !state.cycle) return;
+    try {
+      localStorage.setItem(
+        registerCacheKey(state.account, state.cycle.cycleNumber),
+        JSON.stringify({
+          savedAt: Date.now(),
+          rows: state.rows
+        })
+      );
+    } catch {}
+  }
+
+  function loadRegisterCache() {
+    if (!state.account || !state.cycle) return null;
+    try {
+      const raw = localStorage.getItem(
+        registerCacheKey(state.account, state.cycle.cycleNumber)
+      );
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      return Array.isArray(data.rows) ? data.rows : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function getReadContract() {
+    const provider = new ethers.JsonRpcProvider(
+      OsniasSei.config.rpcUrl,
+      OsniasSei.config.chainId
+    );
+    return new ethers.Contract(
+      OsniasSei.config.contracts.orusd,
+      ORUSD_ABI,
+      provider
+    );
+  }
+
+  async function refreshCycle() {
+    state.cycle = await OsniasSei.syncFrame();
+    $("cycleStartBlock").textContent =
+      Number(state.cycle.cycleStartBlock).toLocaleString("en-US");
+    $("currentBlock").textContent =
+      Number(state.cycle.currentBlock).toLocaleString("en-US");
+
+    const p2pOpen = state.cycle.window !== "CLEARING";
+    const badge = $("p2pWindowBadge");
+    badge.textContent = p2pOpen ? "P2P OPEN" : "P2P CLOSED";
+    badge.className =
+      "osnias-badge " +
+      (p2pOpen ? "osnias-badge--open" : "osnias-badge--closed");
+
+    return state.cycle;
+  }
+
+  async function refreshORUSD() {
+    if (!state.account) return;
+
+    const contract = await getReadContract();
+    state.orusdBalance = await contract.balanceOf(state.account);
+
+    const formatted = `${formatORUSD(state.orusdBalance)} ORUSD`;
+    $("orusdBalance").textContent = formatted;
+    $("totalEncours").textContent = formatted;
+  }
+
+  async function refreshMessageCounts(forceRpc = false) {
+    if (!state.account || !window.OsniasPaymentMessages) return;
+
+    const [sent, received] = await Promise.all([
+      OsniasPaymentMessages.loadSent(state.account, { forceRpc }),
+      OsniasPaymentMessages.loadReceived(state.account, { forceRpc })
+    ]);
+
+    $("sentCount").textContent = String(sent.rows.length);
+    $("receivedCount").textContent = String(received.rows.length);
+    $("pendingCount").textContent = String(
+      received.rows.filter((r) => r.status === "PENDING").length
+    );
+  }
+
+  async function readBlockTimestamp(blockNumber, cache) {
+    if (cache.has(blockNumber)) return cache.get(blockNumber);
+
+    const block = await OsniasSei.rpc("eth_getBlockByNumber", [
+      OsniasSei.toHexBlock(blockNumber),
+      false
+    ]);
+
+    const ts = block?.timestamp ? Number(BigInt(block.timestamp)) : null;
+    cache.set(blockNumber, ts);
+    return ts;
+  }
+
+  function addressTopic(address) {
+    return ethers.zeroPadValue(ethers.getAddress(address), 32);
+  }
+
+  async function refreshRegister(forceRpc = false) {
+    if (!state.account || !state.cycle || state.loading) return;
+    state.loading = true;
+
+    const empty = $("positionsEmpty");
+    const wrap = $("positionsWrap");
+
+    try {
+      if (!forceRpc) {
+        const cached = loadRegisterCache();
+        if (cached?.length) {
+          state.rows = cached;
+          renderRegister();
+          return;
+        }
+      }
+
+      empty.hidden = false;
+      wrap.hidden = true;
+      empty.textContent = "Reading current-cycle ORUSD register…";
+
+      const accountTopic = addressTopic(state.account);
+
+      const [fromLogs, toLogs, memoLogs] = await Promise.all([
+        OsniasSei.getLogsChunked({
+          address: OsniasSei.config.contracts.orusd,
+          fromBlock: state.cycle.cycleStartBlock,
+          toBlock: state.cycle.currentBlock,
+          topics: [TRANSFER_TOPIC, accountTopic]
+        }),
+        OsniasSei.getLogsChunked({
+          address: OsniasSei.config.contracts.orusd,
+          fromBlock: state.cycle.cycleStartBlock,
+          toBlock: state.cycle.currentBlock,
+          topics: [TRANSFER_TOPIC, null, accountTopic]
+        }),
+        (async () => {
+          const iface = new ethers.Interface(ORUSD_ABI);
+          const topic = iface.getEvent("TransferWithMemo").topicHash;
+          return OsniasSei.getLogsChunked({
+            address: OsniasSei.config.contracts.orusd,
+            fromBlock: state.cycle.cycleStartBlock,
+            toBlock: state.cycle.currentBlock,
+            topics: [topic]
+          });
+        })()
+      ]);
+
+      const memoIface = new ethers.Interface(ORUSD_ABI);
+      const memoMap = new Map();
+
+      for (const log of memoLogs) {
+        try {
+          const parsed = memoIface.parseLog(log);
+          if (!parsed || parsed.name !== "TransferWithMemo") continue;
+
+          memoMap.set(log.transactionHash.toLowerCase(), {
+            from: ethers.getAddress(parsed.args.from),
+            to: ethers.getAddress(parsed.args.to),
+            value: parsed.args.value,
+            fee: parsed.args.fee,
+            net: parsed.args.net,
+            ref: String(parsed.args.ref),
+            nature: String(parsed.args.nature)
+          });
+        } catch {}
+      }
+
+      const seenEvent = new Set();
+      const transferLogs = [...fromLogs, ...toLogs]
+        .filter((log) => {
+          const key = `${log.transactionHash}:${log.logIndex ?? log.index ?? 0}`;
+          if (seenEvent.has(key)) return false;
+          seenEvent.add(key);
+          return true;
+        })
+        .sort((a, b) => {
+          const bn = Number(BigInt(b.blockNumber) - BigInt(a.blockNumber));
+          if (bn !== 0) return bn;
+          return Number((b.logIndex ?? b.index ?? 0) - (a.logIndex ?? a.index ?? 0));
+        });
+
+      const renderedMemoTx = new Set();
+      const blockTsCache = new Map();
+      const rows = [];
+
+      for (const log of transferLogs) {
+        const from = ethers.getAddress("0x" + log.topics[1].slice(-40));
+        const to = ethers.getAddress("0x" + log.topics[2].slice(-40));
+        const rawValue = BigInt(log.data);
+        const memo = memoMap.get(log.transactionHash.toLowerCase());
+
+        const isMint = from.toLowerCase() === ZERO_ADDRESS;
+        const isBurn = to.toLowerCase() === ZERO_ADDRESS;
+
+        if (!isMint && !isBurn && memo) {
+          const txKey = log.transactionHash.toLowerCase();
+          if (renderedMemoTx.has(txKey)) continue;
+          renderedMemoTx.add(txKey);
+        }
+
+        let amount = rawValue;
+        let sign = "+";
+        let label = "P2P received";
+        let tone = "positive";
+        let invoiceId = memo?.ref || "—";
+        let nature = memo?.nature || "—";
+
+        if (isMint) {
+          label = "MINT";
+          sign = "+";
+          tone = "positive";
+        } else if (isBurn) {
+          label = "BURN";
+          sign = "−";
+          tone = "negative";
+        } else {
+          const isSent =
+            from.toLowerCase() === state.account.toLowerCase();
+
+          label = isSent ? "P2P sent" : "P2P received";
+          sign = isSent ? "−" : "+";
+          tone = isSent ? "negative" : "positive";
+          amount = memo?.value ?? rawValue;
+        }
+
+        const blockNumber = Number(BigInt(log.blockNumber));
+        const ts = await readBlockTimestamp(blockNumber, blockTsCache);
+
+        const date = ts
+          ? new Date(ts * 1000).toISOString().slice(0, 16).replace("T", " ") + " UTC"
+          : "—";
+
+        rows.push({
+          date,
+          invoiceId,
+          nature,
+          amountBaseUnits: amount.toString(),
+          sign,
+          label,
+          tone,
+          txHash: log.transactionHash
+        });
+      }
+
+      state.rows = rows.slice(0, 100);
+      saveRegisterCache();
+      renderRegister();
+
+    } catch (error) {
+      console.error("[Clearing Register]", error);
+      empty.hidden = false;
+      wrap.hidden = true;
+      empty.textContent =
+        "Unable to load the clearing register: " +
+        (error?.message || "unknown error");
+    } finally {
+      state.loading = false;
+    }
+  }
+
+  function renderRegister() {
+    const tbody = $("positionsBody");
+    const empty = $("positionsEmpty");
+    const wrap = $("positionsWrap");
+
+    tbody.replaceChildren();
+
+    if (!state.rows.length) {
+      empty.hidden = false;
+      wrap.hidden = true;
+      empty.textContent =
+        "No ORUSD movement found for this wallet in the current cycle.";
+      return;
+    }
+
+    state.rows.forEach((row, index) => {
+      const tr = document.createElement("tr");
+
+      const values = [
+        String(index + 1),
+        row.date,
+        row.invoiceId,
+        row.nature
+      ];
+
+      for (const value of values) {
+        const td = document.createElement("td");
+        td.textContent = value;
+        tr.appendChild(td);
+      }
+
+      const amountTd = document.createElement("td");
+      amountTd.className =
+        "osnias-right osnias-table__mono " +
+        (row.tone === "negative" ? "is-negative" : "is-positive");
+      amountTd.textContent =
+        `${row.sign} ${formatORUSD(BigInt(row.amountBaseUnits))} ORUSD`;
+      tr.appendChild(amountTd);
+
+      const statusTd = document.createElement("td");
+      const badge = document.createElement("span");
+      badge.className =
+        "osnias-badge " +
+        (row.tone === "negative"
+          ? "osnias-badge--danger"
+          : "osnias-badge--success");
+      badge.textContent = row.label;
+      statusTd.appendChild(badge);
+      tr.appendChild(statusTd);
+
+      const proofTd = document.createElement("td");
+      const link = document.createElement("a");
+      link.href = OsniasSei.explorerTxUrl(row.txHash);
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "SeiScan →";
+      proofTd.appendChild(link);
+      tr.appendChild(proofTd);
+
+      tbody.appendChild(tr);
+    });
+
+    empty.hidden = true;
+    wrap.hidden = false;
+    $("registerMeta").textContent =
+      `Cycle ${state.cycle?.cycleNumber ?? "—"} · ${state.rows.length} entries`;
+  }
+
+  function csvCell(value) {
+    let text = String(value ?? "");
+    if (/^[=+\-@]/.test(text)) text = "'" + text;
+    return `"${text.replaceAll('"', '""')}"`;
+  }
+
+  function exportCSV() {
+    if (!state.rows.length) {
+      setAlert("No clearing-register data available to export.", "danger");
+      return;
+    }
+
+    const lines = [
+      ["#", "Date", "Invoice ID", "Nature", "Amount to wire", "Status", "TxHash"]
+        .map(csvCell)
+        .join(",")
+    ];
+
+    state.rows.forEach((row, index) => {
+      lines.push(
+        [
+          index + 1,
+          row.date,
+          row.invoiceId,
+          row.nature,
+          `${row.sign} ${formatORUSD(BigInt(row.amountBaseUnits))} ORUSD`,
+          row.label,
+          row.txHash
+        ]
+          .map(csvCell)
+          .join(",")
+      );
+    });
+
+    const blob = new Blob([lines.join("\n")], {
+      type: "text/csv;charset=utf-8"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download =
+      `osnias-clearing-register-${state.account.slice(0, 8)}-cycle-${state.cycle.cycleNumber}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function updateP2PCalculation() {
+    const raw = $("p2pAmount").value.trim();
+
+    try {
+      const amount = ethers.parseUnits(raw || "0", ORUSD_DECIMALS);
+      if (amount <= 0n) throw new Error();
+
+      // Contract fee invariant: 15 / 10000.
+      const fee = (amount * 15n) / 10000n;
+      const net = amount - fee;
+
+      $("p2pFee").textContent = `${formatORUSD(fee)} ORUSD`;
+      $("p2pNet").textContent = `${formatORUSD(net)} ORUSD`;
+    } catch {
+      $("p2pFee").textContent = "—";
+      $("p2pNet").textContent = "—";
+    }
+  }
+
+  async function validateP2P() {
+    if (!state.account) {
+      throw new Error("Connect a wallet first.");
+    }
+
+    if (!state.cycle) {
+      await refreshCycle();
+    }
+
+    if (state.cycle.window === "CLEARING") {
+      throw new Error("P2P settlement is closed during CLEARING.");
+    }
+
+    const recipient = ethers.getAddress($("p2pRecipient").value.trim());
+    const amount = ethers.parseUnits(
+      $("p2pAmount").value.trim(),
+      ORUSD_DECIMALS
+    );
+    const ref = $("p2pRef").value.trim();
+    const nature = $("p2pNature").value.trim();
+
+    if (recipient.toLowerCase() === state.account.toLowerCase()) {
+      throw new Error("Recipient must be different from the connected wallet.");
+    }
+
+    if (amount < MIN_P2P) {
+      throw new Error("Minimum gross amount is 0.501 ORUSD.");
+    }
+
+    if (amount > state.orusdBalance) {
+      throw new Error("Insufficient ORUSD balance.");
+    }
+
+    if (!ref || byteLength(ref) > 50) {
+      throw new Error("Payer reference is required and limited to 50 UTF-8 bytes.");
+    }
+
+    if (!nature || byteLength(nature) > 50) {
+      throw new Error("Nature is required and limited to 50 UTF-8 bytes.");
+    }
+
+    const code = await OsniasSei.getCode(recipient);
+    if (code && code !== "0x" && code !== "0x0") {
+      throw new Error("Recipient rejected: smart-contract addresses are not allowed.");
+    }
+
+    const fee = (amount * 15n) / 10000n;
+    const net = amount - fee;
+
+    return { recipient, amount, ref, nature, fee, net };
+  }
+
+  function openRecap(data) {
+    $("recapTo").textContent = data.recipient;
+    $("recapGross").textContent = `${formatORUSD(data.amount)} ORUSD`;
+    $("recapFee").textContent = `${formatORUSD(data.fee)} ORUSD`;
+    $("recapNet").textContent = `${formatORUSD(data.net)} ORUSD`;
+    $("recapRef").textContent = data.ref;
+    $("recapNature").textContent = data.nature;
+
+    $("p2pRecapLayer").hidden = false;
+  }
+
+  function closeRecap() {
+    $("p2pRecapLayer").hidden = true;
+  }
+
+  async function sendP2P() {
+    let data;
+    try {
+      data = await validateP2P();
+    } catch (error) {
+      setAlert(error?.message || "P2P validation failed.", "danger");
+      closeRecap();
+      return;
+    }
+
+    try {
+      $("btnP2PConfirm").disabled = true;
+      setAlert("Waiting for wallet signature…");
+
+      // OsniasWallet.getSigner() re-checks Sei chain ID immediately before use.
+      const signer = await OsniasWallet.getSigner();
+
+      const contract = new ethers.Contract(
+        OsniasSei.config.contracts.orusd,
+        ORUSD_ABI,
+        signer
+      );
+
+      const tx = await contract.transferWithMemo(
+        data.recipient,
+        data.amount,
+        data.ref,
+        data.nature
+      );
+
+      closeRecap();
+      setAlert(`Transaction submitted: ${tx.hash}`, "success");
+
+      await tx.wait();
+
+      await refreshORUSD();
+      await refreshRegister(true);
+
+      setAlert(`P2P settlement confirmed: ${tx.hash}`, "success");
+
+    } catch (error) {
+      console.error("[P2P]", error);
+
+      if (error?.code === 4001 || error?.code === "ACTION_REJECTED") {
+        setAlert("Transaction cancelled by the user.", "danger");
+      } else {
+        setAlert(error?.shortMessage || error?.message || "P2P transaction failed.", "danger");
+      }
+    } finally {
+      $("btnP2PConfirm").disabled = false;
+    }
+  }
+
+  async function refreshDashboard(forceRpc = false) {
+    try {
+      setAlert("");
+      await refreshCycle();
+
+      if (!state.account) {
+        $("positionsEmpty").textContent =
+          "Connect a wallet to load the current clearing register.";
+        return;
+      }
+
+      await Promise.all([
+        refreshORUSD(),
+        refreshMessageCounts(forceRpc)
+      ]);
+
+      await refreshRegister(forceRpc);
+
+    } catch (error) {
+      console.error("[Dashboard]", error);
+      setAlert(error?.message || "Dashboard refresh failed.", "danger");
+    }
+  }
+
+  async function applyWalletState(walletState) {
+    state.account =
+      walletState?.connected && walletState?.account
+        ? ethers.getAddress(walletState.account)
+        : null;
+
+    if (!state.account) {
+      state.orusdBalance = 0n;
+      state.rows = [];
+      $("orusdBalance").textContent = "—";
+      $("sentCount").textContent = "—";
+      $("receivedCount").textContent = "—";
+      $("pendingCount").textContent = "—";
+      $("positionsWrap").hidden = true;
+      $("positionsEmpty").hidden = false;
+      $("positionsEmpty").textContent =
+        "Connect a wallet to load the current clearing register.";
+      return;
+    }
+
+    await refreshDashboard(false);
+  }
+
+  document.addEventListener("osnias:wallet-connected", (event) => {
+    applyWalletState(event.detail);
+  });
+
+  document.addEventListener("osnias:wallet-restored", (event) => {
+    applyWalletState(event.detail);
+  });
+
+  document.addEventListener("osnias:wallet-account-changed", (event) => {
+    applyWalletState(event.detail);
+  });
+
+  document.addEventListener("osnias:wallet-disconnected", () => {
+    applyWalletState(null);
+  });
+
+  document.addEventListener("osnias:wallet-wrong-network", () => {
+    setAlert("Wallet connected on the wrong network. Use Connect Wallet to switch to Sei Atlantic-2 Testnet.", "danger");
+  });
+
+  document.addEventListener("osnias:wallet-error", (event) => {
+    setAlert(event.detail?.message || "Wallet error.", "danger");
+  });
+
+  $("btnDashboardRefresh").addEventListener("click", () => {
+    refreshDashboard(true);
+  });
+
+  $("btnExportCSV").addEventListener("click", exportCSV);
+  $("p2pAmount").addEventListener("input", updateP2PCalculation);
+
+  $("btnP2PPrevalidate").addEventListener("click", async () => {
+    try {
+      setAlert("");
+      openRecap(await validateP2P());
+    } catch (error) {
+      setAlert(error?.message || "P2P validation failed.", "danger");
+    }
+  });
+
+  $("btnP2PRecapClose").addEventListener("click", closeRecap);
+  $("btnP2PBack").addEventListener("click", closeRecap);
+  $("btnP2PConfirm").addEventListener("click", sendP2P);
+
+  $("p2pRecapLayer").addEventListener("click", (event) => {
+    if (event.target === $("p2pRecapLayer")) {
+      closeRecap();
+    }
+  });
+
+  async function initDashboard() {
+    // Read-only cycle state is available even before wallet connection.
+    try {
+      await refreshCycle();
+    } catch (error) {
+      console.error("[Cycle]", error);
+      setAlert("Unable to read the Sei Temporal Oracle.", "danger");
+    }
+
+    // wallet-connect.js may have restored before this page-specific listener ran.
+    if (window.OsniasWallet) {
+      const walletState = OsniasWallet.getState();
+      if (walletState?.connected) {
+        await applyWalletState(walletState);
+      }
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initDashboard, { once: true });
+  } else {
+    initDashboard();
+  }
+})();
+</script></body>
+</html>
