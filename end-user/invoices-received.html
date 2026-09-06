@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<!--
+  Osnias Clearing — End-User Console
+  Invoices Received
+  Version    : 3.0.3-testnet
+  Copyright  : 2026 Denis Bouzon / Osnias Clearing
+  Licence    : UNLICENSED — All rights reserved
+  ORCID      : 0009-0007-8894-8902
+  Network    : Sei Atlantic-2 Testnet (Chain ID 1328)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Osnias Clearing payment requests received by the connected wallet on Sei Atlantic-2 Testnet.">
+  <title>Osnias Clearing — Invoices Received</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.3">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="./assets/end-user-frame.js?v=3.0.3" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.3" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.3" defer></script>
+  <script src="./assets/payment-messages.js?v=3.0.3" defer></script>
+
+  <style>
+    .received-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+    .received-meta .osnias-card{padding:14px}
+    .received-meta-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.68}
+    .received-meta-value{font-size:18px;font-weight:700;margin-top:5px}
+    .received-table-wrap{overflow:auto}
+    .received-table{width:100%;border-collapse:collapse;min-width:1060px}
+    .received-table th,.received-table td{padding:11px 10px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.08)}
+    .received-table th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.72}
+    .received-address{font-family:"JetBrains Mono",monospace;word-break:break-all}
+    .received-actions{display:flex;gap:7px;flex-wrap:wrap;min-width:210px}
+    .received-empty{padding:32px 12px;text-align:center;opacity:.72}
+    .received-note{font-size:12px;opacity:.72;line-height:1.55}
+    .received-error{margin:0 0 16px}
+    .received-id{font-family:"JetBrains Mono",monospace;font-size:11px;word-break:break-all;opacity:.76}
+    @media(max-width:980px){.received-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.received-meta{grid-template-columns:1fr}}
+  </style>
+</head>
+
+<body>
+  <div id="osnias-header" data-active="received"></div>
+
+  <main class="osnias-main">
+    <section class="osnias-page-intro">
+      <p class="osnias-eyebrow">Payment Message Registry</p>
+      <h1>Invoices Received</h1>
+      <p>Review payment requests addressed to the connected wallet. Acceptance or rejection changes the instruction status only; ORUSD settlement remains a separate wallet-signed transaction.</p>
+    </section>
+
+    <div id="receivedAlert" class="osnias-alert received-error" hidden></div>
+
+    <section class="received-meta" aria-label="Current cycle status">
+      <div class="osnias-card">
+        <div class="received-meta-label">Cycle</div>
+        <div class="received-meta-value" id="cycleNumber">—</div>
+      </div>
+      <div class="osnias-card">
+        <div class="received-meta-label">Window</div>
+        <div class="received-meta-value" id="cycleWindow">—</div>
+      </div>
+      <div class="osnias-card">
+        <div class="received-meta-label">Messaging</div>
+        <div class="received-meta-value" id="messagingState">—</div>
+      </div>
+      <div class="osnias-card">
+        <div class="received-meta-label">Requests received</div>
+        <div class="received-meta-value" id="receivedCount">0</div>
+      </div>
+    </section>
+
+    <section class="osnias-card">
+      <div class="osnias-card__head">
+        <div>
+          <p class="osnias-eyebrow">Current cycle</p>
+          <h2 class="osnias-card__title">Received requests</h2>
+        </div>
+        <button id="refreshBtn" class="osnias-btn osnias-btn--ghost osnias-btn--small" type="button">Refresh</button>
+      </div>
+
+      <p class="received-note">
+        Pending requests may be accepted or rejected by the payer. Once accepted, settlement is performed through the P2P Settlement page; the resulting ORUSD transaction hash can then be recorded on the payment request.
+      </p>
+
+      <div id="receivedEmpty" class="received-empty">Connect a wallet to load received requests.</div>
+
+      <div id="receivedTableWrap" class="received-table-wrap" hidden>
+        <table class="received-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Requester</th>
+              <th>Amount</th>
+              <th>Invoice reference</th>
+              <th>Nature</th>
+              <th>Cycle</th>
+              <th>Created</th>
+              <th>Request ID</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="receivedRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="osnias-footer"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const state = {
+    account: null,
+    cycle: null,
+    rows: [],
+    loading: false
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  function setAlert(message, type = "") {
+    const el = $("receivedAlert");
+
+    if (!message) {
+      el.hidden = true;
+      el.textContent = "";
+      el.className = "osnias-alert received-error";
+      return;
+    }
+
+    el.hidden = false;
+    el.textContent = message;
+    el.className = "osnias-alert received-error" +
+      (type === "success" ? " osnias-alert--success" : "") +
+      (type === "danger" ? " osnias-alert--danger" : "");
+  }
+
+  function shortAddress(value) {
+    const v = String(value || "");
+    return v.length > 14 ? `${v.slice(0,8)}…${v.slice(-6)}` : v;
+  }
+
+  function formatDate(timestamp) {
+    if (!timestamp) return "—";
+    return new Date(Number(timestamp) * 1000).toLocaleString();
+  }
+
+  function statusClass(status) {
+    const s = String(status || "").toUpperCase();
+
+    if (s === "ACCEPTED" || s === "SETTLED") {
+      return "osnias-badge--open";
+    }
+
+    if (s === "REJECTED" || s === "CANCELLED" || s === "FORCLOSED") {
+      return "osnias-badge--closed";
+    }
+
+    return "";
+  }
+
+  function p2pUrl(row) {
+    const params = new URLSearchParams({
+      requestId: row.requestId,
+      recipient: row.requester,
+      amount: row.amount,
+      invoiceReference: row.invoiceReference,
+      nature: row.nature
+    });
+
+    return `p2p-settlement.html?${params.toString()}`;
+  }
+
+  async function refreshCycle() {
+    state.cycle = await OsniasSei.syncFrame();
+
+    $("cycleNumber").textContent = String(state.cycle.cycleNumber);
+    $("cycleWindow").textContent = state.cycle.window;
+    $("messagingState").textContent = state.cycle.messagingOpen ? "OPEN" : "CLOSED";
+
+    return state.cycle;
+  }
+
+  function actionButton(label, className, handler) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = className;
+    btn.textContent = label;
+    btn.addEventListener("click", handler);
+    return btn;
+  }
+
+  function renderRows() {
+    $("receivedCount").textContent = String(state.rows.length);
+
+    const tbody = $("receivedRows");
+    tbody.replaceChildren();
+
+    if (!state.account) {
+      $("receivedEmpty").hidden = false;
+      $("receivedEmpty").textContent = "Connect a wallet to load received requests.";
+      $("receivedTableWrap").hidden = true;
+      return;
+    }
+
+    if (state.rows.length === 0) {
+      $("receivedEmpty").hidden = false;
+      $("receivedEmpty").textContent = "No payment request received in the current cycle.";
+      $("receivedTableWrap").hidden = true;
+      return;
+    }
+
+    $("receivedEmpty").hidden = true;
+    $("receivedTableWrap").hidden = false;
+
+    for (const row of state.rows) {
+      const tr = document.createElement("tr");
+
+      const tdStatus = document.createElement("td");
+      const badge = document.createElement("span");
+      badge.className = `osnias-badge ${statusClass(row.status)}`;
+      badge.textContent = row.status;
+      tdStatus.appendChild(badge);
+
+      const tdRequester = document.createElement("td");
+      tdRequester.className = "received-address";
+      tdRequester.textContent = shortAddress(row.requester);
+      tdRequester.title = row.requester;
+
+      const tdAmount = document.createElement("td");
+      tdAmount.textContent = `${row.amount} ORUSD`;
+
+      const tdRef = document.createElement("td");
+      tdRef.textContent = row.invoiceReference;
+
+      const tdNature = document.createElement("td");
+      tdNature.textContent = row.nature;
+
+      const tdCycle = document.createElement("td");
+      tdCycle.textContent = String(row.cycleId);
+
+      const tdCreated = document.createElement("td");
+      tdCreated.textContent = formatDate(row.createdAt);
+
+      const tdId = document.createElement("td");
+      tdId.className = "received-id";
+      tdId.textContent = row.requestId;
+      tdId.title = row.requestId;
+
+      const tdAction = document.createElement("td");
+      tdAction.className = "received-actions";
+
+      if (row.status === "PENDING") {
+        tdAction.append(
+          actionButton(
+            "Accept",
+            "osnias-btn osnias-btn--primary osnias-btn--small",
+            (event) => acceptRequest(row.requestId, event.currentTarget)
+          ),
+          actionButton(
+            "Reject",
+            "osnias-btn osnias-btn--ghost osnias-btn--small",
+            (event) => rejectRequest(row.requestId, event.currentTarget)
+          )
+        );
+      } else if (row.status === "ACCEPTED") {
+        const settle = document.createElement("a");
+        settle.className = "osnias-btn osnias-btn--primary osnias-btn--small";
+        settle.href = p2pUrl(row);
+        settle.textContent = "P2P Settlement";
+
+        const mark = actionButton(
+          "Record tx hash",
+          "osnias-btn osnias-btn--ghost osnias-btn--small",
+          (event) => recordSettlement(row.requestId, event.currentTarget)
+        );
+
+        tdAction.append(settle, mark);
+      } else if (row.status === "SETTLED") {
+        if (
+          row.settlementTxHash &&
+          row.settlementTxHash !== OsniasPaymentMessages.zeroBytes32
+        ) {
+          const link = document.createElement("a");
+          link.className = "osnias-btn osnias-btn--ghost osnias-btn--small";
+          link.href = OsniasSei.explorerTxUrl(row.settlementTxHash);
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Settlement tx";
+          tdAction.appendChild(link);
+        } else {
+          tdAction.textContent = "—";
+        }
+      } else {
+        tdAction.textContent = "—";
+      }
+
+      tr.append(
+        tdStatus,
+        tdRequester,
+        tdAmount,
+        tdRef,
+        tdNature,
+        tdCycle,
+        tdCreated,
+        tdId,
+        tdAction
+      );
+
+      tbody.appendChild(tr);
+    }
+  }
+
+  async function loadReceived(forceRpc = false) {
+    if (!state.account || state.loading) {
+      renderRows();
+      return;
+    }
+
+    state.loading = true;
+    $("refreshBtn").disabled = true;
+
+    try {
+      const result = await OsniasPaymentMessages.loadReceived(
+        state.account,
+        { forceRpc }
+      );
+
+      state.rows = result.rows;
+      renderRows();
+      setAlert("");
+    } catch (error) {
+      setAlert(
+        error?.shortMessage || error?.message || String(error),
+        "danger"
+      );
+    } finally {
+      state.loading = false;
+      $("refreshBtn").disabled = false;
+    }
+  }
+
+  async function runRequestAction(button, action, requestId, successMessage) {
+    button.disabled = true;
+    setAlert("");
+
+    try {
+      const signer = await OsniasWallet.getSigner();
+      await OsniasPaymentMessages[action](signer, requestId);
+      OsniasPaymentMessages.clearWalletCache(state.account);
+
+      setAlert(successMessage, "success");
+      await loadReceived(true);
+    } catch (error) {
+      setAlert(
+        error?.shortMessage || error?.message || String(error),
+        "danger"
+      );
+      button.disabled = false;
+    }
+  }
+
+  async function acceptRequest(requestId, button) {
+    await runRequestAction(
+      button,
+      "acceptPaymentRequest",
+      requestId,
+      "Payment request accepted."
+    );
+  }
+
+  async function rejectRequest(requestId, button) {
+    const confirmed = window.confirm("Reject this payment request?");
+    if (!confirmed) return;
+
+    await runRequestAction(
+      button,
+      "rejectPaymentRequest",
+      requestId,
+      "Payment request rejected."
+    );
+  }
+
+  async function recordSettlement(requestId, button) {
+    const txHash = window.prompt(
+      "Paste the ORUSD P2P settlement transaction hash (0x…):"
+    );
+
+    if (txHash === null) return;
+
+    const value = txHash.trim();
+
+    if (!/^0x[0-9a-fA-F]{64}$/.test(value)) {
+      setAlert(
+        "Settlement transaction hash must be a 32-byte 0x-prefixed hash.",
+        "danger"
+      );
+      return;
+    }
+
+    button.disabled = true;
+    setAlert("");
+
+    try {
+      const signer = await OsniasWallet.getSigner();
+
+      await OsniasPaymentMessages.markSettled(
+        signer,
+        requestId,
+        value
+      );
+
+      OsniasPaymentMessages.clearWalletCache(state.account);
+
+      setAlert(
+        "Settlement transaction hash recorded on the payment request.",
+        "success"
+      );
+
+      await loadReceived(true);
+    } catch (error) {
+      setAlert(
+        error?.shortMessage || error?.message || String(error),
+        "danger"
+      );
+      button.disabled = false;
+    }
+  }
+
+  async function applyWalletState(walletState) {
+    state.account =
+      walletState?.connected && walletState?.account
+        ? ethers.getAddress(walletState.account)
+        : null;
+
+    state.rows = [];
+
+    await refreshCycle();
+
+    if (state.account) {
+      await loadReceived(false);
+    } else {
+      renderRows();
+    }
+  }
+
+  $("refreshBtn").addEventListener(
+    "click",
+    () => loadReceived(true)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-connected",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-restored",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-account-changed",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-disconnected",
+    () => applyWalletState(null)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-wrong-network",
+    () => {
+      setAlert(
+        "Wallet connected on the wrong network. Switch to Sei Atlantic-2 Testnet.",
+        "danger"
+      );
+    }
+  );
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+      try {
+        await refreshCycle();
+
+        if (window.OsniasWallet) {
+          const walletState = OsniasWallet.getState();
+
+          if (walletState?.connected) {
+            await applyWalletState(walletState);
+          } else {
+            renderRows();
+          }
+        }
+      } catch (error) {
+        setAlert(
+          error?.message || String(error),
+          "danger"
+        );
+      }
+    }
+  );
+})();
+</script>
+</body>
+</html>
