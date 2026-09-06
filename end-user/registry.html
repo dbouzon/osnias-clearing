@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<!--
+  Osnias Clearing — End-User Console
+  Clearing Registry
+  Version    : 3.0.3-testnet
+  Copyright  : 2026 Denis Bouzon / Osnias Clearing
+  Licence    : UNLICENSED — All rights reserved
+  ORCID      : 0009-0007-8894-8902
+  Network    : Sei Atlantic-2 Testnet (Chain ID 1328)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Osnias Clearing current-cycle ORUSD registry for the connected wallet on Sei Atlantic-2 Testnet.">
+  <title>Osnias Clearing — Registry</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.3">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="./assets/end-user-frame.js?v=3.0.3" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.3" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.3" defer></script>
+
+  <style>
+    .registry-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+    .registry-meta .osnias-card{padding:14px}
+    .registry-meta-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.68}
+    .registry-meta-value{font-size:17px;font-weight:700;margin-top:5px;word-break:break-word}
+    .registry-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .registry-progress{font-size:12px;opacity:.72;margin:12px 0 0}
+    .registry-table-wrap{overflow:auto}
+    .registry-table{width:100%;border-collapse:collapse;min-width:980px}
+    .registry-table th,.registry-table td{padding:11px 10px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.08)}
+    .registry-table th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.72}
+    .registry-table .num{text-align:right;white-space:nowrap}
+    .registry-table .mono{font-family:"JetBrains Mono",monospace}
+    .registry-empty{padding:34px 12px;text-align:center;opacity:.72}
+    .registry-note{font-size:12px;opacity:.72;line-height:1.55}
+    .registry-positive{font-weight:700}
+    .registry-negative{font-weight:700}
+    .registry-error{margin:0 0 16px}
+    @media(max-width:980px){.registry-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.registry-meta{grid-template-columns:1fr}}
+  </style>
+</head>
+
+<body>
+  <div id="osnias-header" data-active="registry"></div>
+
+  <main class="osnias-main">
+    <section class="osnias-page-intro">
+      <p class="osnias-eyebrow">ORUSD On-Chain Register</p>
+      <h1>Registry</h1>
+      <p>Current-cycle ORUSD movements for the connected wallet. Blockchain logs are read only on this page and cached locally by wallet and cycle.</p>
+    </section>
+
+    <div id="registryAlert" class="osnias-alert registry-error" hidden></div>
+
+    <section class="registry-meta" aria-label="Registry context">
+      <div class="osnias-card">
+        <div class="registry-meta-label">Cycle</div>
+        <div class="registry-meta-value" id="cycleNumber">—</div>
+      </div>
+      <div class="osnias-card">
+        <div class="registry-meta-label">Window</div>
+        <div class="registry-meta-value" id="cycleWindow">—</div>
+      </div>
+      <div class="osnias-card">
+        <div class="registry-meta-label">Cycle start block</div>
+        <div class="registry-meta-value" id="cycleStartBlock">—</div>
+      </div>
+      <div class="osnias-card">
+        <div class="registry-meta-label">Current block</div>
+        <div class="registry-meta-value" id="currentBlock">—</div>
+      </div>
+    </section>
+
+    <section class="osnias-card">
+      <div class="osnias-card__head">
+        <div>
+          <p class="osnias-eyebrow">Connected wallet</p>
+          <h2 class="osnias-card__title">Clearing Register</h2>
+          <div id="registerMeta" class="registry-note">Connect a wallet to read the register.</div>
+        </div>
+
+        <div class="registry-toolbar">
+          <button id="refreshBtn" class="osnias-btn osnias-btn--ghost osnias-btn--small" type="button">Refresh</button>
+          <button id="rebuildBtn" class="osnias-btn osnias-btn--ghost osnias-btn--small" type="button">Rebuild</button>
+          <button id="exportBtn" class="osnias-btn osnias-btn--primary osnias-btn--small" type="button">Export CSV</button>
+        </div>
+      </div>
+
+      <p class="registry-note">
+        MINT and BURN entries are reconstructed from ORUSD Transfer events. P2P business entries are reconstructed from TransferWithMemo events to avoid double-counting protocol fee transfers. Sei RPC log requests are automatically split into ranges below the public RPC limit.
+      </p>
+
+      <div id="registryProgress" class="registry-progress"></div>
+
+      <div id="registryEmpty" class="registry-empty">
+        Connect a wallet to load the current-cycle register.
+      </div>
+
+      <div id="registryTableWrap" class="registry-table-wrap" hidden>
+        <table class="registry-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Counterparty</th>
+              <th>Invoice reference</th>
+              <th>Nature</th>
+              <th class="num">Amount</th>
+              <th>Proof</th>
+            </tr>
+          </thead>
+          <tbody id="registryRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="osnias-footer"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const ORUSD_DECIMALS = 6;
+  const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+  const CACHE_PREFIX = "osnias:registry:v2";
+
+  const ORUSD_ABI = [
+    "event Transfer(address indexed from,address indexed to,uint256 value)",
+    "event TransferWithMemo(address indexed from,address indexed to,uint256 value,uint256 fee,uint256 net,string ref,string nature)"
+  ];
+
+  const iface = new ethers.Interface(ORUSD_ABI);
+  const TRANSFER_TOPIC = iface.getEvent("Transfer").topicHash;
+  const MEMO_TOPIC = iface.getEvent("TransferWithMemo").topicHash;
+
+  const state = {
+    account: null,
+    cycle: null,
+    rows: [],
+    loading: false,
+    lastScannedBlock: null
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  function setAlert(message, type = "") {
+    const el = $("registryAlert");
+    if (!message) {
+      el.hidden = true;
+      el.textContent = "";
+      el.className = "osnias-alert registry-error";
+      return;
+    }
+
+    el.hidden = false;
+    el.textContent = message;
+    el.className = "osnias-alert registry-error" +
+      (type === "success" ? " osnias-alert--success" : "") +
+      (type === "danger" ? " osnias-alert--danger" : "");
+  }
+
+  function setProgress(message = "") {
+    $("registryProgress").textContent = message;
+  }
+
+  function addressTopic(address) {
+    return ethers.zeroPadValue(ethers.getAddress(address), 32);
+  }
+
+  function cacheKey() {
+    if (!state.account || !state.cycle) return null;
+    return `${CACHE_PREFIX}:${state.account.toLowerCase()}:cycle-${state.cycle.cycleNumber}`;
+  }
+
+  function readCache() {
+    const key = cacheKey();
+    if (!key) return null;
+
+    try {
+      const parsed = JSON.parse(localStorage.getItem(key) || "null");
+      if (!parsed || !Array.isArray(parsed.rows)) return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveCache() {
+    const key = cacheKey();
+    if (!key) return;
+
+    try {
+      localStorage.setItem(key, JSON.stringify({
+        version: 2,
+        wallet: state.account,
+        cycleNumber: state.cycle.cycleNumber,
+        cycleStartBlock: state.cycle.cycleStartBlock,
+        lastScannedBlock: state.lastScannedBlock,
+        rows: state.rows,
+        savedAt: Date.now()
+      }));
+    } catch {}
+  }
+
+  function clearCache() {
+    const key = cacheKey();
+    if (key) localStorage.removeItem(key);
+  }
+
+  function shortAddress(value) {
+    if (!value || value === ZERO_ADDRESS) return "—";
+    return `${value.slice(0,8)}…${value.slice(-6)}`;
+  }
+
+  function formatORUSD(baseUnits) {
+    return ethers.formatUnits(BigInt(baseUnits), ORUSD_DECIMALS);
+  }
+
+  function csvCell(value) {
+    let text = String(value ?? "");
+    if (/^[=+\-@]/.test(text)) text = "'" + text;
+    return `"${text.replaceAll('"', '""')}"`;
+  }
+
+  async function blockTimestamp(blockNumber, cache) {
+    if (cache.has(blockNumber)) return cache.get(blockNumber);
+
+    try {
+      const block = await OsniasSei.rpc("eth_getBlockByNumber", [
+        OsniasSei.toHexBlock(blockNumber),
+        false
+      ]);
+
+      const timestamp = block?.timestamp
+        ? Number(BigInt(block.timestamp))
+        : 0;
+
+      cache.set(blockNumber, timestamp);
+      return timestamp;
+    } catch {
+      cache.set(blockNumber, 0);
+      return 0;
+    }
+  }
+
+  function logKey(log) {
+    return `${String(log.transactionHash).toLowerCase()}:${log.logIndex ?? log.index ?? 0}`;
+  }
+
+  function rowKey(row) {
+    return `${row.txHash.toLowerCase()}:${row.kind}`;
+  }
+
+  async function scanRange(fromBlock, toBlock) {
+    if (fromBlock > toBlock) return [];
+
+    const walletTopic = addressTopic(state.account);
+    const zeroTopic = addressTopic(ZERO_ADDRESS);
+
+    setProgress(
+      `Reading ORUSD logs from block ${fromBlock.toLocaleString()} to ${toBlock.toLocaleString()}…`
+    );
+
+    const [
+      mintLogs,
+      burnLogs,
+      p2pSentLogs,
+      p2pReceivedLogs
+    ] = await Promise.all([
+      OsniasSei.getLogsChunked({
+        address: OsniasSei.config.contracts.orusd,
+        fromBlock,
+        toBlock,
+        topics: [TRANSFER_TOPIC, zeroTopic, walletTopic]
+      }),
+
+      OsniasSei.getLogsChunked({
+        address: OsniasSei.config.contracts.orusd,
+        fromBlock,
+        toBlock,
+        topics: [TRANSFER_TOPIC, walletTopic, zeroTopic]
+      }),
+
+      OsniasSei.getLogsChunked({
+        address: OsniasSei.config.contracts.orusd,
+        fromBlock,
+        toBlock,
+        topics: [MEMO_TOPIC, walletTopic]
+      }),
+
+      OsniasSei.getLogsChunked({
+        address: OsniasSei.config.contracts.orusd,
+        fromBlock,
+        toBlock,
+        topics: [MEMO_TOPIC, null, walletTopic]
+      })
+    ]);
+
+    const blockCache = new Map();
+    const rows = [];
+
+    for (const log of mintLogs) {
+      const blockNumber = Number(BigInt(log.blockNumber));
+      const ts = await blockTimestamp(blockNumber, blockCache);
+
+      rows.push({
+        kind: "MINT",
+        blockNumber,
+        logIndex: Number(log.logIndex ?? log.index ?? 0),
+        timestamp: ts,
+        counterparty: ZERO_ADDRESS,
+        invoiceReference: "—",
+        nature: "—",
+        amountBaseUnits: BigInt(log.data).toString(),
+        sign: "+",
+        txHash: log.transactionHash
+      });
+    }
+
+    for (const log of burnLogs) {
+      const blockNumber = Number(BigInt(log.blockNumber));
+      const ts = await blockTimestamp(blockNumber, blockCache);
+
+      rows.push({
+        kind: "BURN",
+        blockNumber,
+        logIndex: Number(log.logIndex ?? log.index ?? 0),
+        timestamp: ts,
+        counterparty: ZERO_ADDRESS,
+        invoiceReference: "—",
+        nature: "—",
+        amountBaseUnits: BigInt(log.data).toString(),
+        sign: "−",
+        txHash: log.transactionHash
+      });
+    }
+
+    const memoSeen = new Set();
+
+    for (const [direction, logs] of [
+      ["P2P SENT", p2pSentLogs],
+      ["P2P RECEIVED", p2pReceivedLogs]
+    ]) {
+      for (const log of logs) {
+        const key = logKey(log);
+        if (memoSeen.has(key)) continue;
+        memoSeen.add(key);
+
+        let parsed;
+        try {
+          parsed = iface.parseLog(log);
+        } catch {
+          continue;
+        }
+
+        if (!parsed || parsed.name !== "TransferWithMemo") continue;
+
+        const from = ethers.getAddress(parsed.args.from);
+        const to = ethers.getAddress(parsed.args.to);
+        const blockNumber = Number(BigInt(log.blockNumber));
+        const ts = await blockTimestamp(blockNumber, blockCache);
+
+        rows.push({
+          kind: direction,
+          blockNumber,
+          logIndex: Number(log.logIndex ?? log.index ?? 0),
+          timestamp: ts,
+          counterparty: direction === "P2P SENT" ? to : from,
+          invoiceReference: String(parsed.args.ref),
+          nature: String(parsed.args.nature),
+          amountBaseUnits: BigInt(parsed.args.value).toString(),
+          feeBaseUnits: BigInt(parsed.args.fee).toString(),
+          netBaseUnits: BigInt(parsed.args.net).toString(),
+          sign: direction === "P2P SENT" ? "−" : "+",
+          txHash: log.transactionHash
+        });
+      }
+    }
+
+    return rows;
+  }
+
+  function mergeRows(existing, incoming) {
+    const map = new Map();
+
+    for (const row of [...existing, ...incoming]) {
+      map.set(rowKey(row), row);
+    }
+
+    return [...map.values()].sort((a, b) => {
+      if (a.blockNumber !== b.blockNumber) {
+        return b.blockNumber - a.blockNumber;
+      }
+      return b.logIndex - a.logIndex;
+    });
+  }
+
+  function renderRows() {
+    const tbody = $("registryRows");
+    const empty = $("registryEmpty");
+    const wrap = $("registryTableWrap");
+
+    tbody.replaceChildren();
+
+    if (!state.account) {
+      empty.hidden = false;
+      wrap.hidden = true;
+      empty.textContent = "Connect a wallet to load the current-cycle register.";
+      $("registerMeta").textContent = "Connect a wallet to read the register.";
+      return;
+    }
+
+    if (!state.rows.length) {
+      empty.hidden = false;
+      wrap.hidden = true;
+      empty.textContent = "No ORUSD movement found for this wallet in the current cycle.";
+      $("registerMeta").textContent =
+        `Cycle ${state.cycle?.cycleNumber ?? "—"} · 0 entries`;
+      return;
+    }
+
+    empty.hidden = true;
+    wrap.hidden = false;
+
+    state.rows.forEach((row, index) => {
+      const tr = document.createElement("tr");
+
+      const date = row.timestamp
+        ? new Date(row.timestamp * 1000)
+            .toISOString()
+            .slice(0,16)
+            .replace("T"," ") + " UTC"
+        : "—";
+
+      const values = [
+        index + 1,
+        date,
+        row.kind,
+        shortAddress(row.counterparty),
+        row.invoiceReference || "—",
+        row.nature || "—"
+      ];
+
+      values.forEach((value, i) => {
+        const td = document.createElement("td");
+        td.textContent = String(value);
+        if (i === 3) {
+          td.className = "mono";
+          td.title = row.counterparty || "";
+        }
+        tr.appendChild(td);
+      });
+
+      const amountTd = document.createElement("td");
+      amountTd.className =
+        "num mono " +
+        (row.sign === "−" ? "registry-negative" : "registry-positive");
+      amountTd.textContent =
+        `${row.sign} ${formatORUSD(row.amountBaseUnits)} ORUSD`;
+      if (row.kind.startsWith("P2P") && row.feeBaseUnits != null) {
+        amountTd.title =
+          `Gross: ${formatORUSD(row.amountBaseUnits)} ORUSD · ` +
+          `Fee: ${formatORUSD(row.feeBaseUnits)} ORUSD · ` +
+          `Net: ${formatORUSD(row.netBaseUnits)} ORUSD`;
+      }
+      tr.appendChild(amountTd);
+
+      const proofTd = document.createElement("td");
+      const link = document.createElement("a");
+      link.href = OsniasSei.explorerTxUrl(row.txHash);
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "SeiScan →";
+      proofTd.appendChild(link);
+      tr.appendChild(proofTd);
+
+      tbody.appendChild(tr);
+    });
+
+    $("registerMeta").textContent =
+      `Cycle ${state.cycle.cycleNumber} · ${state.rows.length} entries · ` +
+      `scanned through block ${(state.lastScannedBlock ?? state.cycle.cycleStartBlock).toLocaleString()}`;
+  }
+
+  async function refreshCycle() {
+    state.cycle = await OsniasSei.syncFrame();
+
+    $("cycleNumber").textContent = String(state.cycle.cycleNumber);
+    $("cycleWindow").textContent = state.cycle.window;
+    $("cycleStartBlock").textContent =
+      Number(state.cycle.cycleStartBlock).toLocaleString();
+    $("currentBlock").textContent =
+      Number(state.cycle.currentBlock).toLocaleString();
+
+    return state.cycle;
+  }
+
+  async function loadRegistry({ rebuild = false } = {}) {
+    if (!state.account || state.loading) {
+      renderRows();
+      return;
+    }
+
+    state.loading = true;
+    $("refreshBtn").disabled = true;
+    $("rebuildBtn").disabled = true;
+    $("exportBtn").disabled = true;
+    setAlert("");
+
+    try {
+      await refreshCycle();
+
+      if (rebuild) {
+        clearCache();
+        state.rows = [];
+        state.lastScannedBlock = null;
+      } else {
+        const cached = readCache();
+        if (cached) {
+          state.rows = cached.rows || [];
+          state.lastScannedBlock =
+            Number.isFinite(Number(cached.lastScannedBlock))
+              ? Number(cached.lastScannedBlock)
+              : null;
+          renderRows();
+        }
+      }
+
+      const cycleStart = Number(state.cycle.cycleStartBlock);
+      const current = Number(state.cycle.currentBlock);
+
+      let fromBlock = cycleStart;
+
+      if (
+        !rebuild &&
+        state.lastScannedBlock != null &&
+        state.lastScannedBlock >= cycleStart
+      ) {
+        fromBlock = state.lastScannedBlock + 1;
+      }
+
+      if (fromBlock <= current) {
+        const incoming = await scanRange(fromBlock, current);
+        state.rows = mergeRows(state.rows, incoming);
+        state.lastScannedBlock = current;
+        saveCache();
+      } else {
+        setProgress("Registry cache is already synchronized with the current block.");
+      }
+
+      renderRows();
+      setProgress(
+        `Synchronized through block ${current.toLocaleString()} · local cache active`
+      );
+    } catch (error) {
+      console.error("[Osnias Registry]", error);
+      setAlert(
+        error?.shortMessage || error?.message || String(error),
+        "danger"
+      );
+      setProgress("");
+    } finally {
+      state.loading = false;
+      $("refreshBtn").disabled = false;
+      $("rebuildBtn").disabled = false;
+      $("exportBtn").disabled = false;
+    }
+  }
+
+  function exportCSV() {
+    if (!state.rows.length || !state.account || !state.cycle) {
+      setAlert("No registry data available to export.", "danger");
+      return;
+    }
+
+    const lines = [
+      [
+        "#",
+        "Date UTC",
+        "Type",
+        "Counterparty",
+        "Invoice Reference",
+        "Nature",
+        "Amount ORUSD",
+        "TxHash"
+      ].map(csvCell).join(",")
+    ];
+
+    state.rows.forEach((row, index) => {
+      const date = row.timestamp
+        ? new Date(row.timestamp * 1000).toISOString()
+        : "";
+
+      lines.push([
+        index + 1,
+        date,
+        row.kind,
+        row.counterparty,
+        row.invoiceReference || "",
+        row.nature || "",
+        `${row.sign} ${formatORUSD(row.amountBaseUnits)}`,
+        row.txHash
+      ].map(csvCell).join(","));
+    });
+
+    const blob = new Blob([lines.join("\n")], {
+      type: "text/csv;charset=utf-8"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download =
+      `osnias-registry-${state.account.slice(0,8)}-cycle-${state.cycle.cycleNumber}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function applyWalletState(walletState) {
+    state.account =
+      walletState?.connected && walletState?.account
+        ? ethers.getAddress(walletState.account)
+        : null;
+
+    state.rows = [];
+    state.lastScannedBlock = null;
+
+    await refreshCycle();
+
+    if (state.account) {
+      await loadRegistry();
+    } else {
+      setProgress("");
+      renderRows();
+    }
+  }
+
+  $("refreshBtn").addEventListener("click", () => loadRegistry());
+  $("rebuildBtn").addEventListener("click", () => {
+    if (window.confirm("Rebuild this wallet's current-cycle registry from the cycle start block?")) {
+      loadRegistry({ rebuild: true });
+    }
+  });
+  $("exportBtn").addEventListener("click", exportCSV);
+
+  document.addEventListener(
+    "osnias:wallet-connected",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-restored",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-account-changed",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-disconnected",
+    () => applyWalletState(null)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-wrong-network",
+    () => {
+      setAlert(
+        "Wallet connected on the wrong network. Switch to Sei Atlantic-2 Testnet.",
+        "danger"
+      );
+    }
+  );
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      await refreshCycle();
+
+      if (window.OsniasWallet) {
+        const walletState = OsniasWallet.getState();
+        if (walletState?.connected) {
+          await applyWalletState(walletState);
+        } else {
+          renderRows();
+        }
+      }
+    } catch (error) {
+      setAlert(error?.message || String(error), "danger");
+    }
+  });
+})();
+</script>
+</body>
+</html>
