@@ -3,7 +3,7 @@
  * Shared frame / navigation
  *
  * File: /assets/end-user-frame.js
- * Version: 1.2.0
+ * Version: 1.3.0
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.2.0";
+  const FRAME_VERSION = "1.3.0";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias Orusd End User",
@@ -32,6 +32,7 @@
     chainIdLabel: "1328",
     nav: [
       { key: "dashboard", label: "Dashboard", href: "index.html" },
+      { key: "p2p", label: "P2P Settlement", href: "p2p-settlement.html" },
       { key: "sent", label: "Invoices Sent", href: "invoices-sent.html" },
       { key: "received", label: "Invoices Received", href: "invoices-received.html" },
       { key: "registry", label: "Registry", href: "registry.html" }
@@ -286,7 +287,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · Release 3.0.1 · 2026-09-06
+        Osnias Clearing · End-User Console · Release 3.0.3 · 2026-09-06
       </footer>
     `;
   }
