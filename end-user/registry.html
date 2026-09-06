@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Clearing Registry
-  Version    : 3.0.5-testnet
+  Version    : 3.0.6-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -18,12 +18,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.5">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.6">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  <script src="./assets/end-user-frame.js?v=3.0.5" defer></script>
-  <script src="./assets/sei-provider.js?v=3.0.5" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.0.5" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.0.6" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.6" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.6" defer></script>
 
   <style>
     .registry-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
@@ -32,10 +32,34 @@
     .registry-meta-value{font-size:17px;font-weight:700;margin-top:5px;word-break:break-word}
     .registry-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .registry-progress{font-size:12px;opacity:.82;margin:12px 0 0}
-    .registry-progressbox{margin:14px 0 4px}
-    .registry-progresshead{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px;margin-bottom:7px}
-    .registry-progressbar{height:10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;overflow:hidden;background:rgba(255,255,255,.035)}
-    .registry-progressfill{height:100%;width:0%;background:currentColor;transition:width .16s linear}
+    .registry-progressbox{
+      width:min(33.333%,420px);
+      min-width:280px;
+      margin:18px auto 8px;
+    }
+    .registry-progresshead{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      font-size:12px;
+      margin-bottom:8px;
+    }
+    .registry-progressbar{
+      height:14px;
+      border:1px solid rgba(0,255,132,.35);
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(0,255,132,.07);
+      box-shadow:0 0 0 1px rgba(0,255,132,.04) inset;
+    }
+    .registry-progressfill{
+      height:100%;
+      width:0%;
+      background:#00ff84;
+      box-shadow:0 0 14px rgba(0,255,132,.35);
+      transition:width .16s linear;
+    }
     .registry-progressbox[hidden]{display:none}
     .registry-table-wrap{overflow:auto}
     .registry-table{width:100%;border-collapse:collapse;min-width:980px}
@@ -49,7 +73,10 @@
     .registry-negative{font-weight:700}
     .registry-error{margin:0 0 16px}
     @media(max-width:980px){.registry-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:620px){.registry-meta{grid-template-columns:1fr}}
+    @media(max-width:620px){
+      .registry-meta{grid-template-columns:1fr}
+      .registry-progressbox{width:86%;min-width:0}
+    }
   </style>
 </head>
 
