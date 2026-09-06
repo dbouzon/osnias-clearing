@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Invoices Received
-  Version    : 3.0.3-testnet
+  Version    : 3.0.8-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -18,13 +18,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.3">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.8">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  <script src="./assets/end-user-frame.js?v=3.0.3" defer></script>
-  <script src="./assets/sei-provider.js?v=3.0.3" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.0.3" defer></script>
-  <script src="./assets/payment-messages.js?v=3.0.3" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.0.8" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.8" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.8" defer></script>
+  <script src="./assets/payment-messages.js?v=3.0.8" defer></script>
 
   <style>
     .received-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
@@ -83,11 +83,23 @@
           <p class="osnias-eyebrow">Current cycle</p>
           <h2 class="osnias-card__title">Received requests</h2>
         </div>
-        <button id="refreshBtn" class="osnias-btn osnias-btn--ghost osnias-btn--small" type="button">Refresh</button>
+        <div class="received-actions">
+          <button id="refreshBtn" class="osnias-btn osnias-btn--ghost osnias-btn--small" type="button"
+            title="Load only payment-message blocks after the last locally acquired checkpoint">Refresh</button>
+          <button id="rebuildBtn" class="osnias-btn osnias-btn--ghost osnias-btn--small" type="button"
+            title="Discard the local Received cache for this wallet/cycle and reconstruct it from the cycle start">Rebuild</button>
+          <button id="exportBtn" class="osnias-btn osnias-btn--primary osnias-btn--small" type="button"
+            title="Export the locally acquired Received requests without rescanning RPC">Export CSV</button>
+        </div>
       </div>
 
       <p class="received-note">
         Pending requests may be accepted or rejected by the payer. Once accepted, settlement is performed through the P2P Settlement page; the resulting ORUSD transaction hash can then be recorded on the payment request.
+      </p>
+      <p class="received-note">
+        <strong>Refresh</strong> = incremental synchronization ·
+        <strong>Rebuild</strong> = full current-cycle reconstruction ·
+        <strong>Export CSV</strong> = immediate export of locally acquired requests.
       </p>
 
       <div id="receivedEmpty" class="received-empty">Connect a wallet to load received requests.</div>
@@ -321,6 +333,56 @@
     }
   }
 
+
+  function csvCell(value) {
+    let text = String(value ?? "");
+    if (/^[=+\-@]/.test(text)) text = "'" + text;
+    return `"${text.replaceAll('"', '""')}"`;
+  }
+
+  function exportReceivedCSV() {
+    if (!state.account || !state.rows.length) {
+      setAlert("No locally acquired received requests available to export.", "danger");
+      return;
+    }
+
+    const lines = [[
+      "Status",
+      "Requester",
+      "Amount ORUSD",
+      "Invoice Reference",
+      "Nature",
+      "Cycle",
+      "Created UTC",
+      "Request ID",
+      "Previous Request ID",
+      "Settlement Tx Hash"
+    ].map(csvCell).join(",")];
+
+    for (const row of state.rows) {
+      lines.push([
+        row.status,
+        row.requester,
+        row.amount,
+        row.invoiceReference,
+        row.nature,
+        row.cycleId,
+        row.createdAt ? new Date(Number(row.createdAt) * 1000).toISOString() : "",
+        row.requestId,
+        row.previousRequestId || "",
+        row.settlementTxHash || ""
+      ].map(csvCell).join(","));
+    }
+
+    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `osnias-invoices-received-${state.account.slice(0,8)}-cycle-${state.cycle?.cycleNumber ?? "unknown"}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   async function loadReceived(forceRpc = false) {
     if (!state.account || state.loading) {
       renderRows();
@@ -329,6 +391,8 @@
 
     state.loading = true;
     $("refreshBtn").disabled = true;
+    $("rebuildBtn").disabled = true;
+    $("exportBtn").disabled = state.rows.length === 0;
 
     try {
       const result = await OsniasPaymentMessages.loadReceived(
@@ -347,6 +411,8 @@
     } finally {
       state.loading = false;
       $("refreshBtn").disabled = false;
+      $("rebuildBtn").disabled = false;
+      $("exportBtn").disabled = state.rows.length === 0;
     }
   }
 
@@ -357,10 +423,8 @@
     try {
       const signer = await OsniasWallet.getSigner();
       await OsniasPaymentMessages[action](signer, requestId);
-      OsniasPaymentMessages.clearWalletCache(state.account);
-
       setAlert(successMessage, "success");
-      await loadReceived(true);
+      await loadReceived(false);
     } catch (error) {
       setAlert(
         error?.shortMessage || error?.message || String(error),
@@ -420,14 +484,12 @@
         value
       );
 
-      OsniasPaymentMessages.clearWalletCache(state.account);
-
       setAlert(
         "Settlement transaction hash recorded on the payment request.",
         "success"
       );
 
-      await loadReceived(true);
+      await loadReceived(false);
     } catch (error) {
       setAlert(
         error?.shortMessage || error?.message || String(error),
@@ -456,8 +518,21 @@
 
   $("refreshBtn").addEventListener(
     "click",
-    () => loadReceived(true)
+    () => loadReceived(false)
   );
+
+  $("rebuildBtn").addEventListener("click", async () => {
+    if (!state.account) return;
+
+    const ok = window.confirm(
+      "Rebuild all received payment requests for this wallet in the current cycle? This performs a full RPC rescan from the cycle start block."
+    );
+    if (!ok) return;
+
+    await loadReceived(true);
+  });
+
+  $("exportBtn").addEventListener("click", exportReceivedCSV);
 
   document.addEventListener(
     "osnias:wallet-connected",
