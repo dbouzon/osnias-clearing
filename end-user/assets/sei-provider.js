@@ -3,7 +3,7 @@
  * Shared read-only blockchain layer
  *
  * File: /assets/sei-provider.js
- * Version: 1.1.0
+ * Version: 1.2.0
  *
  * Responsibilities:
  * - Centralize Sei Atlantic-2 Testnet configuration
@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.1.0";
+  const VERSION = "1.2.0";
 
   const CONFIG = Object.freeze({
     networkName: "Sei Atlantic-2 Testnet",
@@ -231,7 +231,8 @@
     fromBlock,
     toBlock = "latest",
     topics = [],
-    maxSpan = MAX_LOG_BLOCK_SPAN
+    maxSpan = MAX_LOG_BLOCK_SPAN,
+    onProgress = null
   }) {
     assertHexAddress(address, "log contract address");
 
@@ -269,6 +270,25 @@
       });
 
       all.push(...logs);
+
+      if (typeof onProgress === "function") {
+        const totalBlocks = end - start + 1;
+        const scannedBlocks = to - start + 1;
+        const percent = totalBlocks > 0
+          ? Math.min(100, Math.round((scannedBlocks / totalBlocks) * 100))
+          : 100;
+
+        onProgress({
+          fromBlock: start,
+          toBlock: end,
+          chunkFrom: from,
+          chunkTo: to,
+          scannedBlocks,
+          totalBlocks,
+          percent,
+          logCount: all.length
+        });
+      }
     }
 
     return all.sort((a, b) => {
