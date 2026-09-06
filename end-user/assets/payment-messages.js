@@ -3,7 +3,7 @@
  * Payment Message Registry integration
  *
  * File: /assets/payment-messages.js
- * Version: 1.0.0
+ * Version: 1.2.0
  *
  * Contract:
  * OsniasPaymentMessageRegistry v2.0.2-testnet
@@ -28,7 +28,19 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.0.0";
+  function assertChunkedProvider() {
+    if (
+      !window.OsniasSei ||
+      typeof window.OsniasSei.getLogsChunked !== "function"
+    ) {
+      throw new Error(
+        "OsniasSei.getLogsChunked() is unavailable. Refresh the page to load the current Sei provider asset."
+      );
+    }
+  }
+
+
+  const VERSION = "1.2.0";
   const CACHE_VERSION = "1";
   const ORUSD_DECIMALS = 6;
   const ZERO_BYTES32 = "0x" + "00".repeat(32);
@@ -427,6 +439,7 @@
       hydrate = true
     } = {}
   ) {
+    assertChunkedProvider();
     requireDependencies();
 
     const account = normalizeAddress(wallet);
@@ -456,7 +469,7 @@
     const toBlock = cycle.currentBlock;
 
     if (fromBlock <= toBlock) {
-      const logs = await window.OsniasSei.getLogs({
+      const logs = await window.OsniasSei.getLogsChunked({
         address:
           window.OsniasSei.config.contracts.paymentMessageRegistry,
         fromBlock,
@@ -507,10 +520,12 @@
   }
 
   async function loadSent(wallet, options = {}) {
+    assertChunkedProvider();
     return loadDirection("sent", wallet, options);
   }
 
   async function loadReceived(wallet, options = {}) {
+    assertChunkedProvider();
     return loadDirection("received", wallet, options);
   }
 
