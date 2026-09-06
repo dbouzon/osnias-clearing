@@ -90,9 +90,11 @@ img, svg { max-width: 100%; }
   align-items: center;
   gap: 20px;
 }
-.osnias-brand { display: flex; flex-direction: column; flex: 0 0 auto; min-width: 190px; line-height: 1.25; }
-.osnias-brand__name { color: var(--white); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-.osnias-brand__subline { margin-top: 2px; color: var(--white-60); }
+.osnias-brand { display: flex; flex: 0 0 auto; min-width: 280px; align-items: center; gap: 11px; line-height: 1.25; }
+.osnias-brand__logo { width: 42px; height: 42px; flex: 0 0 42px; object-fit: contain; border-radius: var(--radius-small); }
+.osnias-brand__copy { display: flex; min-width: 0; flex-direction: column; }
+.osnias-brand__name { color: var(--white); font-weight: 700; letter-spacing: .04em; text-transform: none; white-space: nowrap; }
+.osnias-brand__subline { margin-top: 2px; color: var(--white-60); white-space: nowrap; }
 .osnias-nav { display: flex; flex: 1 1 auto; align-items: center; gap: 4px; flex-wrap: wrap; }
 .osnias-nav__link {
   display: inline-flex;
@@ -260,7 +262,8 @@ img, svg { max-width: 100%; }
   .osnias-header__inner { padding: 10px 14px; gap: 10px; }
   .osnias-main { padding: 16px 14px 36px; }
   .osnias-footer { padding: 18px 14px 24px; }
-  .osnias-brand { width: 100%; }
+  .osnias-brand { width: 100%; min-width: 0; }
+  .osnias-brand__name, .osnias-brand__subline { white-space: normal; }
   .osnias-header__right { width: 100%; justify-content: flex-start; margin-left: 0; }
   .osnias-nav { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
   .osnias-nav__link { justify-content: flex-start; border-color: var(--white-10); }

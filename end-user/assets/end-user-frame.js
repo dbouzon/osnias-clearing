@@ -1,9 +1,9 @@
 /*
- * Osnias Clearing — End-User Console
+ * Osnias Clearing â€” End-User Console
  * Shared frame / navigation
  *
  * File: /assets/end-user-frame.js
- * Version: 1.0.0
+ * Version: 1.1.0
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -19,11 +19,12 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.0.0";
+  const FRAME_VERSION = "1.1.0";
 
   const DEFAULT_CONFIG = Object.freeze({
-    brand: "Osnias Clearing",
-    subtitle: "Multichain Clearing Project",
+    brand: "Osnias Orusd End User",
+    subtitle: "Release 3.0.0-testnet Â· 2026-09-06",
+    logoUrl: "/logo.jpg",
     rootPath: "/end-user/",
     documentationUrl: "/documentation/",
     networkLabel: "Sei Atlantic-2",
@@ -40,7 +41,7 @@
     walletConnected: false,
     walletAddress: "",
     cycleNumber: null,
-    cycleWindow: "—",
+    cycleWindow: "â€”",
     messagingOpen: null
   };
 
@@ -91,23 +92,20 @@
   function shortAddress(address) {
     const value = String(address || "");
     if (value.length < 12) return value;
-    return `${value.slice(0, 6)}…${value.slice(-4)}`;
+    return `${value.slice(0, 6)}â€¦${value.slice(-4)}`;
   }
 
   function renderNavigation(activeKey) {
     return currentConfig.nav
       .map((item) => {
         const active = item.key === activeKey;
-
         return `
           <a
             class="osnias-nav__link${active ? " is-active" : ""}"
             href="${escapeHtml(resolveHref(item.href))}"
             data-osnias-nav="${escapeHtml(item.key)}"
             ${active ? 'aria-current="page"' : ""}
-          >
-            ${escapeHtml(item.label)}
-          </a>
+          >${escapeHtml(item.label)}</a>
         `;
       })
       .join("");
@@ -115,61 +113,43 @@
 
   function walletMarkup() {
     const connectedClass = state.walletConnected ? " is-connected" : "";
-
     const address = state.walletConnected
       ? shortAddress(state.walletAddress)
       : "Not connected";
 
     return `
-      <div
-        class="osnias-wallet${connectedClass}"
-        id="osnias-wallet-status"
-      >
-        <span
-          class="osnias-wallet__dot"
-          aria-hidden="true"
-        ></span>
-
+      <div class="osnias-wallet${connectedClass}" id="osnias-wallet-status">
+        <span class="osnias-wallet__dot" aria-hidden="true"></span>
         <span
           class="osnias-wallet__address"
           id="osnias-wallet-address"
           title="${escapeHtml(state.walletAddress)}"
-        >
-          ${escapeHtml(address)}
-        </span>
-
+        >${escapeHtml(address)}</span>
         <button
           type="button"
           class="osnias-btn osnias-btn--primary"
           id="osnias-wallet-connect"
-        >
-          ${state.walletConnected ? "Wallet Connected" : "Connect Wallet"}
-        </button>
+        >${state.walletConnected ? "Wallet Connected" : "Connect Wallet"}</button>
       </div>
     `;
   }
 
   function cycleMarkup() {
     const cycle =
-      state.cycleNumber === null ||
-      state.cycleNumber === undefined
-        ? "—"
+      state.cycleNumber === null || state.cycleNumber === undefined
+        ? "â€”"
         : String(state.cycleNumber);
 
-    const windowName = state.cycleWindow || "—";
+    const windowName = state.cycleWindow || "â€”";
 
     let windowClass = "";
-
     if (windowName === "CLEARING") {
       windowClass = " osnias-cyclebar__value--closed";
-    } else if (
-      windowName === "BURN" ||
-      windowName === "MINT"
-    ) {
+    } else if (windowName === "BURN" || windowName === "MINT") {
       windowClass = " osnias-cyclebar__value--open";
     }
 
-    let messagingValue = "—";
+    let messagingValue = "â€”";
     let messagingClass = "";
 
     if (state.messagingOpen === true) {
@@ -181,93 +161,50 @@
     }
 
     return `
-      <div
-        class="osnias-cyclebar"
-        id="osnias-cyclebar"
-      >
+      <div class="osnias-cyclebar" id="osnias-cyclebar">
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">
-            Network
-          </span>
-
-          <span
-            class="osnias-cyclebar__value"
-            id="osnias-network-name"
-          >
+          <span class="osnias-cyclebar__label">Network</span>
+          <span class="osnias-cyclebar__value" id="osnias-network-name">
             ${escapeHtml(currentConfig.networkLabel)}
           </span>
         </span>
 
-        <span
-          class="osnias-separator"
-          aria-hidden="true"
-        ></span>
+        <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">
-            Chain ID
-          </span>
-
-          <span
-            class="osnias-cyclebar__value"
-            id="osnias-chain-id"
-          >
+          <span class="osnias-cyclebar__label">Chain ID</span>
+          <span class="osnias-cyclebar__value" id="osnias-chain-id">
             ${escapeHtml(currentConfig.chainIdLabel)}
           </span>
         </span>
 
-        <span
-          class="osnias-separator"
-          aria-hidden="true"
-        ></span>
+        <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">
-            Cycle
-          </span>
-
-          <span
-            class="osnias-cyclebar__value"
-            id="osnias-cycle-number"
-          >
+          <span class="osnias-cyclebar__label">Cycle</span>
+          <span class="osnias-cyclebar__value" id="osnias-cycle-number">
             ${escapeHtml(cycle)}
           </span>
         </span>
 
-        <span
-          class="osnias-separator"
-          aria-hidden="true"
-        ></span>
+        <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">
-            Window
-          </span>
-
+          <span class="osnias-cyclebar__label">Window</span>
           <span
             class="osnias-cyclebar__value${windowClass}"
             id="osnias-cycle-window"
-          >
-            ${escapeHtml(windowName)}
-          </span>
+          >${escapeHtml(windowName)}</span>
         </span>
 
-        <span
-          class="osnias-separator"
-          aria-hidden="true"
-        ></span>
+        <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">
-            Messages
-          </span>
-
+          <span class="osnias-cyclebar__label">Messages</span>
           <span
             class="osnias-cyclebar__value${messagingClass}"
             id="osnias-messaging-status"
-          >
-            ${escapeHtml(messagingValue)}
-          </span>
+          >${escapeHtml(messagingValue)}</span>
         </span>
       </div>
     `;
@@ -275,43 +212,34 @@
 
   function renderHeader() {
     const mount = document.getElementById("osnias-header");
+    if (!mount) return;
 
-    if (!mount) {
-      return;
-    }
-
-    const activeKey =
-      mount.dataset.active ||
-      detectActiveKey();
+    const activeKey = mount.dataset.active || detectActiveKey();
 
     mount.innerHTML = `
       <header class="osnias-header">
         <div class="osnias-header__inner">
-
-          <a
-            class="osnias-brand"
-            href="${escapeHtml(currentConfig.rootPath)}"
-          >
-            <span class="osnias-brand__name">
-              ${escapeHtml(currentConfig.brand)}
-            </span>
-
-            <span class="osnias-brand__subline">
-              ${escapeHtml(currentConfig.subtitle)}
+          <a class="osnias-brand" href="${escapeHtml(currentConfig.rootPath)}">
+            <img
+              class="osnias-brand__logo"
+              src="${escapeHtml(currentConfig.logoUrl)}"
+              alt="Osnias Clearing"
+              width="42"
+              height="42"
+            >
+            <span class="osnias-brand__copy">
+              <span class="osnias-brand__name">${escapeHtml(currentConfig.brand)}</span>
+              <span class="osnias-brand__subline">${escapeHtml(currentConfig.subtitle)}</span>
             </span>
           </a>
 
-          <nav
-            class="osnias-nav"
-            aria-label="End-user navigation"
-          >
+          <nav class="osnias-nav" aria-label="End-user navigation">
             ${renderNavigation(activeKey)}
           </nav>
 
           <div class="osnias-header__right">
             ${walletMarkup()}
           </div>
-
         </div>
       </header>
     `;
@@ -320,55 +248,33 @@
   }
 
   function renderCycleBar() {
-    const mount =
-      document.getElementById("osnias-cycle-status");
-
-    if (!mount) {
-      return;
-    }
-
+    const mount = document.getElementById("osnias-cycle-status");
+    if (!mount) return;
     mount.innerHTML = cycleMarkup();
   }
 
   function renderFooter() {
-    const mount =
-      document.getElementById("osnias-footer");
+    const mount = document.getElementById("osnias-footer");
+    if (!mount) return;
 
-    if (!mount) {
-      return;
-    }
-
-    const year =
-      new Date().getUTCFullYear();
+    const year = new Date().getUTCFullYear();
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing ·
-        End-User Console ·
-        ${year} ·
-        Frame v${escapeHtml(FRAME_VERSION)}
+        Osnias Clearing Â· End-User Console Â· ${year} Â· Frame v${escapeHtml(FRAME_VERSION)}
       </footer>
     `;
   }
 
   function bindWalletButton() {
-    const button =
-      document.getElementById("osnias-wallet-connect");
-
-    if (!button) {
-      return;
-    }
+    const button = document.getElementById("osnias-wallet-connect");
+    if (!button) return;
 
     button.addEventListener("click", () => {
       document.dispatchEvent(
-        new CustomEvent(
-          "osnias:wallet-connect-request",
-          {
-            detail: {
-              source: "end-user-frame"
-            }
-          }
-        )
+        new CustomEvent("osnias:wallet-connect-request", {
+          detail: { source: "end-user-frame" }
+        })
       );
     });
   }
@@ -379,67 +285,35 @@
     renderFooter();
   }
 
-  function setWallet({
-    connected,
-    address
-  } = {}) {
-    state.walletConnected =
-      Boolean(connected);
-
-    state.walletAddress =
-      state.walletConnected
-        ? String(address || "")
-        : "";
-
+  function setWallet({ connected, address } = {}) {
+    state.walletConnected = Boolean(connected);
+    state.walletAddress = state.walletConnected ? String(address || "") : "";
     renderHeader();
   }
 
-  function setCycle({
-    cycleNumber,
-    window,
-    messagingOpen
-  } = {}) {
-
+  function setCycle({ cycleNumber, window, messagingOpen } = {}) {
     if (cycleNumber !== undefined) {
-      state.cycleNumber =
-        cycleNumber;
+      state.cycleNumber = cycleNumber;
     }
 
     if (window !== undefined) {
-      state.cycleWindow =
-        String(window || "—")
-          .toUpperCase();
+      state.cycleWindow = String(window || "â€”").toUpperCase();
     }
 
     if (messagingOpen !== undefined) {
-      state.messagingOpen =
-        Boolean(messagingOpen);
+      state.messagingOpen = Boolean(messagingOpen);
     } else if (window !== undefined) {
-      state.messagingOpen =
-        state.cycleWindow !== "CLEARING";
+      state.messagingOpen = state.cycleWindow !== "CLEARING";
     }
 
     renderCycleBar();
   }
 
-  function setNetwork({
-    name,
-    chainId
-  } = {}) {
-
-    if (name) {
-      currentConfig.networkLabel =
-        String(name);
+  function setNetwork({ name, chainId } = {}) {
+    if (name) currentConfig.networkLabel = String(name);
+    if (chainId !== undefined && chainId !== null) {
+      currentConfig.chainIdLabel = String(chainId);
     }
-
-    if (
-      chainId !== undefined &&
-      chainId !== null
-    ) {
-      currentConfig.chainIdLabel =
-        String(chainId);
-    }
-
     renderCycleBar();
   }
 
@@ -447,10 +321,7 @@
     currentConfig = {
       ...currentConfig,
       ...options,
-
-      nav: Array.isArray(options.nav)
-        ? options.nav
-        : currentConfig.nav
+      nav: Array.isArray(options.nav) ? options.nav : currentConfig.nav
     };
 
     refreshFrame();
@@ -460,52 +331,28 @@
     refreshFrame();
 
     document.dispatchEvent(
-      new CustomEvent(
-        "osnias:frame-ready",
-        {
-          detail: {
-            version: FRAME_VERSION
-          }
+      new CustomEvent("osnias:frame-ready", {
+        detail: {
+          version: FRAME_VERSION
         }
-      )
+      })
     );
   }
 
-  window.OsniasFrame =
-    Object.freeze({
-      version: FRAME_VERSION,
+  window.OsniasFrame = Object.freeze({
+    version: FRAME_VERSION,
+    init,
+    refresh: refreshFrame,
+    configure,
+    setWallet,
+    setCycle,
+    setNetwork,
+    getState: () => ({ ...state })
+  });
 
-      init,
-
-      refresh:
-        refreshFrame,
-
-      configure,
-
-      setWallet,
-
-      setCycle,
-
-      setNetwork,
-
-      getState:
-        () => ({
-          ...state
-        })
-    });
-
-  if (
-    document.readyState === "loading"
-  ) {
-    document.addEventListener(
-      "DOMContentLoaded",
-      init,
-      {
-        once: true
-      }
-    );
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
   } else {
     init();
   }
-
 })();
