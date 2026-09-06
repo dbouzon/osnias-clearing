@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Clearing Registry
-  Version    : 3.0.3-testnet
+  Version    : 3.0.4-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -18,12 +18,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.3">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.4">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  <script src="./assets/end-user-frame.js?v=3.0.3" defer></script>
-  <script src="./assets/sei-provider.js?v=3.0.3" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.0.3" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.0.4" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.4" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.4" defer></script>
 
   <style>
     .registry-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
@@ -265,129 +265,158 @@
     if (fromBlock > toBlock) return [];
 
     const walletTopic = addressTopic(state.account);
-    const zeroTopic = addressTopic(ZERO_ADDRESS);
 
+    /*
+     * Two scans only:
+     *   1) wallet as indexed `from`
+     *   2) wallet as indexed `to`
+     *
+     * Topic[0] accepts Transfer OR TransferWithMemo.
+     * This halves the former four full-cycle RPC scans.
+     */
     setProgress(
-      `Reading ORUSD logs from block ${fromBlock.toLocaleString()} to ${toBlock.toLocaleString()}…`
+      `Scanning outgoing ORUSD logs · blocks ${fromBlock.toLocaleString()} → ${toBlock.toLocaleString()}…`
     );
 
-    const [
-      mintLogs,
-      burnLogs,
-      p2pSentLogs,
-      p2pReceivedLogs
-    ] = await Promise.all([
-      OsniasSei.getLogsChunked({
-        address: OsniasSei.config.contracts.orusd,
-        fromBlock,
-        toBlock,
-        topics: [TRANSFER_TOPIC, zeroTopic, walletTopic]
-      }),
+    const outgoing = await OsniasSei.getLogsChunked({
+      address: OsniasSei.config.contracts.orusd,
+      fromBlock,
+      toBlock,
+      topics: [[TRANSFER_TOPIC, MEMO_TOPIC], walletTopic]
+    });
 
-      OsniasSei.getLogsChunked({
-        address: OsniasSei.config.contracts.orusd,
-        fromBlock,
-        toBlock,
-        topics: [TRANSFER_TOPIC, walletTopic, zeroTopic]
-      }),
+    setProgress(
+      `Scanning incoming ORUSD logs · blocks ${fromBlock.toLocaleString()} → ${toBlock.toLocaleString()}…`
+    );
 
-      OsniasSei.getLogsChunked({
-        address: OsniasSei.config.contracts.orusd,
-        fromBlock,
-        toBlock,
-        topics: [MEMO_TOPIC, walletTopic]
-      }),
+    const incoming = await OsniasSei.getLogsChunked({
+      address: OsniasSei.config.contracts.orusd,
+      fromBlock,
+      toBlock,
+      topics: [[TRANSFER_TOPIC, MEMO_TOPIC], null, walletTopic]
+    });
 
-      OsniasSei.getLogsChunked({
-        address: OsniasSei.config.contracts.orusd,
-        fromBlock,
-        toBlock,
-        topics: [MEMO_TOPIC, null, walletTopic]
-      })
-    ]);
+    setProgress("Decoding current-cycle ORUSD movements…");
 
     const blockCache = new Map();
     const rows = [];
+    const memoTxSeen = new Set();
 
-    for (const log of mintLogs) {
+    async function decode(log, direction) {
+      let parsed;
+
+      try {
+        parsed = iface.parseLog(log);
+      } catch {
+        return;
+      }
+
+      if (!parsed) return;
+
       const blockNumber = Number(BigInt(log.blockNumber));
-      const ts = await blockTimestamp(blockNumber, blockCache);
+      const timestamp = await blockTimestamp(blockNumber, blockCache);
 
-      rows.push({
-        kind: "MINT",
-        blockNumber,
-        logIndex: Number(log.logIndex ?? log.index ?? 0),
-        timestamp: ts,
-        counterparty: ZERO_ADDRESS,
-        invoiceReference: "—",
-        nature: "—",
-        amountBaseUnits: BigInt(log.data).toString(),
-        sign: "+",
-        txHash: log.transactionHash
-      });
-    }
+      if (parsed.name === "TransferWithMemo") {
+        const txKey = String(log.transactionHash).toLowerCase();
 
-    for (const log of burnLogs) {
-      const blockNumber = Number(BigInt(log.blockNumber));
-      const ts = await blockTimestamp(blockNumber, blockCache);
-
-      rows.push({
-        kind: "BURN",
-        blockNumber,
-        logIndex: Number(log.logIndex ?? log.index ?? 0),
-        timestamp: ts,
-        counterparty: ZERO_ADDRESS,
-        invoiceReference: "—",
-        nature: "—",
-        amountBaseUnits: BigInt(log.data).toString(),
-        sign: "−",
-        txHash: log.transactionHash
-      });
-    }
-
-    const memoSeen = new Set();
-
-    for (const [direction, logs] of [
-      ["P2P SENT", p2pSentLogs],
-      ["P2P RECEIVED", p2pReceivedLogs]
-    ]) {
-      for (const log of logs) {
-        const key = logKey(log);
-        if (memoSeen.has(key)) continue;
-        memoSeen.add(key);
-
-        let parsed;
-        try {
-          parsed = iface.parseLog(log);
-        } catch {
-          continue;
-        }
-
-        if (!parsed || parsed.name !== "TransferWithMemo") continue;
+        // One TransferWithMemo = one business movement.
+        if (memoTxSeen.has(txKey)) return;
+        memoTxSeen.add(txKey);
 
         const from = ethers.getAddress(parsed.args.from);
         const to = ethers.getAddress(parsed.args.to);
-        const blockNumber = Number(BigInt(log.blockNumber));
-        const ts = await blockTimestamp(blockNumber, blockCache);
 
         rows.push({
-          kind: direction,
+          kind: direction === "out" ? "P2P SENT" : "P2P RECEIVED",
           blockNumber,
           logIndex: Number(log.logIndex ?? log.index ?? 0),
-          timestamp: ts,
-          counterparty: direction === "P2P SENT" ? to : from,
+          timestamp,
+          counterparty: direction === "out" ? to : from,
           invoiceReference: String(parsed.args.ref),
           nature: String(parsed.args.nature),
           amountBaseUnits: BigInt(parsed.args.value).toString(),
           feeBaseUnits: BigInt(parsed.args.fee).toString(),
           netBaseUnits: BigInt(parsed.args.net).toString(),
-          sign: direction === "P2P SENT" ? "−" : "+",
+          sign: direction === "out" ? "−" : "+",
           txHash: log.transactionHash
         });
+
+        return;
+      }
+
+      if (parsed.name === "Transfer") {
+        const from = ethers.getAddress(parsed.args.from);
+        const to = ethers.getAddress(parsed.args.to);
+        const value = BigInt(parsed.args.value);
+
+        // Ignore Transfer legs belonging to a tx that has a business memo event.
+        // They are technical net/fee legs and must not duplicate P2P rows.
+        const txKey = String(log.transactionHash).toLowerCase();
+
+        if (from === ZERO_ADDRESS && to.toLowerCase() === state.account.toLowerCase()) {
+          rows.push({
+            kind: "MINT",
+            blockNumber,
+            logIndex: Number(log.logIndex ?? log.index ?? 0),
+            timestamp,
+            counterparty: ZERO_ADDRESS,
+            invoiceReference: "—",
+            nature: "—",
+            amountBaseUnits: value.toString(),
+            sign: "+",
+            txHash: log.transactionHash,
+            _transferTxKey: txKey
+          });
+          return;
+        }
+
+        if (to === ZERO_ADDRESS && from.toLowerCase() === state.account.toLowerCase()) {
+          rows.push({
+            kind: "BURN",
+            blockNumber,
+            logIndex: Number(log.logIndex ?? log.index ?? 0),
+            timestamp,
+            counterparty: ZERO_ADDRESS,
+            invoiceReference: "—",
+            nature: "—",
+            amountBaseUnits: value.toString(),
+            sign: "−",
+            txHash: log.transactionHash,
+            _transferTxKey: txKey
+          });
+          return;
+        }
+
+        // Ordinary Transfer rows are deliberately not rendered here:
+        // P2P business movements come from TransferWithMemo.
       }
     }
 
-    return rows;
+    // Decode memo events first so Transfer legs from the same tx can be excluded.
+    const allLogs = [
+      ...outgoing.map(log => ({ log, direction: "out" })),
+      ...incoming.map(log => ({ log, direction: "in" }))
+    ];
+
+    const memoLogs = allLogs.filter(({ log }) =>
+      String(log.topics?.[0] || "").toLowerCase() === MEMO_TOPIC.toLowerCase()
+    );
+
+    const transferLogs = allLogs.filter(({ log }) =>
+      String(log.topics?.[0] || "").toLowerCase() === TRANSFER_TOPIC.toLowerCase()
+    );
+
+    for (const item of memoLogs) {
+      await decode(item.log, item.direction);
+    }
+
+    for (const item of transferLogs) {
+      const txKey = String(item.log.transactionHash).toLowerCase();
+      if (memoTxSeen.has(txKey)) continue;
+      await decode(item.log, item.direction);
+    }
+
+    return rows.map(({ _transferTxKey, ...row }) => row);
   }
 
   function mergeRows(existing, incoming) {
@@ -514,7 +543,7 @@
     state.loading = true;
     $("refreshBtn").disabled = true;
     $("rebuildBtn").disabled = true;
-    $("exportBtn").disabled = true;
+    $("exportBtn").disabled = state.rows.length === 0;
     setAlert("");
 
     try {
@@ -550,6 +579,10 @@
       }
 
       if (fromBlock <= current) {
+        $("registryEmpty").hidden = false;
+        $("registryTableWrap").hidden = true;
+        $("registryEmpty").textContent = "Scanning current-cycle ORUSD register…";
+
         const incoming = await scanRange(fromBlock, current);
         state.rows = mergeRows(state.rows, incoming);
         state.lastScannedBlock = current;
@@ -573,7 +606,7 @@
       state.loading = false;
       $("refreshBtn").disabled = false;
       $("rebuildBtn").disabled = false;
-      $("exportBtn").disabled = false;
+      $("exportBtn").disabled = state.rows.length === 0;
     }
   }
 
