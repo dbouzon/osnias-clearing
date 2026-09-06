@@ -23,7 +23,7 @@
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias Orusd End User",
-    subtitle: "Release 3.0.0-testnet · 2026-09-06",
+    subtitle: "",
     logoUrl: "/logo.jpg",
     rootPath: "/end-user/",
     documentationUrl: "/documentation/",
@@ -229,7 +229,7 @@
             >
             <span class="osnias-brand__copy">
               <span class="osnias-brand__name">${escapeHtml(currentConfig.brand)}</span>
-              <span class="osnias-brand__subline">${escapeHtml(currentConfig.subtitle)}</span>
+              ${currentConfig.subtitle ? `<span class="osnias-brand__subline">${escapeHtml(currentConfig.subtitle)}</span>` : ""}
             </span>
           </a>
 
@@ -261,7 +261,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · ${year} · Frame v${escapeHtml(FRAME_VERSION)}
+        Osnias Clearing · End-User Console · Release 2.10.3 · 2026-09-06
       </footer>
     `;
   }
