@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Invoices Sent
-  Version    : 3.0.8-testnet
+  Version    : 3.0.9-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -18,13 +18,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.8">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.9">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  <script src="./assets/end-user-frame.js?v=3.0.8" defer></script>
-  <script src="./assets/sei-provider.js?v=3.0.8" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.0.8" defer></script>
-  <script src="./assets/payment-messages.js?v=3.0.8" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.0.9" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.9" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.9" defer></script>
+  <script src="./assets/payment-messages.js?v=3.0.9" defer></script>
 
   <style>
     .sent-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:18px;align-items:start}
@@ -49,6 +49,38 @@
     .sent-error{margin-top:14px}
     @media(max-width:980px){.sent-grid{grid-template-columns:1fr}.sent-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:620px){.sent-meta{grid-template-columns:1fr}}
+  
+    .sent-progressbox{
+      width:min(33.333%,420px);
+      min-width:280px;
+      margin:16px auto 12px;
+    }
+    .sent-progresshead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      font-size:12px;
+      margin-bottom:8px;
+    }
+    .sent-progressbar{
+      height:14px;
+      border:1px solid rgba(0,255,132,.35);
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(0,255,132,.07);
+    }
+    .sent-progressfill{
+      height:100%;
+      width:0%;
+      background:#00ff84;
+      box-shadow:0 0 14px rgba(0,255,132,.35);
+      transition:width .16s linear;
+    }
+
+      @media(max-width:620px){
+      .sent-progressbox{width:86%;min-width:0}
+    }
   </style>
 </head>
 
@@ -150,6 +182,17 @@
           <strong>Rebuild</strong> = full current-cycle reconstruction ·
           <strong>Export CSV</strong> = immediate export of locally acquired requests.
         </p>
+
+        
+        <div id="sentProgressBox" class="sent-progressbox" hidden>
+          <div class="sent-progresshead">
+            <span id="sentProgressLabel">Synchronizing invoices sent…</span>
+            <strong id="sentProgressPercent">0%</strong>
+          </div>
+          <div class="sent-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="sentProgressFill" class="sent-progressfill"></div>
+          </div>
+        </div>
 
         <div id="sentEmpty" class="sent-empty">Connect a wallet to load sent requests.</div>
 
@@ -361,6 +404,28 @@
     URL.revokeObjectURL(url);
   }
 
+
+  function setSyncProgress(percent, label = "") {
+    const value = Math.max(0, Math.min(100, Number(percent) || 0));
+    const box = $("sentProgressBox");
+    const fill = $("sentProgressFill");
+    const pct = $("sentProgressPercent");
+    const progressbar = box.querySelector('[role="progressbar"]');
+
+    box.hidden = false;
+    fill.style.width = `${value}%`;
+    pct.textContent = `${Math.round(value)}%`;
+    progressbar.setAttribute("aria-valuenow", String(Math.round(value)));
+
+    if (label) $("sentProgressLabel").textContent = label;
+  }
+
+  function hideSyncProgress() {
+    $("sentProgressBox").hidden = true;
+    $("sentProgressFill").style.width = "0%";
+    $("sentProgressPercent").textContent = "0%";
+  }
+
   async function loadSent(forceRpc = false) {
     if (!state.account || state.loading) {
       renderRows();
@@ -368,16 +433,23 @@
     }
 
     state.loading = true;
+    setSyncProgress(0, forceRpc ? "Rebuilding current-cycle invoices sent…" : "Synchronizing new invoices sent…");
+    window.requestAnimationFrame(() => setSyncProgress(15, "Reading local checkpoint…"));
     $("refreshBtn").disabled = true;
     $("rebuildBtn").disabled = true;
     $("exportBtn").disabled = state.rows.length === 0;
 
     try {
+      setSyncProgress(50, "Reading new PaymentMessageRegistry blocks…");
       const result = await OsniasPaymentMessages.loadSent(state.account, { forceRpc });
+      setSyncProgress(90, "Updating local invoice register…");
       state.rows = result.rows;
       renderRows();
       setAlert("");
+      setSyncProgress(100, "Synchronization complete");
+      window.setTimeout(hideSyncProgress, 900);
     } catch (error) {
+      hideSyncProgress();
       setAlert(error?.shortMessage || error?.message || String(error), "danger");
     } finally {
       state.loading = false;
