@@ -3,7 +3,7 @@
  * Shared read-only blockchain layer
  *
  * File: /assets/sei-provider.js
- * Version: 1.0.0
+ * Version: 1.1.0
  *
  * Responsibilities:
  * - Centralize Sei Atlantic-2 Testnet configuration
@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.0.0";
+  const VERSION = "1.1.0";
 
   const CONFIG = Object.freeze({
     networkName: "Sei Atlantic-2 Testnet",
@@ -53,6 +53,8 @@
     currentWindow: "0xba0bafb4",
     getCycleStartBlock: "0x645661d4"
   });
+
+  const MAX_LOG_BLOCK_SPAN = 1999;
 
   let rpcId = 1;
 
@@ -217,6 +219,68 @@
     };
 
     return rpc("eth_getLogs", [filter]);
+  }
+
+  /*
+   * Sei public RPC limits eth_getLogs to a small block range.
+   * This helper transparently splits a larger range into <= 1999-block chunks
+   * and returns a single chronologically ordered log array.
+   */
+  async function getLogsChunked({
+    address,
+    fromBlock,
+    toBlock = "latest",
+    topics = [],
+    maxSpan = MAX_LOG_BLOCK_SPAN
+  }) {
+    assertHexAddress(address, "log contract address");
+
+    const start = Number(
+      typeof fromBlock === "string" && fromBlock.startsWith("0x")
+        ? BigInt(fromBlock)
+        : fromBlock
+    );
+
+    const end = toBlock === "latest"
+      ? await getBlockNumber()
+      : Number(
+          typeof toBlock === "string" && toBlock.startsWith("0x")
+            ? BigInt(toBlock)
+            : toBlock
+        );
+
+    if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end)) {
+      throw new RangeError("Log block range exceeds JavaScript safe integer range.");
+    }
+
+    if (start > end) return [];
+
+    const span = Math.max(1, Math.min(Number(maxSpan) || MAX_LOG_BLOCK_SPAN, MAX_LOG_BLOCK_SPAN));
+    const all = [];
+
+    for (let from = start; from <= end; from += span + 1) {
+      const to = Math.min(end, from + span);
+
+      const logs = await getLogs({
+        address,
+        fromBlock: from,
+        toBlock: to,
+        topics
+      });
+
+      all.push(...logs);
+    }
+
+    return all.sort((a, b) => {
+      const blockA = Number(BigInt(a.blockNumber));
+      const blockB = Number(BigInt(b.blockNumber));
+
+      if (blockA !== blockB) return blockA - blockB;
+
+      const indexA = Number(a.logIndex ?? a.index ?? 0);
+      const indexB = Number(b.logIndex ?? b.index ?? 0);
+      return indexA - indexB;
+    });
   }
 
   /*
@@ -402,6 +466,7 @@
     rpc,
     ethCall,
     getLogs,
+    getLogsChunked,
     getBlockNumber,
     getChainId,
     assertCorrectNetwork,

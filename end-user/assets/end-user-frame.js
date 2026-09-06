@@ -3,7 +3,7 @@
  * Shared frame / navigation
  *
  * File: /assets/end-user-frame.js
- * Version: 1.1.0
+ * Version: 1.2.0
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -19,12 +19,13 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.1.0";
+  const FRAME_VERSION = "1.2.0";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias Orusd End User",
     subtitle: "",
     logoUrl: "/logo.jpg",
+    logoFallbackUrls: ["/assets/logo.jpg"],
     rootPath: "/end-user/",
     documentationUrl: "/documentation/",
     networkLabel: "Sei Atlantic-2",
@@ -210,6 +211,28 @@
     `;
   }
 
+
+  function bindLogoFallback() {
+    const img = document.querySelector("[data-osnias-logo]");
+    if (!img) return;
+
+    const fallbacks = Array.isArray(currentConfig.logoFallbackUrls)
+      ? [...currentConfig.logoFallbackUrls]
+      : [];
+
+    let fallbackIndex = 0;
+
+    img.addEventListener("error", () => {
+      if (fallbackIndex < fallbacks.length) {
+        img.src = fallbacks[fallbackIndex++];
+        return;
+      }
+
+      // Never display a broken-image icon or alt text in the institutional head.
+      img.hidden = true;
+    }, { passive: true });
+  }
+
   function renderHeader() {
     const mount = document.getElementById("osnias-header");
     if (!mount) return;
@@ -223,9 +246,10 @@
             <img
               class="osnias-brand__logo"
               src="${escapeHtml(currentConfig.logoUrl)}"
-              alt="Osnias Clearing"
+              alt=""
               width="42"
               height="42"
+              data-osnias-logo
             >
             <span class="osnias-brand__copy">
               <span class="osnias-brand__name">${escapeHtml(currentConfig.brand)}</span>
@@ -244,6 +268,7 @@
       </header>
     `;
 
+    bindLogoFallback();
     bindWalletButton();
   }
 
@@ -261,7 +286,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · Release 2.10.3 · 2026-09-06
+        Osnias Clearing · End-User Console · Release 3.0.1 · 2026-09-06
       </footer>
     `;
   }
