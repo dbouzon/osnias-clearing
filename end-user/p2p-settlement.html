@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — P2P Settlement
   Accepted invoices only — no manual P2P entry
-  Version    : 3.1.0-testnet
+  Version    : 3.1.2-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   Network    : Sei Atlantic-2 Testnet (Chain ID 1328)
@@ -21,14 +21,14 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.0">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.2">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
-  <script src="./assets/end-user-frame.js?v=3.1.0" defer></script>
-  <script src="./assets/sei-provider.js?v=3.1.0" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.1.0" defer></script>
-  <script src="./assets/payment-messages.js?v=3.1.0" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.1.2" defer></script>
+  <script src="./assets/sei-provider.js?v=1.3.0" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.1.2" defer></script>
+  <script src="./assets/payment-messages.js?v=1.3.0" defer></script>
 </head>
 
 <body>
@@ -421,7 +421,7 @@
   async function refreshCycle() {
     state.cycle = await OsniasSei.syncFrame();
 
-    const open = state.cycle.window !== "CLEARING";
+    const open = Boolean(state.cycle.settlementOpen);
     $("p2pWindow").textContent = open ? "OPEN" : "CLOSED";
 
     return state.cycle;
@@ -456,7 +456,16 @@
 
     state.accepted = rows
       .map(normalizeRequest)
-      .filter(isUnsettledAccepted);
+      .filter(isUnsettledAccepted)
+      .filter((request) => {
+        try {
+          return !localStorage.getItem(
+            `osnias:pending-settlement:${request.requestId.toLowerCase()}`
+          );
+        } catch {
+          return true;
+        }
+      });
 
     renderQueue();
   }
@@ -584,8 +593,8 @@
 
     if (!state.account) {
       blockReason = "Connect the payer wallet first.";
-    } else if (state.cycle?.window === "CLEARING") {
-      blockReason = "P2P settlement is closed during CLEARING.";
+    } else if (!state.cycle?.settlementOpen) {
+      blockReason = "P2P settlement is closed by the Sei Temporal Oracle.";
     } else if (request.status !== "ACCEPTED") {
       blockReason = "Only an ACCEPTED invoice can be paid.";
     } else if (request.amount > state.orusdBalance) {
@@ -621,7 +630,12 @@
       window.OsniasPaymentMessages &&
       typeof OsniasPaymentMessages.markSettled === "function"
     ) {
-      return await OsniasPaymentMessages.markSettled(requestId, txHash);
+      const signer = await OsniasWallet.getSigner();
+      return await OsniasPaymentMessages.markSettled(
+        signer,
+        requestId,
+        txHash
+      );
     }
 
     /*
@@ -674,12 +688,55 @@
         await refreshCycle();
       }
 
-      if (state.cycle.window === "CLEARING") {
-        throw new Error("P2P settlement is closed during CLEARING.");
+      /*
+       * Active temporal observation before the financial settlement.
+       * The wallet first synchronizes OsniasTemporalOracle v0.4.1; after
+       * confirmation, the page passively re-reads the canonical state.
+       */
+      setAlert("Synchronizing Sei Temporal Oracle before settlement…");
+      const temporalSigner = await OsniasWallet.getSigner();
+      await OsniasSei.syncTemporalOracle(temporalSigner);
+      await refreshCycle();
+
+      if (!state.cycle.settlementOpen) {
+        throw new Error("P2P settlement is closed by the Sei Temporal Oracle.");
       }
 
       if (request.status !== "ACCEPTED") {
         throw new Error("Only an ACCEPTED invoice can be paid.");
+      }
+
+      /*
+       * Re-read the Payment Request immediately before moving ORUSD.
+       * This prevents paying a row that became SETTLED/REJECTED/FORCLOSED
+       * after the page queue was loaded.
+       */
+      if (
+        window.OsniasPaymentMessages &&
+        typeof OsniasPaymentMessages.getRequest === "function"
+      ) {
+        const latestRequest = await OsniasPaymentMessages.getRequest(
+          request.requestId
+        );
+
+        if (String(latestRequest.status || "").toUpperCase() !== "ACCEPTED") {
+          throw new Error(
+            `Payment Request is no longer ACCEPTED (current status: ${latestRequest.status || "UNKNOWN"}).`
+          );
+        }
+
+        const latestSettlementHash = String(
+          latestRequest.settlementTxHash || ZERO_HASH
+        ).toLowerCase();
+
+        if (
+          latestSettlementHash !== ZERO_HASH.toLowerCase() &&
+          latestSettlementHash !== "0x"
+        ) {
+          throw new Error(
+            "Payment Request already contains a settlement transaction hash."
+          );
+        }
       }
 
       if (
@@ -742,16 +799,39 @@
       await tx.wait();
 
       /*
+       * Local recovery marker:
+       * if the separate registry transaction fails or is rejected, keep the
+       * confirmed ORUSD tx hash locally so this browser will not offer the same
+       * invoice for payment again without reconciliation.
+       */
+      try {
+        localStorage.setItem(
+          `osnias:pending-settlement:${request.requestId.toLowerCase()}`,
+          JSON.stringify({
+            requestId: request.requestId,
+            txHash: tx.hash,
+            savedAt: Date.now()
+          })
+        );
+      } catch {}
+
+      /*
         2. Bind the confirmed ORUSD tx hash to the accepted Payment Request.
         This is a second payer-signed transaction because the current architecture
         deliberately keeps payment instructions and ORUSD movement separate.
       */
       setAlert(
-        `ORUSD payment confirmed. Recording settlement against Request ID ${request.requestId}…`,
+        `ORUSD payment confirmed. A second wallet signature is now required to mark Request ID ${request.requestId} as SETTLED…`,
         "success"
       );
 
       await recordSettlement(request.requestId, tx.hash);
+
+      try {
+        localStorage.removeItem(
+          `osnias:pending-settlement:${request.requestId.toLowerCase()}`
+        );
+      } catch {}
 
       /*
         3. Refresh the queue. The request should now be SETTLED and disappear.
@@ -787,7 +867,7 @@
 
       if (state.selected) {
         const insufficient = state.selected.amount > state.orusdBalance;
-        const closed = state.cycle?.window === "CLEARING";
+        const closed = state.cycle ? !state.cycle.settlementOpen : true;
         $("btnPay").disabled = insufficient || closed;
       } else {
         $("btnPay").disabled = false;
