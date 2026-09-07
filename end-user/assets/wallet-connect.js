@@ -3,7 +3,7 @@
  * Shared wallet connection layer
  *
  * File: /assets/wallet-connect.js
- * Version: 1.0.0
+ * Version: 1.1.0
  *
  * Responsibilities:
  * - Connect to injected EIP-1193 wallets
@@ -12,6 +12,7 @@
  * - Expose an ethers v6 BrowserProvider + Signer
  * - Synchronize wallet state with end-user-frame.js
  * - React to accountsChanged / chainChanged / disconnect
+ * - Support explicit application-initiated wallet disconnection
  *
  * Requirements:
  * - ethers.js v6 available as window.ethers
@@ -28,7 +29,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.0.0";
+  const VERSION = "1.1.0";
 
   const SEI = Object.freeze({
     chainId: 1328,
@@ -447,7 +448,7 @@
     return publicState();
   }
 
-  function resetState() {
+  function resetState({ clearProvider = true } = {}) {
     state.browserProvider = null;
     state.signer = null;
     state.account = null;
@@ -455,18 +456,94 @@
     state.connected = false;
     state.walletName = null;
 
+    if (clearProvider) {
+      state.eip1193 = null;
+    }
+
     syncFrame();
   }
 
-  function disconnectLocal() {
+  function disconnectLocal(reason = "local") {
     /*
-     * Most injected wallets do not expose a standards-based programmatic
-     * disconnect. This only clears Osnias' local session state.
+     * Local Osnias session reset. This does not by itself revoke the
+     * website permission stored inside the wallet extension.
      */
-    resetState();
+    resetState({ clearProvider: true });
 
     emit("osnias:wallet-disconnected", {
-      localOnly: true
+      localOnly: true,
+      reason
+    });
+  }
+
+  async function disconnect() {
+    /*
+     * Security-oriented disconnect:
+     * 1. Ask the injected wallet to revoke this site's eth_accounts permission.
+     * 2. Clear all signer/provider/account state inside Osnias.
+     * 3. Notify every page module so protected views return to disconnected state.
+     *
+     * wallet_revokePermissions is supported by MetaMask and some EIP-1193 wallets.
+     * Other wallets may reject it as unsupported; Osnias still clears its own session.
+     */
+    const provider = state.eip1193 || getInjectedProvider();
+    let permissionRevoked = false;
+    let revokeUnsupported = false;
+    let revokeError = null;
+
+    if (provider && typeof provider.request === "function") {
+      try {
+        await provider.request({
+          method: "wallet_revokePermissions",
+          params: [{ eth_accounts: {} }]
+        });
+        permissionRevoked = true;
+      } catch (error) {
+        revokeError = error;
+
+        const code = error?.code ?? error?.data?.code ?? null;
+        const message = String(
+          error?.message ||
+          error?.data?.message ||
+          ""
+        ).toLowerCase();
+
+        revokeUnsupported =
+          code === -32601 ||
+          code === 4200 ||
+          message.includes("method not found") ||
+          message.includes("unsupported") ||
+          message.includes("not supported");
+      }
+    }
+
+    resetState({ clearProvider: true });
+
+    emit("osnias:wallet-disconnected", {
+      localOnly: !permissionRevoked,
+      permissionRevoked,
+      revokeUnsupported,
+      reason: "applicationDisconnect"
+    });
+
+    /*
+     * A user rejection or wallet-specific revoke error must not leave Osnias
+     * connected. The local security boundary has already been closed.
+     * Surface the wallet-side limitation separately for diagnostics.
+     */
+    if (revokeError && !revokeUnsupported) {
+      emit("osnias:wallet-disconnect-warning", {
+        message:
+          revokeError?.message ||
+          "Osnias disconnected locally, but the wallet permission could not be revoked.",
+        code: revokeError?.code ?? null
+      });
+    }
+
+    return Object.freeze({
+      disconnected: true,
+      permissionRevoked,
+      revokeUnsupported
     });
   }
 
@@ -719,6 +796,35 @@
     }
   );
 
+  document.addEventListener(
+    "osnias:wallet-disconnect-request",
+    async () => {
+      try {
+        await disconnect();
+      } catch (error) {
+        /*
+         * disconnect() is intentionally fail-closed: Osnias local state is
+         * cleared even if the wallet refuses or cannot revoke permissions.
+         */
+        resetState({ clearProvider: true });
+
+        emit("osnias:wallet-disconnected", {
+          localOnly: true,
+          reason: "applicationDisconnectFallback"
+        });
+
+        emit("osnias:wallet-disconnect-warning", {
+          message:
+            error?.message ||
+            "Osnias disconnected locally, but wallet permission revocation failed.",
+          code:
+            error?.code ??
+            null
+        });
+      }
+    }
+  );
+
   /*
    * Public API
    */
@@ -729,6 +835,7 @@
 
       connect,
       restore,
+      disconnect,
       disconnectLocal,
 
       ensureConnected,

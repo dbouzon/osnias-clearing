@@ -3,7 +3,7 @@
  * Shared frame / navigation
  *
  * File: /assets/end-user-frame.js
- * Version: 1.4.0
+ * Version: 1.4.1
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.4.0";
+  const FRAME_VERSION = "1.4.1";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias Orusd End User",
@@ -307,7 +307,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · Frame 1.4.0 · 2026-09-07
+        Osnias Clearing · End-User Console · Frame 1.4.1 · 2026-09-07
       </footer>
     `;
   }
@@ -317,6 +317,15 @@
     if (!button) return;
 
     button.addEventListener("click", () => {
+      if (state.walletConnected) {
+        document.dispatchEvent(
+          new CustomEvent("osnias:wallet-disconnect-request", {
+            detail: { source: "end-user-frame" }
+          })
+        );
+        return;
+      }
+
       document.dispatchEvent(
         new CustomEvent("osnias:wallet-connect-request", {
           detail: { source: "end-user-frame" }
