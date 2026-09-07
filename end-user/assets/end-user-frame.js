@@ -3,7 +3,7 @@
  * Shared frame / navigation
  *
  * File: /assets/end-user-frame.js
- * Version: 1.4.1
+ * Version: 1.4.2
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.4.1";
+  const FRAME_VERSION = "1.4.2";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias Orusd End User",
@@ -307,7 +307,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · Frame 1.4.1 · 2026-09-07
+        Osnias Clearing · End-User Console · Frame 1.4.2 · 2026-09-07
       </footer>
     `;
   }
@@ -316,13 +316,56 @@
     const button = document.getElementById("osnias-wallet-connect");
     if (!button) return;
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       if (state.walletConnected) {
-        document.dispatchEvent(
-          new CustomEvent("osnias:wallet-disconnect-request", {
-            detail: { source: "end-user-frame" }
-          })
-        );
+        button.disabled = true;
+        button.textContent = "Disconnecting…";
+
+        try {
+          // Preferred path: call the wallet layer directly.
+          if (
+            window.OsniasWallet &&
+            typeof window.OsniasWallet.disconnect === "function"
+          ) {
+            await window.OsniasWallet.disconnect();
+            return;
+          }
+
+          // Compatibility fallback for an older cached wallet-connect.js.
+          if (
+            window.OsniasWallet &&
+            typeof window.OsniasWallet.disconnectLocal === "function"
+          ) {
+            window.OsniasWallet.disconnectLocal("headerFallback");
+            return;
+          }
+
+          // Last-resort event path.
+          document.dispatchEvent(
+            new CustomEvent("osnias:wallet-disconnect-request", {
+              detail: { source: "end-user-frame" }
+            })
+          );
+        } catch (error) {
+          console.error("[OsniasFrame] wallet disconnect failed", error);
+
+          // Fail closed on the application side even if wallet revocation fails.
+          setWallet({ connected: false, address: "" });
+
+          document.dispatchEvent(
+            new CustomEvent("osnias:wallet-disconnected", {
+              detail: {
+                localOnly: true,
+                reason: "headerDisconnectFallback",
+                message: error?.message || "Wallet disconnect failed."
+              }
+            })
+          );
+        } finally {
+          const current = document.getElementById("osnias-wallet-connect");
+          if (current) current.disabled = false;
+        }
+
         return;
       }
 
