@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Invoices Sent
-  Version    : 3.1.0-testnet
+  Version    : 3.1.1-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -18,17 +18,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.0">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.1">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  <script src="./assets/end-user-frame.js?v=3.1.0" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.1.1" defer></script>
   <script src="./assets/sei-provider.js?v=1.3.0" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.1.0" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.1.1" defer></script>
   <script src="./assets/payment-messages.js?v=1.3.0" defer></script>
 
   <style>
-    .sent-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:18px;align-items:start}
+    .sent-grid{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}
     .sent-form{display:grid;gap:14px}
+    .sent-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .sent-form-grid .sent-field--wide{grid-column:1 / -1}
+    @media(max-width:760px){.sent-form-grid{grid-template-columns:1fr}.sent-form-grid .sent-field--wide{grid-column:auto}}
     .sent-field{display:grid;gap:7px}
     .sent-field label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
     .sent-field input{width:100%;box-sizing:border-box}
@@ -47,7 +50,7 @@
     .sent-meta-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.68}
     .sent-meta-value{font-size:18px;font-weight:700;margin-top:5px}
     .sent-error{margin-top:14px}
-    @media(max-width:980px){.sent-grid{grid-template-columns:1fr}.sent-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:980px){.sent-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:620px){.sent-meta{grid-template-columns:1fr}}
   
     .sent-progressbox{
@@ -125,33 +128,35 @@
         </div>
 
         <form id="requestForm" class="sent-form" autocomplete="off">
-          <div class="sent-field">
-            <label for="payer">Payer address</label>
-            <input id="payer" class="osnias-input" type="text" inputmode="text" placeholder="0x…" spellcheck="false" required>
-            <div class="sent-help">EOA address that will receive the payment request.</div>
-          </div>
+          <div class="sent-form-grid">
+            <div class="sent-field sent-field--wide">
+              <label for="payer">Payer address</label>
+              <input id="payer" class="osnias-input" type="text" inputmode="text" placeholder="0x…" spellcheck="false" required>
+              <div class="sent-help">EOA address that will receive the payment request.</div>
+            </div>
 
-          <div class="sent-field">
-            <label for="amount">Amount (ORUSD)</label>
-            <input id="amount" class="osnias-input" type="text" inputmode="decimal" placeholder="0.000000" required>
-          </div>
+            <div class="sent-field">
+              <label for="amount">Amount (ORUSD)</label>
+              <input id="amount" class="osnias-input" type="text" inputmode="decimal" placeholder="0.000000" required>
+            </div>
 
-          <div class="sent-field">
-            <label for="invoiceReference">Invoice reference</label>
-            <input id="invoiceReference" class="osnias-input" type="text" maxlength="50" required>
-            <div class="sent-counter"><span id="invoiceBytes">0</span>/50 UTF-8 bytes</div>
-          </div>
+            <div class="sent-field">
+              <label for="invoiceReference">Invoice reference</label>
+              <input id="invoiceReference" class="osnias-input" type="text" maxlength="50" required>
+              <div class="sent-counter"><span id="invoiceBytes">0</span>/50 UTF-8 bytes</div>
+            </div>
 
-          <div class="sent-field">
-            <label for="nature">Nature</label>
-            <input id="nature" class="osnias-input" type="text" maxlength="50" required>
-            <div class="sent-counter"><span id="natureBytes">0</span>/50 UTF-8 bytes</div>
-          </div>
+            <div class="sent-field">
+              <label for="nature">Nature</label>
+              <input id="nature" class="osnias-input" type="text" maxlength="50" required>
+              <div class="sent-counter"><span id="natureBytes">0</span>/50 UTF-8 bytes</div>
+            </div>
 
-          <div class="sent-field">
-            <label for="previousRequestId">Previous request ID</label>
-            <input id="previousRequestId" class="osnias-input" type="text" placeholder="Optional — Forclosed request only" spellcheck="false">
-            <div class="sent-help">Use only to link a new-cycle request to a previous Forclosed request. Leave blank otherwise.</div>
+            <div class="sent-field">
+              <label for="previousRequestId">Previous request ID</label>
+              <input id="previousRequestId" class="osnias-input" type="text" placeholder="Optional — Forclosed request only" spellcheck="false">
+              <div class="sent-help">Use only to link a new-cycle request to a previous Forclosed request. Leave blank otherwise.</div>
+            </div>
           </div>
 
           <div class="sent-actions">
