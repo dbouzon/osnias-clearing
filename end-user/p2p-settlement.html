@@ -159,6 +159,8 @@
         Verify the accepted invoice below. No settlement field can be changed on this page.
       </div>
 
+      <div class="osnias-alert osnias-alert--danger" id="settlementAlert" hidden style="margin-top:12px"></div>
+
       <div style="height:12px"></div>
 
       <div class="osnias-table-wrap">
@@ -257,6 +259,24 @@
 
   function setAlert(message, type = "") {
     const el = $("pageAlert");
+
+    if (!message) {
+      el.hidden = true;
+      el.textContent = "";
+      el.className = "osnias-alert";
+      return;
+    }
+
+    el.hidden = false;
+    el.textContent = message;
+    el.className =
+      "osnias-alert" +
+      (type === "success" ? " osnias-alert--success" : "") +
+      (type === "danger" ? " osnias-alert--danger" : "");
+  }
+
+  function setSettlementAlert(message, type = "danger") {
+    const el = $("settlementAlert");
 
     if (!message) {
       el.hidden = true;
@@ -545,6 +565,7 @@
 
   function openSettlement(request) {
     state.selected = request;
+    setSettlementAlert("");
 
     $("recapRequestId").textContent = request.requestId || "—";
     $("recapPayee").textContent = request.requester || "—";
@@ -557,6 +578,29 @@
 
     $("btnPay").textContent =
       `Sign & Pay ${formatORUSD(request.amount)} ORUSD`;
+
+    // Pre-flight UX checks before the user can request a wallet signature.
+    let blockReason = "";
+
+    if (!state.account) {
+      blockReason = "Connect the payer wallet first.";
+    } else if (state.cycle?.window === "CLEARING") {
+      blockReason = "P2P settlement is closed during CLEARING.";
+    } else if (request.status !== "ACCEPTED") {
+      blockReason = "Only an ACCEPTED invoice can be paid.";
+    } else if (request.amount > state.orusdBalance) {
+      blockReason =
+        `Insufficient ORUSD balance. Required: ${formatORUSD(request.amount)} ORUSD · ` +
+        `Available: ${formatORUSD(state.orusdBalance)} ORUSD.`;
+    }
+
+    if (blockReason) {
+      setSettlementAlert(blockReason, "danger");
+      $("btnPay").disabled = true;
+      $("btnPay").textContent = "Payment unavailable";
+    } else {
+      $("btnPay").disabled = false;
+    }
 
     $("settlementLayer").hidden = false;
   }
@@ -729,21 +773,26 @@
     } catch (error) {
       console.error("[P2P Settlement]", error);
 
-      if (error?.code === 4001 || error?.code === "ACTION_REJECTED") {
-        setAlert("Transaction cancelled by the user.", "danger");
-      } else {
-        setAlert(
-          error?.shortMessage ||
-          error?.message ||
-          "P2P settlement failed.",
-          "danger"
-        );
-      }
+      const message =
+        (error?.code === 4001 || error?.code === "ACTION_REJECTED")
+          ? "Transaction cancelled by the user."
+          : (error?.shortMessage || error?.message || "P2P settlement failed.");
+
+      setAlert(message, "danger");
+      setSettlementAlert(message, "danger");
     } finally {
       state.busy = false;
-      $("btnPay").disabled = false;
       $("btnBack").disabled = false;
       $("btnClose").disabled = false;
+
+      if (state.selected) {
+        const insufficient = state.selected.amount > state.orusdBalance;
+        const closed = state.cycle?.window === "CLEARING";
+        $("btnPay").disabled = insufficient || closed;
+      } else {
+        $("btnPay").disabled = false;
+      }
+
       renderQueue();
     }
   }
