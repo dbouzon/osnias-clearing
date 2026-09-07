@@ -3,7 +3,7 @@
  * Shared read-only blockchain layer
  *
  * File: /assets/sei-provider.js
- * Version: 1.2.0
+ * Version: 1.3.0
  *
  * Responsibilities:
  * - Centralize Sei Atlantic-2 Testnet configuration
@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.2.0";
+  const VERSION = "1.3.0";
 
   const CONFIG = Object.freeze({
     networkName: "Sei Atlantic-2 Testnet",
@@ -30,29 +30,29 @@
 
     contracts: Object.freeze({
       orusd: "0xA4b51A41534Fd92E4C95AdEcec95B5a5E3236Aee",
-      temporalOracle: "0xbD1eAf727f4E98DD23455317172034b5D35c955d",
+      temporalOracle: "0xf98578bBDf52f87511dfEE2752e442BC29631C7B",
       paymentMessageRegistry: "0xe6225B4CB4a104488Df47D4496F764427dcb0c76"
     })
   });
 
   /*
-   * Function selectors already used by the Osnias end-user interface.
+   * OsniasTemporalOracle v0.4.1-testnet
    *
-   * currentWindow()       -> 0xba0bafb4
-   * getCycleStartBlock()  -> 0x645661d4
-   *
-   * cycleNumber() selector is derived from:
-   * keccak256("cycleNumber()")[0:4]
-   *
-   * To avoid introducing a hidden dependency on a hard-coded selector that
-   * has not already been part of the public front-end, cycle number is read
-   * through status() when ethers is available, or through a configurable ABI
-   * helper in later modules.
+   * Passive reads use currentState()/status() and never write.
+   * Active protocol observations use syncAndGetState() with a wallet signer.
    */
-  const SELECTORS = Object.freeze({
-    currentWindow: "0xba0bafb4",
-    getCycleStartBlock: "0x645661d4"
-  });
+  const TEMPORAL_ORACLE_ABI = Object.freeze([
+    "function initialized() view returns (bool)",
+    "function cycleNumber() view returns (uint256)",
+    "function currentWindow() view returns (string)",
+    "function isBurnOpen() view returns (bool)",
+    "function isMintOpen() view returns (bool)",
+    "function isSettlementOpen() view returns (bool)",
+    "function isClearingOpen() view returns (bool)",
+    "function currentState() view returns (tuple(uint256 cycle,uint8 window,bool burnOpen,bool mintOpen,bool settlementOpen,bool clearingOpen,uint256 observedBlock,uint256 observedTimestamp,uint256 cycleStartBoundaryTimestamp,uint256 clearingBoundaryTimestamp))",
+    "function currentCycleRecord() view returns (tuple(uint256 cycleNumber,uint256 calendarWeekId,tuple(uint256 boundaryTimestamp,uint256 lastObservedBlockBefore,uint256 lastObservedTimestampBefore,uint256 firstObservedBlockAfter,uint256 firstObservedTimestampAfter,bool observed) cycleStart,tuple(uint256 boundaryTimestamp,uint256 lastObservedBlockBefore,uint256 lastObservedTimestampBefore,uint256 firstObservedBlockAfter,uint256 firstObservedTimestampAfter,bool observed) clearingStart,bool exists))",
+    "function syncAndGetState() returns (tuple(uint256 cycle,uint8 window,bool burnOpen,bool mintOpen,bool settlementOpen,bool clearingOpen,uint256 observedBlock,uint256 observedTimestamp,uint256 cycleStartBoundaryTimestamp,uint256 clearingBoundaryTimestamp))"
+  ]);
 
   const MAX_LOG_BLOCK_SPAN = 1999;
 
@@ -221,11 +221,6 @@
     return rpc("eth_getLogs", [filter]);
   }
 
-  /*
-   * Sei public RPC limits eth_getLogs to a small block range.
-   * This helper transparently splits a larger range into <= 1999-block chunks
-   * and returns a single chronologically ordered log array.
-   */
   async function getLogsChunked({
     address,
     fromBlock,
@@ -256,7 +251,10 @@
 
     if (start > end) return [];
 
-    const span = Math.max(1, Math.min(Number(maxSpan) || MAX_LOG_BLOCK_SPAN, MAX_LOG_BLOCK_SPAN));
+    const span = Math.max(
+      1,
+      Math.min(Number(maxSpan) || MAX_LOG_BLOCK_SPAN, MAX_LOG_BLOCK_SPAN)
+    );
     const all = [];
 
     for (let from = start; from <= end; from += span + 1) {
@@ -303,140 +301,170 @@
     });
   }
 
-  /*
-   * ABI decoding helpers
-   */
-
-  function strip0x(value) {
-    return String(value || "").replace(/^0x/, "");
-  }
-
-  function decodeUint256(result) {
-    const hex = strip0x(result);
-
-    if (!hex || hex.length < 64) {
-      throw new OsniasRpcError("Invalid uint256 ABI response.");
-    }
-
-    return BigInt(`0x${hex.slice(0, 64)}`);
-  }
-
-  function decodeDynamicString(result) {
-    const hex = strip0x(result);
-
-    if (hex.length < 128) {
-      throw new OsniasRpcError("Invalid dynamic string ABI response.");
-    }
-
-    const offsetBytes = Number(BigInt(`0x${hex.slice(0, 64)}`));
-    const offset = offsetBytes * 2;
-
-    const lengthHex = hex.slice(offset, offset + 64);
-
-    if (lengthHex.length !== 64) {
-      throw new OsniasRpcError("Invalid string length in ABI response.");
-    }
-
-    const lengthBytes = Number(BigInt(`0x${lengthHex}`));
-    const dataStart = offset + 64;
-    const dataEnd = dataStart + (lengthBytes * 2);
-    const stringHex = hex.slice(dataStart, dataEnd);
-
-    if (stringHex.length !== lengthBytes * 2) {
-      throw new OsniasRpcError("Incomplete string payload in ABI response.");
-    }
-
-    const bytes = new Uint8Array(
-      stringHex.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || []
-    );
-
-    return new TextDecoder("utf-8", {
-      fatal: false
-    }).decode(bytes);
-  }
-
-  /*
-   * OsniasTemporalOracle — read-only API
-   */
-
-  async function getCurrentWindow() {
-    const result = await ethCall({
-      to: CONFIG.contracts.temporalOracle,
-      data: SELECTORS.currentWindow
-    });
-
-    return decodeDynamicString(result).toUpperCase();
-  }
-
-  async function getCycleStartBlock() {
-    const result = await ethCall({
-      to: CONFIG.contracts.temporalOracle,
-      data: SELECTORS.getCycleStartBlock
-    });
-
-    const block = decodeUint256(result);
-
-    if (block > BigInt(Number.MAX_SAFE_INTEGER)) {
-      throw new RangeError("Cycle start block exceeds JavaScript safe integer range.");
-    }
-
-    return Number(block);
-  }
-
-  /*
-   * cycleNumber() is intentionally obtained through ethers when present.
-   * This keeps the low-level selector list limited to signatures already
-   * confirmed in the existing Osnias front-end.
-   */
-  async function getCycleNumber() {
+  function requireEthers() {
     if (
       typeof window.ethers === "undefined" ||
       typeof window.ethers.Contract !== "function"
     ) {
       throw new OsniasRpcError(
-        "ethers.js is required for getCycleNumber() in sei-provider v1.0.0."
+        "ethers.js v6 is required by sei-provider.js."
       );
     }
+  }
+
+  function readTemporalOracle() {
+    requireEthers();
 
     const provider = new window.ethers.JsonRpcProvider(
       CONFIG.rpcUrl,
       CONFIG.chainId
     );
 
-    const oracle = new window.ethers.Contract(
+    return new window.ethers.Contract(
       CONFIG.contracts.temporalOracle,
-      [
-        "function cycleNumber() view returns (uint256)"
-      ],
+      TEMPORAL_ORACLE_ABI,
       provider
     );
+  }
 
-    const value = await oracle.cycleNumber();
-    return Number(value);
+  function writeTemporalOracle(signer) {
+    requireEthers();
+
+    if (!signer) {
+      throw new OsniasRpcError(
+        "A wallet signer is required to synchronize the Temporal Oracle."
+      );
+    }
+
+    return new window.ethers.Contract(
+      CONFIG.contracts.temporalOracle,
+      TEMPORAL_ORACLE_ABI,
+      signer
+    );
+  }
+
+  function windowNameFromEnum(value) {
+    const n = Number(value);
+
+    if (n === 0) return "BURN";
+    if (n === 1) return "MINT";
+    if (n === 2) return "CLEARING";
+
+    return "UNKNOWN";
+  }
+
+  /*
+   * PASSIVE READ API
+   * ----------------
+   * No signature. No gas. No state modification.
+   */
+  async function getTemporalState() {
+    const oracle = readTemporalOracle();
+    const t = await oracle.currentState();
+
+    return Object.freeze({
+      cycleNumber: Number(t.cycle),
+      window: windowNameFromEnum(t.window),
+      burnOpen: Boolean(t.burnOpen),
+      mintOpen: Boolean(t.mintOpen),
+      settlementOpen: Boolean(t.settlementOpen),
+      clearingOpen: Boolean(t.clearingOpen),
+      messagingOpen: !Boolean(t.clearingOpen),
+      observedBlock: Number(t.observedBlock),
+      observedTimestamp: Number(t.observedTimestamp),
+      cycleStartBoundaryTimestamp: Number(t.cycleStartBoundaryTimestamp),
+      clearingBoundaryTimestamp: Number(t.clearingBoundaryTimestamp)
+    });
+  }
+
+  async function getCurrentWindow() {
+    return (await getTemporalState()).window;
+  }
+
+  async function getCycleNumber() {
+    return (await getTemporalState()).cycleNumber;
+  }
+
+  /*
+   * The v0.4.1 oracle no longer exposes the old getCycleStartBlock().
+   * For RPC indexing, use the first Osnias-observed block after the current
+   * Monday boundary. This is the canonical Osnias traffic boundary.
+   */
+  async function getCycleStartBlock() {
+    const oracle = readTemporalOracle();
+
+    const initialized = await oracle.initialized();
+
+    if (!initialized) {
+      throw new OsniasRpcError(
+        "Temporal Oracle is not initialized yet. The first active Osnias request must synchronize it."
+      );
+    }
+
+    const c = await oracle.currentCycleRecord();
+    const block = BigInt(c.cycleStart.firstObservedBlockAfter);
+
+    if (block <= 0n) {
+      throw new OsniasRpcError(
+        "Current cycle has no first observed Osnias block."
+      );
+    }
+
+    if (block > BigInt(Number.MAX_SAFE_INTEGER)) {
+      throw new RangeError(
+        "Cycle start observation block exceeds JavaScript safe integer range."
+      );
+    }
+
+    return Number(block);
   }
 
   async function getCycleState() {
-    const [
-      cycleNumber,
-      windowName,
-      cycleStartBlock,
-      currentBlock
-    ] = await Promise.all([
-      getCycleNumber(),
-      getCurrentWindow(),
-      getCycleStartBlock(),
-      getBlockNumber()
-    ]);
+    const temporal = await getTemporalState();
+    const currentBlock = await getBlockNumber();
 
-    const messagingOpen = windowName !== "CLEARING";
+    let cycleStartBlock = null;
+
+    if (temporal.cycleNumber > 0) {
+      cycleStartBlock = await getCycleStartBlock();
+    }
 
     return Object.freeze({
-      cycleNumber,
-      window: windowName,
-      messagingOpen,
+      ...temporal,
       cycleStartBlock,
       currentBlock
     });
+  }
+
+  /*
+   * ACTIVE OBSERVATION API
+   * ----------------------
+   * Sends syncAndGetState() to OsniasTemporalOracle v0.4.1.
+   * This is a state-changing transaction and therefore requires a wallet
+   * signature. The caller supplies no timestamp and no block number.
+   */
+  async function syncTemporalOracle(signer) {
+    const oracle = writeTemporalOracle(signer);
+
+    const tx = await oracle.syncAndGetState();
+    const receipt = await tx.wait();
+
+    const state = await getCycleState();
+
+    document.dispatchEvent(
+      new CustomEvent("osnias:temporal-synchronized", {
+        detail: {
+          transactionHash: receipt.hash || tx.hash,
+          state
+        }
+      })
+    );
+
+    return {
+      transactionHash: receipt.hash || tx.hash,
+      receipt,
+      state
+    };
   }
 
   async function syncFrame() {
@@ -482,7 +510,6 @@
   window.OsniasSei = Object.freeze({
     version: VERSION,
     config: CONFIG,
-    selectors: SELECTORS,
     rpc,
     ethCall,
     getLogs,
@@ -492,10 +519,13 @@
     assertCorrectNetwork,
     getCode,
     isContract,
+    temporalOracleAbi: TEMPORAL_ORACLE_ABI,
+    getTemporalState,
     getCurrentWindow,
     getCycleStartBlock,
     getCycleNumber,
     getCycleState,
+    syncTemporalOracle,
     syncFrame,
     explorerAddressUrl,
     explorerTxUrl,

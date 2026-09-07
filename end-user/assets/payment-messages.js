@@ -3,7 +3,7 @@
  * Payment Message Registry integration
  *
  * File: /assets/payment-messages.js
- * Version: 1.2.0
+ * Version: 1.3.0
  *
  * Contract:
  * OsniasPaymentMessageRegistry v2.0.2-testnet
@@ -15,6 +15,7 @@
  * - Filter PaymentRequestCreated by indexed requester / payer
  * - Cache rows by wallet + cycle
  * - Refresh effective request status from the registry
+ * - Synchronize OsniasTemporalOracle before time-dependent writes
  * - Expose write helpers for create / accept / reject / cancel / settle
  *
  * Requirements:
@@ -40,7 +41,7 @@
   }
 
 
-  const VERSION = "1.2.0";
+  const VERSION = "1.3.0";
   const CACHE_VERSION = "1";
   const ORUSD_DECIMALS = 6;
   const ZERO_BYTES32 = "0x" + "00".repeat(32);
@@ -446,6 +447,21 @@
 
     const cycle = await window.OsniasSei.getCycleState();
 
+    // Before the first active Osnias observation there is no materialized cycle
+    // block boundary and therefore nothing to reconstruct from the new cycle.
+    if (!cycle.cycleNumber || cycle.cycleStartBlock === null) {
+      return Object.freeze({
+        direction,
+        wallet: account,
+        cycleId: cycle.cycleNumber || 0,
+        window: cycle.window,
+        messagingOpen: cycle.messagingOpen,
+        cycleStartBlock: null,
+        currentBlock: cycle.currentBlock,
+        rows: []
+      });
+    }
+
     const key = cacheKey(
       direction,
       account,
@@ -567,6 +583,14 @@
       throw new PaymentMessagesError("Amount must be greater than zero.");
     }
 
+    /*
+     * Active temporal observation:
+     * every Send Invoice request first synchronizes the canonical Temporal
+     * Oracle. The Oracle itself derives time exclusively from Sei block data.
+     */
+    await window.OsniasSei.syncTemporalOracle(signer);
+
+    // Re-read passively after synchronization before sending the business tx.
     const state = await window.OsniasSei.getCycleState();
 
     if (!state.messagingOpen || state.window === "CLEARING") {
