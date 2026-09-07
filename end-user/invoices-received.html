@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Invoices Received
-  Version    : 3.0.9-testnet
+  Version    : 3.0.10-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -18,16 +18,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.9">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.10">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  <script src="./assets/end-user-frame.js?v=3.0.9" defer></script>
-  <script src="./assets/sei-provider.js?v=3.0.9" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.0.9" defer></script>
-  <script src="./assets/payment-messages.js?v=3.0.9" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.0.10" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.10" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.10" defer></script>
+  <script src="./assets/payment-messages.js?v=3.0.10" defer></script>
 
   <style>
-    .received-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+    .received-meta{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:18px}
     .received-meta .osnias-card{padding:14px}
     .received-meta-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.68}
     .received-meta-value{font-size:18px;font-weight:700;margin-top:5px}
@@ -41,6 +41,9 @@
     .received-note{font-size:12px;opacity:.72;line-height:1.55}
     .received-error{margin:0 0 16px}
     .received-id{font-family:"JetBrains Mono",monospace;font-size:11px;word-break:break-all;opacity:.76}
+    .received-solvency{font-size:11px;line-height:1.45;margin-top:5px;opacity:.82}
+    .received-solvency.is-ok{color:#00ff84;opacity:1}
+    .received-solvency.is-low{color:#ff6b6b;opacity:1}
     @media(max-width:980px){.received-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:620px){.received-meta{grid-template-columns:1fr}}
   
@@ -107,6 +110,10 @@
         <div class="received-meta-label">Requests received</div>
         <div class="received-meta-value" id="receivedCount">0</div>
       </div>
+      <div class="osnias-card">
+        <div class="received-meta-label">ORUSD balance</div>
+        <div class="received-meta-value" id="orusdBalance">—</div>
+      </div>
     </section>
 
     <section class="osnias-card">
@@ -126,7 +133,8 @@
       </div>
 
       <p class="received-note">
-        Pending requests may be accepted or rejected by the payer. Once accepted, settlement is performed through the P2P Settlement page; the resulting ORUSD transaction hash can then be recorded on the payment request.
+        Pending requests may be accepted or rejected by the payer. <strong>Acceptance requires an ORUSD balance of at least 101% of the invoice amount.</strong>
+        Once accepted, the request enters the P2P Settlement queue as <strong>TO BE PAID</strong>; settlement remains a separate wallet-signed transaction.
       </p>
       <p class="received-note">
         <strong>Refresh</strong> = incremental synchronization ·
@@ -174,11 +182,19 @@
 (() => {
   "use strict";
 
+  const ORUSD_ABI = [
+    "function balanceOf(address account) view returns (uint256)"
+  ];
+  const ORUSD_DECIMALS = 6;
+  const ACCEPTANCE_RESERVE_NUMERATOR = 101n;
+  const ACCEPTANCE_RESERVE_DENOMINATOR = 100n;
+
   const state = {
     account: null,
     cycle: null,
     rows: [],
-    loading: false
+    loading: false,
+    orusdBalance: 0n
   };
 
   const $ = (id) => document.getElementById(id);
@@ -198,6 +214,51 @@
     el.className = "osnias-alert received-error" +
       (type === "success" ? " osnias-alert--success" : "") +
       (type === "danger" ? " osnias-alert--danger" : "");
+  }
+
+  function formatORUSD(value) {
+    return Number(ethers.formatUnits(value, ORUSD_DECIMALS))
+      .toLocaleString("en-US", {
+        minimumFractionDigits: 6,
+        maximumFractionDigits: 6
+      });
+  }
+
+  function amountToBaseUnits(value) {
+    return ethers.parseUnits(String(value ?? "0"), ORUSD_DECIMALS);
+  }
+
+  function requiredAcceptanceBalance(amountBaseUnits) {
+    // Exact 101% threshold, rounded upward to the next base unit if needed.
+    return (
+      amountBaseUnits * ACCEPTANCE_RESERVE_NUMERATOR +
+      ACCEPTANCE_RESERVE_DENOMINATOR - 1n
+    ) / ACCEPTANCE_RESERVE_DENOMINATOR;
+  }
+
+  async function getReadORUSD() {
+    const provider = new ethers.JsonRpcProvider(
+      OsniasSei.config.rpcUrl,
+      OsniasSei.config.chainId
+    );
+    return new ethers.Contract(
+      OsniasSei.config.contracts.orusd,
+      ORUSD_ABI,
+      provider
+    );
+  }
+
+  async function refreshORUSDBalance() {
+    if (!state.account) {
+      state.orusdBalance = 0n;
+      $("orusdBalance").textContent = "—";
+      return 0n;
+    }
+
+    const contract = await getReadORUSD();
+    state.orusdBalance = await contract.balanceOf(state.account);
+    $("orusdBalance").textContent = `${formatORUSD(state.orusdBalance)} ORUSD`;
+    return state.orusdBalance;
   }
 
   function shortAddress(value) {
@@ -222,18 +283,6 @@
     }
 
     return "";
-  }
-
-  function p2pUrl(row) {
-    const params = new URLSearchParams({
-      requestId: row.requestId,
-      recipient: row.requester,
-      amount: row.amount,
-      invoiceReference: row.invoiceReference,
-      nature: row.nature
-    });
-
-    return `p2p-settlement.html?${params.toString()}`;
   }
 
   async function refreshCycle() {
@@ -316,31 +365,48 @@
       tdAction.className = "received-actions";
 
       if (row.status === "PENDING") {
-        tdAction.append(
-          actionButton(
-            "Accept",
-            "osnias-btn osnias-btn--primary osnias-btn--small",
-            (event) => acceptRequest(row.requestId, event.currentTarget)
-          ),
-          actionButton(
-            "Reject",
-            "osnias-btn osnias-btn--ghost osnias-btn--small",
-            (event) => rejectRequest(row.requestId, event.currentTarget)
-          )
-        );
-      } else if (row.status === "ACCEPTED") {
-        const settle = document.createElement("a");
-        settle.className = "osnias-btn osnias-btn--primary osnias-btn--small";
-        settle.href = p2pUrl(row);
-        settle.textContent = "P2P Settlement";
+        let invoiceAmount = 0n;
+        let required = 0n;
+        let solvent = false;
 
-        const mark = actionButton(
-          "Record tx hash",
+        try {
+          invoiceAmount = amountToBaseUnits(row.amount);
+          required = requiredAcceptanceBalance(invoiceAmount);
+          solvent = state.orusdBalance >= required;
+        } catch {}
+
+        const acceptBtn = actionButton(
+          "Accept",
+          "osnias-btn osnias-btn--primary osnias-btn--small",
+          (event) => acceptRequest(row, event.currentTarget)
+        );
+        acceptBtn.disabled = !solvent;
+        acceptBtn.title = solvent
+          ? "Balance check passed: at least 101% of invoice amount available."
+          : "Acceptance blocked: ORUSD balance must be at least 101% of the invoice amount.";
+
+        const rejectBtn = actionButton(
+          "Reject",
           "osnias-btn osnias-btn--ghost osnias-btn--small",
-          (event) => recordSettlement(row.requestId, event.currentTarget)
+          (event) => rejectRequest(row.requestId, event.currentTarget)
         );
 
-        tdAction.append(settle, mark);
+        tdAction.append(acceptBtn, rejectBtn);
+
+        const solvency = document.createElement("div");
+        solvency.className =
+          "received-solvency " + (solvent ? "is-ok" : "is-low");
+
+        solvency.textContent = solvent
+          ? `Solvency check OK · required ${formatORUSD(required)} ORUSD`
+          : `Acceptance requires ${formatORUSD(required)} ORUSD · available ${formatORUSD(state.orusdBalance)} ORUSD`;
+
+        tdAction.appendChild(solvency);
+      } else if (row.status === "ACCEPTED") {
+        const queued = document.createElement("span");
+        queued.className = "osnias-badge osnias-badge--open";
+        queued.textContent = "TO BE PAID";
+        tdAction.appendChild(queued);
       } else if (row.status === "SETTLED") {
         if (
           row.settlementTxHash &&
@@ -506,13 +572,51 @@
     }
   }
 
-  async function acceptRequest(requestId, button) {
-    await runRequestAction(
-      button,
-      "acceptPaymentRequest",
-      requestId,
-      "Payment request accepted."
-    );
+  async function acceptRequest(row, button) {
+    button.disabled = true;
+    setAlert("");
+
+    try {
+      // Re-read the live ORUSD balance immediately before acceptance.
+      await refreshORUSDBalance();
+
+      const amount = amountToBaseUnits(row.amount);
+      const required = requiredAcceptanceBalance(amount);
+
+      if (state.orusdBalance < required) {
+        setAlert(
+          `Acceptance blocked. Required balance: ${formatORUSD(required)} ORUSD (101% of invoice). ` +
+          `Available balance: ${formatORUSD(state.orusdBalance)} ORUSD.`,
+          "danger"
+        );
+        renderRows();
+        return;
+      }
+
+      const signer = await OsniasWallet.getSigner();
+      await OsniasPaymentMessages.acceptPaymentRequest(
+        signer,
+        row.requestId
+      );
+
+      setAlert(
+        `Payment request accepted. Solvency threshold verified at ${formatORUSD(required)} ORUSD. ` +
+        `The request is now available in P2P Settlement / TO BE PAID.`,
+        "success"
+      );
+
+      await Promise.all([
+        refreshORUSDBalance(),
+        loadReceived(false)
+      ]);
+
+    } catch (error) {
+      setAlert(
+        error?.shortMessage || error?.message || String(error),
+        "danger"
+      );
+      button.disabled = false;
+    }
   }
 
   async function rejectRequest(requestId, button) {
@@ -527,50 +631,6 @@
     );
   }
 
-  async function recordSettlement(requestId, button) {
-    const txHash = window.prompt(
-      "Paste the ORUSD P2P settlement transaction hash (0x…):"
-    );
-
-    if (txHash === null) return;
-
-    const value = txHash.trim();
-
-    if (!/^0x[0-9a-fA-F]{64}$/.test(value)) {
-      setAlert(
-        "Settlement transaction hash must be a 32-byte 0x-prefixed hash.",
-        "danger"
-      );
-      return;
-    }
-
-    button.disabled = true;
-    setAlert("");
-
-    try {
-      const signer = await OsniasWallet.getSigner();
-
-      await OsniasPaymentMessages.markSettled(
-        signer,
-        requestId,
-        value
-      );
-
-      setAlert(
-        "Settlement transaction hash recorded on the payment request.",
-        "success"
-      );
-
-      await loadReceived(false);
-    } catch (error) {
-      setAlert(
-        error?.shortMessage || error?.message || String(error),
-        "danger"
-      );
-      button.disabled = false;
-    }
-  }
-
   async function applyWalletState(walletState) {
     state.account =
       walletState?.connected && walletState?.account
@@ -578,19 +638,25 @@
         : null;
 
     state.rows = [];
+    state.orusdBalance = 0n;
 
     await refreshCycle();
 
     if (state.account) {
+      await refreshORUSDBalance();
       await loadReceived(false);
     } else {
+      $("orusdBalance").textContent = "—";
       renderRows();
     }
   }
 
   $("refreshBtn").addEventListener(
     "click",
-    () => loadReceived(false)
+    async () => {
+      if (state.account) await refreshORUSDBalance();
+      await loadReceived(false);
+    }
   );
 
   $("rebuildBtn").addEventListener("click", async () => {
@@ -648,6 +714,7 @@
           if (walletState?.connected) {
             await applyWalletState(walletState);
           } else {
+            $("orusdBalance").textContent = "—";
             renderRows();
           }
         }
