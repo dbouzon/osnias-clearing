@@ -3,7 +3,7 @@
  * Shared frame / navigation
  *
  * File: /assets/end-user-frame.js
- * Version: 1.3.0
+ * Version: 1.4.0
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -19,22 +19,29 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.3.0";
+  const FRAME_VERSION = "1.4.0";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias Orusd End User",
     subtitle: "",
-    logoUrl: "/logo.jpg",
-    logoFallbackUrls: ["/assets/logo.jpg"],
+    logoUrl: "logo.jpg",
+    logoFallbackUrls: [
+      "./logo.jpg",
+      "./assets/logo.jpg",
+      "/end-user/logo.jpg",
+      "/end-user/assets/logo.jpg",
+      "/logo.jpg",
+      "/assets/logo.jpg"
+    ],
     rootPath: "/end-user/",
     documentationUrl: "/documentation/",
     networkLabel: "Sei Atlantic-2",
     chainIdLabel: "1328",
     nav: [
       { key: "dashboard", label: "Dashboard", href: "index.html" },
-      { key: "p2p", label: "P2P Settlement", href: "p2p-settlement.html" },
-      { key: "sent", label: "Invoices Sent", href: "invoices-sent.html" },
-      { key: "received", label: "Invoices Received", href: "invoices-received.html" },
+      { key: "sent", label: "Invoice Sent", href: "invoices-sent.html" },
+      { key: "received", label: "Invoice Received", href: "invoices-received.html" },
+      { key: "p2p", label: "Settlement", href: "p2p-settlement.html" },
       { key: "registry", label: "Registry", href: "registry.html" }
     ]
   });
@@ -217,21 +224,34 @@
     const img = document.querySelector("[data-osnias-logo]");
     if (!img) return;
 
-    const fallbacks = Array.isArray(currentConfig.logoFallbackUrls)
-      ? [...currentConfig.logoFallbackUrls]
-      : [];
+    const candidates = [
+      currentConfig.logoUrl,
+      ...(Array.isArray(currentConfig.logoFallbackUrls)
+        ? currentConfig.logoFallbackUrls
+        : [])
+    ].filter(Boolean);
 
-    let fallbackIndex = 0;
+    const uniqueCandidates = [...new Set(candidates)];
+    let candidateIndex = 0;
 
-    img.addEventListener("error", () => {
-      if (fallbackIndex < fallbacks.length) {
-        img.src = fallbacks[fallbackIndex++];
+    const tryNext = () => {
+      candidateIndex += 1;
+
+      if (candidateIndex < uniqueCandidates.length) {
+        img.hidden = false;
+        img.src = uniqueCandidates[candidateIndex];
         return;
       }
 
-      // Never display a broken-image icon or alt text in the institutional head.
+      // Never display a broken-image icon in the institutional header.
       img.hidden = true;
+    };
+
+    img.addEventListener("load", () => {
+      img.hidden = false;
     }, { passive: true });
+
+    img.addEventListener("error", tryNext, { passive: true });
   }
 
   function renderHeader() {
@@ -247,7 +267,7 @@
             <img
               class="osnias-brand__logo"
               src="${escapeHtml(currentConfig.logoUrl)}"
-              alt=""
+              alt="Osnias Clearing"
               width="42"
               height="42"
               data-osnias-logo
@@ -258,13 +278,13 @@
             </span>
           </a>
 
+          <div class="osnias-header__right osnias-header__wallet-first">
+            ${walletMarkup()}
+          </div>
+
           <nav class="osnias-nav" aria-label="End-user navigation">
             ${renderNavigation(activeKey)}
           </nav>
-
-          <div class="osnias-header__right">
-            ${walletMarkup()}
-          </div>
         </div>
       </header>
     `;
@@ -287,7 +307,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · Release 3.0.3 · 2026-09-06
+        Osnias Clearing · End-User Console · Frame 1.4.0 · 2026-09-07
       </footer>
     `;
   }
