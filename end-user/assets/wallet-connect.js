@@ -1,37 +1,35 @@
 /*
  * Osnias Clearing — Wallet Connect
- * Shared wallet connection layer
+ * Shared EIP-1193 wallet connection layer
  *
- * File: /assets/wallet-connect.js
- * Version: 1.1.0
+ * File: /end-user/assets/wallet-connect.js
+ * Version: 1.2.1
  *
- * Responsibilities:
- * - Connect to injected EIP-1193 wallets
- * - Support MetaMask and Trust Wallet where an injected provider is available
- * - Enforce Sei Atlantic-2 Testnet (Chain ID 1328 / 0x530)
- * - Expose an ethers v6 BrowserProvider + Signer
- * - Synchronize wallet state with end-user-frame.js
- * - React to accountsChanged / chainChanged / disconnect
- * - Support explicit application-initiated wallet disconnection
+ * Default network: Sei Atlantic-2 Testnet.
+ * A page may override the target network BEFORE this file loads by defining:
  *
- * Requirements:
- * - ethers.js v6 available as window.ethers
- * - /assets/end-user-frame.js loaded
- * - /assets/sei-provider.js loaded
+ * window.OSNIAS_WALLET_NETWORK = {
+ *   chainId: 11155111,
+ *   chainIdHex: "0xaa36a7",
+ *   chainName: "Ethereum Sepolia",
+ *   nativeCurrency: { name: "Sepolia ETH", symbol: "ETH", decimals: 18 },
+ *   rpcUrls: ["https://ethereum-sepolia-rpc.publicnode.com"],
+ *   blockExplorerUrls: ["https://sepolia.etherscan.io"]
+ * };
  *
- * Security principles:
- * - No private key handling
- * - No automatic transaction signing
- * - Every state-changing operation still requires explicit wallet approval
- * - Chain ID is checked before a signer is returned
+ * Security:
+ * - no private key handling;
+ * - no automatic signing;
+ * - target chain verified before returning a signer;
+ * - explicit application disconnect supported.
  */
 
 (() => {
   "use strict";
 
-  const VERSION = "1.1.0";
+  const VERSION = "1.2.1";
 
-  const SEI = Object.freeze({
+  const DEFAULT_NETWORK = Object.freeze({
     chainId: 1328,
     chainIdHex: "0x530",
     chainName: "Sei Atlantic-2 Testnet",
@@ -40,13 +38,33 @@
       symbol: "SEI",
       decimals: 18
     }),
-    rpcUrls: Object.freeze([
-      "https://evm-rpc-testnet.sei-apis.com"
-    ]),
-    blockExplorerUrls: Object.freeze([
-      "https://testnet.seiscan.io"
-    ])
+    rpcUrls: Object.freeze(["https://evm-rpc-testnet.sei-apis.com"]),
+    blockExplorerUrls: Object.freeze(["https://testnet.seiscan.io"])
   });
+
+  function normalizeNetwork(candidate) {
+    if (!candidate) return DEFAULT_NETWORK;
+
+    const chainId = Number(candidate.chainId);
+    if (!Number.isInteger(chainId) || chainId <= 0) {
+      throw new Error("Invalid OSNIAS_WALLET_NETWORK.chainId");
+    }
+
+    return Object.freeze({
+      chainId,
+      chainIdHex: candidate.chainIdHex || ("0x" + chainId.toString(16)),
+      chainName: candidate.chainName || `EVM Chain ${chainId}`,
+      nativeCurrency: Object.freeze(candidate.nativeCurrency || {
+        name: "Native",
+        symbol: "ETH",
+        decimals: 18
+      }),
+      rpcUrls: Object.freeze([...(candidate.rpcUrls || [])]),
+      blockExplorerUrls: Object.freeze([...(candidate.blockExplorerUrls || [])])
+    });
+  }
+
+  const NETWORK = normalizeNetwork(window.OSNIAS_WALLET_NETWORK);
 
   const state = {
     eip1193: null,
@@ -72,16 +90,12 @@
       typeof window.ethers === "undefined" ||
       typeof window.ethers.BrowserProvider !== "function"
     ) {
-      throw new WalletConnectError(
-        "ethers.js v6 is required by wallet-connect.js."
-      );
+      throw new WalletConnectError("ethers.js v6 is required by wallet-connect.js.");
     }
   }
 
   function isMobile() {
-    return /Android|iPhone|iPad|iPod/i.test(
-      navigator.userAgent || ""
-    );
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "");
   }
 
   function isMetaMaskProvider(provider) {
@@ -89,11 +103,7 @@
   }
 
   function isTrustProvider(provider) {
-    return Boolean(
-      provider?.isTrust ||
-      provider?.isTrustWallet ||
-      provider?.isTrustWalletBrowser
-    );
+    return Boolean(provider?.isTrust || provider?.isTrustWallet || provider?.isTrustWalletBrowser);
   }
 
   function providerName(provider) {
@@ -102,24 +112,15 @@
     return "Injected Wallet";
   }
 
-  /*
-   * Some browser environments expose several EIP-1193 providers.
-   * Prefer a provider explicitly identified as MetaMask or Trust Wallet.
-   */
   function getInjectedProvider() {
     const ethereum = window.ethereum;
-
-    if (!ethereum) {
-      return null;
-    }
+    if (!ethereum) return null;
 
     if (Array.isArray(ethereum.providers) && ethereum.providers.length) {
       const trust = ethereum.providers.find(isTrustProvider);
       if (trust) return trust;
-
       const metamask = ethereum.providers.find(isMetaMaskProvider);
       if (metamask) return metamask;
-
       return ethereum.providers[0];
     }
 
@@ -127,55 +128,31 @@
   }
 
   function normalizeChainId(value) {
-    if (typeof value === "number") {
-      return value;
-    }
-
-    if (typeof value === "bigint") {
-      return Number(value);
-    }
+    if (typeof value === "number") return value;
+    if (typeof value === "bigint") return Number(value);
 
     const text = String(value || "");
+    if (/^0x[0-9a-fA-F]+$/.test(text)) return Number(BigInt(text));
+    if (/^\d+$/.test(text)) return Number(text);
 
-    if (/^0x[0-9a-fA-F]+$/.test(text)) {
-      return Number(BigInt(text));
-    }
-
-    if (/^\d+$/.test(text)) {
-      return Number(text);
-    }
-
-    throw new WalletConnectError(
-      `Invalid chain ID returned by wallet: ${value}`
-    );
+    throw new WalletConnectError(`Invalid chain ID returned by wallet: ${value}`);
   }
 
   function normalizeAccount(address) {
     requireEthers();
-
     try {
       return window.ethers.getAddress(address);
     } catch {
-      throw new WalletConnectError(
-        `Invalid wallet account returned: ${address}`
-      );
+      throw new WalletConnectError(`Invalid wallet account returned: ${address}`);
     }
   }
 
   async function request(provider, method, params = []) {
     try {
-      return await provider.request({
-        method,
-        params
-      });
+      return await provider.request({ method, params });
     } catch (error) {
-      const message =
-        error?.message ||
-        error?.data?.message ||
-        `Wallet request failed: ${method}`;
-
       throw new WalletConnectError(
-        message,
+        error?.message || error?.data?.message || `Wallet request failed: ${method}`,
         error?.code ?? null,
         error
       );
@@ -183,18 +160,11 @@
   }
 
   function emit(name, detail = {}) {
-    document.dispatchEvent(
-      new CustomEvent(name, {
-        detail
-      })
-    );
+    document.dispatchEvent(new CustomEvent(name, { detail }));
   }
 
   function syncFrame() {
-    if (!window.OsniasFrame) {
-      return;
-    }
-
+    if (!window.OsniasFrame) return;
     window.OsniasFrame.setWallet({
       connected: state.connected,
       address: state.account || ""
@@ -206,78 +176,91 @@
       connected: state.connected,
       account: state.account,
       chainId: state.chainId,
-      walletName: state.walletName
+      walletName: state.walletName,
+      network: NETWORK
     });
   }
 
   async function getCurrentChainId(provider = state.eip1193) {
-    if (!provider) {
-      throw new WalletConnectError("No wallet provider available.");
-    }
-
-    return normalizeChainId(
-      await request(provider, "eth_chainId")
-    );
+    if (!provider) throw new WalletConnectError("No wallet provider available.");
+    return normalizeChainId(await request(provider, "eth_chainId"));
   }
 
-  async function switchToSei(provider = state.eip1193) {
-    if (!provider) {
-      throw new WalletConnectError("No wallet provider available.");
+  function isTargetChainId(chainId) {
+    return Number(chainId) === Number(NETWORK.chainId);
+  }
+
+  function chainLabel(chainId) {
+    const id = Number(chainId);
+    if (id === 1328) return "Sei Atlantic-2 Testnet";
+    if (id === 1329) return "Sei Network Mainnet";
+    if (id === 11155111) return "Ethereum Sepolia";
+    if (id === 1) return "Ethereum Mainnet";
+    return `EVM Chain ${id}`;
+  }
+
+  async function getStableChainId(provider = state.eip1193) {
+    /*
+     * Some injected wallets briefly return the previous chain immediately
+     * after a page reload or network switch. Read twice before declaring
+     * a wrong-network state so the UI does not retain a transient false
+     * "WRONG" status.
+     */
+    const first = await getCurrentChainId(provider);
+
+    await new Promise((resolve) => setTimeout(resolve, 120));
+
+    const second = await getCurrentChainId(provider);
+
+    if (first !== second) {
+      console.info(
+        "[OsniasWallet] chain changed during verification:",
+        first,
+        "->",
+        second
+      );
     }
+
+    return second;
+  }
+
+  function emitWrongNetwork(chainId) {
+    emit("osnias:wallet-wrong-network", {
+      account: state.account,
+      chainId,
+      chainName: chainLabel(chainId),
+      expectedChainId: NETWORK.chainId,
+      expectedNetwork: NETWORK.chainName
+    });
+  }
+
+  async function switchToTargetNetwork(provider = state.eip1193) {
+    if (!provider) throw new WalletConnectError("No wallet provider available.");
 
     const current = await getCurrentChainId(provider);
-
-    if (current === SEI.chainId) {
-      return true;
-    }
+    if (isTargetChainId(current)) return true;
 
     try {
-      await request(
-        provider,
-        "wallet_switchEthereumChain",
-        [
-          {
-            chainId: SEI.chainIdHex
-          }
-        ]
-      );
-
+      await request(provider, "wallet_switchEthereumChain", [{ chainId: NETWORK.chainIdHex }]);
       return true;
     } catch (error) {
-      /*
-       * EIP-3326 wallets commonly return 4902 when the network is unknown.
-       */
-      if (error.code !== 4902) {
-        throw error;
-      }
+      if (error.code !== 4902) throw error;
     }
 
-    await request(
-      provider,
-      "wallet_addEthereumChain",
-      [
-        {
-          chainId: SEI.chainIdHex,
-          chainName: SEI.chainName,
-          nativeCurrency: SEI.nativeCurrency,
-          rpcUrls: [...SEI.rpcUrls],
-          blockExplorerUrls: [...SEI.blockExplorerUrls]
-        }
-      ]
-    );
+    const params = {
+      chainId: NETWORK.chainIdHex,
+      chainName: NETWORK.chainName,
+      nativeCurrency: NETWORK.nativeCurrency
+    };
+
+    if (NETWORK.rpcUrls.length) params.rpcUrls = [...NETWORK.rpcUrls];
+    if (NETWORK.blockExplorerUrls.length) params.blockExplorerUrls = [...NETWORK.blockExplorerUrls];
+
+    await request(provider, "wallet_addEthereumChain", [params]);
 
     const afterAdd = await getCurrentChainId(provider);
-
-    if (afterAdd !== SEI.chainId) {
-      await request(
-        provider,
-        "wallet_switchEthereumChain",
-        [
-          {
-            chainId: SEI.chainIdHex
-          }
-        ]
-      );
+    if (!isTargetChainId(afterAdd)) {
+      await request(provider, "wallet_switchEthereumChain", [{ chainId: NETWORK.chainIdHex }]);
     }
 
     return true;
@@ -285,31 +268,24 @@
 
   async function buildSigner(provider) {
     requireEthers();
+    const browserProvider = new window.ethers.BrowserProvider(provider, "any");
+    const signer = await browserProvider.getSigner();
+    const account = normalizeAccount(await signer.getAddress());
+    return { browserProvider, signer, account };
+  }
 
-    const browserProvider =
-      new window.ethers.BrowserProvider(
-        provider,
-        "any"
-      );
+  const boundProviders = new WeakSet();
 
-    const signer =
-      await browserProvider.getSigner();
-
-    const account =
-      normalizeAccount(
-        await signer.getAddress()
-      );
-
-    return {
-      browserProvider,
-      signer,
-      account
-    };
+  function bindProviderEvents(provider) {
+    if (!provider || typeof provider.on !== "function" || boundProviders.has(provider)) return;
+    provider.on("accountsChanged", handleAccountsChanged);
+    provider.on("chainChanged", handleChainChanged);
+    provider.on("disconnect", handleDisconnect);
+    boundProviders.add(provider);
   }
 
   async function connect() {
     requireEthers();
-
     const provider = getInjectedProvider();
 
     if (!provider) {
@@ -318,133 +294,78 @@
           ? "No injected wallet was detected. Open this page inside MetaMask or Trust Wallet's in-app browser."
           : "No injected EVM wallet was detected. Install MetaMask or another EIP-1193 wallet."
       );
-
-      emit("osnias:wallet-unavailable", {
-        message: error.message,
-        mobile: isMobile()
-      });
-
+      emit("osnias:wallet-unavailable", { message: error.message, mobile: isMobile() });
       throw error;
     }
 
     state.eip1193 = provider;
     state.walletName = providerName(provider);
 
-    const accounts = await request(
-      provider,
-      "eth_requestAccounts"
-    );
-
+    const accounts = await request(provider, "eth_requestAccounts");
     if (!Array.isArray(accounts) || accounts.length === 0) {
+      throw new WalletConnectError("The wallet did not return an account.");
+    }
+
+    await switchToTargetNetwork(provider);
+
+    const chainId = await getStableChainId(provider);
+    if (!isTargetChainId(chainId)) {
       throw new WalletConnectError(
-        "The wallet did not return an account."
+        `Wrong network. Expected ${NETWORK.chainName} (${NETWORK.chainId}).`
       );
     }
 
-    await switchToSei(provider);
-
-    const chainId = await getCurrentChainId(provider);
-
-    if (chainId !== SEI.chainId) {
-      throw new WalletConnectError(
-        `Wrong network. Expected Sei Atlantic-2 Testnet (${SEI.chainId}).`
-      );
-    }
-
-    const signerData =
-      await buildSigner(provider);
-
-    state.browserProvider =
-      signerData.browserProvider;
-
-    state.signer =
-      signerData.signer;
-
-    state.account =
-      signerData.account;
-
-    state.chainId =
-      chainId;
-
-    state.connected =
-      true;
+    const signerData = await buildSigner(provider);
+    state.browserProvider = signerData.browserProvider;
+    state.signer = signerData.signer;
+    state.account = signerData.account;
+    state.chainId = chainId;
+    state.connected = true;
 
     bindProviderEvents(provider);
-
     syncFrame();
 
-    emit("osnias:wallet-connected", {
-      ...publicState()
-    });
-
+    emit("osnias:wallet-network-valid", { ...publicState() });
+    emit("osnias:wallet-connected", { ...publicState() });
     return publicState();
   }
 
   async function restore() {
     requireEthers();
-
     const provider = getInjectedProvider();
-
-    if (!provider) {
-      return publicState();
-    }
+    if (!provider) return publicState();
 
     state.eip1193 = provider;
     state.walletName = providerName(provider);
 
-    const accounts = await request(
-      provider,
-      "eth_accounts"
-    );
-
+    const accounts = await request(provider, "eth_accounts");
     if (!Array.isArray(accounts) || accounts.length === 0) {
       syncFrame();
       return publicState();
     }
 
-    const chainId =
-      await getCurrentChainId(provider);
-
+    const chainId = await getStableChainId(provider);
     state.chainId = chainId;
+    state.account = normalizeAccount(accounts[0]);
 
-    if (chainId !== SEI.chainId) {
+    if (!isTargetChainId(chainId)) {
       state.connected = false;
-      state.account =
-        normalizeAccount(accounts[0]);
-
       syncFrame();
-
-      emit("osnias:wallet-wrong-network", {
-        account: state.account,
-        chainId
-      });
-
+      emitWrongNetwork(chainId);
       return publicState();
     }
 
-    const signerData =
-      await buildSigner(provider);
-
-    state.browserProvider =
-      signerData.browserProvider;
-
-    state.signer =
-      signerData.signer;
-
-    state.account =
-      signerData.account;
-
-    state.connected =
-      true;
+    const signerData = await buildSigner(provider);
+    state.browserProvider = signerData.browserProvider;
+    state.signer = signerData.signer;
+    state.account = signerData.account;
+    state.connected = true;
 
     bindProviderEvents(provider);
-
     syncFrame();
 
-    emit("osnias:wallet-restored", {
-      ...publicState()
-    });
-
+    emit("osnias:wallet-network-valid", { ...publicState() });
+    emit("osnias:wallet-restored", { ...publicState() });
     return publicState();
   }
 
@@ -455,37 +376,16 @@
     state.chainId = null;
     state.connected = false;
     state.walletName = null;
-
-    if (clearProvider) {
-      state.eip1193 = null;
-    }
-
+    if (clearProvider) state.eip1193 = null;
     syncFrame();
   }
 
   function disconnectLocal(reason = "local") {
-    /*
-     * Local Osnias session reset. This does not by itself revoke the
-     * website permission stored inside the wallet extension.
-     */
     resetState({ clearProvider: true });
-
-    emit("osnias:wallet-disconnected", {
-      localOnly: true,
-      reason
-    });
+    emit("osnias:wallet-disconnected", { localOnly: true, reason });
   }
 
   async function disconnect() {
-    /*
-     * Security-oriented disconnect:
-     * 1. Ask the injected wallet to revoke this site's eth_accounts permission.
-     * 2. Clear all signer/provider/account state inside Osnias.
-     * 3. Notify every page module so protected views return to disconnected state.
-     *
-     * wallet_revokePermissions is supported by MetaMask and some EIP-1193 wallets.
-     * Other wallets may reject it as unsupported; Osnias still clears its own session.
-     */
     const provider = state.eip1193 || getInjectedProvider();
     let permissionRevoked = false;
     let revokeUnsupported = false;
@@ -500,14 +400,8 @@
         permissionRevoked = true;
       } catch (error) {
         revokeError = error;
-
         const code = error?.code ?? error?.data?.code ?? null;
-        const message = String(
-          error?.message ||
-          error?.data?.message ||
-          ""
-        ).toLowerCase();
-
+        const message = String(error?.message || error?.data?.message || "").toLowerCase();
         revokeUnsupported =
           code === -32601 ||
           code === 4200 ||
@@ -526,90 +420,51 @@
       reason: "applicationDisconnect"
     });
 
-    /*
-     * A user rejection or wallet-specific revoke error must not leave Osnias
-     * connected. The local security boundary has already been closed.
-     * Surface the wallet-side limitation separately for diagnostics.
-     */
     if (revokeError && !revokeUnsupported) {
       emit("osnias:wallet-disconnect-warning", {
-        message:
-          revokeError?.message ||
-          "Osnias disconnected locally, but the wallet permission could not be revoked.",
+        message: revokeError?.message || "Wallet permission could not be revoked.",
         code: revokeError?.code ?? null
       });
     }
 
-    return Object.freeze({
-      disconnected: true,
-      permissionRevoked,
-      revokeUnsupported
-    });
+    return Object.freeze({ disconnected: true, permissionRevoked, revokeUnsupported });
   }
 
   async function handleAccountsChanged(accounts) {
     if (!Array.isArray(accounts) || accounts.length === 0) {
       resetState();
-
-      emit("osnias:wallet-disconnected", {
-        reason: "accountsChanged"
-      });
-
+      emit("osnias:wallet-disconnected", { reason: "accountsChanged" });
       return;
     }
 
-    const account =
-      normalizeAccount(accounts[0]);
+    state.account = normalizeAccount(accounts[0]);
+    const chainId = await getStableChainId();
+    state.chainId = chainId;
 
-    state.account =
-      account;
-
-    const chainId =
-      await getCurrentChainId();
-
-    state.chainId =
-      chainId;
-
-    if (chainId !== SEI.chainId) {
+    if (!isTargetChainId(chainId)) {
       state.connected = false;
       state.signer = null;
       state.browserProvider = null;
-
       syncFrame();
-
-      emit("osnias:wallet-wrong-network", {
-        account,
-        chainId
-      });
-
+      emitWrongNetwork(chainId);
       return;
     }
 
-    const signerData =
-      await buildSigner(state.eip1193);
-
-    state.browserProvider =
-      signerData.browserProvider;
-
-    state.signer =
-      signerData.signer;
-
-    state.connected =
-      true;
+    const signerData = await buildSigner(state.eip1193);
+    state.browserProvider = signerData.browserProvider;
+    state.signer = signerData.signer;
+    state.account = signerData.account;
+    state.connected = true;
 
     syncFrame();
-
-    emit("osnias:wallet-account-changed", {
-      ...publicState()
-    });
+    emit("osnias:wallet-network-valid", { ...publicState() });
+    emit("osnias:wallet-account-changed", { ...publicState() });
   }
 
   async function handleChainChanged(chainIdValue) {
     let chainId;
-
     try {
-      chainId =
-        normalizeChainId(chainIdValue);
+      chainId = normalizeChainId(chainIdValue);
     } catch {
       resetState();
       return;
@@ -617,275 +472,143 @@
 
     state.chainId = chainId;
 
-    if (chainId !== SEI.chainId) {
+    if (!isTargetChainId(chainId)) {
       state.connected = false;
       state.signer = null;
       state.browserProvider = null;
-
       syncFrame();
-
-      emit("osnias:wallet-wrong-network", {
-        account: state.account,
-        chainId
-      });
-
+      emitWrongNetwork(chainId);
       return;
     }
 
     if (state.account && state.eip1193) {
       try {
-        const signerData =
-          await buildSigner(state.eip1193);
-
-        state.browserProvider =
-          signerData.browserProvider;
-
-        state.signer =
-          signerData.signer;
-
-        state.account =
-          signerData.account;
-
-        state.connected =
-          true;
+        const signerData = await buildSigner(state.eip1193);
+        state.browserProvider = signerData.browserProvider;
+        state.signer = signerData.signer;
+        state.account = signerData.account;
+        state.connected = true;
       } catch {
         state.connected = false;
       }
     }
 
     syncFrame();
-
-    emit("osnias:wallet-chain-changed", {
-      ...publicState()
-    });
+    emit("osnias:wallet-network-valid", { ...publicState() });
+    emit("osnias:wallet-chain-changed", { ...publicState() });
   }
 
   function handleDisconnect(error) {
     resetState();
-
     emit("osnias:wallet-disconnected", {
       reason: "providerDisconnect",
-      error:
-        error?.message ||
-        null
+      error: error?.message || null
     });
   }
 
-  const boundProviders =
-    new WeakSet();
+  async function ensureTargetNetwork() {
+    if (!state.eip1193) throw new WalletConnectError("Wallet is not connected.");
 
-  function bindProviderEvents(provider) {
-    if (
-      !provider ||
-      typeof provider.on !== "function" ||
-      boundProviders.has(provider)
-    ) {
-      return;
+    const chainId = await getCurrentChainId();
+    if (chainId !== NETWORK.chainId) await switchToTargetNetwork();
+
+    const finalChainId = await getCurrentChainId();
+    if (!isTargetChainId(finalChainId)) {
+      throw new WalletConnectError(`Wallet is not connected to ${NETWORK.chainName}.`);
     }
 
-    provider.on(
-      "accountsChanged",
-      handleAccountsChanged
-    );
-
-    provider.on(
-      "chainChanged",
-      handleChainChanged
-    );
-
-    provider.on(
-      "disconnect",
-      handleDisconnect
-    );
-
-    boundProviders.add(provider);
+    state.chainId = finalChainId;
+    return true;
   }
 
   async function ensureConnected() {
-    if (!state.connected) {
-      await connect();
-    }
-
-    await ensureSeiNetwork();
-
+    if (!state.connected) await connect();
+    await ensureTargetNetwork();
     return publicState();
-  }
-
-  async function ensureSeiNetwork() {
-    if (!state.eip1193) {
-      throw new WalletConnectError(
-        "Wallet is not connected."
-      );
-    }
-
-    const chainId =
-      await getCurrentChainId();
-
-    if (chainId !== SEI.chainId) {
-      await switchToSei();
-    }
-
-    const finalChainId =
-      await getCurrentChainId();
-
-    if (finalChainId !== SEI.chainId) {
-      throw new WalletConnectError(
-        "Wallet is not connected to Sei Atlantic-2 Testnet."
-      );
-    }
-
-    state.chainId =
-      finalChainId;
-
-    return true;
   }
 
   async function getSigner() {
     await ensureConnected();
 
     if (!state.signer) {
-      const signerData =
-        await buildSigner(state.eip1193);
-
-      state.browserProvider =
-        signerData.browserProvider;
-
-      state.signer =
-        signerData.signer;
-
-      state.account =
-        signerData.account;
+      const signerData = await buildSigner(state.eip1193);
+      state.browserProvider = signerData.browserProvider;
+      state.signer = signerData.signer;
+      state.account = signerData.account;
     }
 
-    /*
-     * Re-check the chain immediately before returning a signer.
-     * Callers should request the signer immediately before
-     * eth_sendTransaction / contract writes.
-     */
-    await ensureSeiNetwork();
-
+    await ensureTargetNetwork();
     return state.signer;
   }
 
-  async function getAccount() {
-    if (!state.connected || !state.account) {
-      await ensureConnected();
-    }
+  async function getProvider() {
+    await ensureConnected();
+    return state.browserProvider;
+  }
 
+  async function getAccount() {
+    if (!state.connected || !state.account) await ensureConnected();
     return state.account;
   }
 
-  /*
-   * Frame integration.
-   */
-  document.addEventListener(
-    "osnias:wallet-connect-request",
-    async () => {
-      try {
-        await connect();
-      } catch (error) {
-        emit("osnias:wallet-error", {
-          message:
-            error?.message ||
-            "Wallet connection failed.",
-          code:
-            error?.code ??
-            null
-        });
-      }
+  document.addEventListener("osnias:wallet-connect-request", async () => {
+    try {
+      await connect();
+    } catch (error) {
+      emit("osnias:wallet-error", {
+        message: error?.message || "Wallet connection failed.",
+        code: error?.code ?? null
+      });
     }
-  );
+  });
 
-  document.addEventListener(
-    "osnias:wallet-disconnect-request",
-    async () => {
-      try {
-        await disconnect();
-      } catch (error) {
-        /*
-         * disconnect() is intentionally fail-closed: Osnias local state is
-         * cleared even if the wallet refuses or cannot revoke permissions.
-         */
-        resetState({ clearProvider: true });
-
-        emit("osnias:wallet-disconnected", {
-          localOnly: true,
-          reason: "applicationDisconnectFallback"
-        });
-
-        emit("osnias:wallet-disconnect-warning", {
-          message:
-            error?.message ||
-            "Osnias disconnected locally, but wallet permission revocation failed.",
-          code:
-            error?.code ??
-            null
-        });
-      }
+  document.addEventListener("osnias:wallet-disconnect-request", async () => {
+    try {
+      await disconnect();
+    } catch (error) {
+      resetState({ clearProvider: true });
+      emit("osnias:wallet-disconnected", {
+        localOnly: true,
+        reason: "applicationDisconnectFallback"
+      });
     }
-  );
+  });
 
-  /*
-   * Public API
-   */
-  window.OsniasWallet =
-    Object.freeze({
-      version: VERSION,
-      sei: SEI,
+  window.OsniasWallet = Object.freeze({
+    version: VERSION,
+    network: NETWORK,
+    connect,
+    restore,
+    disconnect,
+    disconnectLocal,
+    ensureConnected,
+    ensureTargetNetwork,
+    getSigner,
+    getProvider,
+    getAccount,
+    getState: publicState,
+    hasInjectedWallet: () => Boolean(getInjectedProvider()),
+    walletName: () => state.walletName
+  });
 
-      connect,
-      restore,
-      disconnect,
-      disconnectLocal,
-
-      ensureConnected,
-      ensureSeiNetwork,
-
-      getSigner,
-      getAccount,
-
-      getState: publicState,
-
-      hasInjectedWallet:
-        () => Boolean(
-          getInjectedProvider()
-        ),
-
-      walletName:
-        () => state.walletName
-    });
-
-  /*
-   * Attempt a silent restoration after the DOM is available.
-   * eth_accounts does not request a new wallet permission prompt.
-   */
   async function init() {
     try {
       await restore();
     } catch (error) {
       emit("osnias:wallet-error", {
-        message:
-          error?.message ||
-          "Wallet session restoration failed.",
-        code:
-          error?.code ??
-          null
+        message: error?.message || "Wallet session restoration failed.",
+        code: error?.code ?? null
       });
     }
 
     emit("osnias:wallet-connect-ready", {
-      version: VERSION
+      version: VERSION,
+      network: NETWORK
     });
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      init,
-      {
-        once: true
-      }
-    );
+    document.addEventListener("DOMContentLoaded", init, { once: true });
   } else {
     init();
   }
