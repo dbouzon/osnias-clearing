@@ -1,7 +1,7 @@
 /*
  * Osnias Clearing — EVM Escrow Client
  * File: /end-user/assets/evm-escrow.js
- * Version: 1.2.1
+ * Version: 1.2.2
  * Date: 2026-09-08
  *
  * Uses /end-user/assets/wallet-connect.js
@@ -45,6 +45,59 @@
 
   const $ = id => document.getElementById(id);
   const fmt = v => ethers.formatUnits(v, C.usdcDecimals) + " USDC";
+
+  const FALLBACK_RPC = "https://ethereum-sepolia-rpc.publicnode.com";
+  let fallbackProvider = null;
+
+  function getFallbackProvider() {
+    if (!fallbackProvider) {
+      fallbackProvider = new ethers.JsonRpcProvider(FALLBACK_RPC, {
+        name: "sepolia",
+        chainId: 11155111
+      });
+    }
+    return fallbackProvider;
+  }
+
+  async function readWalletUsdcBalance(address) {
+    /*
+     * Primary path: read through the connected wallet provider.
+     * Fallback path: public Sepolia JSON-RPC, read-only.
+     */
+    try {
+      return {
+        balance: await usdc.balanceOf(address),
+        source: "wallet-provider",
+        error: null
+      };
+    } catch (primaryError) {
+      console.warn("Primary USDC balanceOf failed:", primaryError);
+
+      try {
+        const readOnlyUsdc = new ethers.Contract(
+          C.usdcAddress,
+          USDC_ABI,
+          getFallbackProvider()
+        );
+
+        return {
+          balance: await readOnlyUsdc.balanceOf(address),
+          source: "fallback-rpc",
+          error: primaryError
+        };
+      } catch (fallbackError) {
+        console.error("Fallback USDC balanceOf failed:", fallbackError);
+
+        const error = new Error(
+          "USDC balance read failed on wallet provider and fallback Sepolia RPC."
+        );
+
+        error.primaryError = primaryError;
+        error.fallbackError = fallbackError;
+        throw error;
+      }
+    }
+  }
 
   function setStatus(id, msg, type="") {
     const el = $(id);
@@ -111,10 +164,58 @@
      * Read and display it first so an escrow-side lookup failure can never
      * prevent the user's Circle USDC wallet balance from being shown.
      */
-    const walletBalance = await usdc.balanceOf(connectedAddress);
+    let walletRead;
+
+    try {
+      walletRead = await readWalletUsdcBalance(connectedAddress);
+    } catch (error) {
+      const primary =
+        error?.primaryError?.shortMessage ||
+        error?.primaryError?.message ||
+        "unknown primary error";
+
+      const fallback =
+        error?.fallbackError?.shortMessage ||
+        error?.fallbackError?.message ||
+        "unknown fallback error";
+
+      if ($("walletUsdc")) {
+        $("walletUsdc").textContent = "Error";
+      }
+
+      if ($("walletEscrowHint")) {
+        $("walletEscrowHint").textContent =
+          "USDC read error — see browser console.";
+      }
+
+      console.error("USDC WALLET READ FAILURE", {
+        wallet: connectedAddress,
+        usdc: C.usdcAddress,
+        primary,
+        fallback
+      });
+
+      throw error;
+    }
+
+    const walletBalance = walletRead.balance;
 
     if ($("walletUsdc")) {
       $("walletUsdc").textContent = fmt(walletBalance);
+      $("walletUsdc").title =
+        walletRead.source === "fallback-rpc"
+          ? "Read via fallback Sepolia RPC"
+          : "Read via connected wallet provider";
+    }
+
+    if (walletRead.source === "fallback-rpc") {
+      console.info(
+        "USDC wallet balance read via fallback Sepolia RPC.",
+        {
+          wallet: connectedAddress,
+          usdc: C.usdcAddress
+        }
+      );
     }
 
     /*
@@ -215,8 +316,13 @@
       console.error("Wallet metric refresh failed:", error);
 
       if ($("walletUsdc")) $("walletUsdc").textContent = "Error";
-      if ($("networkLabel")) $("networkLabel").textContent = "Wallet read error";
+      if ($("networkLabel")) $("networkLabel").textContent = "USDC read error";
       if ($("networkDot")) $("networkDot").className = "dot bad";
+
+      if ($("walletEscrowHint") && !$("walletEscrowHint").textContent.includes("USDC read error")) {
+        $("walletEscrowHint").textContent =
+          "USDC read failed. Open browser console for diagnostic details.";
+      }
     }
 
     /*
