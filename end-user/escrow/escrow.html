@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Osnias Clearing — EVM Escrow</title>
+<meta name="description" content="Osnias Clearing EVM escrow testnet interface.">
+<style>
+:root{--bg:#07111f;--panel:#0d1b2a;--panel2:#122235;--text:#eef4fb;--muted:#9fb0c4;--line:#20344b;--ok:#64d7a0;--bad:#ff7b7b;--accent:#7ab8ff;--radius:16px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}body{min-height:100vh}
+a{color:var(--accent);text-decoration:none}.wrap{max-width:1180px;margin:0 auto;padding:24px}.hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap}
+h1{font-size:30px;margin:8px 0}h2{font-size:18px;margin:0 0 16px}p{color:var(--muted);line-height:1.55}.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:13px}
+.dot{width:8px;height:8px;border-radius:50%;background:#f3c969}.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}.card{grid-column:span 6;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}.card.full{grid-column:1/-1}.card.third{grid-column:span 4}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;color:var(--muted);font-size:13px;margin:0 0 6px}
+input{width:100%;padding:12px 13px;border-radius:10px;border:1px solid var(--line);background:#091624;color:var(--text);outline:none}
+button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer;background:#2563a8;color:white}button.secondary{background:#17283b;color:var(--text);border:1px solid var(--line)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.kv{display:grid;grid-template-columns:180px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}.kv .k{color:var(--muted)}.kv .v{word-break:break-all}
+.status{margin-top:14px;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#091624;color:var(--muted);white-space:pre-wrap}.status.ok{border-color:#24563f;color:#b8f1d3}.status.bad{border-color:#683838;color:#ffc5c5}
+.metric{font-size:26px;font-weight:800;margin-top:4px}.small{font-size:12px;color:var(--muted)}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+@media(max-width:900px){.card,.card.third{grid-column:1/-1}}@media(max-width:700px){.row{grid-template-columns:1fr}}@media(max-width:620px){.kv{grid-template-columns:1fr}}
+
+.notice{
+  margin:0 0 22px;
+  padding:18px 20px;
+  border:2px solid #8a6420;
+  border-radius:16px;
+  background:#2a210f;
+}
+.notice strong{
+  display:block;
+  font-size:20px;
+  margin-bottom:8px;
+  color:#ffe39a;
+}
+.notice p{
+  margin:6px 0;
+  color:#f7e7bd;
+}
+.notice .mono{
+  display:block;
+  margin-top:8px;
+  color:#fff3c8;
+  word-break:break-all;
+}
+
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<section class="notice">
+  <strong>⚠ Ethereum Sepolia Testnet — Technical testing only</strong>
+  <p>
+    This page operates exclusively on the <b>Ethereum Sepolia test network</b>.
+    It has no monetary value and is intended solely for technical testing of the Osnias Clearing infrastructure.
+  </p>
+  <p>
+    Any network other than <b>Ethereum Sepolia</b> will be rejected.
+    Any token other than the official <b>Circle test USDC on Sepolia</b> configured for this page will also be rejected.
+  </p>
+  <p>Circle USDC contract used on Sepolia:</p>
+  <span class="mono">0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</span>
+</section>
+
+<section class="hero">
+<div>
+<div class="badge"><span class="dot" id="networkDot"></span><span id="networkLabel">Not connected</span></div>
+<h1>Osnias Clearing — EVM Escrow</h1>
+<p>Sepolia testnet interface for the lender-owned USDC escrow. The escrow holds collateral; the Osnias EVM controller orchestrates MINT/BURN without custody.</p>
+</div>
+<div class="actions"><button id="connectBtn">Connect Wallet</button><button class="secondary" id="refreshBtn">Refresh</button></div>
+</section>
+
+<section class="grid">
+<article class="card full">
+<h2>Deployed contracts</h2>
+<div class="kv"><div class="k">OsniasEscrow</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE">0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</a></div></div>
+<div class="kv"><div class="k">OsniasEvmController</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d">0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</a></div></div>
+<div class="kv"><div class="k">Circle USDC Sepolia</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238">0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</a></div></div>
+</article>
+
+<article class="card third"><div class="small">Connected wallet</div><div class="metric mono" style="font-size:15px" id="walletAddress">—</div></article>
+<article class="card third"><div class="small">Escrow USDC total</div><div class="metric" id="totalEscrow">—</div></article>
+<article class="card third"><div class="small">Accounting solvent</div><div class="metric" id="solvent">—</div></article>
+
+<article class="card">
+<h2>Escrow configuration</h2>
+<div class="kv"><div class="k">Owner</div><div class="v mono" id="ownerValue">—</div></div>
+<div class="kv"><div class="k">Authorized controller</div><div class="v mono" id="controllerValue">—</div></div>
+<div class="kv"><div class="k">USDC address</div><div class="v mono" id="usdcValue">—</div></div>
+<div class="kv"><div class="k">Unallocated USDC</div><div class="v" id="unallocatedValue">—</div></div>
+</article>
+
+<article class="card">
+<h2>Client escrow lookup</h2>
+<label>Escrow ID</label><input id="lookupEscrowId" class="mono" placeholder="bytes32 or text label">
+<div class="actions"><button id="lookupBtn">Read client escrow</button></div>
+<div class="status" id="lookupStatus">Enter an escrow ID.</div>
+</article>
+
+<article class="card">
+<h2>Create client escrow <span class="small">(owner only)</span></h2>
+<label>Osnias ID</label><input id="createOsniasId" class="mono" placeholder="bytes32 or text label">
+<br><label>Escrow ID</label><input id="createEscrowId" class="mono" placeholder="bytes32 or text label">
+<br><label>Client wallet</label><input id="createWallet" class="mono" placeholder="0x...">
+<div class="actions"><button id="createBtn">Create client escrow</button></div>
+<div class="status" id="createStatus">The connected wallet must be the escrow owner.</div>
+</article>
+
+<article class="card">
+<h2>Fund client escrow <span class="small">(client wallet)</span></h2>
+<label>Escrow ID</label><input id="fundEscrowId" class="mono" placeholder="bytes32 or text label">
+<br><label>Amount USDC</label><input id="fundAmount" inputmode="decimal" placeholder="100.00">
+<div class="actions"><button class="secondary" id="approveBtn">1. Approve USDC</button><button id="fundBtn">2. Fund escrow</button></div>
+<div class="status" id="fundStatus">USDC uses 6 decimals on Sepolia.</div>
+</article>
+
+<article class="card full">
+<h2>MINT / BURN backing</h2>
+<div class="row">
+<div><label>Osnias ID</label><input id="availOsniasId" class="mono" placeholder="bytes32 or text label"></div>
+<div><label>Escrow ID</label><input id="availEscrowId" class="mono" placeholder="bytes32 or text label"></div>
+</div>
+<div class="actions"><button id="availabilityBtn">Read available backing</button></div>
+<div class="row" style="margin-top:18px">
+<div><div class="small">Available for MINT</div><div class="metric" id="mintAvailable">—</div></div>
+<div><div class="small">Available for BURN</div><div class="metric" id="burnAvailable">—</div></div>
+</div>
+</article>
+
+<article class="card full"><div class="small">Testnet only. No private key is requested or stored by this page. Transactions are signed by the connected browser wallet.</div></article>
+</section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+const ESCROW_ADDRESS="0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE";
+const CONTROLLER_ADDRESS="0x3A794d05916d1D5E77b970D5A54d77db1d331e8d";
+const USDC_ADDRESS="0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";
+const SEPOLIA_CHAIN_ID=11155111n;
+
+const ESCROW_ABI=[
+"function owner() view returns (address)",
+"function osniasController() view returns (address)",
+"function usdcAddress() pure returns (address)",
+"function totalEscrow() view returns (uint256)",
+"function accountingSolvent() view returns (bool)",
+"function unallocatedUSDC() view returns (uint256)",
+"function createClientEscrow(bytes32 osniasId,bytes32 escrowId,address clientWallet)",
+"function fundClientEscrow(bytes32 escrowId,uint256 amount)",
+"function getClientEscrow(bytes32 escrowId) view returns (tuple(bytes32 osniasId,bytes32 escrowId,address clientWallet,uint256 balance,uint256 mintCommitted,uint256 mintReserved,uint256 burnReserved,uint64 createdAt,bool active))",
+"function availableForMint(bytes32 osniasId,bytes32 escrowId) view returns (uint256)",
+"function availableForBurn(bytes32 osniasId,bytes32 escrowId) view returns (uint256)"
+];
+const USDC_ABI=[
+"function approve(address spender,uint256 amount) returns (bool)",
+"function allowance(address owner,address spender) view returns (uint256)"
+];
+
+let provider,signer,escrow,usdc,connectedAddress;
+const $=id=>document.getElementById(id);
+function setStatus(id,msg,type=""){const e=$(id);e.textContent=msg;e.className="status"+(type?" "+type:"")}
+function toBytes32(v){v=(v||"").trim();if(!v)throw new Error("Missing identifier.");if(/^0x[0-9a-fA-F]{64}$/.test(v))return v;return ethers.keccak256(ethers.toUtf8Bytes(v))}
+const fmt=v=>ethers.formatUnits(v,6)+" USDC";
+
+async function ensureWallet(){
+ if(!window.ethereum)throw new Error("No EVM browser wallet detected.");
+ if(!provider)provider=new ethers.BrowserProvider(window.ethereum);
+ if(!signer)signer=await provider.getSigner();
+ if(!connectedAddress)connectedAddress=await signer.getAddress();
+ const n=await provider.getNetwork();
+ if(n.chainId!==SEPOLIA_CHAIN_ID)throw new Error("Wrong network. Connect to Ethereum Sepolia.");
+ escrow=new ethers.Contract(ESCROW_ADDRESS,ESCROW_ABI,signer);
+ usdc=new ethers.Contract(USDC_ADDRESS,USDC_ABI,signer);
+ $("walletAddress").textContent=connectedAddress;
+ $("networkLabel").textContent="Ethereum Sepolia";
+ $("networkDot").className="dot ok";
+}
+
+async function connect(){
+ try{await window.ethereum.request({method:"eth_requestAccounts"});provider=new ethers.BrowserProvider(window.ethereum);signer=await provider.getSigner();connectedAddress=await signer.getAddress();await ensureWallet();await refresh()}
+ catch(e){$("networkLabel").textContent="Connection failed";$("networkDot").className="dot bad";alert(e.message||e)}
+}
+
+async function refresh(){
+ try{
+  await ensureWallet();
+  const [owner,controller,usdcAddr,total,solvent,unallocated]=await Promise.all([
+   escrow.owner(),escrow.osniasController(),escrow.usdcAddress(),escrow.totalEscrow(),escrow.accountingSolvent(),escrow.unallocatedUSDC()
+  ]);
+  $("ownerValue").textContent=owner;$("controllerValue").textContent=controller;$("usdcValue").textContent=usdcAddr;
+  $("totalEscrow").textContent=fmt(total);$("unallocatedValue").textContent=fmt(unallocated);
+  $("solvent").textContent=solvent?"YES":"NO";$("solvent").style.color=solvent?"var(--ok)":"var(--bad)";
+ }catch(e){console.error(e)}
+}
+
+async function lookupClient(){
+ try{
+  await ensureWallet();const id=toBytes32($("lookupEscrowId").value);const a=await escrow.getClientEscrow(id);
+  if(a.escrowId===ethers.ZeroHash){setStatus("lookupStatus","No client escrow found.","bad");return}
+  setStatus("lookupStatus",[
+   "Osnias ID: "+a.osniasId,"Escrow ID: "+a.escrowId,"Client wallet: "+a.clientWallet,
+   "Balance: "+fmt(a.balance),"MINT committed: "+fmt(a.mintCommitted),"MINT reserved: "+fmt(a.mintReserved),
+   "BURN reserved: "+fmt(a.burnReserved),"Active: "+a.active,"Created: "+new Date(Number(a.createdAt)*1000).toISOString()
+  ].join("\n"),"ok");
+ }catch(e){setStatus("lookupStatus",e.shortMessage||e.message||String(e),"bad")}
+}
+
+async function createClient(){
+ try{
+  await ensureWallet();
+  const oid=toBytes32($("createOsniasId").value),eid=toBytes32($("createEscrowId").value),cw=ethers.getAddress($("createWallet").value.trim());
+  setStatus("createStatus","Waiting for wallet confirmation...");
+  const tx=await escrow.createClientEscrow(oid,eid,cw);setStatus("createStatus","Transaction sent:\n"+tx.hash);await tx.wait();
+  setStatus("createStatus","Client escrow created.\n"+tx.hash,"ok");
+  $("lookupEscrowId").value=$("createEscrowId").value;$("fundEscrowId").value=$("createEscrowId").value;
+  $("availOsniasId").value=$("createOsniasId").value;$("availEscrowId").value=$("createEscrowId").value;
+ }catch(e){setStatus("createStatus",e.shortMessage||e.message||String(e),"bad")}
+}
+
+async function approveUsdc(){
+ try{
+  await ensureWallet();const amount=ethers.parseUnits($("fundAmount").value.trim(),6);if(amount<=0n)throw new Error("Amount must be > 0.");
+  setStatus("fundStatus","Waiting for USDC approval...");
+  const tx=await usdc.approve(ESCROW_ADDRESS,amount);await tx.wait();setStatus("fundStatus","USDC approval confirmed.\n"+tx.hash,"ok");
+ }catch(e){setStatus("fundStatus",e.shortMessage||e.message||String(e),"bad")}
+}
+
+async function fundEscrow(){
+ try{
+  await ensureWallet();const eid=toBytes32($("fundEscrowId").value),amount=ethers.parseUnits($("fundAmount").value.trim(),6);
+  const allowance=await usdc.allowance(connectedAddress,ESCROW_ADDRESS);if(allowance<amount)throw new Error("USDC allowance too low. Approve first.");
+  setStatus("fundStatus","Waiting for funding confirmation...");
+  const tx=await escrow.fundClientEscrow(eid,amount);await tx.wait();setStatus("fundStatus","Escrow funded.\n"+tx.hash,"ok");await refresh();
+ }catch(e){setStatus("fundStatus",e.shortMessage||e.message||String(e),"bad")}
+}
+
+async function readAvailability(){
+ try{
+  await ensureWallet();const oid=toBytes32($("availOsniasId").value),eid=toBytes32($("availEscrowId").value);
+  const [m,b]=await Promise.all([escrow.availableForMint(oid,eid),escrow.availableForBurn(oid,eid)]);
+  $("mintAvailable").textContent=fmt(m);$("burnAvailable").textContent=fmt(b);
+ }catch(e){$("mintAvailable").textContent="Error";$("burnAvailable").textContent="Error";alert(e.shortMessage||e.message||String(e))}
+}
+
+$("connectBtn").onclick=connect;$("refreshBtn").onclick=refresh;$("lookupBtn").onclick=lookupClient;
+$("createBtn").onclick=createClient;$("approveBtn").onclick=approveUsdc;$("fundBtn").onclick=fundEscrow;$("availabilityBtn").onclick=readAvailability;
+if(window.ethereum){window.ethereum.on?.("accountsChanged",()=>location.reload());window.ethereum.on?.("chainChanged",()=>location.reload())}
+</script>
+</body>
+</html>
