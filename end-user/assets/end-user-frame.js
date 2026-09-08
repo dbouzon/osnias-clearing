@@ -12,7 +12,7 @@
  * from this source code without the prior written authorization of the author.
  *
  * File: /assets/end-user-frame.js
- * Version: 1.5.0
+ * Version: 1.5.1
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -28,7 +28,7 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.5.0";
+  const FRAME_VERSION = "1.5.1";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias Orusd End User",
@@ -287,8 +287,6 @@
               class="osnias-brand__logo"
               src="${escapeHtml(currentConfig.logoUrl)}"
               alt="Osnias Clearing"
-              width="42"
-              height="42"
               data-osnias-logo
             >
             <span class="osnias-brand__copy">
@@ -337,7 +335,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · Frame 1.5.0 · 2026-09-08
+        Osnias Clearing · End-User Console · Frame 1.5.1 · 2026-09-08
       </footer>
     `;
   }

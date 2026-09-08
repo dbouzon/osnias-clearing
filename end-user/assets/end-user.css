@@ -5,7 +5,7 @@
  * Visual language aligned with escrow.html
  *
  * File    : /assets/end-user.css
- * Version : 1.2.3
+ * Version : 1.2.5
  * Date    : 2026-09-08
  *
  * UNLICENSED — ALL RIGHTS RESERVED.
@@ -180,11 +180,11 @@ svg {
 }
 
 .osnias-brand__logo {
-  width: 38px;
-  height: 38px;
-  flex: 0 0 38px;
-  object-fit: contain;
-  border-radius: 8px;
+  width: auto;
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: initial;
+  border-radius: 0;
 }
 
 .osnias-brand__copy {
@@ -1103,6 +1103,22 @@ svg {
 .osnias-cyclebar--header .osnias-cyclebar__label,
 .osnias-cyclebar--header .osnias-cyclebar__value {
   font-size: 14px;
+}
+
+
+/* v1.2.5 — Header buttons typography */
+.osnias-header .osnias-nav__link,
+.osnias-header .osnias-btn {
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.osnias-header .osnias-nav__link:hover,
+.osnias-header .osnias-nav__link:focus-visible,
+.osnias-header .osnias-nav__link.is-active,
+.osnias-header .osnias-btn:hover,
+.osnias-header .osnias-btn:focus-visible {
+  color: #ffffff;
 }
 
 @media (prefers-reduced-motion: reduce) {
