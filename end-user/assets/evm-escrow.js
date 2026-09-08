@@ -1,7 +1,7 @@
 /*
  * Osnias Clearing — EVM Escrow Client
  * File: /end-user/assets/evm-escrow.js
- * Version: 1.2.0
+ * Version: 1.2.1
  * Date: 2026-09-08
  *
  * Uses /end-user/assets/wallet-connect.js
@@ -106,30 +106,65 @@
   async function refreshWalletMetrics() {
     await bindContracts();
 
+    /*
+     * Wallet USDC is independent from Osnias escrow accounting.
+     * Read and display it first so an escrow-side lookup failure can never
+     * prevent the user's Circle USDC wallet balance from being shown.
+     */
     const walletBalance = await usdc.balanceOf(connectedAddress);
-    const account = await connectedWalletEscrow();
 
-    $("walletUsdc").textContent = fmt(walletBalance);
+    if ($("walletUsdc")) {
+      $("walletUsdc").textContent = fmt(walletBalance);
+    }
+
+    /*
+     * The contract does not expose a reverse wallet -> escrowId index.
+     * We therefore use the escrowId previously selected/created by this wallet.
+     */
+    let account = null;
+
+    try {
+      account = await connectedWalletEscrow();
+    } catch (error) {
+      console.warn("Unable to read connected wallet escrow:", error);
+    }
 
     if (!account) {
-      $("walletEscrowUsdc").textContent = "—";
-      $("topMintAvailable").textContent = "—";
+      if ($("walletEscrowUsdc")) $("walletEscrowUsdc").textContent = "0 USDC";
+
+      /*
+       * No escrow account is currently associated in this browser.
+       * The immediate theoretical capacity therefore equals the wallet balance.
+       * Once an escrowId is selected/created, the actual escrow balance is
+       * subtracted automatically.
+       */
+      if ($("topMintAvailable")) $("topMintAvailable").textContent = fmt(walletBalance);
+
       if ($("walletEscrowHint")) {
-        $("walletEscrowHint").textContent = "Select or create this wallet's escrow account.";
+        $("walletEscrowHint").textContent =
+          "No client escrow selected for this wallet.";
       }
+
       return;
     }
 
     const escrowBalance = account.balance;
-    const ableToMint = walletBalance > escrowBalance
-      ? walletBalance - escrowBalance
-      : 0n;
+    const ableToMint =
+      walletBalance > escrowBalance
+        ? walletBalance - escrowBalance
+        : 0n;
 
-    $("walletEscrowUsdc").textContent = fmt(escrowBalance);
-    $("topMintAvailable").textContent = fmt(ableToMint);
+    if ($("walletEscrowUsdc")) {
+      $("walletEscrowUsdc").textContent = fmt(escrowBalance);
+    }
+
+    if ($("topMintAvailable")) {
+      $("topMintAvailable").textContent = fmt(ableToMint);
+    }
 
     if ($("walletEscrowHint")) {
-      $("walletEscrowHint").textContent = "Client escrow: " + account.escrowId;
+      $("walletEscrowHint").textContent =
+        "Client escrow: " + account.escrowId;
     }
   }
 
@@ -169,6 +204,25 @@
   }
 
   async function refresh() {
+    /*
+     * First priority: user-facing wallet metrics.
+     * These must remain available even if an ancillary configuration read fails.
+     */
+    try {
+      await refreshWalletMetrics();
+      updateConnectButton(true);
+    } catch (error) {
+      console.error("Wallet metric refresh failed:", error);
+
+      if ($("walletUsdc")) $("walletUsdc").textContent = "Error";
+      if ($("networkLabel")) $("networkLabel").textContent = "Wallet read error";
+      if ($("networkDot")) $("networkDot").className = "dot bad";
+    }
+
+    /*
+     * Secondary diagnostics: contract configuration/accounting.
+     * A failure here must not blank the wallet metrics above.
+     */
     try {
       await bindContracts();
 
@@ -181,17 +235,20 @@
           escrow.unallocatedUSDC()
         ]);
 
-      $("ownerValue").textContent = owner;
-      $("controllerValue").textContent = controller;
-      $("usdcValue").textContent = usdcAddr;
-      $("unallocatedValue").textContent = fmt(unallocated);
-      $("solvent").textContent = solvent ? "YES" : "NO";
-      $("solvent").style.color = solvent ? "var(--ok)" : "var(--bad)";
+      if ($("ownerValue")) $("ownerValue").textContent = owner;
+      if ($("controllerValue")) $("controllerValue").textContent = controller;
+      if ($("usdcValue")) $("usdcValue").textContent = usdcAddr;
 
-      await refreshWalletMetrics();
-      updateConnectButton(true);
-    } catch (e) {
-      console.error(e);
+      if ($("unallocatedValue")) {
+        $("unallocatedValue").textContent = fmt(unallocated);
+      }
+
+      if ($("solvent")) {
+        $("solvent").textContent = solvent ? "YES" : "NO";
+        $("solvent").style.color = solvent ? "var(--ok)" : "var(--bad)";
+      }
+    } catch (error) {
+      console.error("Escrow diagnostic refresh failed:", error);
     }
   }
 
