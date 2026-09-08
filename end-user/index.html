@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Dashboard
-  Version    : 3.0.5-testnet
+  Version    : 3.0.6-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -21,14 +21,14 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.5">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.6">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
   <!-- Lightweight shared assets only: no payment-messages.js, no log scanning -->
-  <script src="./assets/end-user-frame.js?v=3.0.5" defer></script>
-  <script src="./assets/sei-provider.js?v=3.0.5" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.0.5" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.0.6" defer></script>
+  <script src="./assets/sei-provider.js?v=3.0.6" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.0.6" defer></script>
 
   <style>
     .dashboard-status-grid{
@@ -82,6 +82,42 @@
     @media(max-width:620px){
       .dashboard-status-grid{grid-template-columns:1fr}
     }
+
+    .dashboard-cycle-strip{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      padding:12px 14px;
+      margin-bottom:18px;
+      background:var(--panel,#0d1b2a);
+      border:1px solid var(--line,#20344b);
+      border-radius:12px;
+      font-size:12px;
+    }
+    .dashboard-cycle-item{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:0 10px;
+      min-height:20px;
+      border-right:1px solid rgba(255,255,255,.14);
+      color:var(--muted,#9fb0c4);
+      white-space:nowrap;
+    }
+    .dashboard-cycle-item:first-child{padding-left:0}
+    .dashboard-cycle-item:last-child{border-right:0;padding-right:0}
+    .dashboard-cycle-item strong{color:var(--text,#eef4fb);font-weight:700}
+    .dashboard-cycle-state{font-weight:800;letter-spacing:.02em}
+    .dashboard-cycle-state--open{color:#64d7a0}
+    .dashboard-cycle-state--closed{color:#ff7b7b}
+    @media(max-width:760px){
+      .dashboard-cycle-item{
+        border-right:0;
+        padding:4px 10px 4px 0;
+        margin-right:10px;
+      }
+    }
+
   </style>
 </head>
 
@@ -320,6 +356,51 @@
     );
   }
 
+  function renderCycleStatus({
+    cycleNumber,
+    isBurn,
+    isMint,
+    isClearing
+  }) {
+    const strip = $("osnias-cycle-status");
+    if (!strip) return;
+
+    const settlementOpen = !isClearing;
+    const messagesOpen = !isClearing;
+
+    const stateHtml = (label, open) => `
+      <span class="dashboard-cycle-item">
+        <span>${label}</span>
+        <span class="dashboard-cycle-state ${
+          open
+            ? "dashboard-cycle-state--open"
+            : "dashboard-cycle-state--closed"
+        }">${open ? "OPEN" : "CLOSED"}</span>
+      </span>
+    `;
+
+    strip.innerHTML = `
+      <div class="dashboard-cycle-strip">
+        <span class="dashboard-cycle-item">
+          <span>Network</span>
+          <strong>Sei Atlantic-2 Testnet</strong>
+        </span>
+        <span class="dashboard-cycle-item">
+          <span>Chain ID</span>
+          <strong>1328</strong>
+        </span>
+        <span class="dashboard-cycle-item">
+          <span>Cycle</span>
+          <strong>${cycleNumber}</strong>
+        </span>
+        ${stateHtml("MINT", isMint)}
+        ${stateHtml("BURN", isBurn)}
+        ${stateHtml("SETTLEMENT", settlementOpen)}
+        ${stateHtml("MESSAGES", messagesOpen)}
+      </div>
+    `;
+  }
+
   async function refreshCycle() {
     state.cycle = await OsniasSei.syncFrame();
 
@@ -349,6 +430,13 @@
     const isBurn = windowName === "BURN";
     const isMint = windowName === "MINT";
     const isClearing = windowName === "CLEARING";
+
+    renderCycleStatus({
+      cycleNumber,
+      isBurn,
+      isMint,
+      isClearing
+    });
 
     setBadge("burnState", isBurn ? "OPEN" : "CLOSED", isBurn);
     setBadge("mintState", isMint ? "OPEN" : "CLOSED", isMint);
