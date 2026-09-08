@@ -3,7 +3,7 @@
 
   File       : escrow.html
   Component  : EVM Escrow User Interface
-  Version    : 1.3.2
+  Version    : 1.3.4
   Date       : 2026-09-08
   Owner      : Denis Bouzon / Osnias Clearing
   Author     : Denis Bouzon
@@ -88,6 +88,62 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
 }
 .site-footer strong{color:var(--text);font-weight:600}
 
+
+.hero{
+  display:block;
+  margin-bottom:24px;
+}
+.hero-intro{
+  margin:0 0 14px;
+  color:var(--muted);
+  line-height:1.55;
+}
+.hero-title{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:0 0 22px;
+}
+.hero-title h1{
+  margin:0;
+}
+.testnet-label{
+  font:inherit;
+  color:inherit;
+}
+.connection-bar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.connection-bar .actions{
+  margin:0;
+}
+.wallet-inline{
+  color:var(--text);
+  font-size:15px;
+  margin-left:4px;
+}
+.wallet-inline strong{
+  font-weight:600;
+}
+.wallet-inline .mono{
+  color:var(--text);
+}
+@media(max-width:700px){
+  .connection-bar{
+    align-items:flex-start;
+  }
+  .wallet-inline{
+    width:100%;
+    margin-left:0;
+    margin-top:2px;
+    word-break:break-all;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -108,12 +164,30 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
 </section>
 
 <section class="hero">
-<div>
-<div class="badge"><span class="dot" id="networkDot"></span><span id="networkLabel">Not connected</span></div>
-<h1>Osnias Clearing — EVM Escrow</h1>
-<p>Sepolia testnet interface for the lender-owned USDC escrow. The escrow holds collateral; the Osnias EVM controller orchestrates MINT/BURN without custody.</p>
-</div>
-<div class="actions"><button id="connectBtn">Connect Wallet</button><button class="secondary" id="refreshBtn">Refresh</button></div>
+  <p class="hero-intro">
+    Sepolia testnet interface for the lender-owned USDC escrow. The escrow holds collateral; the Osnias EVM controller orchestrates MINT/BURN without custody.
+  </p>
+
+  <div class="hero-title">
+    <h1>Osnias Clearing — EVM Escrow <span class="testnet-label">TESTNET</span></h1>
+  </div>
+
+  <div class="connection-bar">
+    <div class="actions">
+      <button id="connectBtn">Connect Wallet</button>
+      <button class="secondary" id="refreshBtn">Refresh</button>
+    </div>
+
+    <div class="badge">
+      <span class="dot" id="networkDot"></span>
+      <span id="networkLabel">Not connected</span>
+    </div>
+
+    <div class="wallet-inline">
+      <strong>Wallet address :</strong>
+      <span class="mono" id="walletAddress">—</span>
+    </div>
+  </div>
 </section>
 
 <section class="grid">
@@ -127,7 +201,6 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
 <article class="card third">
 <div class="small">USDC in wallet</div>
 <div class="metric" id="walletUsdc">—</div>
-<div class="small mono" id="walletAddress" style="margin-top:8px">—</div>
 </article>
 
 <article class="card third">
@@ -194,7 +267,7 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
 
 <footer class="site-footer">
   <strong>Osnias Clearing — EVM Escrow UI</strong>
-  &nbsp;·&nbsp; Version 1.3.2
+  &nbsp;·&nbsp; Version 1.3.4
   &nbsp;·&nbsp; 2026-09-08
   &nbsp;·&nbsp; Ethereum Sepolia Testnet
 </footer>
