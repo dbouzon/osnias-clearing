@@ -1,7 +1,18 @@
 /*
  * Osnias Clearing — EVM Escrow Client
+ * File: /end-user/assets/evm-escrow.js
+ * Version: 1.2.0
+ * Date: 2026-09-08
+ *
+ * Uses /end-user/assets/wallet-connect.js
  * Ethereum Sepolia technical testnet only.
+ *
+ * Wallet metrics:
+ * - USDC in wallet      = Circle Sepolia USDC balance of connected wallet
+ * - USDC under escrow   = balance of the connected wallet's ClientEscrowAccount
+ * - USDC able to MINT   = max(wallet USDC - wallet escrow USDC, 0)
  */
+
 (() => {
   "use strict";
 
@@ -12,7 +23,6 @@
     "function owner() view returns (address)",
     "function osniasController() view returns (address)",
     "function usdcAddress() pure returns (address)",
-    "function totalEscrow() view returns (uint256)",
     "function accountingSolvent() view returns (bool)",
     "function unallocatedUSDC() view returns (uint256)",
     "function createClientEscrow(bytes32 osniasId,bytes32 escrowId,address clientWallet)",
@@ -28,8 +38,13 @@
     "function balanceOf(address account) view returns (uint256)"
   ];
 
-  let provider, signer, escrow, usdc, connectedAddress;
+  let signer = null;
+  let escrow = null;
+  let usdc = null;
+  let connectedAddress = null;
+
   const $ = id => document.getElementById(id);
+  const fmt = v => ethers.formatUnits(v, C.usdcDecimals) + " USDC";
 
   function setStatus(id, msg, type="") {
     const el = $(id);
@@ -45,37 +60,83 @@
     return ethers.keccak256(ethers.toUtf8Bytes(v));
   }
 
-  function fmt(v) {
-    return ethers.formatUnits(v, C.usdcDecimals) + " USDC";
+  function escrowStorageKey(address) {
+    return "osnias:evm:clientEscrowId:" + String(address || "").toLowerCase();
   }
 
-  async function ensureWallet() {
-    if (!window.ethereum) throw new Error("No EVM browser wallet detected.");
+  function rememberEscrowId(address, escrowId) {
+    if (!address || !escrowId) return;
+    localStorage.setItem(escrowStorageKey(address), escrowId);
+  }
 
-    if (!provider) provider = new ethers.BrowserProvider(window.ethereum);
-    if (!signer) signer = await provider.getSigner();
-    if (!connectedAddress) connectedAddress = await signer.getAddress();
+  function rememberedEscrowId(address) {
+    if (!address) return null;
+    return localStorage.getItem(escrowStorageKey(address));
+  }
 
-    const network = await provider.getNetwork();
-    if (network.chainId !== C.chainId) {
-      throw new Error("Wrong network. Connect to Ethereum Sepolia.");
-    }
+  async function bindContracts() {
+    if (!window.OsniasWallet) throw new Error("wallet-connect.js is not ready.");
+
+    signer = await window.OsniasWallet.getSigner();
+    connectedAddress = await signer.getAddress();
 
     escrow = new ethers.Contract(C.escrowAddress, ESCROW_ABI, signer);
     usdc = new ethers.Contract(C.usdcAddress, USDC_ABI, signer);
 
     if ($("walletAddress")) $("walletAddress").textContent = connectedAddress;
-    if ($("networkLabel")) $("networkLabel").textContent = C.chainName;
+    if ($("networkLabel")) $("networkLabel").textContent = "Ethereum Sepolia";
     if ($("networkDot")) $("networkDot").className = "dot ok";
+  }
+
+  async function connectedWalletEscrow() {
+    const knownId = rememberedEscrowId(connectedAddress);
+    if (!knownId) return null;
+
+    const account = await escrow.getClientEscrow(knownId);
+    if (account.escrowId === ethers.ZeroHash) return null;
+
+    if (String(account.clientWallet).toLowerCase() !== String(connectedAddress).toLowerCase()) {
+      localStorage.removeItem(escrowStorageKey(connectedAddress));
+      return null;
+    }
+
+    return account;
+  }
+
+  async function refreshWalletMetrics() {
+    await bindContracts();
+
+    const walletBalance = await usdc.balanceOf(connectedAddress);
+    const account = await connectedWalletEscrow();
+
+    $("walletUsdc").textContent = fmt(walletBalance);
+
+    if (!account) {
+      $("walletEscrowUsdc").textContent = "—";
+      $("topMintAvailable").textContent = "—";
+      if ($("walletEscrowHint")) {
+        $("walletEscrowHint").textContent = "Select or create this wallet's escrow account.";
+      }
+      return;
+    }
+
+    const escrowBalance = account.balance;
+    const ableToMint = walletBalance > escrowBalance
+      ? walletBalance - escrowBalance
+      : 0n;
+
+    $("walletEscrowUsdc").textContent = fmt(escrowBalance);
+    $("topMintAvailable").textContent = fmt(ableToMint);
+
+    if ($("walletEscrowHint")) {
+      $("walletEscrowHint").textContent = "Client escrow: " + account.escrowId;
+    }
   }
 
   async function connect() {
     try {
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      provider = new ethers.BrowserProvider(window.ethereum);
-      signer = await provider.getSigner();
-      connectedAddress = await signer.getAddress();
-      await ensureWallet();
+      await window.OsniasWallet.connect();
+      await bindContracts();
       await refresh();
     } catch (e) {
       if ($("networkLabel")) $("networkLabel").textContent = "Connection failed";
@@ -84,32 +145,51 @@
     }
   }
 
+  async function disconnect() {
+    try {
+      await window.OsniasWallet.disconnect();
+    } finally {
+      signer = escrow = usdc = null;
+      connectedAddress = null;
+      if ($("walletAddress")) $("walletAddress").textContent = "—";
+      if ($("walletUsdc")) $("walletUsdc").textContent = "—";
+      if ($("walletEscrowUsdc")) $("walletEscrowUsdc").textContent = "—";
+      if ($("topMintAvailable")) $("topMintAvailable").textContent = "—";
+      if ($("networkLabel")) $("networkLabel").textContent = "Disconnected";
+      if ($("networkDot")) $("networkDot").className = "dot";
+      updateConnectButton(false);
+    }
+  }
+
+  function updateConnectButton(connected) {
+    const btn = $("connectBtn");
+    if (!btn) return;
+    btn.textContent = connected ? "Disconnect Wallet" : "Connect Wallet";
+    btn.onclick = connected ? disconnect : connect;
+  }
+
   async function refresh() {
     try {
-      await ensureWallet();
+      await bindContracts();
 
-      const [owner, controller, usdcAddr, total, solvent, unallocated, walletBalance] =
+      const [owner, controller, usdcAddr, solvent, unallocated] =
         await Promise.all([
           escrow.owner(),
           escrow.osniasController(),
           escrow.usdcAddress(),
-          escrow.totalEscrow(),
           escrow.accountingSolvent(),
-          escrow.unallocatedUSDC(),
-          usdc.balanceOf(connectedAddress)
+          escrow.unallocatedUSDC()
         ]);
 
-      if ($("ownerValue")) $("ownerValue").textContent = owner;
-      if ($("controllerValue")) $("controllerValue").textContent = controller;
-      if ($("usdcValue")) $("usdcValue").textContent = usdcAddr;
-      if ($("walletUsdc")) $("walletUsdc").textContent = fmt(walletBalance);
-      if ($("totalEscrow")) $("totalEscrow").textContent = fmt(total);
-      if ($("unallocatedValue")) $("unallocatedValue").textContent = fmt(unallocated);
+      $("ownerValue").textContent = owner;
+      $("controllerValue").textContent = controller;
+      $("usdcValue").textContent = usdcAddr;
+      $("unallocatedValue").textContent = fmt(unallocated);
+      $("solvent").textContent = solvent ? "YES" : "NO";
+      $("solvent").style.color = solvent ? "var(--ok)" : "var(--bad)";
 
-      if ($("solvent")) {
-        $("solvent").textContent = solvent ? "YES" : "NO";
-        $("solvent").style.color = solvent ? "var(--ok)" : "var(--bad)";
-      }
+      await refreshWalletMetrics();
+      updateConnectButton(true);
     } catch (e) {
       console.error(e);
     }
@@ -117,13 +197,20 @@
 
   async function lookupClient() {
     try {
-      await ensureWallet();
+      await bindContracts();
       const id = toBytes32($("lookupEscrowId").value);
       const a = await escrow.getClientEscrow(id);
 
       if (a.escrowId === ethers.ZeroHash) {
         setStatus("lookupStatus", "No client escrow found.", "bad");
         return;
+      }
+
+      const isConnectedWallet =
+        String(a.clientWallet).toLowerCase() === String(connectedAddress).toLowerCase();
+
+      if (isConnectedWallet) {
+        rememberEscrowId(connectedAddress, a.escrowId);
       }
 
       setStatus("lookupStatus", [
@@ -135,11 +222,13 @@
         "MINT reserved: " + fmt(a.mintReserved),
         "BURN reserved: " + fmt(a.burnReserved),
         "Active: " + a.active,
+        "Connected wallet: " + (isConnectedWallet ? "YES" : "NO"),
         "Created: " + new Date(Number(a.createdAt) * 1000).toISOString()
       ].join("\n"), "ok");
 
-      const mint = await escrow.availableForMint(a.osniasId, a.escrowId);
-      if ($("topMintAvailable")) $("topMintAvailable").textContent = fmt(mint);
+      if (isConnectedWallet) {
+        await refreshWalletMetrics();
+      }
     } catch (e) {
       setStatus("lookupStatus", e.shortMessage || e.message || String(e), "bad");
     }
@@ -147,8 +236,7 @@
 
   async function createClient() {
     try {
-      await ensureWallet();
-
+      await bindContracts();
       const oid = toBytes32($("createOsniasId").value);
       const eid = toBytes32($("createEscrowId").value);
       const cw = ethers.getAddress($("createWallet").value.trim());
@@ -164,6 +252,11 @@
       $("fundEscrowId").value = $("createEscrowId").value;
       $("availOsniasId").value = $("createOsniasId").value;
       $("availEscrowId").value = $("createEscrowId").value;
+
+      if (String(cw).toLowerCase() === String(connectedAddress).toLowerCase()) {
+        rememberEscrowId(connectedAddress, eid);
+        await refreshWalletMetrics();
+      }
     } catch (e) {
       setStatus("createStatus", e.shortMessage || e.message || String(e), "bad");
     }
@@ -171,14 +264,13 @@
 
   async function approveUsdc() {
     try {
-      await ensureWallet();
+      await bindContracts();
       const amount = ethers.parseUnits($("fundAmount").value.trim(), C.usdcDecimals);
       if (amount <= 0n) throw new Error("Amount must be > 0.");
 
       setStatus("fundStatus", "Waiting for USDC approval...");
       const tx = await usdc.approve(C.escrowAddress, amount);
       await tx.wait();
-
       setStatus("fundStatus", "USDC approval confirmed.\n" + tx.hash, "ok");
     } catch (e) {
       setStatus("fundStatus", e.shortMessage || e.message || String(e), "bad");
@@ -187,9 +279,18 @@
 
   async function fundEscrow() {
     try {
-      await ensureWallet();
-
+      await bindContracts();
       const eid = toBytes32($("fundEscrowId").value);
+      const account = await escrow.getClientEscrow(eid);
+
+      if (account.escrowId === ethers.ZeroHash) {
+        throw new Error("Unknown client escrow.");
+      }
+
+      if (String(account.clientWallet).toLowerCase() !== String(connectedAddress).toLowerCase()) {
+        throw new Error("This escrow does not belong to the connected wallet.");
+      }
+
       const amount = ethers.parseUnits($("fundAmount").value.trim(), C.usdcDecimals);
       const allowance = await usdc.allowance(connectedAddress, C.escrowAddress);
 
@@ -199,6 +300,7 @@
       const tx = await escrow.fundClientEscrow(eid, amount);
       await tx.wait();
 
+      rememberEscrowId(connectedAddress, eid);
       setStatus("fundStatus", "Escrow funded.\n" + tx.hash, "ok");
       await refresh();
     } catch (e) {
@@ -208,8 +310,7 @@
 
   async function readAvailability() {
     try {
-      await ensureWallet();
-
+      await bindContracts();
       const oid = toBytes32($("availOsniasId").value);
       const eid = toBytes32($("availEscrowId").value);
 
@@ -218,18 +319,38 @@
         escrow.availableForBurn(oid, eid)
       ]);
 
-      if ($("mintAvailable")) $("mintAvailable").textContent = fmt(m);
-      if ($("burnAvailable")) $("burnAvailable").textContent = fmt(b);
-      if ($("topMintAvailable")) $("topMintAvailable").textContent = fmt(m);
+      $("mintAvailable").textContent = fmt(m);
+      $("burnAvailable").textContent = fmt(b);
     } catch (e) {
-      if ($("mintAvailable")) $("mintAvailable").textContent = "Error";
-      if ($("burnAvailable")) $("burnAvailable").textContent = "Error";
+      $("mintAvailable").textContent = "Error";
+      $("burnAvailable").textContent = "Error";
       alert(e.shortMessage || e.message || String(e));
     }
   }
 
+  function applyWalletState(detail) {
+    const connected = Boolean(detail?.connected);
+    updateConnectButton(connected);
+
+    if (connected) {
+      connectedAddress = detail.account || null;
+      if ($("walletAddress")) $("walletAddress").textContent = connectedAddress || "—";
+      if ($("networkLabel")) $("networkLabel").textContent = "Ethereum Sepolia";
+      if ($("networkDot")) $("networkDot").className = "dot ok";
+      refresh();
+    } else {
+      if ($("walletAddress")) $("walletAddress").textContent = "—";
+      if ($("walletUsdc")) $("walletUsdc").textContent = "—";
+      if ($("walletEscrowUsdc")) $("walletEscrowUsdc").textContent = "—";
+      if ($("topMintAvailable")) $("topMintAvailable").textContent = "—";
+      if ($("networkLabel")) $("networkLabel").textContent = "Disconnected";
+      if ($("networkDot")) $("networkDot").className = "dot";
+    }
+  }
+
   function init() {
-    if ($("connectBtn")) $("connectBtn").onclick = connect;
+    updateConnectButton(false);
+
     if ($("refreshBtn")) $("refreshBtn").onclick = refresh;
     if ($("lookupBtn")) $("lookupBtn").onclick = lookupClient;
     if ($("createBtn")) $("createBtn").onclick = createClient;
@@ -237,12 +358,28 @@
     if ($("fundBtn")) $("fundBtn").onclick = fundEscrow;
     if ($("availabilityBtn")) $("availabilityBtn").onclick = readAvailability;
 
-    if (window.ethereum) {
-      window.ethereum.on?.("accountsChanged", () => location.reload());
-      window.ethereum.on?.("chainChanged", () => location.reload());
-    }
+    document.addEventListener("osnias:wallet-connected", e => applyWalletState(e.detail));
+    document.addEventListener("osnias:wallet-restored", e => applyWalletState(e.detail));
+    document.addEventListener("osnias:wallet-account-changed", e => applyWalletState(e.detail));
+    document.addEventListener("osnias:wallet-chain-changed", e => applyWalletState(e.detail));
+    document.addEventListener("osnias:wallet-disconnected", () => applyWalletState({ connected:false }));
+    document.addEventListener("osnias:wallet-wrong-network", () => {
+      updateConnectButton(false);
+      if ($("networkLabel")) $("networkLabel").textContent = "Wrong network";
+      if ($("networkDot")) $("networkDot").className = "dot bad";
+    });
+
+    if (window.OsniasWallet) applyWalletState(window.OsniasWallet.getState());
   }
 
-  window.OsniasEvmEscrow = { connect, refresh, lookupClient, createClient, approveUsdc, fundEscrow, readAvailability };
-  document.addEventListener("DOMContentLoaded", init);
+  window.OsniasEvmEscrow = Object.freeze({
+    connect, disconnect, refresh, lookupClient, createClient,
+    approveUsdc, fundEscrow, readAvailability
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once:true });
+  } else {
+    init();
+  }
 })();
