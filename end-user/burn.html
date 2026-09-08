@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<!--
+  Osnias Clearing — End-User Console
+  Burn
+  Version    : 0.1.0-testnet
+  Copyright  : 2026 Denis Bouzon / Osnias Clearing
+  Licence    : UNLICENSED — All rights reserved
+  ORCID      : 0009-0007-8894-8902
+  Website    : https://www.osnias-clearing.com
+  Network    : Sei Atlantic-2 Testnet (EVM Chain ID 1328)
+
+  UNLICENSED — ALL RIGHTS RESERVED.
+  No license or permission is granted to use, copy, modify, distribute,
+  sublicense, publish, deploy, commercialize, or create derivative works
+  from this source code without the prior written authorization of the author.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    name="description"
+    content="Osnias Clearing ORUSD burn interface on Sei Atlantic-2 Testnet."
+  >
+  <title>Osnias Clearing — Burn</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.2">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="./assets/end-user-frame.js?v=1.4.2" defer></script>
+  <script src="./assets/sei-provider.js?v=1.3.0" defer></script>
+  <script src="./assets/wallet-connect.js?v=1.1.0" defer></script>
+
+  <style>
+    .burn-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, .8fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .burn-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .burn-field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .burn-field label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .burn-field input {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .burn-meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .burn-meta .osnias-card {
+      padding: 14px;
+    }
+
+    .burn-meta-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      opacity: .68;
+    }
+
+    .burn-meta-value {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 5px;
+      word-break: break-word;
+    }
+
+    .burn-mono {
+      font-family: "JetBrains Mono", monospace;
+      word-break: break-all;
+    }
+
+    .burn-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .burn-status-line {
+      display: grid;
+      grid-template-columns: 145px minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .burn-status-line:last-child {
+      border-bottom: 0;
+    }
+
+    .burn-status-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      opacity: .65;
+    }
+
+    .burn-status-value {
+      font-size: 12px;
+      word-break: break-all;
+    }
+
+    .burn-countdown {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .burn-rule {
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .burn-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .burn-meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .burn-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .burn-status-line {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="osnias-shell">
+
+  <div id="osnias-header" data-active="burn"></div>
+
+  <main class="osnias-main">
+    <div class="osnias-page">
+
+      <section class="osnias-page-head">
+        <div class="osnias-page-head__copy">
+          <h1 class="osnias-page-title">Burn ORUSD</h1>
+          <p class="osnias-page-subtitle">
+            Temporarily lock ORUSD on Sei while the corresponding client collateral
+            release is coordinated with the EVM Burn Oracle.
+          </p>
+        </div>
+
+        <div class="osnias-page-head__actions">
+          <button class="osnias-btn" id="btnRefresh" type="button">↻ Refresh</button>
+        </div>
+      </section>
+
+      <div id="osnias-cycle-status"></div>
+      <div class="osnias-alert" id="pageAlert" hidden></div>
+
+      <section class="burn-meta">
+        <article class="osnias-card">
+          <div class="burn-meta-label">ORUSD balance</div>
+          <div class="burn-meta-value" id="orusdBalance">—</div>
+        </article>
+
+        <article class="osnias-card">
+          <div class="burn-meta-label">Osnias ID</div>
+          <div class="burn-meta-value burn-mono" id="osniasId">—</div>
+        </article>
+
+        <article class="osnias-card">
+          <div class="burn-meta-label">Client escrow available</div>
+          <div class="burn-meta-value" id="escrowAvailable">—</div>
+        </article>
+
+        <article class="osnias-card">
+          <div class="burn-meta-label">Burn window</div>
+          <div class="burn-meta-value" id="burnWindow">—</div>
+        </article>
+      </section>
+
+      <section class="burn-grid">
+
+        <article class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">New burn request</h2>
+            <span class="osnias-card__meta">Sei temporal escrow · max 15 min</span>
+          </div>
+
+          <div class="osnias-card__body">
+            <form class="burn-form" id="burnForm">
+
+              <div class="burn-field">
+                <label for="burnAmount">Amount to burn (ORUSD)</label>
+                <input
+                  class="osnias-input"
+                  id="burnAmount"
+                  type="number"
+                  min="0.000001"
+                  step="0.000001"
+                  placeholder="1000.000000"
+                  autocomplete="off"
+                >
+                <span class="osnias-help" id="amountHelp">
+                  Burn amount must be strictly lower than the available client escrow.
+                </span>
+              </div>
+
+              <div class="burn-field">
+                <label>Client escrow</label>
+                <input
+                  class="osnias-input burn-mono"
+                  id="escrowId"
+                  type="text"
+                  value="—"
+                  readonly
+                >
+                <span class="osnias-help">
+                  The escrow is resolved from the connected wallet's Osnias ID.
+                  It cannot be entered manually.
+                </span>
+              </div>
+
+              <div class="burn-field">
+                <label>EVM destination chain</label>
+                <input
+                  class="osnias-input"
+                  id="evmChain"
+                  type="text"
+                  value="—"
+                  readonly
+                >
+              </div>
+
+              <div class="burn-rule">
+                <strong>Atomic safety rule.</strong><br>
+                ORUSD is first transferred into the Sei Burn Controller.
+                Collateral release is then requested on EVM. If collateral is
+                confirmed released, the locked ORUSD is burned. If the 15-minute
+                window expires, Sei enters <strong>CLOSING</strong>; ORUSD is
+                refunded only after EVM confirms that the collateral reservation
+                was cancelled and not released.
+              </div>
+
+              <div class="burn-actions">
+                <button
+                  class="osnias-btn osnias-btn--primary"
+                  id="btnBurn"
+                  type="submit"
+                  disabled
+                >
+                  Lock &amp; Start Burn
+                </button>
+                <span class="osnias-help" id="burnActionState"></span>
+              </div>
+
+            </form>
+          </div>
+        </article>
+
+        <article class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">Current burn</h2>
+            <span class="osnias-badge" id="burnStatusBadge">NONE</span>
+          </div>
+
+          <div class="osnias-card__body">
+            <div class="burn-countdown" id="burnCountdown">15:00</div>
+            <div class="osnias-help" style="margin:5px 0 14px">
+              Remaining Sei burn-lock window.
+            </div>
+
+            <div class="burn-status-line">
+              <div class="burn-status-label">Burn Request ID</div>
+              <div class="burn-status-value burn-mono" id="burnRequestId">—</div>
+            </div>
+
+            <div class="burn-status-line">
+              <div class="burn-status-label">Amount</div>
+              <div class="burn-status-value" id="currentAmount">—</div>
+            </div>
+
+            <div class="burn-status-line">
+              <div class="burn-status-label">Created</div>
+              <div class="burn-status-value" id="createdAt">—</div>
+            </div>
+
+            <div class="burn-status-line">
+              <div class="burn-status-label">Deadline</div>
+              <div class="burn-status-value" id="deadline">—</div>
+            </div>
+
+            <div class="burn-status-line">
+              <div class="burn-status-label">Sei transaction</div>
+              <div class="burn-status-value burn-mono" id="burnTx">—</div>
+            </div>
+          </div>
+        </article>
+
+      </section>
+
+    </div>
+  </main>
+
+  <div id="osnias-footer"></div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  /*
+   * Burn Front V0.1
+   * ----------------
+   * IMPORTANT:
+   * burnController and clientEscrowRegistry MUST be replaced by deployed,
+   * verified Sei addresses before enabling production/test execution.
+   *
+   * No placeholder is silently treated as a valid contract.
+   */
+  const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+  const CONFIG = Object.freeze({
+    version: "0.1.0-testnet",
+
+    // Fill after burn-sei.sol deployment.
+    burnController: ZERO_ADDRESS,
+
+    // Fill when the Sei-side logical client-escrow registry is deployed.
+    // Expected read API is documented below.
+    clientEscrowRegistry: ZERO_ADDRESS,
+
+    orusdDecimals: 6,
+    pollMs: 5000
+  });
+
+  const ORUSD_ABI = Object.freeze([
+    "function balanceOf(address account) view returns (uint256)",
+    "function allowance(address owner,address spender) view returns (uint256)",
+    "function approve(address spender,uint256 amount) returns (bool)"
+  ]);
+
+  const REGISTRY_ABI = Object.freeze([
+    "function getByWallet(address wallet) view returns (tuple(bytes8 osniasId,address wallet,bytes32 dataHash,uint64 registeredAt,uint64 updatedAt,bool active))"
+  ]);
+
+  /*
+   * EXPECTED FUTURE SEI CLIENT-ESCROW REGISTRY INTERFACE
+   * ---------------------------------------------------
+   * One logical client escrow per Osnias ID / clearing currency in V1.
+   *
+   * This interface does not yet represent a deployed contract address.
+   */
+  const CLIENT_ESCROW_REGISTRY_ABI = Object.freeze([
+    "function getClientEscrow(bytes8 osniasId) view returns (bytes32 escrowId,uint256 availableAmount,uint256 evmChainId,bool active)"
+  ]);
+
+  const BURN_ABI = Object.freeze([
+    "function openBurn(address token,uint256 amount,bytes32 osniasId,bytes32 escrowId,uint256 evmChainId) returns (bytes32 burnRequestId)",
+    "function requests(bytes32 burnRequestId) view returns (address user,address token,uint256 amount,bytes32 osniasId,bytes32 escrowId,uint256 evmChainId,uint64 createdAt,uint64 deadline,uint8 status)",
+    "event BurnOpened(bytes32 indexed burnRequestId,bytes32 indexed osniasId,bytes32 indexed escrowId,address user,address token,uint256 amount,uint256 evmChainId,uint64 deadline)"
+  ]);
+
+  const STATUS = Object.freeze([
+    "NONE",
+    "LOCKED",
+    "CLOSING",
+    "BURNED",
+    "REFUNDED"
+  ]);
+
+  const state = {
+    account: null,
+    osniasId8: null,
+    osniasId32: null,
+    participantActive: false,
+
+    escrowId: null,
+    escrowAvailable: 0n,
+    evmChainId: null,
+    escrowActive: false,
+
+    orusdBalance: 0n,
+    burnOpen: false,
+
+    currentRequestId: null,
+    currentRequest: null,
+    currentTxHash: null,
+
+    timer: null,
+    poller: null,
+    loading: false
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  function configured(address) {
+    return ethers.isAddress(address) && address !== ZERO_ADDRESS;
+  }
+
+  function setAlert(message, type = "") {
+    const el = $("pageAlert");
+
+    if (!message) {
+      el.hidden = true;
+      el.textContent = "";
+      el.className = "osnias-alert";
+      return;
+    }
+
+    el.hidden = false;
+    el.textContent = message;
+    el.className =
+      "osnias-alert" +
+      (type === "success" ? " osnias-alert--success" : "") +
+      (type === "danger" ? " osnias-alert--danger" : "");
+  }
+
+  function formatORUSD(value) {
+    return Number(
+      ethers.formatUnits(value || 0n, CONFIG.orusdDecimals)
+    ).toLocaleString("en-US", {
+      minimumFractionDigits: 6,
+      maximumFractionDigits: 6
+    });
+  }
+
+  function shortHex(value, left = 10, right = 8) {
+    const text = String(value || "");
+    if (text.length <= left + right + 1) return text;
+    return `${text.slice(0, left)}…${text.slice(-right)}`;
+  }
+
+  function formatTime(unixSeconds) {
+    const n = Number(unixSeconds || 0);
+    if (!n) return "—";
+    return new Date(n * 1000).toLocaleString();
+  }
+
+  function formatCountdown(deadline) {
+    if (!deadline) return "15:00";
+
+    const remaining =
+      Math.max(0, Number(deadline) - Math.floor(Date.now() / 1000));
+
+    const minutes = Math.floor(remaining / 60);
+    const seconds = remaining % 60;
+
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  }
+
+  function currentORUSDAddress() {
+    return window.OsniasSei?.config?.contracts?.orusd || ZERO_ADDRESS;
+  }
+
+  function currentRegistryAddress() {
+    /*
+     * The present sei-provider.js does not yet expose OsniasRegistry.
+     * If added later as config.contracts.osniasRegistry, this page uses it.
+     */
+    return window.OsniasSei?.config?.contracts?.osniasRegistry || ZERO_ADDRESS;
+  }
+
+  function readProvider() {
+    const cfg = window.OsniasSei?.config;
+
+    if (!cfg?.rpcUrl || !cfg?.chainId) {
+      throw new Error("sei-provider.js is not ready.");
+    }
+
+    return new ethers.JsonRpcProvider(
+      cfg.rpcUrl,
+      cfg.chainId
+    );
+  }
+
+  async function readTemporalState() {
+    if (!window.OsniasSei?.getTemporalState) {
+      throw new Error("Osnias Sei provider is not ready.");
+    }
+
+    const temporal = await OsniasSei.getTemporalState();
+
+    state.burnOpen = Boolean(temporal.burnOpen);
+
+    $("burnWindow").textContent =
+      state.burnOpen ? "OPEN" : "CLOSED";
+
+    if (window.OsniasFrame) {
+      OsniasFrame.setCycle({
+        cycleNumber: temporal.cycleNumber,
+        window: temporal.window,
+        messagingOpen: temporal.messagingOpen
+      });
+    }
+  }
+
+  async function readORUSD() {
+    if (!state.account) {
+      state.orusdBalance = 0n;
+      $("orusdBalance").textContent = "—";
+      return;
+    }
+
+    const tokenAddress = currentORUSDAddress();
+
+    if (!configured(tokenAddress)) {
+      throw new Error("ORUSD contract address is not configured.");
+    }
+
+    const token = new ethers.Contract(
+      tokenAddress,
+      ORUSD_ABI,
+      readProvider()
+    );
+
+    state.orusdBalance =
+      await token.balanceOf(state.account);
+
+    $("orusdBalance").textContent =
+      `${formatORUSD(state.orusdBalance)} ORUSD`;
+  }
+
+  function clearIdentity() {
+    state.osniasId8 = null;
+    state.osniasId32 = null;
+    state.participantActive = false;
+
+    state.escrowId = null;
+    state.escrowAvailable = 0n;
+    state.evmChainId = null;
+    state.escrowActive = false;
+
+    $("osniasId").textContent = "—";
+    $("escrowAvailable").textContent = "—";
+    $("escrowId").value = "—";
+    $("evmChain").value = "—";
+  }
+
+  async function readIdentity() {
+    clearIdentity();
+
+    if (!state.account) return;
+
+    const registryAddress = currentRegistryAddress();
+
+    if (!configured(registryAddress)) {
+      /*
+       * This is an integration dependency, not an error in the wallet.
+       */
+      return;
+    }
+
+    const registry = new ethers.Contract(
+      registryAddress,
+      REGISTRY_ABI,
+      readProvider()
+    );
+
+    const p = await registry.getByWallet(state.account);
+
+    state.osniasId8 = p.osniasId;
+    state.osniasId32 = ethers.zeroPadValue(p.osniasId, 32);
+    state.participantActive = Boolean(p.active);
+
+    $("osniasId").textContent =
+      state.osniasId8;
+
+    await readClientEscrow();
+  }
+
+  async function readClientEscrow() {
+    if (!state.osniasId8) return;
+
+    if (!configured(CONFIG.clientEscrowRegistry)) {
+      return;
+    }
+
+    const registry = new ethers.Contract(
+      CONFIG.clientEscrowRegistry,
+      CLIENT_ESCROW_REGISTRY_ABI,
+      readProvider()
+    );
+
+    const e =
+      await registry.getClientEscrow(state.osniasId8);
+
+    state.escrowId = e.escrowId;
+    state.escrowAvailable = BigInt(e.availableAmount);
+    state.evmChainId = BigInt(e.evmChainId);
+    state.escrowActive = Boolean(e.active);
+
+    $("escrowId").value =
+      state.escrowId || "—";
+
+    $("escrowAvailable").textContent =
+      `${formatORUSD(state.escrowAvailable)} USDC`;
+
+    $("evmChain").value =
+      state.evmChainId?.toString() || "—";
+  }
+
+  function parseRequestedAmount() {
+    const raw = $("burnAmount").value.trim();
+
+    if (!raw) return 0n;
+
+    try {
+      return ethers.parseUnits(raw, CONFIG.orusdDecimals);
+    } catch {
+      return -1n;
+    }
+  }
+
+  function eligibility() {
+    if (!state.account) {
+      return { ok: false, reason: "Connect a wallet." };
+    }
+
+    if (!state.burnOpen) {
+      return { ok: false, reason: "The protocol BURN window is closed." };
+    }
+
+    if (!configured(CONFIG.burnController)) {
+      return {
+        ok: false,
+        reason: "Burn Controller address has not yet been configured."
+      };
+    }
+
+    if (!configured(currentRegistryAddress())) {
+      return {
+        ok: false,
+        reason: "Osnias Registry address is not yet exposed by sei-provider.js."
+      };
+    }
+
+    if (!state.osniasId8 || !state.participantActive) {
+      return {
+        ok: false,
+        reason: "The connected wallet has no active Osnias ID."
+      };
+    }
+
+    if (!configured(CONFIG.clientEscrowRegistry)) {
+      return {
+        ok: false,
+        reason: "Client Escrow Registry address has not yet been configured."
+      };
+    }
+
+    if (!state.escrowId || !state.escrowActive) {
+      return {
+        ok: false,
+        reason: "No active client escrow is attached to this Osnias ID."
+      };
+    }
+
+    const amount = parseRequestedAmount();
+
+    if (amount <= 0n) {
+      return {
+        ok: false,
+        reason: "Enter a valid positive burn amount."
+      };
+    }
+
+    if (amount > state.orusdBalance) {
+      return {
+        ok: false,
+        reason: "Burn amount exceeds the ORUSD wallet balance."
+      };
+    }
+
+    /*
+     * User-defined invariant:
+     * burnAmount must be STRICTLY LOWER than available escrow.
+     */
+    if (amount >= state.escrowAvailable) {
+      return {
+        ok: false,
+        reason: "Burn amount must be strictly lower than the available client escrow."
+      };
+    }
+
+    return { ok: true, reason: "Ready to lock ORUSD and open the burn request." };
+  }
+
+  function updateEligibility() {
+    const e = eligibility();
+
+    $("btnBurn").disabled =
+      !e.ok || state.loading;
+
+    $("amountHelp").textContent =
+      e.reason;
+  }
+
+  function renderCurrentRequest() {
+    const r = state.currentRequest;
+
+    if (!r) {
+      $("burnStatusBadge").textContent = "NONE";
+      $("burnCountdown").textContent = "15:00";
+      $("burnRequestId").textContent = "—";
+      $("currentAmount").textContent = "—";
+      $("createdAt").textContent = "—";
+      $("deadline").textContent = "—";
+      $("burnTx").textContent = state.currentTxHash || "—";
+      return;
+    }
+
+    const statusName =
+      STATUS[Number(r.status)] || `STATUS_${r.status}`;
+
+    $("burnStatusBadge").textContent = statusName;
+    $("burnRequestId").textContent =
+      state.currentRequestId || "—";
+    $("currentAmount").textContent =
+      `${formatORUSD(r.amount)} ORUSD`;
+    $("createdAt").textContent =
+      formatTime(r.createdAt);
+    $("deadline").textContent =
+      formatTime(r.deadline);
+    $("burnCountdown").textContent =
+      formatCountdown(r.deadline);
+    $("burnTx").textContent =
+      state.currentTxHash || "—";
+  }
+
+  async function refreshCurrentRequest() {
+    if (
+      !state.currentRequestId ||
+      !configured(CONFIG.burnController)
+    ) {
+      return;
+    }
+
+    const burn = new ethers.Contract(
+      CONFIG.burnController,
+      BURN_ABI,
+      readProvider()
+    );
+
+    const r =
+      await burn.requests(state.currentRequestId);
+
+    state.currentRequest = {
+      user: r.user,
+      token: r.token,
+      amount: BigInt(r.amount),
+      osniasId: r.osniasId,
+      escrowId: r.escrowId,
+      evmChainId: BigInt(r.evmChainId),
+      createdAt: Number(r.createdAt),
+      deadline: Number(r.deadline),
+      status: Number(r.status)
+    };
+
+    renderCurrentRequest();
+
+    if (
+      state.currentRequest.status === 3 ||
+      state.currentRequest.status === 4
+    ) {
+      stopPolling();
+      await refreshPageData(false);
+    }
+  }
+
+  function startPolling() {
+    stopPolling();
+
+    state.timer = window.setInterval(() => {
+      renderCurrentRequest();
+    }, 1000);
+
+    state.poller = window.setInterval(() => {
+      refreshCurrentRequest().catch((error) => {
+        console.error("[OsniasBurn] poll failed", error);
+      });
+    }, CONFIG.pollMs);
+  }
+
+  function stopPolling() {
+    if (state.timer) {
+      clearInterval(state.timer);
+      state.timer = null;
+    }
+
+    if (state.poller) {
+      clearInterval(state.poller);
+      state.poller = null;
+    }
+  }
+
+  function extractBurnOpened(receipt, burnInterface) {
+    for (const log of receipt.logs || []) {
+      try {
+        const parsed = burnInterface.parseLog(log);
+
+        if (parsed?.name === "BurnOpened") {
+          return parsed.args.burnRequestId;
+        }
+      } catch {}
+    }
+
+    return null;
+  }
+
+  async function ensureAllowance(signer, amount) {
+    const tokenAddress = currentORUSDAddress();
+
+    const token = new ethers.Contract(
+      tokenAddress,
+      ORUSD_ABI,
+      signer
+    );
+
+    const allowance =
+      await token.allowance(
+        state.account,
+        CONFIG.burnController
+      );
+
+    if (allowance >= amount) {
+      return;
+    }
+
+    $("burnActionState").textContent =
+      "Wallet approval required…";
+
+    /*
+     * Exact approval only: do not grant an unlimited burn allowance.
+     */
+    const approveTx =
+      await token.approve(
+        CONFIG.burnController,
+        amount
+      );
+
+    await approveTx.wait();
+  }
+
+  async function submitBurn(event) {
+    event.preventDefault();
+
+    const e = eligibility();
+
+    if (!e.ok || state.loading) {
+      setAlert(e.reason, "danger");
+      return;
+    }
+
+    const amount = parseRequestedAmount();
+
+    const confirmed = window.confirm(
+      `Lock ${ethers.formatUnits(amount, CONFIG.orusdDecimals)} ORUSD for a burn request?\n\n` +
+      `The tokens will be held by the Sei Burn Controller for the cross-oracle settlement process.`
+    );
+
+    if (!confirmed) return;
+
+    state.loading = true;
+    updateEligibility();
+    setAlert("");
+
+    try {
+      const signer =
+        await OsniasWallet.getSigner();
+
+      await ensureAllowance(signer, amount);
+
+      $("burnActionState").textContent =
+        "Opening burn request…";
+
+      const burn =
+        new ethers.Contract(
+          CONFIG.burnController,
+          BURN_ABI,
+          signer
+        );
+
+      const tx =
+        await burn.openBurn(
+          currentORUSDAddress(),
+          amount,
+          state.osniasId32,
+          state.escrowId,
+          state.evmChainId
+        );
+
+      state.currentTxHash = tx.hash;
+      $("burnTx").textContent = tx.hash;
+
+      const receipt =
+        await tx.wait();
+
+      const requestId =
+        extractBurnOpened(receipt, burn.interface);
+
+      if (!requestId) {
+        throw new Error(
+          "Burn transaction confirmed but BurnOpened event was not found."
+        );
+      }
+
+      state.currentRequestId = requestId;
+
+      $("burnActionState").textContent = "";
+      setAlert(
+        `Burn request opened: ${requestId}`,
+        "success"
+      );
+
+      await refreshCurrentRequest();
+      startPolling();
+      await readORUSD();
+
+    } catch (error) {
+      console.error("[OsniasBurn] submit failed", error);
+
+      setAlert(
+        error?.shortMessage ||
+        error?.reason ||
+        error?.message ||
+        String(error),
+        "danger"
+      );
+
+      $("burnActionState").textContent = "";
+    } finally {
+      state.loading = false;
+      updateEligibility();
+    }
+  }
+
+  async function refreshPageData(showErrors = true) {
+    if (!window.OsniasSei) {
+      if (showErrors) {
+        setAlert("sei-provider.js is not ready.", "danger");
+      }
+      return;
+    }
+
+    try {
+      await readTemporalState();
+
+      if (state.account) {
+        await Promise.all([
+          readORUSD(),
+          readIdentity()
+        ]);
+      } else {
+        clearIdentity();
+        $("orusdBalance").textContent = "—";
+      }
+
+      updateEligibility();
+
+      /*
+       * Explain unresolved deployment dependencies without treating them
+       * as a wallet or protocol failure.
+       */
+      const missing = [];
+
+      if (!configured(CONFIG.burnController)) {
+        missing.push("Burn Controller");
+      }
+
+      if (!configured(currentRegistryAddress())) {
+        missing.push("Osnias Registry in sei-provider.js");
+      }
+
+      if (!configured(CONFIG.clientEscrowRegistry)) {
+        missing.push("Client Escrow Registry");
+      }
+
+      if (missing.length && showErrors) {
+        setAlert(
+          `Burn frontend is installed but execution remains disabled until configured: ${missing.join(", ")}.`,
+          ""
+        );
+      }
+
+    } catch (error) {
+      console.error("[OsniasBurn] refresh failed", error);
+
+      if (showErrors) {
+        setAlert(
+          error?.message || String(error),
+          "danger"
+        );
+      }
+    }
+  }
+
+  async function applyWalletState(walletState) {
+    state.account =
+      walletState?.connected && walletState?.account
+        ? ethers.getAddress(walletState.account)
+        : null;
+
+    if (!state.account) {
+      stopPolling();
+      clearIdentity();
+    }
+
+    await refreshPageData(false);
+  }
+
+  $("burnAmount").addEventListener(
+    "input",
+    updateEligibility
+  );
+
+  $("burnForm").addEventListener(
+    "submit",
+    submitBurn
+  );
+
+  $("btnRefresh").addEventListener(
+    "click",
+    () => refreshPageData(true)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-connected",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-restored",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-account-changed",
+    (event) => applyWalletState(event.detail)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-disconnected",
+    () => applyWalletState(null)
+  );
+
+  document.addEventListener(
+    "osnias:wallet-wrong-network",
+    () => {
+      setAlert(
+        "Wallet connected on the wrong network. Switch to Sei Atlantic-2 Testnet.",
+        "danger"
+      );
+      updateEligibility();
+    }
+  );
+
+  document.addEventListener(
+    "osnias:cycle-state",
+    (event) => {
+      if (event.detail) {
+        state.burnOpen =
+          Boolean(event.detail.burnOpen);
+
+        $("burnWindow").textContent =
+          state.burnOpen ? "OPEN" : "CLOSED";
+
+        updateEligibility();
+      }
+    }
+  );
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+      renderCurrentRequest();
+
+      try {
+        await refreshPageData(true);
+
+        if (window.OsniasWallet) {
+          const walletState =
+            OsniasWallet.getState();
+
+          if (walletState?.connected) {
+            await applyWalletState(walletState);
+          }
+        }
+      } catch (error) {
+        setAlert(
+          error?.message || String(error),
+          "danger"
+        );
+      }
+    },
+    { once: true }
+  );
+
+  window.addEventListener(
+    "beforeunload",
+    stopPolling
+  );
+})();
+</script>
+</body>
+</html>
