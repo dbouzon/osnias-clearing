@@ -1,3 +1,36 @@
+<!--
+  Osnias Clearing
+
+  File       : escrow.html
+  Component  : EVM Escrow User Interface
+  Version    : 1.3.0
+  Date       : 2026-09-08
+  Owner      : Denis Bouzon / Osnias Clearing
+  Author     : Denis Bouzon
+  Copyright  : © 2026 Denis Bouzon / Osnias Clearing
+  ORCID      : 0009-0007-8894-8902
+  Website    : https://www.osnias-clearing.com
+  Contact    : contact@osnias-clearing.com
+
+  Network    : Ethereum Sepolia Testnet
+  Chain ID   : 11155111
+  USDC       : Circle USDC Sepolia
+  USDC Addr  : 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
+
+  OsniasEscrow V4.2:
+  0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4
+
+  OsniasEvmController V0.2:
+  0x37b807fa0DC02E754655C4e319863D58701A5Aa2
+
+  UNLICENSED — ALL RIGHTS RESERVED.
+  No license or permission is granted to use, copy, modify, distribute,
+  sublicense, publish, deploy, commercialize, or create derivative works
+  from this source code without the prior written authorization of the author.
+
+  Technical testnet interface only — no monetary value.
+-->
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -44,6 +77,17 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
   word-break:break-all;
 }
 
+
+.site-footer{
+  margin:28px 0 8px;
+  padding:16px 18px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+}
+.site-footer strong{color:var(--text);font-weight:600}
+
 </style>
 </head>
 <body>
@@ -80,9 +124,23 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
 <div class="kv"><div class="k">Circle USDC Sepolia</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238">0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</a></div></div>
 </article>
 
-<article class="card third"><div class="small">USDC in wallet</div><div class="metric" id="walletUsdc">—</div><div class="small mono" id="walletAddress" style="margin-top:8px">—</div></article>
-<article class="card third"><div class="small">USDC under escrow</div><div class="metric" id="totalEscrow">—</div></article>
-<article class="card third"><div class="small">USDC able to MINT</div><div class="metric" id="topMintAvailable">—</div><div class="small">For the selected Osnias ID / Escrow ID</div></article>
+<article class="card third">
+<div class="small">USDC in wallet</div>
+<div class="metric" id="walletUsdc">—</div>
+<div class="small mono" id="walletAddress" style="margin-top:8px">—</div>
+</article>
+
+<article class="card third">
+<div class="small">USDC under escrow</div>
+<div class="metric" id="walletEscrowUsdc">—</div>
+<div class="small" id="walletEscrowHint">Selected client escrow for this wallet</div>
+</article>
+
+<article class="card third">
+<div class="small">USDC able to MINT</div>
+<div class="metric" id="topMintAvailable">—</div>
+<div class="small">Wallet USDC − this wallet's escrow USDC</div>
+</article>
 
 <article class="card">
 <h2>Escrow configuration</h2>
@@ -134,8 +192,17 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
 </section>
 </main>
 
+<footer class="site-footer">
+  <strong>Osnias Clearing — EVM Escrow UI</strong>
+  &nbsp;·&nbsp; Version 1.3.0
+  &nbsp;·&nbsp; 2026-09-08
+  &nbsp;·&nbsp; Ethereum Sepolia Testnet
+</footer>
+
+
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
-<script src="../assets/evm-config.js?v=1.0.0"></script>
-<script src="../assets/evm-escrow.js?v=1.0.0"></script>
+<script src="../assets/evm-config.js?v=1.1.0"></script>
+<script src="../assets/wallet-connect.js?v=1.2.0"></script>
+<script src="../assets/evm-escrow.js?v=1.2.0"></script>
 </body>
 </html>
