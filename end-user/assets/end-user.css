@@ -5,7 +5,7 @@
  * Visual language aligned with escrow.html
  *
  * File    : /assets/end-user.css
- * Version : 1.1.0
+ * Version : 1.2.0
  * Date    : 2026-09-08
  *
  * UNLICENSED — ALL RIGHTS RESERVED.
@@ -253,6 +253,54 @@ svg {
   justify-content: flex-end;
   gap: 8px;
   margin-left: auto;
+}
+
+
+/* =========================================================
+   Header operational status
+   ========================================================= */
+
+.osnias-header__status {
+  width: 100%;
+  border-top: 1px solid rgba(32,52,75,.72);
+  background: #091624;
+}
+
+.osnias-header__status-inner {
+  width: min(100%, var(--content-width));
+  margin: 0 auto;
+  padding: 7px 24px 8px;
+}
+
+.osnias-cyclebar--header {
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  gap: 9px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.osnias-cyclebar--header::-webkit-scrollbar {
+  display: none;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__item {
+  flex: 0 0 auto;
+  gap: 5px;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value {
+  font-size: 11px;
+}
+
+.osnias-cyclebar--header .osnias-separator {
+  flex: 0 0 1px;
+  height: 15px;
 }
 
 /* =========================================================
@@ -997,6 +1045,30 @@ svg {
 
   .osnias-wallet .osnias-btn {
     flex: 1 1 auto;
+  }
+}
+
+
+@media (max-width: 1100px) {
+  .osnias-header__status-inner {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+@media (max-width: 760px) {
+  .osnias-header__status-inner {
+    padding: 6px 14px 7px;
+  }
+
+  .osnias-cyclebar.osnias-cyclebar--header {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .osnias-cyclebar--header .osnias-separator {
+    display: block;
   }
 }
 

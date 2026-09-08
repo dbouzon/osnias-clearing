@@ -12,7 +12,7 @@
  * from this source code without the prior written authorization of the author.
  *
  * File: /assets/end-user-frame.js
- * Version: 1.4.2
+ * Version: 1.5.0
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -28,7 +28,7 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.4.2";
+  const FRAME_VERSION = "1.5.0";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias Orusd End User",
@@ -159,76 +159,85 @@
         ? "—"
         : String(state.cycleNumber);
 
-    const windowName = state.cycleWindow || "—";
+    const windowName = String(state.cycleWindow || "—").toUpperCase();
+    const hasWindow = ["BURN", "MINT", "CLEARING"].includes(windowName);
 
-    let windowClass = "";
-    if (windowName === "CLEARING") {
-      windowClass = " osnias-cyclebar__value--closed";
-    } else if (windowName === "BURN" || windowName === "MINT") {
-      windowClass = " osnias-cyclebar__value--open";
+    const mintOpen = hasWindow ? windowName === "MINT" : null;
+    const burnOpen = hasWindow ? windowName === "BURN" : null;
+    const settlementOpen = hasWindow ? windowName !== "CLEARING" : null;
+
+    const messagesOpen =
+      state.messagingOpen === true
+        ? true
+        : state.messagingOpen === false
+          ? false
+          : hasWindow
+            ? windowName !== "CLEARING"
+            : null;
+
+    function statusText(value) {
+      if (value === true) return "OPEN";
+      if (value === false) return "CLOSED";
+      return "—";
     }
 
-    let messagingValue = "—";
-    let messagingClass = "";
-
-    if (state.messagingOpen === true) {
-      messagingValue = "OPEN";
-      messagingClass = " osnias-cyclebar__value--open";
-    } else if (state.messagingOpen === false) {
-      messagingValue = "CLOSED";
-      messagingClass = " osnias-cyclebar__value--closed";
+    function statusClass(value) {
+      if (value === true) return " osnias-cyclebar__value--open";
+      if (value === false) return " osnias-cyclebar__value--closed";
+      return "";
     }
 
     return `
-      <div class="osnias-cyclebar" id="osnias-cyclebar">
+      <div class="osnias-cyclebar osnias-cyclebar--header" id="osnias-cyclebar">
         <span class="osnias-cyclebar__item">
           <span class="osnias-cyclebar__label">Network</span>
-          <span class="osnias-cyclebar__value" id="osnias-network-name">
-            ${escapeHtml(currentConfig.networkLabel)}
-          </span>
+          <span class="osnias-cyclebar__value" id="osnias-network-name">${escapeHtml(currentConfig.networkLabel)}</span>
         </span>
 
         <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
           <span class="osnias-cyclebar__label">Chain ID</span>
-          <span class="osnias-cyclebar__value" id="osnias-chain-id">
-            ${escapeHtml(currentConfig.chainIdLabel)}
-          </span>
+          <span class="osnias-cyclebar__value" id="osnias-chain-id">${escapeHtml(currentConfig.chainIdLabel)}</span>
         </span>
 
         <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
           <span class="osnias-cyclebar__label">Cycle</span>
-          <span class="osnias-cyclebar__value" id="osnias-cycle-number">
-            ${escapeHtml(cycle)}
-          </span>
+          <span class="osnias-cyclebar__value" id="osnias-cycle-number">${escapeHtml(cycle)}</span>
         </span>
 
         <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">Window</span>
-          <span
-            class="osnias-cyclebar__value${windowClass}"
-            id="osnias-cycle-window"
-          >${escapeHtml(windowName)}</span>
+          <span class="osnias-cyclebar__label">MINT</span>
+          <span class="osnias-cyclebar__value${statusClass(mintOpen)}" id="osnias-mint-status">${statusText(mintOpen)}</span>
         </span>
 
         <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">Messages</span>
-          <span
-            class="osnias-cyclebar__value${messagingClass}"
-            id="osnias-messaging-status"
-          >${escapeHtml(messagingValue)}</span>
+          <span class="osnias-cyclebar__label">BURN</span>
+          <span class="osnias-cyclebar__value${statusClass(burnOpen)}" id="osnias-burn-status">${statusText(burnOpen)}</span>
+        </span>
+
+        <span class="osnias-separator" aria-hidden="true"></span>
+
+        <span class="osnias-cyclebar__item">
+          <span class="osnias-cyclebar__label">SETTLEMENT</span>
+          <span class="osnias-cyclebar__value${statusClass(settlementOpen)}" id="osnias-settlement-status">${statusText(settlementOpen)}</span>
+        </span>
+
+        <span class="osnias-separator" aria-hidden="true"></span>
+
+        <span class="osnias-cyclebar__item">
+          <span class="osnias-cyclebar__label">MESSAGES</span>
+          <span class="osnias-cyclebar__value${statusClass(messagesOpen)}" id="osnias-messaging-status">${statusText(messagesOpen)}</span>
         </span>
       </div>
     `;
   }
-
 
   function bindLogoFallback() {
     const img = document.querySelector("[data-osnias-logo]");
@@ -288,13 +297,19 @@
             </span>
           </a>
 
-          <div class="osnias-header__right osnias-header__wallet-first">
-            ${walletMarkup()}
-          </div>
-
           <nav class="osnias-nav" aria-label="End-user navigation">
             ${renderNavigation(activeKey)}
           </nav>
+
+          <div class="osnias-header__right osnias-header__wallet-last">
+            ${walletMarkup()}
+          </div>
+        </div>
+
+        <div class="osnias-header__status" id="osnias-header-status">
+          <div class="osnias-header__status-inner">
+            ${cycleMarkup()}
+          </div>
         </div>
       </header>
     `;
@@ -304,9 +319,14 @@
   }
 
   function renderCycleBar() {
-    const mount = document.getElementById("osnias-cycle-status");
+    const mount = document.getElementById("osnias-header-status");
     if (!mount) return;
-    mount.innerHTML = cycleMarkup();
+
+    mount.innerHTML = `
+      <div class="osnias-header__status-inner">
+        ${cycleMarkup()}
+      </div>
+    `;
   }
 
   function renderFooter() {
@@ -317,7 +337,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · Frame 1.4.2 · 2026-09-07
+        Osnias Clearing · End-User Console · Frame 1.5.0 · 2026-09-08
       </footer>
     `;
   }
