@@ -2,6 +2,15 @@
  * Osnias Clearing — End-User Console
  * Shared frame / navigation
  *
+ * Copyright © 2026 Denis Bouzon / Osnias Clearing
+ * ORCID: 0009-0007-8894-8902
+ * Website: https://www.osnias-clearing.com
+ *
+ * UNLICENSED — ALL RIGHTS RESERVED.
+ * No license or permission is granted to use, copy, modify, distribute,
+ * sublicense, publish, deploy, commercialize, or create derivative works
+ * from this source code without the prior written authorization of the author.
+ *
  * File: /assets/end-user-frame.js
  * Version: 1.4.2
  *
@@ -42,7 +51,8 @@
       { key: "sent", label: "Invoice Sent", href: "invoices-sent.html" },
       { key: "received", label: "Invoice Received", href: "invoices-received.html" },
       { key: "p2p", label: "Settlement", href: "p2p-settlement.html" },
-      { key: "registry", label: "Registry", href: "registry.html" }
+      { key: "registry", label: "Registry", href: "registry.html" },
+      { key: "burn", label: "Burn", href: "burn.html" }
     ]
   });
 
