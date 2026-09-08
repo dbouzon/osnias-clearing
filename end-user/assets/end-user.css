@@ -5,7 +5,7 @@
  * Visual language aligned with escrow.html
  *
  * File    : /assets/end-user.css
- * Version : 1.2.0
+ * Version : 1.2.3
  * Date    : 2026-09-08
  *
  * UNLICENSED — ALL RIGHTS RESERVED.
@@ -253,54 +253,6 @@ svg {
   justify-content: flex-end;
   gap: 8px;
   margin-left: auto;
-}
-
-
-/* =========================================================
-   Header operational status
-   ========================================================= */
-
-.osnias-header__status {
-  width: 100%;
-  border-top: 1px solid rgba(32,52,75,.72);
-  background: #091624;
-}
-
-.osnias-header__status-inner {
-  width: min(100%, var(--content-width));
-  margin: 0 auto;
-  padding: 7px 24px 8px;
-}
-
-.osnias-cyclebar--header {
-  min-height: 32px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  gap: 9px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.osnias-cyclebar--header::-webkit-scrollbar {
-  display: none;
-}
-
-.osnias-cyclebar--header .osnias-cyclebar__item {
-  flex: 0 0 auto;
-  gap: 5px;
-}
-
-.osnias-cyclebar--header .osnias-cyclebar__label,
-.osnias-cyclebar--header .osnias-cyclebar__value {
-  font-size: 11px;
-}
-
-.osnias-cyclebar--header .osnias-separator {
-  flex: 0 0 1px;
-  height: 15px;
 }
 
 /* =========================================================
@@ -910,6 +862,57 @@ svg {
   border-top: 1px solid var(--line);
 }
 
+
+/* =========================================================
+   Header operational status — centered
+   ========================================================= */
+
+.osnias-header__status {
+  width: 100%;
+  border-top: 1px solid rgba(32,52,75,.72);
+  background: #091624;
+}
+
+.osnias-header__status-inner {
+  width: min(100%, var(--content-width));
+  margin: 0 auto;
+  padding: 7px 24px 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.osnias-cyclebar--header {
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  gap: 12px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.osnias-cyclebar--header::-webkit-scrollbar {
+  display: none;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__item {
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value {
+  font-size: 14px;
+}
+
+.osnias-cyclebar--header .osnias-separator {
+  flex: 0 0 1px;
+  height: 18px;
+}
+
 /* =========================================================
    Responsive
    ========================================================= */
@@ -1049,27 +1052,57 @@ svg {
 }
 
 
-@media (max-width: 1100px) {
-  .osnias-header__status-inner {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
+/* v1.2.1 — UX adjustment: center operational strip and use 14px type */
+.osnias-header__status-inner {
+  display: flex;
+  justify-content: center;
 }
 
-@media (max-width: 760px) {
-  .osnias-header__status-inner {
-    padding: 6px 14px 7px;
-  }
+.osnias-cyclebar--header {
+  justify-content: center;
+  gap: 12px;
+}
 
-  .osnias-cyclebar.osnias-cyclebar--header {
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: nowrap;
-  }
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value {
+  font-size: 14px;
+}
 
-  .osnias-cyclebar--header .osnias-separator {
-    display: block;
-  }
+
+/* v1.2.2 — Operational strip color discipline
+   Only white, green and red are allowed in the status strip. */
+.osnias-header__status,
+.osnias-header__status-inner,
+.osnias-cyclebar--header {
+  color: var(--white);
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value {
+  color: var(--white);
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__value--open {
+  color: var(--green);
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__value--closed {
+  color: var(--red);
+}
+
+.osnias-cyclebar--header .osnias-separator {
+  background: rgba(238,244,251,.28);
+}
+
+
+/* v1.2.3 — Operational strip typography: 14px everywhere */
+.osnias-header__status,
+.osnias-header__status-inner,
+.osnias-cyclebar--header,
+.osnias-cyclebar--header .osnias-cyclebar__item,
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value {
+  font-size: 14px;
 }
 
 @media (prefers-reduced-motion: reduce) {
