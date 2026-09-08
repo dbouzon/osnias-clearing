@@ -75,20 +75,21 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
 <section class="grid">
 <article class="card full">
 <h2>Deployed contracts</h2>
-<div class="kv"><div class="k">OsniasEscrow</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE">0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</a></div></div>
-<div class="kv"><div class="k">OsniasEvmController</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d">0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</a></div></div>
+<div class="kv"><div class="k">OsniasEscrow</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4">0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4</a></div></div>
+<div class="kv"><div class="k">OsniasEvmController</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0x37b807fa0DC02E754655C4e319863D58701A5Aa2">0x37b807fa0DC02E754655C4e319863D58701A5Aa2</a></div></div>
 <div class="kv"><div class="k">Circle USDC Sepolia</div><div class="v mono"><a target="_blank" href="https://sepolia.etherscan.io/address/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238">0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238</a></div></div>
 </article>
 
-<article class="card third"><div class="small">Connected wallet</div><div class="metric mono" style="font-size:15px" id="walletAddress">—</div></article>
-<article class="card third"><div class="small">Escrow USDC total</div><div class="metric" id="totalEscrow">—</div></article>
-<article class="card third"><div class="small">Accounting solvent</div><div class="metric" id="solvent">—</div></article>
+<article class="card third"><div class="small">USDC in wallet</div><div class="metric" id="walletUsdc">—</div><div class="small mono" id="walletAddress" style="margin-top:8px">—</div></article>
+<article class="card third"><div class="small">USDC under escrow</div><div class="metric" id="totalEscrow">—</div></article>
+<article class="card third"><div class="small">USDC able to MINT</div><div class="metric" id="topMintAvailable">—</div><div class="small">For the selected Osnias ID / Escrow ID</div></article>
 
 <article class="card">
 <h2>Escrow configuration</h2>
 <div class="kv"><div class="k">Owner</div><div class="v mono" id="ownerValue">—</div></div>
 <div class="kv"><div class="k">Authorized controller</div><div class="v mono" id="controllerValue">—</div></div>
 <div class="kv"><div class="k">USDC address</div><div class="v mono" id="usdcValue">—</div></div>
+<div class="kv"><div class="k">Accounting solvent</div><div class="v" id="solvent">—</div></div>
 <div class="kv"><div class="k">Unallocated USDC</div><div class="v" id="unallocatedValue">—</div></div>
 </article>
 
@@ -135,8 +136,8 @@ button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:poin
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 <script>
-const ESCROW_ADDRESS="0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE";
-const CONTROLLER_ADDRESS="0x3A794d05916d1D5E77b970D5A54d77db1d331e8d";
+const ESCROW_ADDRESS="0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4";
+const CONTROLLER_ADDRESS="0x37b807fa0DC02E754655C4e319863D58701A5Aa2";
 const USDC_ADDRESS="0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";
 const SEPOLIA_CHAIN_ID=11155111n;
 
@@ -155,7 +156,8 @@ const ESCROW_ABI=[
 ];
 const USDC_ABI=[
 "function approve(address spender,uint256 amount) returns (bool)",
-"function allowance(address owner,address spender) view returns (uint256)"
+"function allowance(address owner,address spender) view returns (uint256)",
+"function balanceOf(address account) view returns (uint256)"
 ];
 
 let provider,signer,escrow,usdc,connectedAddress;
@@ -186,10 +188,12 @@ async function connect(){
 async function refresh(){
  try{
   await ensureWallet();
-  const [owner,controller,usdcAddr,total,solvent,unallocated]=await Promise.all([
-   escrow.owner(),escrow.osniasController(),escrow.usdcAddress(),escrow.totalEscrow(),escrow.accountingSolvent(),escrow.unallocatedUSDC()
+  const [owner,controller,usdcAddr,total,solvent,unallocated,walletBalance]=await Promise.all([
+   escrow.owner(),escrow.osniasController(),escrow.usdcAddress(),escrow.totalEscrow(),escrow.accountingSolvent(),escrow.unallocatedUSDC(),
+   usdc.balanceOf(connectedAddress)
   ]);
   $("ownerValue").textContent=owner;$("controllerValue").textContent=controller;$("usdcValue").textContent=usdcAddr;
+  $("walletUsdc").textContent=fmt(walletBalance);
   $("totalEscrow").textContent=fmt(total);$("unallocatedValue").textContent=fmt(unallocated);
   $("solvent").textContent=solvent?"YES":"NO";$("solvent").style.color=solvent?"var(--ok)":"var(--bad)";
  }catch(e){console.error(e)}
@@ -204,6 +208,8 @@ async function lookupClient(){
    "Balance: "+fmt(a.balance),"MINT committed: "+fmt(a.mintCommitted),"MINT reserved: "+fmt(a.mintReserved),
    "BURN reserved: "+fmt(a.burnReserved),"Active: "+a.active,"Created: "+new Date(Number(a.createdAt)*1000).toISOString()
   ].join("\n"),"ok");
+  const m=await escrow.availableForMint(a.osniasId,a.escrowId);
+  $("topMintAvailable").textContent=fmt(m);
  }catch(e){setStatus("lookupStatus",e.shortMessage||e.message||String(e),"bad")}
 }
 
@@ -241,6 +247,7 @@ async function readAvailability(){
   await ensureWallet();const oid=toBytes32($("availOsniasId").value),eid=toBytes32($("availEscrowId").value);
   const [m,b]=await Promise.all([escrow.availableForMint(oid,eid),escrow.availableForBurn(oid,eid)]);
   $("mintAvailable").textContent=fmt(m);$("burnAvailable").textContent=fmt(b);
+  $("topMintAvailable").textContent=fmt(m);
  }catch(e){$("mintAvailable").textContent="Error";$("burnAvailable").textContent="Error";alert(e.shortMessage||e.message||String(e))}
 }
 
