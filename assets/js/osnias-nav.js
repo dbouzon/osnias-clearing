@@ -41,6 +41,10 @@
         href: prefix + "/regulation/regulation.html"
       },
       {
+        label: "Osnias-ID",
+        href: prefix + "/osniasid/osniasid.html"
+      },
+      {
         label: "Documentation",
         href: prefix + "/documentation/documentation.html"
       }
