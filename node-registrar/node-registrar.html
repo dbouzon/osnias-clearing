@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Osnias Node Registrar — 90-017 Denis</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <meta name="theme-color" content="#050814"/>
+  <link rel="stylesheet" href="./assets/node-registrar.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <script src="./assets/node-registrar.js" defer></script>
+</head>
+
+<body>
+  <main class="shell">
+    <section class="topbar">
+      <div>
+        <div class="kicker">OSNIAS CLEARING · NODE REGISTRAR · TESTNET</div>
+        <h1>Node 90-017 · Denis</h1>
+        <p class="sub">
+          Ethereum Sepolia · Osnias-ID registration interface
+        </p>
+      </div>
+      <div class="network-box">
+        <span class="dot" id="networkDot"></span>
+        <span id="networkState">Wallet not connected</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Node identity</h2>
+      <div class="grid grid-4">
+        <div class="metric">
+          <span>KK</span>
+          <strong>90</strong>
+        </div>
+        <div class="metric">
+          <span>NNN</span>
+          <strong>017</strong>
+        </div>
+        <div class="metric">
+          <span>Node</span>
+          <strong>Denis</strong>
+        </div>
+        <div class="metric">
+          <span>Chain ID</span>
+          <strong>11155111</strong>
+        </div>
+      </div>
+
+      <div class="contracts">
+        <div>
+          <span>Node Registrar</span>
+          <code>0xD14C1b90635521A1C586ec9B871D797458cB1Db8</code>
+        </div>
+        <div>
+          <span>EVM Registry</span>
+          <code>0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55</code>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Wallet</h2>
+      <div class="actions">
+        <button id="connectBtn" class="btn primary">Connect wallet</button>
+        <button id="disconnectBtn" class="btn" disabled>Disconnect</button>
+        <button id="refreshBtn" class="btn">Refresh</button>
+      </div>
+      <div class="wallet-line">
+        <span>Connected address</span>
+        <code id="walletAddress">—</code>
+      </div>
+      <div class="wallet-line">
+        <span>Node owner</span>
+        <code id="nodeOwner">—</code>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Generate Osnias-ID</h2>
+      <p class="info">
+        Enter the 9-digit user number allocated by Node 90-017. The interface
+        calculates the two MOD-97 check digits. The smart contracts independently
+        validate the final identifier on-chain.
+      </p>
+
+      <div class="form-row">
+        <label for="participantNumber">AAAAAAAAA · 9-digit user number</label>
+        <input
+          id="participantNumber"
+          type="text"
+          inputmode="numeric"
+          maxlength="9"
+          placeholder="000000001"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="id-preview">
+        <span>Osnias-ID</span>
+        <strong id="osniasIdDisplay">90-017-_________-__</strong>
+        <code id="osniasIdMachine">—</code>
+      </div>
+
+      <div class="validation-row">
+        <span id="checksumStatus" class="status neutral">Waiting for 9 digits</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Register user</h2>
+      <div class="form-row">
+        <label for="localAddress">Local EVM address</label>
+        <input
+          id="localAddress"
+          type="text"
+          placeholder="0x..."
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="actions">
+        <button id="registerBtn" class="btn primary" disabled>
+          Register user
+        </button>
+      </div>
+
+      <div id="txBox" class="tx-box hidden">
+        <div><span>Transaction</span><code id="txHash">—</code></div>
+        <div><span>Request ID</span><code id="requestId">—</code></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Registry verification</h2>
+      <div class="actions">
+        <button id="lookupBtn" class="btn" disabled>
+          Read Registry
+        </button>
+      </div>
+
+      <div class="result-grid">
+        <div>
+          <span>Osnias-ID</span>
+          <strong id="readId">—</strong>
+        </div>
+        <div>
+          <span>Local address</span>
+          <strong id="readAddress">—</strong>
+        </div>
+        <div>
+          <span>Status</span>
+          <strong id="readStatus">—</strong>
+        </div>
+        <div>
+          <span>Active pair</span>
+          <strong id="readActivePair">—</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="console">
+      <div class="console-head">
+        <span>Operational log</span>
+        <button id="clearLogBtn" class="mini-btn">Clear</button>
+      </div>
+      <pre id="log">Ready.</pre>
+    </section>
+
+    <footer>
+      © 2026 Denis Bouzon / Osnias Clearing · Node Registrar 90-017 · Ethereum Sepolia Testnet
+    </footer>
+  </main>
+</body>
+</html>
