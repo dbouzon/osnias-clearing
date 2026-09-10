@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Osnias Registry Sepolia — Administration</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="stylesheet" href="./assets/registry-admin.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <script src="./assets/registry-admin.js" defer></script>
+</head>
+
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="kicker">OSNIAS CLEARING · REGISTRY ADMIN · TESTNET</div>
+        <h1>Ethereum Sepolia Registry</h1>
+        <p>KK 90 · Chain ID 11155111</p>
+      </div>
+      <div class="network">
+        <span id="networkDot" class="dot"></span>
+        <span id="networkState">Read-only</span>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Registry</h2>
+      <div class="metrics">
+        <div><span>Contract</span><code>0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55</code></div>
+        <div><span>KK</span><strong id="kkValue">—</strong></div>
+        <div><span>Network</span><strong id="networkName">—</strong></div>
+        <div><span>Owner</span><code id="registryOwner">—</code></div>
+      </div>
+
+      <div class="actions">
+        <button id="connectBtn" class="btn primary">Connect owner wallet</button>
+        <button id="refreshBtn" class="btn">Refresh</button>
+      </div>
+
+      <div class="wallet">
+        <span>Connected wallet</span>
+        <code id="walletAddress">—</code>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Registered participants</h2>
+
+      <div class="scanbar">
+        <label>
+          Scan from block
+          <input id="fromBlock" type="number" value="11670000"/>
+        </label>
+        <button id="scanBtn" class="btn">Scan Registry events</button>
+      </div>
+
+      <p class="hint">
+        The list is reconstructed from the Registry's on-chain ParticipantRegistered events.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Osnias-ID</th>
+              <th>Local EVM address</th>
+              <th>Status</th>
+              <th>Node</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="participantsBody">
+            <tr><td colspan="5" class="empty">No scan yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Direct lookup</h2>
+      <div class="lookup-grid">
+        <div>
+          <label>Osnias-ID machine value</label>
+          <input id="lookupId" type="text" placeholder="9001700000002227"/>
+          <button id="lookupIdBtn" class="btn">Lookup by ID</button>
+        </div>
+        <div>
+          <label>Local EVM address</label>
+          <input id="lookupAddress" type="text" placeholder="0x..."/>
+          <button id="lookupAddressBtn" class="btn">Lookup by address</button>
+        </div>
+      </div>
+      <pre id="lookupResult">—</pre>
+    </section>
+
+    <section class="console">
+      <div class="console-head">
+        <span>Operational log</span>
+        <button id="clearLogBtn" class="mini">Clear</button>
+      </div>
+      <pre id="log">Ready.</pre>
+    </section>
+
+    <footer>
+      © 2026 Denis Bouzon / Osnias Clearing · Registry EVM Sepolia · Administration Testnet
+    </footer>
+  </main>
+</body>
+</html>
