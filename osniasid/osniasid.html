@@ -7,7 +7,7 @@
   Project: Osnias Clearing
   Website: https://www.osnias-clearing.com/
   ORCID: 0009-0007-8894-8902
-  Release: Version 1.0
+  Release: Version 1.2
   Release date: 9 September 2026
   License: Creative Commons Attribution 4.0 International (CC BY 4.0)
   HAL: hal-05743547
@@ -44,7 +44,7 @@
   <meta property="article:author" content="Denis Bouzon"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Osnias-ID — Internal Interchain Clearing Identifier"/>
-  <meta name="twitter:description" content="Public Release 1.0: a compact 16-digit internal identifier for participants and clearing accounts across escrow-capable blockchain chains connected to Osnias Clearing."/>
+  <meta name="twitter:description" content="Public Release 1.2: a compact 16-digit internal identifier for participants and clearing accounts across escrow-capable blockchain chains connected to Osnias Clearing."/>
   <meta name="twitter:image" content="https://www.osnias-clearing.com/index-picture.jpg"/>
   <meta name="citation_title" content="Osnias-ID: An Internal Interchain Identifier for Multi-Chain Clearing"/>
   <meta name="citation_author" content="Bouzon, Denis"/>
@@ -71,9 +71,9 @@
     "alternativeHeadline": "Internal Interchain Clearing Identifier · Technical White Paper & Public Specification",
     "description": "Osnias-ID is a project-specific internal identifier issued and interpreted by Osnias Clearing for interchain clearing. It provides a compact and persistent 16-digit reference linking an Osnias-assigned chain code and server code to a participant value allocated by that server, independently of native wallet-address formats.",
     "datePublished": "2026-09-09",
-    "dateModified": "2026-09-09",
+    "dateModified": "2026-09-10",
     "inLanguage": "en",
-    "version": "1.0",
+    "version": "1.2",
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "isAccessibleForFree": true,
     "url": "https://www.osnias-clearing.com/osniasid/osniasid.html",
@@ -125,15 +125,76 @@
     }
     .id-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.id-card{border:1px solid var(--border);background:var(--panel);border-radius:1rem;padding:1.15rem}.id-card h3{margin:.2rem 0 .45rem;font-size:1.02rem}.id-card p{color:var(--muted);font-size:.88rem}.id-kicker{color:var(--accent);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;font-weight:700}.id-format{margin:1.3rem 0;padding:1.35rem;border:1px solid var(--border);background:var(--panel);border-radius:1rem;text-align:center}.id-format code{font-size:clamp(1.2rem,3vw,2rem);font-weight:700;color:var(--accent);letter-spacing:.06em}.id-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;margin-top:1rem}.id-field{border:1px solid var(--border);border-radius:.9rem;background:var(--panel);padding:1rem;text-align:center}.id-field strong{display:block;color:var(--accent);font-size:1.05rem;margin-bottom:.25rem}.id-field span{color:var(--muted);font-size:.8rem}.id-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:.7rem;margin-top:1.2rem}.id-flow-box{border:1px solid var(--border);border-radius:1rem;background:var(--panel);padding:1.1rem;text-align:center}.id-flow-box strong{display:block;color:var(--text);margin-bottom:.25rem}.id-flow-box span{color:var(--muted);font-size:.82rem}.id-arrow{color:var(--accent);font-weight:800;font-size:1.25rem;text-align:center}.id-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}.id-link{display:block;border:1px solid var(--border);background:var(--panel);border-radius:1rem;padding:1.1rem;text-decoration:none!important}.id-link:hover{border-color:var(--accent-soft)}.id-link strong{display:block;color:var(--text);margin-bottom:.3rem}.id-link span{color:var(--muted);font-size:.84rem}.id-principle{margin-top:1rem;border-left:3px solid var(--accent);padding:.85rem 1rem;background:var(--panel);color:var(--muted);font-size:.9rem}.id-meta{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1rem}.id-pill{border:1px solid var(--border);border-radius:999px;padding:.42rem .7rem;color:var(--muted);font-size:.78rem;background:var(--panel)}@media(max-width:900px){.id-grid,.id-fields{grid-template-columns:1fr 1fr}.id-flow{grid-template-columns:1fr}.id-arrow{transform:rotate(90deg)}}@media(max-width:640px){.id-grid,.id-fields,.id-links{grid-template-columns:1fr}}
 
+
+    .id-architecture{
+      margin-top:1.25rem;
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:1rem;
+      padding:1rem;
+    }
+    .id-architecture img{
+      display:block;
+      width:100%;
+      max-width:900px;
+      height:auto;
+      margin:0 auto;
+      border-radius:.8rem;
+    }
+    .id-architecture-caption{
+      margin:.9rem auto 0;
+      max-width:900px;
+      color:var(--muted);
+      font-size:.86rem;
+      line-height:1.55;
+      text-align:center;
+    }
+    .id-route{
+      margin:1rem 0 0;
+      padding:1rem 1.1rem;
+      border:1px solid var(--border);
+      border-radius:.9rem;
+      background:var(--panel);
+      text-align:center;
+      color:var(--text);
+      font-weight:600;
+      line-height:1.6;
+    }
+
+
+    .id-match-table{
+      margin:1.2rem 0 1.35rem;
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:1rem;
+      padding:.75rem;
+      overflow:hidden;
+    }
+    .id-match-table img{
+      display:block;
+      width:100%;
+      height:auto;
+      margin:0 auto;
+      border-radius:.65rem;
+      background:#fff;
+    }
+    .id-match-table-caption{
+      margin:.75rem .35rem .1rem;
+      color:var(--muted);
+      font-size:.82rem;
+      line-height:1.5;
+      text-align:center;
+    }
+
   </style>
 </head>
 <body>
   <div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a><nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav></div></div>
   <header><div class="container"><section class="hero">
-    <div class="eyebrow">Public Specification · Multi-Chain Clearing · Release 1.0</div>
+    <div class="eyebrow">Public Specification · Multi-Chain Clearing · Release 1.2</div>
     <h1>Osnias-ID</h1>
     <p class="hero-lead"><strong>An Internal Interchain Identifier for Multi-Chain Clearing.</strong> A compact 16-digit identifier issued for internal Osnias Clearing use across escrow-capable blockchain chains, while keeping legal identity, clearing-account identity and technical wallet addresses as separate layers.</p>
-    <div class="actions"><a class="btn btn-primary" href="/osniasid/Osnias-ID_White_HAL.pdf">Read White Paper</a><a class="btn" href="https://hal.science/hal-05743547" target="_blank" rel="noopener noreferrer">HAL · hal-05743547</a><a class="btn" href="https://zenodo.org/records/22671092" target="_blank" rel="noopener noreferrer">Zenodo</a></div>
+    <div class="actions"><a class="btn btn-primary" href="/osniasid/Osnias-ID_White_HAL.pdf">Read White Paper</a><a class="btn" href="#multi-chain-architecture">Registry Architecture</a><a class="btn" href="https://hal.science/hal-05743547" target="_blank" rel="noopener noreferrer">HAL · hal-05743547</a><a class="btn" href="https://zenodo.org/records/22671092" target="_blank" rel="noopener noreferrer">Zenodo</a></div>
       </section>
   </section></div></header>
   <main class="container">
@@ -141,13 +202,48 @@
     <section id="layers"><div class="section-label">02 · Identity Architecture</div><h2>Legal Entity → Clearing Account → Technical Address</h2><p class="section-intro">An Osnias-ID is not a company identifier. A company or institution may hold several Osnias-ID clearing accounts, all linked by the Osnias Registry to the same legal entity.</p><div class="id-flow" aria-label="Osnias-ID identity architecture"><div class="id-flow-box"><strong>Legal Entity</strong><span>SIREN · UID/CHE · LEI · other recognized identifier</span></div><div class="id-arrow">→</div><div class="id-flow-box"><strong>Osnias-ID Clearing Account(s)</strong><span>Persistent clearing-account identifier</span></div><div class="id-arrow">→</div><div class="id-flow-box"><strong>Technical Address(es)</strong><span>Authorized wallet / execution endpoint</span></div></div><div class="id-principle"><strong>Core principle:</strong> An Osnias-ID is not a legal-entity identifier. It identifies a clearing account linked to an identified participant.</div></section>
     <section id="format"><div class="section-label">03 · Identifier Format</div><h2>Deterministic 16-digit format</h2><div class="id-format"><code>KK-NNN-AAAAAAAAA-XX</code></div><div class="id-fields"><div class="id-field"><strong>KK</strong><span>2 digits · Osnias-assigned escrow-capable blockchain chain code</span></div><div class="id-field"><strong>NNN</strong><span>3 digits · Osnias-assigned authorized server / escrow-node code</span></div><div class="id-field"><strong>AAAAAAAAA</strong><span>9 digits · participant value assigned by the authorized server</span></div><div class="id-field"><strong>XX</strong><span>2 digits · checksum calculated by the server under the Osnias-defined MOD-97 rule</span></div></div><p class="section-intro" style="margin-top:1rem">The authorized server allocates <strong>AAAAAAAAA</strong> inside its own namespace and calculates <strong>XX</strong> according to the Osnias-defined MOD-97 rule. The checksum detects common transcription errors but is not a cryptographic signature or proof of registry membership.</p></section>
     <section id="registry"><div class="section-label">04 · Registry & Access Control</div><h2>No Osnias-ID, no clearing request</h2><p class="section-intro">The Osnias Registry is the authoritative resolution layer between a clearing account, its identified participant and its currently authorized operational addresses. Clearing admission is independent from checksum validity: a structurally valid identifier must also resolve to an eligible registry record.</p><div class="id-grid"><article class="id-card"><div class="id-kicker">Resolve</div><h3>Wallet → Osnias-ID</h3><p>The initiating or receiving technical address is resolved against an authorized clearing account.</p></article><article class="id-card"><div class="id-kicker">Validate</div><h3>Status and authorization</h3><p>The system verifies registry status, wallet authorization and applicable network or transaction eligibility rules.</p></article><article class="id-card"><div class="id-kicker">Fail closed</div><h3>Admission invariant</h3><p>If the required Osnias-ID cannot be resolved and validated, the clearing request is rejected.</p></article></div></section>
-    <section id="network-codes"><div class="section-label">05 · KK Network Registry</div><h2>Pre-allocated and reserved network namespace</h2><p class="section-intro">KK is a two-digit Osnias-assigned chain code. KK=00 is permanently reserved as a null/unassigned value; KK=01–99 form a reserve of 99 internal chain identifiers. A KK code may be assigned only to a blockchain chain capable of supporting an Osnias-compatible programmable and auditable escrow mechanism. Assignment does not by itself mean that the chain is integrated, validated or active in production.</p><div class="id-grid"><article class="id-card"><div class="id-kicker">Allocated EVM</div><h3>01–06</h3><p>Ethereum, Sei EVM, Arbitrum One, Avalanche C-Chain, Base and BNB Smart Chain.</p></article><article class="id-card"><div class="id-kicker">Allocated non-EVM</div><h3>16–18</h3><p>Solana, TRON and Stellar/Soroban, using their native programmable execution environments.</p></article><article class="id-card"><div class="id-kicker">Reserved namespace</div><h3>80–99</h3><p>Reserved Osnias chain-namespace positions for future escrow-capable blockchain chains and internal technical allocation. Reservation does not imply integration, validation, participation or endorsement.</p></article></div><div class="actions"><a class="btn" href="/osniasid/Osnias-ID_KK_Network_Registry_Annex_v0.7.1.xlsx">Download KK Network Registry</a><a class="btn" href="/osniasid/Osinas-ID-resereved%20adress.pdf">Reserved Network IDs PDF</a></div></section>
-    <section id="research"><div class="section-label">06 · Public Research Record</div><h2>Published, citable and openly licensed</h2><p class="section-intro">Osnias-ID Release 1.0 is published as a public technical preprint under Creative Commons Attribution 4.0 International. The HAL record supplies the academic archive reference and page-zero citation record; Zenodo supplies an additional permanent research archive record.</p><div class="id-links"><a class="id-link" href="https://hal.science/hal-05743547" target="_blank" rel="noopener noreferrer"><strong>HAL — hal-05743547 →</strong><span>Preprint submitted 9 September 2026 · Denis Bouzon · CC BY 4.0.</span></a><a class="id-link" href="https://zenodo.org/records/22671092" target="_blank" rel="noopener noreferrer"><strong>Zenodo — record 22671092 →</strong><span>Permanent public research archive record for the Osnias-ID specification.</span></a><a class="id-link" href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer"><strong>ORCID — Denis Bouzon →</strong><span>0009-0007-8894-8902</span></a><a class="id-link" href="/osniasid/Osnias-ID_White_HAL.pdf"><strong>HAL White Paper PDF →</strong><span>Release 1.0 with HAL page 0 and the complete public specification.</span></a></div></section>
-    <section id="scope"><div class="section-label">07 · Scope Boundary</div><h2>What Osnias-ID is — and is not</h2><p class="section-intro">Osnias-ID is an internal Osnias Clearing identifier and registry reference for interchain clearing. It is not a bank account number, legal-entity identifier, wallet address, regulatory authorization number, security, token or credential of legal status. KK and NNN are allocated by Osnias Clearing; AAAAAAAAA is allocated by the authorized server; XX is calculated by that server under the Osnias-defined checksum rule. References to ISO 20022, LEI, UID/CHE, FINMA or other external frameworks are interoperability references only and do not imply certification, regulatory status or endorsement.</p></section>
+
+    <section id="multi-chain-architecture">
+      <div class="section-label">05 · Multi-Chain Registry Architecture</div>
+      <h2>One Osnias-ID across different escrow networks</h2>
+      <p class="section-intro">
+        Osnias-ID provides the common clearing reference between the native escrow account on its local network or rail
+        and the corresponding clearing account on Sei. Each escrow network keeps its own native account identifier
+        — for example an EVM 0x address, a Solana address, a TRON address or a banking account identifier —
+        while the Osnias-ID is the shared clearing identifier used by the two registries.
+      </p>
+
+      <div class="id-route">
+        Native escrow account identifier → Escrow-network registry → Osnias-ID → Sei clearing registry → Local Sei 0x clearing address
+      </div>
+
+      <div class="id-architecture">
+        <img src="/osniasid/osniasid.jpg"
+             alt="Osnias-ID multi-chain registry architecture: escrow network registry and Sei clearing registry linked by the same Osnias-ID"
+             loading="lazy"/>
+        <div class="id-architecture-caption">
+          The escrow-network registry immutably matches the local escrow account, using the native identifier of that network,
+          with its Osnias-ID. The Sei clearing registry matches the same Osnias-ID with the corresponding local 0x clearing address on Sei.
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="/osniasid/Osnias-ID_KK_Network_Registry_Annex_v0.7.1.xlsx">
+          Network ↔ Osnias-ID correspondence
+        </a>
+        <a class="btn" href="/osniasid/Osinas-ID-resereved%20adress.pdf">
+          KK Network Registry PDF
+        </a>
+      </div>
+    </section>
+
+    <section id="network-codes"><div class="section-label">06 · KK Network Registry</div><h2>Pre-allocated and reserved network namespace</h2><p class="section-intro">KK is the two-digit Osnias network or rail namespace. KK=00 is permanently reserved as a null/unassigned value. Allocated public-network codes identify escrow-capable blockchain environments, while dedicated ranges are reserved for future public networks, institutional rails and Osnias internal infrastructure. A reserved code is a namespace allocation and does not imply integration, validation, participation or endorsement.</p><div class="id-match-table"><img src="/osniasid/OsniasID-Others-match-table.jpg" alt="Osnias-ID KK network registry and native escrow account formats across EVM, non-EVM and institutional banking rails" loading="lazy"/><div class="id-match-table-caption">Osnias-ID correspondence between KK network namespaces and native escrow-account identifiers across public blockchain networks and institutional banking rails.</div></div><div class="id-grid"><article class="id-card"><div class="id-kicker">Allocated EVM</div><h3>01–06</h3><p>Ethereum, Sei EVM, Arbitrum One, Avalanche C-Chain, Base and BNB Smart Chain.</p></article><article class="id-card"><div class="id-kicker">Allocated non-EVM</div><h3>16–18</h3><p>Solana, TRON and Stellar/Soroban, using their native programmable execution environments.</p></article><article class="id-card"><div class="id-kicker">Institutional & internal reserve</div><h3>80–99</h3><p>80–89 are reserved institutional rail namespaces; 90–99 are reserved for Osnias internal infrastructure and protocol functions.</p></article></div><div class="actions"><a class="btn" href="/osniasid/Osnias-ID_KK_Network_Registry_Annex_v0.7.1.xlsx">Download KK Network Registry</a><a class="btn" href="/osniasid/Osinas-ID-resereved%20adress.pdf">Reserved Network IDs PDF</a></div></section>
+    <section id="research"><div class="section-label">07 · Public Research Record</div><h2>Published, citable and openly licensed</h2><p class="section-intro">Osnias-ID Release 1.2 is published as a public technical preprint under Creative Commons Attribution 4.0 International. The HAL record supplies the academic archive reference and page-zero citation record; Zenodo supplies an additional permanent research archive record.</p><div class="id-links"><a class="id-link" href="https://hal.science/hal-05743547" target="_blank" rel="noopener noreferrer"><strong>HAL — hal-05743547 →</strong><span>Preprint submitted 9 September 2026 · Denis Bouzon · CC BY 4.0.</span></a><a class="id-link" href="https://zenodo.org/records/22671092" target="_blank" rel="noopener noreferrer"><strong>Zenodo — record 22671092 →</strong><span>Permanent public research archive record for the Osnias-ID specification.</span></a><a class="id-link" href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer"><strong>ORCID — Denis Bouzon →</strong><span>0009-0007-8894-8902</span></a><a class="id-link" href="/osniasid/Osnias-ID_White_HAL.pdf"><strong>HAL White Paper PDF →</strong><span>Release 1.2 with HAL page 0 and the complete public specification.</span></a></div></section>
+    <section id="scope"><div class="section-label">08 · Scope Boundary</div><h2>What Osnias-ID is — and is not</h2><p class="section-intro">Osnias-ID is an internal Osnias Clearing identifier and registry reference for interchain clearing. It is not a bank account number, legal-entity identifier, wallet address, regulatory authorization number, security, token or credential of legal status. KK and NNN are allocated by Osnias Clearing; AAAAAAAAA is allocated by the authorized server; XX is calculated by that server under the Osnias-defined checksum rule. References to ISO 20022, LEI, UID/CHE, FINMA or other external frameworks are interoperability references only and do not imply certification, regulatory status or endorsement.</p></section>
   </main>
   <footer>
     <div class="container">
-      © 2026 Osnias Clearing · Osnias-ID Release 1.0 · 9 September 2026 · CC BY 4.0<br/>
+      © 2026 Osnias Clearing · Osnias-ID Release 1.2 · 9 September 2026 · CC BY 4.0<br/>
       Denis Bouzon · ORCID
       <a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer">0009-0007-8894-8902</a>
       · HAL
