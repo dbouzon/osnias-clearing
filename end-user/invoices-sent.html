@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
   Osnias Clearing — End-User Console
-  Invoices Sent
-  Version    : 3.1.1-testnet
+  Clearing Instructions Sent
+  Version    : 3.2.0-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -12,18 +12,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Osnias Clearing payment requests sent by the connected wallet on Sei Atlantic-2 Testnet.">
-  <title>Osnias Clearing — Invoices Sent</title>
+  <meta name="description" content="Osnias Clearing instructions sent by the connected account on Sei Atlantic-2 Testnet.">
+  <title>Osnias Clearing — Instructions Sent</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.1">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.2.0">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  <script src="./assets/end-user-frame.js?v=3.1.1" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.2.0" defer></script>
   <script src="./assets/sei-provider.js?v=1.3.0" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.1.1" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.2.0" defer></script>
   <script src="./assets/payment-messages.js?v=1.3.0" defer></script>
 
   <style>
@@ -92,9 +92,9 @@
 
   <main class="osnias-main">
     <section class="osnias-page-intro">
-      <p class="osnias-eyebrow">Payment Message Registry</p>
-      <h1>Invoices Sent</h1>
-      <p>Create and follow payment requests issued by the connected wallet. Requests are instructions only; no ORUSD is moved by this registry.</p>
+      <p class="osnias-eyebrow">Clearing Instruction Register</p>
+      <h1>Instructions Sent</h1>
+      <p>Create and track clearing instructions issued by the connected account. Instructions record an ORUSD-denominated obligation only; no ORUSD is transferred by this register.</p>
     </section>
 
     <div id="sentAlert" class="osnias-alert sent-error" hidden></div>
@@ -105,15 +105,15 @@
         <div class="sent-meta-value" id="cycleNumber">—</div>
       </div>
       <div class="osnias-card">
-        <div class="sent-meta-label">Window</div>
+        <div class="sent-meta-label">Clearing window</div>
         <div class="sent-meta-value" id="cycleWindow">—</div>
       </div>
       <div class="osnias-card">
-        <div class="sent-meta-label">Messaging</div>
+        <div class="sent-meta-label">Instructions</div>
         <div class="sent-meta-value" id="messagingState">—</div>
       </div>
       <div class="osnias-card">
-        <div class="sent-meta-label">Requests sent</div>
+        <div class="sent-meta-label">Instructions sent</div>
         <div class="sent-meta-value" id="sentCount">0</div>
       </div>
     </section>
@@ -122,26 +122,26 @@
       <article class="osnias-card">
         <div class="osnias-card__head">
           <div>
-            <p class="osnias-eyebrow">New instruction</p>
-            <h2 class="osnias-card__title">Create payment request</h2>
+            <p class="osnias-eyebrow">New clearing instruction</p>
+            <h2 class="osnias-card__title">Create clearing instruction</h2>
           </div>
         </div>
 
         <form id="requestForm" class="sent-form" autocomplete="off">
           <div class="sent-form-grid">
             <div class="sent-field sent-field--wide">
-              <label for="payer">Payer address</label>
+              <label for="payer">Counterparty address</label>
               <input id="payer" class="osnias-input" type="text" inputmode="text" placeholder="0x…" spellcheck="false" required>
-              <div class="sent-help">EOA address that will receive the payment request.</div>
+              <div class="sent-help">EOA counterparty address that will receive the clearing instruction.</div>
             </div>
 
             <div class="sent-field">
-              <label for="amount">Amount (ORUSD)</label>
+              <label for="amount">Instruction amount (ORUSD)</label>
               <input id="amount" class="osnias-input" type="text" inputmode="decimal" placeholder="0.000000" required>
             </div>
 
             <div class="sent-field">
-              <label for="invoiceReference">Invoice reference</label>
+              <label for="invoiceReference">Underlying invoice reference</label>
               <input id="invoiceReference" class="osnias-input" type="text" maxlength="50" required>
               <div class="sent-counter"><span id="invoiceBytes">0</span>/50 UTF-8 bytes</div>
             </div>
@@ -153,14 +153,14 @@
             </div>
 
             <div class="sent-field">
-              <label for="previousRequestId">Previous request ID</label>
-              <input id="previousRequestId" class="osnias-input" type="text" placeholder="Optional — Forclosed request only" spellcheck="false">
-              <div class="sent-help">Use only to link a new-cycle request to a previous Forclosed request. Leave blank otherwise.</div>
+              <label for="previousRequestId">Previous instruction ID</label>
+              <input id="previousRequestId" class="osnias-input" type="text" placeholder="Optional — Foreclosed instruction only" spellcheck="false">
+              <div class="sent-help">Use only to link a new-cycle instruction to a previous foreclosed instruction. Leave blank otherwise.</div>
             </div>
           </div>
 
           <div class="sent-actions">
-            <button id="createRequestBtn" class="osnias-btn osnias-btn--primary" type="submit">Create request</button>
+            <button id="createRequestBtn" class="osnias-btn osnias-btn--primary" type="submit">Create instruction</button>
             <span id="createState" class="sent-help"></span>
           </div>
         </form>
@@ -169,29 +169,29 @@
       <article class="osnias-card">
         <div class="osnias-card__head">
           <div>
-            <p class="osnias-eyebrow">Current cycle</p>
-            <h2 class="osnias-card__title">Sent requests</h2>
+            <p class="osnias-eyebrow">Current clearing cycle</p>
+            <h2 class="osnias-card__title">Sent instructions</h2>
           </div>
           <div class="sent-actions">
             <button id="refreshBtn" class="osnias-btn osnias-btn--ghost osnias-btn--small" type="button"
-              title="Load only payment-message blocks after the last locally acquired checkpoint">Refresh</button>
+              title="Load only clearing-instruction blocks after the last locally acquired checkpoint">Refresh</button>
             <button id="rebuildBtn" class="osnias-btn osnias-btn--ghost osnias-btn--small" type="button"
-              title="Discard the local Sent cache for this wallet/cycle and reconstruct it from the cycle start">Rebuild</button>
+              title="Discard the local Sent cache for this account/cycle and reconstruct it from the cycle start">Rebuild</button>
             <button id="exportBtn" class="osnias-btn osnias-btn--primary osnias-btn--small" type="button"
-              title="Export the locally acquired Sent requests without rescanning RPC">Export CSV</button>
+              title="Export the locally acquired Sent instructions without rescanning RPC">Export CSV</button>
           </div>
         </div>
 
         <p class="sent-help">
           <strong>Refresh</strong> = incremental synchronization ·
           <strong>Rebuild</strong> = full current-cycle reconstruction ·
-          <strong>Export CSV</strong> = immediate export of locally acquired requests.
+          <strong>Export CSV</strong> = immediate export of locally acquired instructions.
         </p>
 
         
         <div id="sentProgressBox" class="sent-progressbox" hidden>
           <div class="sent-progresshead">
-            <span id="sentProgressLabel">Synchronizing invoices sent…</span>
+            <span id="sentProgressLabel">Synchronizing sent instructions…</span>
             <strong id="sentProgressPercent">0%</strong>
           </div>
           <div class="sent-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -199,16 +199,16 @@
           </div>
         </div>
 
-        <div id="sentEmpty" class="sent-empty">Connect a wallet to load sent requests.</div>
+        <div id="sentEmpty" class="sent-empty">Connect a wallet to load sent instructions.</div>
 
         <div id="sentTableWrap" class="sent-table-wrap" hidden>
           <table class="sent-table">
             <thead>
               <tr>
                 <th>Status</th>
-                <th>Payer</th>
-                <th>Amount</th>
-                <th>Invoice reference</th>
+                <th>Counterparty</th>
+                <th>Instruction amount</th>
+                <th>Underlying invoice</th>
                 <th>Nature</th>
                 <th>Cycle</th>
                 <th>Created</th>
@@ -298,14 +298,14 @@
 
     if (!state.account) {
       $("sentEmpty").hidden = false;
-      $("sentEmpty").textContent = "Connect a wallet to load sent requests.";
+      $("sentEmpty").textContent = "Connect a wallet to load sent instructions.";
       $("sentTableWrap").hidden = true;
       return;
     }
 
     if (state.rows.length === 0) {
       $("sentEmpty").hidden = false;
-      $("sentEmpty").textContent = "No payment request sent in the current cycle.";
+      $("sentEmpty").textContent = "No clearing instruction sent in the current cycle.";
       $("sentTableWrap").hidden = true;
       return;
     }
@@ -368,21 +368,21 @@
 
   function exportSentCSV() {
     if (!state.account || !state.rows.length) {
-      setAlert("No locally acquired sent requests available to export.", "danger");
+      setAlert("No locally acquired sent instructions available to export.", "danger");
       return;
     }
 
     const lines = [[
       "Status",
-      "Payer",
-      "Amount ORUSD",
-      "Invoice Reference",
+      "Counterparty",
+      "Instruction Amount ORUSD",
+      "Underlying Invoice Reference",
       "Nature",
       "Cycle",
       "Created UTC",
-      "Request ID",
-      "Previous Request ID",
-      "Settlement Tx Hash"
+      "Instruction ID",
+      "Previous Instruction ID",
+      "Execution Tx Hash"
     ].map(csvCell).join(",")];
 
     for (const row of state.rows) {
@@ -438,16 +438,16 @@
     }
 
     state.loading = true;
-    setSyncProgress(0, forceRpc ? "Rebuilding current-cycle invoices sent…" : "Synchronizing new invoices sent…");
+    setSyncProgress(0, forceRpc ? "Rebuilding current-cycle sent instructions…" : "Synchronizing new sent instructions…");
     window.requestAnimationFrame(() => setSyncProgress(15, "Reading local checkpoint…"));
     $("refreshBtn").disabled = true;
     $("rebuildBtn").disabled = true;
     $("exportBtn").disabled = state.rows.length === 0;
 
     try {
-      setSyncProgress(50, "Reading new PaymentMessageRegistry blocks…");
+      setSyncProgress(50, "Reading new Clearing Instruction Register blocks…");
       const result = await OsniasPaymentMessages.loadSent(state.account, { forceRpc });
-      setSyncProgress(90, "Updating local invoice register…");
+      setSyncProgress(90, "Updating local instruction register…");
       state.rows = result.rows;
       renderRows();
       setAlert("");
@@ -476,11 +476,11 @@
     try {
       const payer = ethers.getAddress($("payer").value.trim());
       if (payer.toLowerCase() === state.account.toLowerCase()) {
-        throw new Error("Payer must be different from the connected wallet.");
+        throw new Error("Counterparty must be different from the connected wallet.");
       }
 
       if (await OsniasSei.isContract(payer)) {
-        throw new Error("Payer must be an EOA address, not a smart contract.");
+        throw new Error("Counterparty must be an EOA address, not a smart contract.");
       }
 
       const previousRaw = $("previousRequestId").value.trim();
@@ -504,8 +504,8 @@
       $("createState").textContent = "";
       setAlert(
         result.requestId
-          ? `Payment request created: ${result.requestId}`
-          : `Payment request created. Transaction: ${result.transactionHash}`,
+          ? `Clearing instruction created: ${result.requestId}`
+          : `Clearing instruction created. Transaction: ${result.transactionHash}`,
         "success"
       );
 
@@ -521,7 +521,7 @@
   async function cancelRequest(requestId, button) {
     if (!state.account) return;
 
-    const confirmed = window.confirm("Cancel this pending payment request?");
+    const confirmed = window.confirm("Cancel this pending clearing instruction?");
     if (!confirmed) return;
 
     button.disabled = true;
@@ -530,7 +530,7 @@
     try {
       const signer = await OsniasWallet.getSigner();
       await OsniasPaymentMessages.cancelPaymentRequest(signer, requestId);
-      setAlert("Payment request cancelled.", "success");
+      setAlert("Clearing instruction cancelled.", "success");
       await loadSent(false);
     } catch (error) {
       setAlert(error?.shortMessage || error?.message || String(error), "danger");
@@ -563,7 +563,7 @@
     if (!state.account) return;
 
     const ok = window.confirm(
-      "Rebuild all sent payment requests for this wallet in the current cycle? This performs a full RPC rescan from the cycle start block."
+      "Rebuild all sent clearing instructions for this account in the current cycle? This performs a full RPC rescan from the cycle start block."
     );
     if (!ok) return;
 

@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Dashboard
-  Version    : 3.0.8-testnet
+  Version    : 3.1.0-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -12,8 +12,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Osnias Clearing end-user dashboard on Sei Atlantic-2 Testnet.">
-  <title>Osnias Clearing — Dashboard</title>
+  <meta name="description" content="Osnias ORUSD Clearing Desk on Sei Atlantic-2 Testnet.">
+  <title>Osnias Clearing — ORUSD Clearing Desk</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,14 +21,14 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.8">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.0">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
   <!-- Lightweight shared assets only: no payment-messages.js, no log scanning -->
-  <script src="./assets/end-user-frame.js?v=3.0.8" defer></script>
-  <script src="./assets/sei-provider.js?v=3.0.8" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.0.8" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.1.0" defer></script>
+  <script src="./assets/sei-provider.js?v=3.1.0" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.1.0" defer></script>
 
   <style>
     .dashboard-status-grid{
@@ -95,9 +95,9 @@
 
       <section class="osnias-page-head">
         <div class="osnias-page-head__copy">
-          <h1 class="osnias-page-title">Clearing Console</h1>
+          <h1 class="osnias-page-title">ORUSD Clearing Desk</h1>
           <p class="osnias-page-subtitle">
-            Live wallet, ORUSD balance and temporal-oracle operating status.
+            Live register position, clearing-cycle status and Sei temporal-oracle state.
           </p>
         </div>
         <div class="osnias-page-head__actions">
@@ -110,9 +110,9 @@
       <!-- Live summary: read-only calls only -->
       <section class="dashboard-status-grid">
         <article class="osnias-kpi">
-          <div class="osnias-kpi__label">ORUSD Balance</div>
+          <div class="osnias-kpi__label">Register Position</div>
           <div class="osnias-kpi__value" id="orusdBalance">—</div>
-          <div class="osnias-kpi__foot">Connected wallet</div>
+          <div class="osnias-kpi__foot">ORUSD · connected account</div>
         </article>
 
         <article class="osnias-kpi">
@@ -122,9 +122,9 @@
         </article>
 
         <article class="osnias-kpi">
-          <div class="osnias-kpi__label">Current Window</div>
+          <div class="osnias-kpi__label">Clearing Window</div>
           <div class="osnias-kpi__value" id="currentWindow">—</div>
-          <div class="osnias-kpi__foot">Oracle state</div>
+          <div class="osnias-kpi__foot">Temporal Oracle state</div>
         </article>
 
         <article class="osnias-kpi">
@@ -139,8 +139,8 @@
         <article class="osnias-card">
           <div class="osnias-card__head">
             <div>
-              <p class="osnias-eyebrow">Temporal Oracle</p>
-              <h2 class="osnias-card__title">Cycle State</h2>
+              <p class="osnias-eyebrow">Clearing Cycle</p>
+              <h2 class="osnias-card__title">Temporal Oracle State</h2>
             </div>
             <span class="osnias-badge" id="oracleBadge">—</span>
           </div>
@@ -153,7 +153,7 @@
               </div>
 
               <div class="dashboard-state-row">
-                <span class="dashboard-state-label">Current window</span>
+                <span class="dashboard-state-label">Clearing window</span>
                 <strong id="windowDetail">—</strong>
               </div>
 
@@ -173,8 +173,8 @@
         <article class="osnias-card">
           <div class="osnias-card__head">
             <div>
-              <p class="osnias-eyebrow">Operational State</p>
-              <h2 class="osnias-card__title">Functions Availability</h2>
+              <p class="osnias-eyebrow">Clearing Functions</p>
+              <h2 class="osnias-card__title">Operational Availability</h2>
             </div>
           </div>
 
@@ -191,12 +191,12 @@
               </div>
 
               <div class="dashboard-state-row">
-                <span class="dashboard-state-label">P2P Settlement</span>
+                <span class="dashboard-state-label">P2P Transfers</span>
                 <span class="osnias-badge" id="p2pState">—</span>
               </div>
 
               <div class="dashboard-state-row">
-                <span class="dashboard-state-label">Payment Messages</span>
+                <span class="dashboard-state-label">Transfer Instructions</span>
                 <span class="osnias-badge" id="messagesState">—</span>
               </div>
             </div>
@@ -209,8 +209,8 @@
         <article class="osnias-card">
           <div class="osnias-card__head">
             <div>
-              <p class="osnias-eyebrow">Wallet</p>
-              <h2 class="osnias-card__title">Connected Account</h2>
+              <p class="osnias-eyebrow">Register Account</p>
+              <h2 class="osnias-card__title">Connected Wallet</h2>
             </div>
             <span class="osnias-badge" id="walletBadge">NOT CONNECTED</span>
           </div>
@@ -223,7 +223,7 @@
               </div>
 
               <div class="dashboard-state-row">
-                <span class="dashboard-state-label">ORUSD balance</span>
+                <span class="dashboard-state-label">Register position</span>
                 <strong id="orusdBalanceDetail">—</strong>
               </div>
             </div>
@@ -233,16 +233,16 @@
         <article class="osnias-card">
           <div class="osnias-card__head">
             <div>
-              <p class="osnias-eyebrow">Dashboard Scope</p>
-              <h2 class="osnias-card__title">Read-Only Status</h2>
+              <p class="osnias-eyebrow">Desk Scope</p>
+              <h2 class="osnias-card__title">Read-Only Register Status</h2>
             </div>
           </div>
 
           <div class="osnias-card__body">
             <p class="osnias-muted">
-              This dashboard performs only lightweight read-only calls for wallet balance,
-              network state and the Sei Temporal Oracle. Historical ORUSD logs are loaded
-              exclusively from the Registry page.
+              This clearing desk performs only lightweight read-only calls for the connected account,
+              ORUSD register position, network state and the Sei Temporal Oracle. Historical ORUSD
+              register events are loaded exclusively from the Registry page.
             </p>
           </div>
         </article>
@@ -341,9 +341,9 @@
 
     /*
      * Testnet 7-day operating cycle:
-     * BURN       -> BURN open, MINT closed, P2P open, messages open
-     * MINT       -> MINT open, BURN closed, P2P open, messages open
-     * CLEARING   -> all transaction/message creation functions closed
+     * BURN       -> BURN open, MINT closed, P2P transfers open, instructions open
+     * MINT       -> MINT open, BURN closed, P2P transfers open, instructions open
+     * CLEARING   -> transfer and instruction creation functions closed
      */
     const isBurn = windowName === "BURN";
     const isMint = windowName === "MINT";

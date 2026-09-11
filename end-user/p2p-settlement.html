@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
-  Osnias Clearing — P2P Settlement
-  Accepted invoices only — no manual P2P entry
-  Version    : 3.1.2-testnet
+  Osnias Clearing — P2P Transfers
+  Accepted clearing instructions only — no manual transfer entry
+  Version    : 3.2.0-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   Network    : Sei Atlantic-2 Testnet (Chain ID 1328)
@@ -11,8 +11,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Osnias Clearing P2P settlement queue for accepted payment requests on Sei Atlantic-2 Testnet.">
-  <title>Osnias Clearing — P2P Settlement</title>
+  <meta name="description" content="Osnias Clearing P2P transfer queue for accepted clearing instructions on Sei Atlantic-2 Testnet.">
+  <title>Osnias Clearing — P2P Transfers</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,13 +21,13 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.2">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.2.0">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
-  <script src="./assets/end-user-frame.js?v=3.1.2" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.2.0" defer></script>
   <script src="./assets/sei-provider.js?v=1.3.0" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.1.2" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.2.0" defer></script>
   <script src="./assets/payment-messages.js?v=1.3.0" defer></script>
 </head>
 
@@ -41,9 +41,9 @@
 
       <section class="osnias-page-head">
         <div class="osnias-page-head__copy">
-          <h1 class="osnias-page-title">P2P Settlement</h1>
+          <h1 class="osnias-page-title">P2P Transfers</h1>
           <p class="osnias-page-subtitle">
-            Accepted invoices ready for ORUSD settlement. No manual recipient, amount or invoice entry.
+            Accepted clearing instructions ready for ORUSD transfer. Counterparty, amount and underlying invoice data are locked from the accepted instruction.
           </p>
         </div>
 
@@ -57,19 +57,19 @@
 
       <section class="osnias-grid osnias-grid--3">
         <article class="osnias-kpi">
-          <div class="osnias-kpi__label">ORUSD Balance</div>
+          <div class="osnias-kpi__label">Register Position</div>
           <div class="osnias-kpi__value" id="orusdBalance">—</div>
-          <div class="osnias-kpi__foot">Connected payer wallet</div>
+          <div class="osnias-kpi__foot">ORUSD · connected account</div>
         </article>
 
         <article class="osnias-kpi">
-          <div class="osnias-kpi__label">To Be Paid</div>
+          <div class="osnias-kpi__label">To Be Transferred</div>
           <div class="osnias-kpi__value" id="acceptedCount">—</div>
-          <div class="osnias-kpi__foot">Accepted invoices not yet settled</div>
+          <div class="osnias-kpi__foot">Accepted instructions pending execution</div>
         </article>
 
         <article class="osnias-kpi">
-          <div class="osnias-kpi__label">P2P Window</div>
+          <div class="osnias-kpi__label">Transfer Window</div>
           <div class="osnias-kpi__value" id="p2pWindow">—</div>
           <div class="osnias-kpi__foot">Sei Temporal Oracle</div>
         </article>
@@ -78,25 +78,25 @@
       <section class="osnias-card">
         <div class="osnias-card__head">
           <div>
-            <h2 class="osnias-card__title">Invoices To Be Paid</h2>
+            <h2 class="osnias-card__title">Instructions To Be Transferred</h2>
             <div class="osnias-card__meta">
-              Only received requests with status ACCEPTED and no settlement hash.
+              Only received clearing instructions with status ACCEPTED and no execution hash.
             </div>
           </div>
-          <span class="osnias-badge osnias-badge--open" id="queueBadge">TO BE PAID</span>
+          <span class="osnias-badge osnias-badge--open" id="queueBadge">TO BE TRANSFERRED</span>
         </div>
 
         <div class="osnias-card__body">
 
           <div class="osnias-alert">
-            Settlement data are locked from the accepted invoice. Recipient, gross amount,
-            invoice reference and nature cannot be manually edited.
+            Transfer data are locked from the accepted clearing instruction. Counterparty, gross amount,
+            underlying invoice reference and nature cannot be manually edited.
           </div>
 
           <div style="height:12px"></div>
 
           <div class="osnias-empty" id="queueEmpty">
-            Connect a wallet to load accepted invoices.
+            Connect a wallet to load accepted clearing instructions.
           </div>
 
           <div class="osnias-table-wrap" id="queueWrap" hidden>
@@ -104,13 +104,13 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Requester / Payee</th>
-                  <th>Invoice</th>
+                  <th>Originator / Counterparty</th>
+                  <th>Underlying Invoice</th>
                   <th>Nature</th>
                   <th>Cycle</th>
-                  <th class="osnias-right">Invoice Gross</th>
+                  <th class="osnias-right">Instruction Gross</th>
                   <th class="osnias-right">Fee 0.15%</th>
-                  <th class="osnias-right">Net Received</th>
+                  <th class="osnias-right">Net Transfer</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -124,15 +124,15 @@
 
       <section class="osnias-card">
         <div class="osnias-card__head">
-          <h2 class="osnias-card__title">Settlement Rule</h2>
+          <h2 class="osnias-card__title">Transfer Rule</h2>
           <span class="osnias-card__meta">Security invariant</span>
         </div>
         <div class="osnias-card__body">
           <p class="osnias-muted" style="margin:0">
-            A P2P ORUSD payment can only be initiated from an invoice already received
-            and accepted by the connected payer. The transaction is signed by the payer wallet.
-            After confirmation, the ORUSD transaction hash is recorded against the Payment Request,
-            which then becomes SETTLED and is visible through the clearing Registry.
+            A P2P ORUSD transfer can only be initiated from a clearing instruction already received
+            and accepted by the connected account. The transaction is signed by that wallet.
+            After confirmation, the ORUSD transaction hash is recorded against the instruction,
+            whose execution state is then visible through the clearing Registry.
           </p>
         </div>
       </section>
@@ -143,20 +143,20 @@
   <div id="osnias-footer"></div>
 </div>
 
-<!-- Settlement confirmation -->
+<!-- Transfer confirmation -->
 <div class="osnias-modal-layer" id="settlementLayer" hidden>
   <div class="osnias-card osnias-settlement-modal">
     <div class="osnias-card__head">
       <div>
-        <h2 class="osnias-card__title">ORUSD Settlement — Confirmation</h2>
-        <div class="osnias-card__meta">Accepted invoice · locked settlement data</div>
+        <h2 class="osnias-card__title">ORUSD Transfer — Confirmation</h2>
+        <div class="osnias-card__meta">Accepted clearing instruction · locked transfer data</div>
       </div>
       <button class="osnias-btn osnias-btn--ghost osnias-btn--small" id="btnClose" type="button">✕</button>
     </div>
 
     <div class="osnias-card__body">
       <div class="osnias-alert">
-        Verify the accepted invoice below. No settlement field can be changed on this page.
+        Verify the accepted clearing instruction below. No transfer field can be changed on this page.
       </div>
 
       <div class="osnias-alert osnias-alert--danger" id="settlementAlert" hidden style="margin-top:12px"></div>
@@ -166,14 +166,14 @@
       <div class="osnias-table-wrap">
         <table class="osnias-table" style="min-width:0">
           <tbody>
-            <tr><th>Request ID</th><td class="osnias-break osnias-mono" id="recapRequestId">—</td></tr>
-            <tr><th>Payee</th><td class="osnias-break osnias-mono" id="recapPayee">—</td></tr>
-            <tr><th>Invoice reference</th><td class="osnias-break" id="recapInvoice">—</td></tr>
+            <tr><th>Instruction ID</th><td class="osnias-break osnias-mono" id="recapRequestId">—</td></tr>
+            <tr><th>Counterparty</th><td class="osnias-break osnias-mono" id="recapPayee">—</td></tr>
+            <tr><th>Underlying invoice</th><td class="osnias-break" id="recapInvoice">—</td></tr>
             <tr><th>Nature</th><td class="osnias-break" id="recapNature">—</td></tr>
             <tr><th>Cycle</th><td id="recapCycle">—</td></tr>
-            <tr><th>Invoice gross</th><td id="recapGross">—</td></tr>
+            <tr><th>Instruction gross</th><td id="recapGross">—</td></tr>
             <tr><th>Protocol fee · 0.15%</th><td id="recapFee">—</td></tr>
-            <tr><th>Net received by payee</th><td id="recapNet">—</td></tr>
+            <tr><th>Net transferred</th><td id="recapNet">—</td></tr>
           </tbody>
         </table>
       </div>
@@ -183,7 +183,7 @@
       <div class="osnias-flex osnias-gap-8 osnias-flex-wrap">
         <button class="osnias-btn" id="btnBack" type="button">← Back</button>
         <button class="osnias-btn osnias-btn--primary" id="btnPay" type="button">
-          Sign &amp; Pay ORUSD
+          Sign &amp; Transfer ORUSD
         </button>
       </div>
     </div>
@@ -483,14 +483,14 @@
     if (!state.account) {
       wrap.hidden = true;
       empty.hidden = false;
-      empty.textContent = "Connect a wallet to load accepted invoices.";
+      empty.textContent = "Connect a wallet to load accepted clearing instructions.";
       return;
     }
 
     if (!state.accepted.length) {
       wrap.hidden = true;
       empty.hidden = false;
-      empty.textContent = "No ACCEPTED invoice is currently waiting for payment.";
+      empty.textContent = "No ACCEPTED clearing instruction is currently waiting for transfer.";
       return;
     }
 
@@ -514,8 +514,8 @@
       requestLine.className = "osnias-settlement-note osnias-mono";
       requestLine.textContent =
         request.requestId
-          ? `Request ${request.requestId.slice(0, 10)}…`
-          : "Request ID unavailable";
+          ? `Instruction ${request.requestId.slice(0, 10)}…`
+          : "Instruction ID unavailable";
 
       payeeBox.append(payeeMain, requestLine);
       payeeTd.appendChild(payeeBox);
@@ -551,7 +551,7 @@
       const statusTd = document.createElement("td");
       const badge = document.createElement("span");
       badge.className = "osnias-badge osnias-badge--success";
-      badge.textContent = "TO BE PAID";
+      badge.textContent = "TO BE TRANSFERRED";
       statusTd.appendChild(badge);
       tr.appendChild(statusTd);
 
@@ -559,7 +559,7 @@
       const button = document.createElement("button");
       button.className = "osnias-btn osnias-btn--primary osnias-btn--small";
       button.type = "button";
-      button.textContent = "Pay";
+      button.textContent = "Transfer";
       button.disabled = state.busy;
       button.addEventListener("click", () => openSettlement(request));
       actionTd.appendChild(button);
@@ -586,27 +586,27 @@
     $("recapNet").textContent = `${formatORUSD(request.net)} ORUSD`;
 
     $("btnPay").textContent =
-      `Sign & Pay ${formatORUSD(request.amount)} ORUSD`;
+      `Sign & Transfer ${formatORUSD(request.amount)} ORUSD`;
 
     // Pre-flight UX checks before the user can request a wallet signature.
     let blockReason = "";
 
     if (!state.account) {
-      blockReason = "Connect the payer wallet first.";
+      blockReason = "Connect the account wallet first.";
     } else if (!state.cycle?.settlementOpen) {
-      blockReason = "P2P settlement is closed by the Sei Temporal Oracle.";
+      blockReason = "P2P transfers are closed by the Sei Temporal Oracle.";
     } else if (request.status !== "ACCEPTED") {
-      blockReason = "Only an ACCEPTED invoice can be paid.";
+      blockReason = "Only an ACCEPTED clearing instruction can be transferred.";
     } else if (request.amount > state.orusdBalance) {
       blockReason =
-        `Insufficient ORUSD balance. Required: ${formatORUSD(request.amount)} ORUSD · ` +
-        `Available: ${formatORUSD(state.orusdBalance)} ORUSD.`;
+        `Insufficient ORUSD register position. Required: ${formatORUSD(request.amount)} ORUSD · ` +
+        `Current position: ${formatORUSD(state.orusdBalance)} ORUSD.`;
     }
 
     if (blockReason) {
       setSettlementAlert(blockReason, "danger");
       $("btnPay").disabled = true;
-      $("btnPay").textContent = "Payment unavailable";
+      $("btnPay").textContent = "Transfer unavailable";
     } else {
       $("btnPay").disabled = false;
     }
@@ -651,7 +651,7 @@
 
     if (!registryAddress) {
       throw new Error(
-        "ORUSD payment is confirmed, but Payment Message Registry address/helper is not available to record SETTLED."
+        "ORUSD transfer is confirmed, but the Clearing Instruction Register address/helper is not available to record execution state."
       );
     }
 
@@ -681,7 +681,7 @@
       setAlert("");
 
       if (!state.account) {
-        throw new Error("Connect the payer wallet first.");
+        throw new Error("Connect the account wallet first.");
       }
 
       if (!state.cycle) {
@@ -689,26 +689,26 @@
       }
 
       /*
-       * Active temporal observation before the financial settlement.
+       * Active temporal observation before transfer execution.
        * The wallet first synchronizes OsniasTemporalOracle v0.4.1; after
        * confirmation, the page passively re-reads the canonical state.
        */
-      setAlert("Synchronizing Sei Temporal Oracle before settlement…");
+      setAlert("Synchronizing Sei Temporal Oracle before transfer…");
       const temporalSigner = await OsniasWallet.getSigner();
       await OsniasSei.syncTemporalOracle(temporalSigner);
       await refreshCycle();
 
       if (!state.cycle.settlementOpen) {
-        throw new Error("P2P settlement is closed by the Sei Temporal Oracle.");
+        throw new Error("P2P transfers are closed by the Sei Temporal Oracle.");
       }
 
       if (request.status !== "ACCEPTED") {
-        throw new Error("Only an ACCEPTED invoice can be paid.");
+        throw new Error("Only an ACCEPTED clearing instruction can be transferred.");
       }
 
       /*
-       * Re-read the Payment Request immediately before moving ORUSD.
-       * This prevents paying a row that became SETTLED/REJECTED/FORCLOSED
+       * Re-read the clearing instruction immediately before moving ORUSD.
+       * This prevents executing a row that became SETTLED/REJECTED/FORCLOSED
        * after the page queue was loaded.
        */
       if (
@@ -721,7 +721,7 @@
 
         if (String(latestRequest.status || "").toUpperCase() !== "ACCEPTED") {
           throw new Error(
-            `Payment Request is no longer ACCEPTED (current status: ${latestRequest.status || "UNKNOWN"}).`
+            `Clearing instruction is no longer ACCEPTED (current status: ${latestRequest.status || "UNKNOWN"}).`
           );
         }
 
@@ -734,7 +734,7 @@
           latestSettlementHash !== "0x"
         ) {
           throw new Error(
-            "Payment Request already contains a settlement transaction hash."
+            "Clearing instruction already contains an execution transaction hash."
           );
         }
       }
@@ -743,7 +743,7 @@
         !request.requester ||
         !ethers.isAddress(request.requester)
       ) {
-        throw new Error("Invalid requester/payee address in the Payment Request.");
+        throw new Error("Invalid originator/counterparty address in the clearing instruction.");
       }
 
       if (
@@ -751,34 +751,34 @@
         ethers.isAddress(request.payer) &&
         request.payer.toLowerCase() !== state.account.toLowerCase()
       ) {
-        throw new Error("Connected wallet is not the payer of this Payment Request.");
+        throw new Error("Connected wallet is not the designated payer of this clearing instruction.");
       }
 
       if (request.amount <= 0n) {
-        throw new Error("Invalid invoice amount.");
+        throw new Error("Invalid instruction amount.");
       }
 
       if (request.amount > state.orusdBalance) {
-        throw new Error("Insufficient ORUSD balance for this invoice.");
+        throw new Error("Insufficient ORUSD register position for this instruction.");
       }
 
       if (!request.invoiceReference || !request.nature) {
-        throw new Error("Invoice reference or payment nature is missing.");
+        throw new Error("Underlying invoice reference or instruction nature is missing.");
       }
 
       const code = await OsniasSei.getCode(request.requester);
       if (code && code !== "0x" && code !== "0x0") {
         throw new Error(
-          "Payee rejected: ORUSD settlement is restricted to EOA recipients."
+          "Counterparty rejected: ORUSD transfer is restricted to EOA recipients."
         );
       }
 
       /*
-        1. Execute the real ORUSD transfer.
-        Gross amount = invoice amount.
+        1. Execute the ORUSD transfer.
+        Gross amount = clearing instruction amount.
         ORUSD contract deducts the 0.15% fee and emits TransferWithMemo.
       */
-      setAlert("Waiting for wallet signature for the ORUSD settlement…");
+      setAlert("Waiting for wallet signature for the ORUSD transfer…");
 
       const signer = await OsniasWallet.getSigner();
       const orusd = new ethers.Contract(
@@ -794,7 +794,7 @@
         request.nature
       );
 
-      setAlert(`ORUSD transaction submitted: ${tx.hash}`, "success");
+      setAlert(`ORUSD transfer submitted: ${tx.hash}`, "success");
 
       await tx.wait();
 
@@ -802,7 +802,7 @@
        * Local recovery marker:
        * if the separate registry transaction fails or is rejected, keep the
        * confirmed ORUSD tx hash locally so this browser will not offer the same
-       * invoice for payment again without reconciliation.
+       * clearing instruction for execution again without reconciliation.
        */
       try {
         localStorage.setItem(
@@ -816,12 +816,12 @@
       } catch {}
 
       /*
-        2. Bind the confirmed ORUSD tx hash to the accepted Payment Request.
+        2. Bind the confirmed ORUSD tx hash to the accepted clearing instruction.
         This is a second payer-signed transaction because the current architecture
-        deliberately keeps payment instructions and ORUSD movement separate.
+        deliberately keeps clearing instructions and ORUSD movement separate.
       */
       setAlert(
-        `ORUSD payment confirmed. A second wallet signature is now required to mark Request ID ${request.requestId} as SETTLED…`,
+        `ORUSD transfer confirmed. A second wallet signature is now required to record execution for Instruction ID ${request.requestId} …`,
         "success"
       );
 
@@ -834,7 +834,7 @@
       } catch {}
 
       /*
-        3. Refresh the queue. The request should now be SETTLED and disappear.
+        3. Refresh the queue. The instruction should now be marked executed and disappear from the pending queue.
         The ORUSD transfer is independently visible in the clearing Registry.
       */
       $("settlementLayer").hidden = true;
@@ -846,17 +846,17 @@
       ]);
 
       setAlert(
-        `Settlement complete. ORUSD transaction ${tx.hash} is confirmed and the invoice is marked SETTLED.`,
+        `Transfer complete. ORUSD transaction ${tx.hash} is confirmed and the clearing instruction execution is recorded.`,
         "success"
       );
 
     } catch (error) {
-      console.error("[P2P Settlement]", error);
+      console.error("[P2P Transfers]", error);
 
       const message =
         (error?.code === 4001 || error?.code === "ACTION_REJECTED")
           ? "Transaction cancelled by the user."
-          : (error?.shortMessage || error?.message || "P2P settlement failed.");
+          : (error?.shortMessage || error?.message || "P2P transfer failed.");
 
       setAlert(message, "danger");
       setSettlementAlert(message, "danger");
@@ -893,9 +893,9 @@
       ]);
 
     } catch (error) {
-      console.error("[P2P Settlement Refresh]", error);
+      console.error("[P2P Transfers Refresh]", error);
       setAlert(
-        error?.message || "Unable to refresh the settlement queue.",
+        error?.message || "Unable to refresh the transfer queue.",
         "danger"
       );
     }

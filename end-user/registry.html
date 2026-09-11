@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
   Osnias Clearing — End-User Console
-  Clearing Registry
-  Version    : 3.0.6-testnet
+  Clearing Register
+  Version    : 3.2.0-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -12,18 +12,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Osnias Clearing current-cycle ORUSD registry for the connected wallet on Sei Atlantic-2 Testnet.">
-  <title>Osnias Clearing — Registry</title>
+  <meta name="description" content="Osnias Clearing current-cycle ORUSD clearing register for the connected account on Sei Atlantic-2 Testnet.">
+  <title>Osnias Clearing — Clearing Register</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.0.6">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.2.0">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  <script src="./assets/end-user-frame.js?v=3.0.6" defer></script>
-  <script src="./assets/sei-provider.js?v=3.0.6" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.0.6" defer></script>
+  <script src="./assets/end-user-frame.js?v=3.2.0" defer></script>
+  <script src="./assets/sei-provider.js?v=3.2.0" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.2.0" defer></script>
 
   <style>
     .registry-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
@@ -85,9 +85,9 @@
 
   <main class="osnias-main">
     <section class="osnias-page-intro">
-      <p class="osnias-eyebrow">ORUSD On-Chain Register</p>
-      <h1>Registry</h1>
-      <p>Current-cycle ORUSD movements for the connected wallet. Blockchain logs are read only on this page and cached locally by wallet and cycle.</p>
+      <p class="osnias-eyebrow">ORUSD Clearing Register</p>
+      <h1>Clearing Register</h1>
+      <p>Current-cycle ORUSD register movements for the connected account. Blockchain logs are read only on this page and cached locally by account and clearing cycle.</p>
     </section>
 
     <div id="registryAlert" class="osnias-alert registry-error" hidden></div>
@@ -98,7 +98,7 @@
         <div class="registry-meta-value" id="cycleNumber">—</div>
       </div>
       <div class="osnias-card">
-        <div class="registry-meta-label">Window</div>
+        <div class="registry-meta-label">Clearing window</div>
         <div class="registry-meta-value" id="cycleWindow">—</div>
       </div>
       <div class="osnias-card">
@@ -114,9 +114,9 @@
     <section class="osnias-card">
       <div class="osnias-card__head">
         <div>
-          <p class="osnias-eyebrow">Connected wallet</p>
-          <h2 class="osnias-card__title">Clearing Register</h2>
-          <div id="registerMeta" class="registry-note">Connect a wallet to read the register.</div>
+          <p class="osnias-eyebrow">Connected account</p>
+          <h2 class="osnias-card__title">Current-Cycle Register</h2>
+          <div id="registerMeta" class="registry-note">Connect a wallet to read the clearing register.</div>
         </div>
 
         <div class="registry-toolbar">
@@ -127,12 +127,12 @@
       </div>
 
       <p class="registry-note">
-        MINT and BURN entries are reconstructed from ORUSD Transfer events. P2P business entries are reconstructed from TransferWithMemo events to avoid double-counting protocol fee transfers. Sei RPC log requests are automatically split into ranges below the public RPC limit.
+        MINT and BURN entries are reconstructed from ORUSD Transfer events. P2P transfer entries are reconstructed from TransferWithMemo events to avoid double-counting protocol fee transfers. Sei RPC log requests are automatically split into ranges below the public RPC limit.
       </p>
 
       <div id="registryProgressBox" class="registry-progressbox" hidden>
         <div class="registry-progresshead">
-          <span id="registryProgressLabel">Scanning current-cycle ORUSD register…</span>
+          <span id="registryProgressLabel">Scanning current-cycle clearing register…</span>
           <strong id="registryProgressPercent">0%</strong>
         </div>
         <div class="registry-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -143,7 +143,7 @@
       <div id="registryProgress" class="registry-progress"></div>
 
       <div id="registryEmpty" class="registry-empty">
-        Connect a wallet to load the current-cycle register.
+        Connect a wallet to load the current-cycle clearing register.
       </div>
 
       <div id="registryTableWrap" class="registry-table-wrap" hidden>
@@ -154,7 +154,7 @@
               <th>Date</th>
               <th>Type</th>
               <th>Counterparty</th>
-              <th>Invoice reference</th>
+              <th>Underlying invoice</th>
               <th>Nature</th>
               <th class="num">Amount</th>
               <th>Proof</th>
@@ -398,7 +398,7 @@
       if (parsed.name === "TransferWithMemo") {
         const txKey = String(log.transactionHash).toLowerCase();
 
-        // One TransferWithMemo = one business movement.
+        // One TransferWithMemo = one clearing transfer movement.
         if (memoTxSeen.has(txKey)) return;
         memoTxSeen.add(txKey);
 
@@ -406,7 +406,7 @@
         const to = ethers.getAddress(parsed.args.to);
 
         rows.push({
-          kind: direction === "out" ? "P2P SENT" : "P2P RECEIVED",
+          kind: direction === "out" ? "TRANSFER SENT" : "TRANSFER RECEIVED",
           blockNumber,
           logIndex: Number(log.logIndex ?? log.index ?? 0),
           timestamp,
@@ -467,7 +467,7 @@
         }
 
         // Ordinary Transfer rows are deliberately not rendered here:
-        // P2P business movements come from TransferWithMemo.
+        // P2P clearing transfer movements come from TransferWithMemo.
       }
     }
 
@@ -523,15 +523,15 @@
     if (!state.account) {
       empty.hidden = false;
       wrap.hidden = true;
-      empty.textContent = "Connect a wallet to load the current-cycle register.";
-      $("registerMeta").textContent = "Connect a wallet to read the register.";
+      empty.textContent = "Connect a wallet to load the current-cycle clearing register.";
+      $("registerMeta").textContent = "Connect a wallet to read the clearing register.";
       return;
     }
 
     if (!state.rows.length) {
       empty.hidden = false;
       wrap.hidden = true;
-      empty.textContent = "No ORUSD movement found for this wallet in the current cycle.";
+      empty.textContent = "No ORUSD register movement found for this account in the current clearing cycle.";
       $("registerMeta").textContent =
         `Cycle ${state.cycle?.cycleNumber ?? "—"} · 0 entries`;
       return;
@@ -660,8 +660,8 @@
       if (fromBlock <= current) {
         $("registryEmpty").hidden = false;
         $("registryTableWrap").hidden = true;
-        $("registryEmpty").textContent = "Scanning current-cycle ORUSD register…";
-        setProgressVisual(0, "Scanning current-cycle ORUSD register…");
+        $("registryEmpty").textContent = "Scanning current-cycle clearing register…";
+        setProgressVisual(0, "Scanning current-cycle clearing register…");
 
         const incoming = await scanRange(fromBlock, current);
         state.rows = mergeRows(state.rows, incoming);
@@ -698,7 +698,7 @@
 
   function exportCSV() {
     if (!state.rows.length || !state.account || !state.cycle) {
-      setAlert("No registry data available to export.", "danger");
+      setAlert("No clearing-register data available to export.", "danger");
       return;
     }
 
@@ -708,9 +708,9 @@
         "Date UTC",
         "Type",
         "Counterparty",
-        "Invoice Reference",
+        "Underlying Invoice Reference",
         "Nature",
-        "Amount ORUSD",
+        "Register Movement ORUSD",
         "TxHash"
       ].map(csvCell).join(",")
     ];
@@ -767,7 +767,7 @@
 
   $("refreshBtn").addEventListener("click", () => loadRegistry());
   $("rebuildBtn").addEventListener("click", () => {
-    if (window.confirm("Rebuild this wallet's current-cycle registry from the cycle start block?")) {
+    if (window.confirm("Rebuild this account's current-cycle clearing register from the cycle start block?")) {
       loadRegistry({ rebuild: true });
     }
   });
