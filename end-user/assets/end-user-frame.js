@@ -12,7 +12,7 @@
  * from this source code without the prior written authorization of the author.
  *
  * File: /assets/end-user-frame.js
- * Version: 1.8.0
+ * Version: 1.9.0
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -28,7 +28,7 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.8.0";
+  const FRAME_VERSION = "1.9.0";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias ORUSD Clearing Desk",
@@ -123,7 +123,7 @@
         const active = item.key === activeKey;
         return `
           <a
-            class="osnias-nav__link${active ? " is-active" : ""}"
+            class="osnias-nav__link osnias-nav__link--boxed${active ? " is-active" : ""}"
             href="${escapeHtml(resolveHref(item.href))}"
             data-osnias-nav="${escapeHtml(item.key)}"
             ${active ? 'aria-current="page"' : ""}
@@ -299,7 +299,7 @@
     }
 
     return `
-      <div class="osnias-cyclebar osnias-cyclebar--header osnias-cyclebar--operations" id="osnias-cyclebar">
+      <div class="osnias-cyclebar osnias-cyclebar--header osnias-cyclebar--operations osnias-cyclebar--fullwidth" id="osnias-cyclebar">
         <span class="osnias-cyclebar__item">
           <span class="osnias-cyclebar__label">Cycle</span>
           <span class="osnias-cyclebar__value" id="osnias-cycle-number">${escapeHtml(cycle)}</span>
@@ -379,24 +379,26 @@
 
   function networkMarkup() {
     return `
-      <div class="osnias-networkbar" id="osnias-networkbar">
-        <span class="osnias-networkbar__wallet">
+      <div class="osnias-networkbar osnias-networkbar--balanced" id="osnias-networkbar">
+        <div class="osnias-networkbar__side osnias-networkbar__side--left">
+          <span class="osnias-cyclebar__item">
+            <span class="osnias-cyclebar__label">Network</span>
+            <span class="osnias-cyclebar__value" id="osnias-network-name">${escapeHtml(currentConfig.networkLabel)}</span>
+          </span>
+
+          <span class="osnias-separator" aria-hidden="true"></span>
+
+          <span class="osnias-cyclebar__item">
+            <span class="osnias-cyclebar__label">Chain ID</span>
+            <span class="osnias-cyclebar__value" id="osnias-chain-id">${escapeHtml(currentConfig.chainIdLabel)}</span>
+          </span>
+        </div>
+
+        <div class="osnias-networkbar__wallet-center">
           ${walletMarkup()}
-        </span>
+        </div>
 
-        <span class="osnias-separator" aria-hidden="true"></span>
-
-        <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">Network</span>
-          <span class="osnias-cyclebar__value" id="osnias-network-name">${escapeHtml(currentConfig.networkLabel)}</span>
-        </span>
-
-        <span class="osnias-separator" aria-hidden="true"></span>
-
-        <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">Chain ID</span>
-          <span class="osnias-cyclebar__value" id="osnias-chain-id">${escapeHtml(currentConfig.chainIdLabel)}</span>
-        </span>
+        <div class="osnias-networkbar__side osnias-networkbar__side--right" aria-hidden="true"></div>
       </div>
     `;
   }
@@ -481,7 +483,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · ORUSD Clearing Desk · Frame 1.8.0 · 2026-09-11
+        Osnias Clearing · ORUSD Clearing Desk · Frame 1.9.0 · 2026-09-11
       </footer>
     `;
   }
