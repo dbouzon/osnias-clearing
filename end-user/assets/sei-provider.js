@@ -3,7 +3,7 @@
  * Shared read-only blockchain layer
  *
  * File: /assets/sei-provider.js
- * Version: 1.3.0
+ * Version: 1.4.0
  *
  * Responsibilities:
  * - Centralize Sei Atlantic-2 Testnet configuration
@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.3.0";
+  const VERSION = "1.4.0";
 
   const CONFIG = Object.freeze({
     networkName: "Sei Atlantic-2 Testnet",
@@ -479,7 +479,10 @@
       window.OsniasFrame.setCycle({
         cycleNumber: state.cycleNumber,
         window: state.window,
-        messagingOpen: state.messagingOpen
+        messagingOpen: state.messagingOpen,
+        // Temporal Oracle is the canonical source of the clearing cut-off.
+        // clearingBoundaryTimestamp is returned in Unix seconds.
+        clearingAt: state.clearingBoundaryTimestamp
       });
     }
 

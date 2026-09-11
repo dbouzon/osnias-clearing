@@ -12,7 +12,7 @@
  * from this source code without the prior written authorization of the author.
  *
  * File: /assets/end-user-frame.js
- * Version: 1.5.1
+ * Version: 1.7.0
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -28,10 +28,10 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.5.1";
+  const FRAME_VERSION = "1.7.0";
 
   const DEFAULT_CONFIG = Object.freeze({
-    brand: "Osnias Orusd End User",
+    brand: "Osnias ORUSD Clearing Desk",
     subtitle: "",
     logoUrl: "logo.jpg",
     logoFallbackUrls: [
@@ -48,10 +48,10 @@
     chainIdLabel: "1328",
     nav: [
       { key: "dashboard", label: "Dashboard", href: "index.html" },
-      { key: "sent", label: "Invoice Sent", href: "invoices-sent.html" },
-      { key: "received", label: "Invoice Received", href: "invoices-received.html" },
-      { key: "p2p", label: "Settlement", href: "p2p-settlement.html" },
-      { key: "registry", label: "Registry", href: "registry.html" },
+      { key: "sent", label: "Instructions Sent", href: "invoices-sent.html" },
+      { key: "received", label: "Instructions Received", href: "invoices-received.html" },
+      { key: "p2p", label: "Transfers", href: "p2p-settlement.html" },
+      { key: "registry", label: "Register", href: "registry.html" },
       { key: "burn", label: "Burn", href: "burn.html" }
     ]
   });
@@ -61,8 +61,11 @@
     walletAddress: "",
     cycleNumber: null,
     cycleWindow: "—",
-    messagingOpen: null
+    messagingOpen: null,
+    clearingAt: null
   };
+
+  let countdownTimer = null;
 
   let currentConfig = { ...DEFAULT_CONFIG };
 
@@ -153,6 +156,108 @@
     `;
   }
 
+  function normalizeTimestamp(value) {
+    if (value === null || value === undefined || value === "") return null;
+
+    const numeric = Number(value);
+    if (Number.isFinite(numeric)) {
+      // Accept Unix seconds or milliseconds.
+      return numeric < 1e12 ? numeric * 1000 : numeric;
+    }
+
+    const parsed = Date.parse(String(value));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function countdownParts(targetMs) {
+    if (!targetMs) return null;
+
+    const diff = Math.max(0, targetMs - Date.now());
+    const totalSeconds = Math.floor(diff / 1000);
+
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return {
+      diff,
+      days,
+      hours,
+      minutes,
+      seconds,
+      text:
+        `${String(days).padStart(2, "0")}d ` +
+        `${String(hours).padStart(2, "0")}h ` +
+        `${String(minutes).padStart(2, "0")}m ` +
+        `${String(seconds).padStart(2, "0")}s`
+    };
+  }
+
+  function clearingCountdownMarkup() {
+    const targetMs = normalizeTimestamp(state.clearingAt);
+    const windowName = String(state.cycleWindow || "—").toUpperCase();
+
+    if (windowName === "CLEARING") {
+      return {
+        label: "CLEARING",
+        value: "OPEN",
+        className: " osnias-cyclebar__value--open"
+      };
+    }
+
+    if (!targetMs) {
+      return {
+        label: "CLEARING IN",
+        value: "—",
+        className: ""
+      };
+    }
+
+    const parts = countdownParts(targetMs);
+
+    if (!parts || parts.diff <= 0) {
+      return {
+        label: "CLEARING",
+        value: "PENDING",
+        className: " osnias-cyclebar__value--closed"
+      };
+    }
+
+    let className = " osnias-cyclebar__value--open";
+
+    // Last 3 hours: use the existing closed/red visual class as an urgency signal.
+    if (parts.diff <= 3 * 60 * 60 * 1000) {
+      className = " osnias-cyclebar__value--closed";
+    }
+
+    return {
+      label: "CLEARING IN",
+      value: parts.text,
+      className
+    };
+  }
+
+  function startCountdownTimer() {
+    if (countdownTimer !== null) {
+      window.clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+
+    if (!normalizeTimestamp(state.clearingAt)) return;
+
+    countdownTimer = window.setInterval(() => {
+      const value = document.getElementById("osnias-clearing-countdown");
+      const label = document.getElementById("osnias-clearing-countdown-label");
+      if (!value || !label) return;
+
+      const countdown = clearingCountdownMarkup();
+      label.textContent = countdown.label;
+      value.textContent = countdown.value;
+      value.className = `osnias-cyclebar__value${countdown.className}`;
+    }, 1000);
+  }
+
   function cycleMarkup() {
     const cycle =
       state.cycleNumber === null || state.cycleNumber === undefined
@@ -164,7 +269,8 @@
 
     const mintOpen = hasWindow ? windowName === "MINT" : null;
     const burnOpen = hasWindow ? windowName === "BURN" : null;
-    const settlementOpen = hasWindow ? windowName !== "CLEARING" : null;
+    const clearingOpen = hasWindow ? windowName === "CLEARING" : null;
+    const clearingCountdown = clearingCountdownMarkup();
 
     const messagesOpen =
       state.messagingOpen === true
@@ -225,14 +331,21 @@
         <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">SETTLEMENT</span>
-          <span class="osnias-cyclebar__value${statusClass(settlementOpen)}" id="osnias-settlement-status">${statusText(settlementOpen)}</span>
+          <span class="osnias-cyclebar__label">CLEARING</span>
+          <span class="osnias-cyclebar__value${statusClass(clearingOpen)}" id="osnias-clearing-status">${statusText(clearingOpen)}</span>
         </span>
 
         <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">MESSAGES</span>
+          <span class="osnias-cyclebar__label" id="osnias-clearing-countdown-label">${escapeHtml(clearingCountdown.label)}</span>
+          <span class="osnias-cyclebar__value${clearingCountdown.className}" id="osnias-clearing-countdown">${escapeHtml(clearingCountdown.value)}</span>
+        </span>
+
+        <span class="osnias-separator" aria-hidden="true"></span>
+
+        <span class="osnias-cyclebar__item">
+          <span class="osnias-cyclebar__label">INSTRUCTIONS</span>
           <span class="osnias-cyclebar__value${statusClass(messagesOpen)}" id="osnias-messaging-status">${statusText(messagesOpen)}</span>
         </span>
       </div>
@@ -314,6 +427,7 @@
 
     bindLogoFallback();
     bindWalletButton();
+    startCountdownTimer();
   }
 
   function renderCycleBar() {
@@ -325,6 +439,8 @@
         ${cycleMarkup()}
       </div>
     `;
+
+    startCountdownTimer();
   }
 
   function renderFooter() {
@@ -335,7 +451,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · End-User Console · Frame 1.5.1 · 2026-09-08
+        Osnias Clearing · ORUSD Clearing Desk · Frame 1.7.0 · 2026-09-11
       </footer>
     `;
   }
@@ -417,7 +533,7 @@
     renderHeader();
   }
 
-  function setCycle({ cycleNumber, window, messagingOpen } = {}) {
+  function setCycle({ cycleNumber, window, messagingOpen, clearingAt } = {}) {
     if (cycleNumber !== undefined) {
       state.cycleNumber = cycleNumber;
     }
@@ -430,6 +546,10 @@
       state.messagingOpen = Boolean(messagingOpen);
     } else if (window !== undefined) {
       state.messagingOpen = state.cycleWindow !== "CLEARING";
+    }
+
+    if (clearingAt !== undefined) {
+      state.clearingAt = normalizeTimestamp(clearingAt);
     }
 
     renderCycleBar();
