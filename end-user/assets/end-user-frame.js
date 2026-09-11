@@ -12,7 +12,7 @@
  * from this source code without the prior written authorization of the author.
  *
  * File: /assets/end-user-frame.js
- * Version: 1.7.0
+ * Version: 1.8.0
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -28,7 +28,7 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.7.0";
+  const FRAME_VERSION = "1.8.0";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias ORUSD Clearing Desk",
@@ -226,9 +226,14 @@
 
     let className = " osnias-cyclebar__value--open";
 
-    // Last 3 hours: use the existing closed/red visual class as an urgency signal.
+    // Countdown urgency:
+    // > 24 h  : normal green
+    // <= 24 h : warning orange
+    // <= 3 h  : critical red
     if (parts.diff <= 3 * 60 * 60 * 1000) {
       className = " osnias-cyclebar__value--closed";
+    } else if (parts.diff <= 24 * 60 * 60 * 1000) {
+      className = " osnias-cyclebar__value--warning";
     }
 
     return {
@@ -294,21 +299,7 @@
     }
 
     return `
-      <div class="osnias-cyclebar osnias-cyclebar--header" id="osnias-cyclebar">
-        <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">Network</span>
-          <span class="osnias-cyclebar__value" id="osnias-network-name">${escapeHtml(currentConfig.networkLabel)}</span>
-        </span>
-
-        <span class="osnias-separator" aria-hidden="true"></span>
-
-        <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label">Chain ID</span>
-          <span class="osnias-cyclebar__value" id="osnias-chain-id">${escapeHtml(currentConfig.chainIdLabel)}</span>
-        </span>
-
-        <span class="osnias-separator" aria-hidden="true"></span>
-
+      <div class="osnias-cyclebar osnias-cyclebar--header osnias-cyclebar--operations" id="osnias-cyclebar">
         <span class="osnias-cyclebar__item">
           <span class="osnias-cyclebar__label">Cycle</span>
           <span class="osnias-cyclebar__value" id="osnias-cycle-number">${escapeHtml(cycle)}</span>
@@ -338,15 +329,15 @@
         <span class="osnias-separator" aria-hidden="true"></span>
 
         <span class="osnias-cyclebar__item">
-          <span class="osnias-cyclebar__label" id="osnias-clearing-countdown-label">${escapeHtml(clearingCountdown.label)}</span>
-          <span class="osnias-cyclebar__value${clearingCountdown.className}" id="osnias-clearing-countdown">${escapeHtml(clearingCountdown.value)}</span>
-        </span>
-
-        <span class="osnias-separator" aria-hidden="true"></span>
-
-        <span class="osnias-cyclebar__item">
           <span class="osnias-cyclebar__label">INSTRUCTIONS</span>
           <span class="osnias-cyclebar__value${statusClass(messagesOpen)}" id="osnias-messaging-status">${statusText(messagesOpen)}</span>
+        </span>
+
+        <span class="osnias-cyclebar__countdown-gap" aria-hidden="true"></span>
+
+        <span class="osnias-cyclebar__item osnias-cyclebar__item--countdown">
+          <span class="osnias-cyclebar__label" id="osnias-clearing-countdown-label">${escapeHtml(clearingCountdown.label)}</span>
+          <span class="osnias-cyclebar__value${clearingCountdown.className}" id="osnias-clearing-countdown">${escapeHtml(clearingCountdown.value)}</span>
         </span>
       </div>
     `;
@@ -386,6 +377,30 @@
     img.addEventListener("error", tryNext, { passive: true });
   }
 
+  function networkMarkup() {
+    return `
+      <div class="osnias-networkbar" id="osnias-networkbar">
+        <span class="osnias-networkbar__wallet">
+          ${walletMarkup()}
+        </span>
+
+        <span class="osnias-separator" aria-hidden="true"></span>
+
+        <span class="osnias-cyclebar__item">
+          <span class="osnias-cyclebar__label">Network</span>
+          <span class="osnias-cyclebar__value" id="osnias-network-name">${escapeHtml(currentConfig.networkLabel)}</span>
+        </span>
+
+        <span class="osnias-separator" aria-hidden="true"></span>
+
+        <span class="osnias-cyclebar__item">
+          <span class="osnias-cyclebar__label">Chain ID</span>
+          <span class="osnias-cyclebar__value" id="osnias-chain-id">${escapeHtml(currentConfig.chainIdLabel)}</span>
+        </span>
+      </div>
+    `;
+  }
+
   function renderHeader() {
     const mount = document.getElementById("osnias-header");
     if (!mount) return;
@@ -411,9 +426,11 @@
           <nav class="osnias-nav" aria-label="End-user navigation">
             ${renderNavigation(activeKey)}
           </nav>
+        </div>
 
-          <div class="osnias-header__right osnias-header__wallet-last">
-            ${walletMarkup()}
+        <div class="osnias-header__network" id="osnias-header-network">
+          <div class="osnias-header__network-inner">
+            ${networkMarkup()}
           </div>
         </div>
 
@@ -428,6 +445,19 @@
     bindLogoFallback();
     bindWalletButton();
     startCountdownTimer();
+  }
+
+  function renderNetworkBar() {
+    const mount = document.getElementById("osnias-header-network");
+    if (!mount) return;
+
+    mount.innerHTML = `
+      <div class="osnias-header__network-inner">
+        ${networkMarkup()}
+      </div>
+    `;
+
+    bindWalletButton();
   }
 
   function renderCycleBar() {
@@ -451,7 +481,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · ORUSD Clearing Desk · Frame 1.7.0 · 2026-09-11
+        Osnias Clearing · ORUSD Clearing Desk · Frame 1.8.0 · 2026-09-11
       </footer>
     `;
   }
@@ -523,6 +553,7 @@
 
   function refreshFrame() {
     renderHeader();
+    renderNetworkBar();
     renderCycleBar();
     renderFooter();
   }
@@ -530,7 +561,7 @@
   function setWallet({ connected, address } = {}) {
     state.walletConnected = Boolean(connected);
     state.walletAddress = state.walletConnected ? String(address || "") : "";
-    renderHeader();
+    renderNetworkBar();
   }
 
   function setCycle({ cycleNumber, window, messagingOpen, clearingAt } = {}) {
@@ -560,7 +591,7 @@
     if (chainId !== undefined && chainId !== null) {
       currentConfig.chainIdLabel = String(chainId);
     }
-    renderCycleBar();
+    renderNetworkBar();
   }
 
   function configure(options = {}) {
