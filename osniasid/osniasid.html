@@ -10,12 +10,12 @@
   Release: Version 2.0
   Release date: 11 September 2026
   License: Creative Commons Attribution 4.0 International (CC BY 4.0)
-  HAL: hal-05743547
-  HAL URL: https://hal.science/hal-05743547
-  Zenodo record: 22671092
-  Zenodo URL: https://zenodo.org/records/22671092
+  HAL: hal-05746489
+  HAL URL: https://hal.science/hal-05746489
+  Zenodo record: 22704626
+  Zenodo URL: https://zenodo.org/records/22704626
   Canonical URL: https://www.osnias-clearing.com/osniasid/osniasid.html
-  Public specification PDF: /osniasid/Osnias-ID_White_HAL.pdf
+  Public specification PDF: /osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf
   ------------------------------------------------------------
 -->
 <html lang="en">
@@ -32,7 +32,7 @@
   <meta name="publisher" content="Osnias Clearing"/>
   <meta name="theme-color" content="#050814"/>
   <link rel="canonical" href="https://www.osnias-clearing.com/osniasid/osniasid.html"/>
-  <link rel="alternate" type="application/pdf" href="https://www.osnias-clearing.com/osniasid/Osnias-ID_White_HAL.pdf" title="Osnias-ID White Paper — HAL version"/>
+  <link rel="alternate" type="application/pdf" href="https://www.osnias-clearing.com/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf" title="Osnias-ID White Paper — HAL version"/>
   <link rel="author" href="https://orcid.org/0009-0007-8894-8902"/>
   <meta property="og:type" content="article"/>
   <meta property="og:site_name" content="Osnias Clearing"/>
@@ -40,7 +40,7 @@
   <meta property="og:description" content="Release 2.0 of the Osnias internal 19-digit interchain clearing identifier, embedding ISO 4217 currency and clearing-cycle duration in weeks, with registry resolution and MOD-97 checksum."/>
   <meta property="og:url" content="https://www.osnias-clearing.com/osniasid/osniasid.html"/>
   <meta property="og:image" content="https://www.osnias-clearing.com/index-picture.jpg"/>
-  <meta property="article:published_time" content="2026-09-09"/>
+  <meta property="article:published_time" content="2026-09-11"/>
   <meta property="article:modified_time" content="2026-09-11"/>
   <meta property="article:author" content="Denis Bouzon"/>
   <meta name="twitter:card" content="summary_large_image"/>
@@ -51,16 +51,16 @@
   <meta name="citation_author" content="Bouzon, Denis"/>
   <meta name="citation_publication_date" content="2026/09/11"/>
   <meta name="citation_language" content="en"/>
-  <meta name="citation_pdf_url" content="https://www.osnias-clearing.com/osniasid/Osnias-ID_White_HAL.pdf"/>
+  <meta name="citation_pdf_url" content="https://www.osnias-clearing.com/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf"/>
   <meta name="citation_technical_report_institution" content="Osnias Clearing"/>
-  <meta name="citation_technical_report_number" content="HAL Id: hal-05743547"/>
+  <meta name="citation_technical_report_number" content="HAL Id: hal-05746489"/>
   <meta name="DC.title" content="Osnias-ID: An Internal Interchain Identifier for Multi-Chain Clearing"/>
   <meta name="DC.creator" content="Denis Bouzon"/>
   <meta name="DC.date" content="2026-09-11"/>
   <meta name="DC.type" content="Text"/>
   <meta name="DC.language" content="en"/>
   <meta name="DC.rights" content="Creative Commons Attribution 4.0 International (CC BY 4.0)"/>
-  <meta name="DC.identifier" content="hal-05743547"/>
+  <meta name="DC.identifier" content="hal-05746489"/>
   <link rel="stylesheet" href="/assets/css/osnias.css"/>
   <script src="/assets/js/osnias-seo.js" defer></script>
   <script src="/assets/js/osnias-nav.js" defer></script>
@@ -71,7 +71,7 @@
     "headline": "Osnias-ID: An Internal Interchain Identifier for Multi-Chain Clearing",
     "alternativeHeadline": "Internal Interchain Clearing Identifier · Technical White Paper & Public Specification",
     "description": "Osnias-ID is a project-specific internal identifier issued and interpreted by Osnias Clearing for interchain clearing. Release 2.0 provides a compact and persistent 19-digit reference linking an Osnias-assigned network code, authorized server code, ISO 4217 monetary code, clearing-cycle duration in weeks, server-local account sequence and checksum, independently of native wallet-address formats.",
-    "datePublished": "2026-09-09",
+    "datePublished": "2026-09-11",
     "dateModified": "2026-09-11",
     "inLanguage": "en",
     "version": "2.0",
@@ -85,7 +85,7 @@
       "url": "https://orcid.org/0009-0007-8894-8902",
       "sameAs": [
         "https://orcid.org/0009-0007-8894-8902",
-        "https://hal.science/hal-05743547"
+        "https://hal.science/hal-05746489"
       ],
       "affiliation": {
         "@type": "Organization",
@@ -99,12 +99,12 @@
       "url": "https://www.osnias-clearing.com/"
     },
     "sameAs": [
-      "https://hal.science/hal-05743547",
-      "https://zenodo.org/records/22671092"
+      "https://hal.science/hal-05746489",
+      "https://zenodo.org/records/22704626"
     ],
     "encoding": {
       "@type": "MediaObject",
-      "contentUrl": "https://www.osnias-clearing.com/osniasid/Osnias-ID_White_HAL.pdf",
+      "contentUrl": "https://www.osnias-clearing.com/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf",
       "encodingFormat": "application/pdf"
     },
     "keywords": [
@@ -221,7 +221,7 @@
       <strong>New Release 2.0 · 11 September 2026</strong>
       <p>This major release hardens clearing-account identity by binding each Osnias-ID to both a monetary rail and a clearing cycle at creation. The complete 19-digit decimal identifier fits in a single 64-bit unsigned integer (<code>uint64</code>), using the full 8-byte representation on-chain.</p>
     </div>
-    <div class="actions"><a class="btn btn-primary" href="/osniasid/Osnias-ID_White_HAL.pdf">Read White Paper</a><a class="btn" href="#multi-chain-architecture">Registry Architecture</a><a class="btn" href="https://hal.science/hal-05743547" target="_blank" rel="noopener noreferrer">HAL · hal-05743547</a><a class="btn" href="https://zenodo.org/records/22671092" target="_blank" rel="noopener noreferrer">Zenodo</a></div>
+    <div class="actions"><a class="btn btn-primary" href="/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf">Read White Paper</a><a class="btn" href="#multi-chain-architecture">Registry Architecture</a><a class="btn" href="https://hal.science/hal-05746489" target="_blank" rel="noopener noreferrer">HAL · hal-05746489</a><a class="btn" href="https://zenodo.org/records/22704626" target="_blank" rel="noopener noreferrer">Zenodo</a></div>
       </section>
   </section></div></header>
   <main class="container">
@@ -285,7 +285,7 @@
     <section id="registry"><div class="section-label">05 · Registry & Access Control</div><h2>No valid Osnias-ID, no clearing admission</h2><p class="section-intro">The Osnias Registry is the authoritative resolution layer between a clearing account, its identified participant and its currently authorized operational addresses. Release 2.0 adds two admission invariants before a clearing request can be accepted: the OID monetary code must match the escrow and clearing rail, and the OID cycle must match the target clearing room. Checksum validity alone is never sufficient: the identifier must also resolve to an active and eligible registry record.</p><div class="id-grid"><article class="id-card"><div class="id-kicker">Resolve</div><h3>Wallet → Osnias-ID</h3><p>The initiating or receiving technical address is resolved against an authorized clearing account.</p></article><article class="id-card"><div class="id-kicker">Validate</div><h3>Status and authorization</h3><p>The system verifies registry status, wallet authorization and applicable network or transaction eligibility rules.</p></article><article class="id-card"><div class="id-kicker">Fail closed</div><h3>Admission invariant</h3><p>If registry status, checksum, monetary code or clearing-cycle compatibility cannot be resolved and validated, the clearing request is rejected.</p></article></div></section>
 
     <section id="network-codes"><div class="section-label">06 · KK Network Registry</div><h2>Pre-allocated and reserved network namespace</h2><p class="section-intro">KK is the two-digit Osnias network or rail namespace. KK=00 is permanently reserved as a null/unassigned value. Allocated public-network codes identify escrow-capable blockchain environments, while dedicated ranges are reserved for future public networks, institutional rails and Osnias internal infrastructure. A reserved code is a namespace allocation and does not imply integration, validation, participation or endorsement.</p><div class="id-match-table"><img src="/osniasid/OsniasID-Others-match-table.jpg" alt="Osnias-ID KK network registry and native escrow account formats across EVM, non-EVM and institutional banking rails" loading="lazy"/><div class="id-match-table-caption">Osnias-ID correspondence between KK network namespaces and native escrow-account identifiers across public blockchain networks and institutional banking rails.</div></div><div class="id-grid"><article class="id-card"><div class="id-kicker">Allocated EVM</div><h3>01–06</h3><p>Ethereum, Sei EVM, Arbitrum One, Avalanche C-Chain, Base and BNB Smart Chain.</p></article><article class="id-card"><div class="id-kicker">Allocated non-EVM</div><h3>16–18</h3><p>Solana, TRON and Stellar/Soroban, using their native programmable execution environments.</p></article><article class="id-card"><div class="id-kicker">Institutional & internal reserve</div><h3>80–99</h3><p>80–89 are reserved institutional rail namespaces; 90–99 are reserved for Osnias internal infrastructure and protocol functions.</p></article></div><div class="actions"><a class="btn" href="/osniasid/Osnias-ID_KK_Network_Registry_Annex_v0.7.1.xlsx">Download KK Network Registry</a><a class="btn" href="/osniasid/Osnias-ID-resereved adress.pdf">Reserved Network IDs PDF</a></div></section>
-    <section id="research"><div class="section-label">07 · Public Research Record</div><h2>Published, citable and versioned</h2><p class="section-intro">The canonical web specification is now <strong>Osnias-ID Release 2.0, dated 11 September 2026</strong>. The HAL and Zenodo links below currently preserve the previously published Release 1.2 research record of 9 September 2026. A dedicated Release 2.0 archive record may be deposited separately so that the historical 1.2 record remains immutable and citable.</p><div class="id-links"><a class="id-link" href="https://hal.science/hal-05743547" target="_blank" rel="noopener noreferrer"><strong>HAL — hal-05743547 →</strong><span>Archived Release 1.2 preprint · 9 September 2026 · Denis Bouzon · CC BY 4.0.</span></a><a class="id-link" href="https://zenodo.org/records/22671092" target="_blank" rel="noopener noreferrer"><strong>Zenodo — record 22671092 →</strong><span>Archived Release 1.2 public research record.</span></a><a class="id-link" href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer"><strong>ORCID — Denis Bouzon →</strong><span>0009-0007-8894-8902</span></a><a class="id-link" href="/osniasid/Osnias-ID_White_HAL.pdf"><strong>HAL White Paper PDF →</strong><span>Archived Release 1.2 PDF. The canonical HTML specification above is Release 2.0.</span></a></div></section>
+    <section id="research"><div class="section-label">07 · Public Research Record</div><h2>Published, citable and versioned</h2><p class="section-intro">Osnias-ID <strong>Release 2.0, dated 11 September 2026</strong>, is publicly archived and citable through both HAL and Zenodo. The repository-hosted HAL PDF below is the public Release 2.0 paper corresponding to the current specification.</p><div class="id-links"><a class="id-link" href="https://hal.science/hal-05746489" target="_blank" rel="noopener noreferrer"><strong>HAL — hal-05746489 →</strong><span>Release 2.0 preprint · 11 September 2026 · Denis Bouzon · CC BY 4.0.</span></a><a class="id-link" href="https://zenodo.org/records/22704626" target="_blank" rel="noopener noreferrer"><strong>Zenodo — record 22704626 →</strong><span>Release 2.0 permanent public research archive record.</span></a><a class="id-link" href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer"><strong>ORCID — Denis Bouzon →</strong><span>0009-0007-8894-8902</span></a><a class="id-link" href="/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf"><strong>HAL White Paper PDF →</strong><span>Release 2.0 HAL PDF hosted in the Osnias Clearing repository.</span></a></div></section>
     <section id="scope"><div class="section-label">08 · Scope Boundary</div><h2>What Osnias-ID is — and is not</h2><p class="section-intro">Osnias-ID is an internal Osnias Clearing identifier and registry reference for interchain clearing. It is not a bank account number, legal-entity identifier, wallet address, regulatory authorization number, security, token or credential of legal status. <strong>KK</strong> and <strong>NNN</strong> are allocated by Osnias Clearing; <strong>MMM</strong> carries the ISO 4217 numeric monetary code; <strong>WW</strong> records the clearing-cycle duration in weeks; <strong>SSSSSSS</strong> is allocated by the authorized server inside that server/currency/cycle namespace; and <strong>XX</strong> is calculated under the Osnias-defined checksum rule. References to ISO 4217, ISO 20022, LEI, UID/CHE, FINMA or other external frameworks are interoperability references only and do not imply certification, regulatory status or endorsement.</p></section>
   </main>
   <footer>
@@ -294,9 +294,9 @@
       Denis Bouzon · ORCID
       <a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer">0009-0007-8894-8902</a>
       · HAL
-      <a href="https://hal.science/hal-05743547" target="_blank" rel="noopener noreferrer">hal-05743547</a>
+      <a href="https://hal.science/hal-05746489" target="_blank" rel="noopener noreferrer">hal-05746489</a>
       · Zenodo
-      <a href="https://zenodo.org/records/22671092" target="_blank" rel="noopener noreferrer">22671092</a>
+      <a href="https://zenodo.org/records/22704626" target="_blank" rel="noopener noreferrer">22704626</a>
     </div>
   </footer>
   <script data-goatcounter="https://denis-osnias.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
