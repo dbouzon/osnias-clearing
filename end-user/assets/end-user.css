@@ -5,8 +5,8 @@
  * Visual language aligned with escrow.html
  *
  * File    : /assets/end-user.css
- * Version : 1.3.0
- * Date    : 2026-09-08
+ * Version : 1.4.0
+ * Date    : 2026-09-11
  *
  * UNLICENSED — ALL RIGHTS RESERVED.
  */
@@ -1051,74 +1051,346 @@ svg {
   }
 }
 
+/* =========================================================
+   Header — final consolidated layout
+   Compatible with end-user-frame v1.9.1
+   ========================================================= */
 
-/* v1.2.1 — UX adjustment: center operational strip and use 14px type */
-.osnias-header__status-inner {
-  display: flex;
-  justify-content: center;
-}
-
-.osnias-cyclebar--header {
-  justify-content: center;
-  gap: 12px;
-}
-
-.osnias-cyclebar--header .osnias-cyclebar__label,
-.osnias-cyclebar--header .osnias-cyclebar__value {
-  font-size: 14px;
-}
-
-
-/* v1.2.2 — Operational strip color discipline
-   Only white, green and red are allowed in the status strip. */
-.osnias-header__status,
-.osnias-header__status-inner,
-.osnias-cyclebar--header {
-  color: var(--white);
-}
-
-.osnias-cyclebar--header .osnias-cyclebar__label,
-.osnias-cyclebar--header .osnias-cyclebar__value {
-  color: var(--white);
-}
-
-.osnias-cyclebar--header .osnias-cyclebar__value--open {
-  color: var(--green);
-}
-
-.osnias-cyclebar--header .osnias-cyclebar__value--closed {
-  color: var(--red);
-}
-
-.osnias-cyclebar--header .osnias-separator {
-  background: rgba(238,244,251,.28);
-}
-
-
-/* v1.2.3 — Operational strip typography: 14px everywhere */
-.osnias-header__status,
-.osnias-header__status-inner,
-.osnias-cyclebar--header,
-.osnias-cyclebar--header .osnias-cyclebar__item,
-.osnias-cyclebar--header .osnias-cyclebar__label,
-.osnias-cyclebar--header .osnias-cyclebar__value {
-  font-size: 14px;
-}
-
-
-/* v1.2.5 — Header buttons typography */
+/* Header typography */
 .osnias-header .osnias-nav__link,
 .osnias-header .osnias-btn {
   font-size: 14px;
   color: #ffffff;
 }
 
-.osnias-header .osnias-nav__link:hover,
-.osnias-header .osnias-nav__link:focus-visible,
-.osnias-header .osnias-nav__link.is-active,
-.osnias-header .osnias-btn:hover,
-.osnias-header .osnias-btn:focus-visible {
-  color: #ffffff;
+/* Line 1 — institutional navigation */
+.osnias-nav {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.osnias-nav__link--boxed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(255,255,255,.78);
+  border-radius: 4px;
+  color: #ffffff !important;
+  background: transparent;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color .15s ease,
+    border-color .15s ease,
+    box-shadow .15s ease;
+}
+
+.osnias-nav__link--boxed:hover,
+.osnias-nav__link--boxed:focus-visible {
+  color: #ffffff !important;
+  background: rgba(255,255,255,.07);
+  border-color: #ffffff;
+}
+
+.osnias-nav__link--boxed.is-active {
+  color: #ffffff !important;
+  background: rgba(255,255,255,.12);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.28) inset;
+}
+
+/* Line 2 — wallet | network | chain ID */
+.osnias-header__network {
+  width: 100%;
+  border-top: 1px solid rgba(255,255,255,.04);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  background: rgba(7,17,31,.97);
+}
+
+.osnias-header__network-inner {
+  width: 100%;
+}
+
+.osnias-networkbar--inline {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: min(100%, var(--content-width));
+  min-height: 52px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.osnias-networkbar__wallet {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.osnias-networkbar--inline .osnias-cyclebar__item {
+  flex: 0 0 auto;
+}
+
+.osnias-networkbar--inline .osnias-cyclebar__label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.osnias-networkbar--inline .osnias-cyclebar__value {
+  color: var(--white);
+  font-weight: 700;
+}
+
+.osnias-networkbar--inline .osnias-separator {
+  flex: 0 0 1px;
+  height: 18px;
+}
+
+/* Line 3 — operational cycle state */
+.osnias-header__status {
+  width: 100%;
+  border-top: 1px solid rgba(32,52,75,.72);
+  background: #091624;
+}
+
+.osnias-header__status-inner {
+  width: min(100%, var(--content-width));
+  margin: 0 auto;
+  padding: 7px 24px 8px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.osnias-cyclebar--header,
+.osnias-cyclebar--fullwidth {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.osnias-cyclebar--header::-webkit-scrollbar,
+.osnias-cyclebar--fullwidth::-webkit-scrollbar {
+  display: none;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__item,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__item {
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__label,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__value {
+  font-size: 14px;
+}
+
+/* Operational strip color discipline */
+.osnias-cyclebar--header,
+.osnias-cyclebar--fullwidth,
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__label,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__value {
+  color: var(--white);
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__value--open,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__value--open {
+  color: var(--green);
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__value--closed,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__value--closed {
+  color: var(--red);
+}
+
+.osnias-cyclebar__value--warning {
+  color: var(--warning) !important;
+}
+
+.osnias-cyclebar--header .osnias-separator,
+.osnias-cyclebar--fullwidth .osnias-separator {
+  flex: 0 0 1px;
+  height: 18px;
+  background: rgba(238,244,251,.28);
+}
+
+/* Small deliberate breathing room before the countdown */
+.osnias-cyclebar__countdown-gap {
+  flex: 0 0 18px;
+  min-width: 18px;
+}
+
+.osnias-cyclebar__countdown-gap--compact {
+  flex: 0 0 18px;
+  min-width: 18px;
+}
+
+.osnias-cyclebar__item--countdown {
+  margin-left: 0;
+  font-weight: 700;
+}
+
+/* =========================================================
+   Responsive — consolidated header behavior
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .osnias-header__inner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .osnias-brand {
+    min-width: 0;
+  }
+
+  .osnias-nav {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .osnias-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .osnias-networkbar--inline {
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+  }
+
+  .osnias-cyclebar--header,
+  .osnias-cyclebar--fullwidth {
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 6px 0;
+  }
+
+  .osnias-cyclebar__countdown-gap,
+  .osnias-cyclebar__countdown-gap--compact {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --header-height: auto;
+  }
+
+  .osnias-header {
+    position: relative;
+  }
+
+  .osnias-header__inner {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .osnias-main {
+    padding: 18px 14px 36px;
+  }
+
+  .osnias-footer {
+    padding: 18px 14px 24px;
+  }
+
+  .osnias-brand {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .osnias-brand__name,
+  .osnias-brand__subline {
+    white-space: normal;
+  }
+
+  .osnias-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .osnias-nav__link--boxed {
+    justify-content: flex-start;
+  }
+
+  .osnias-page-head {
+    flex-direction: column;
+  }
+
+  .osnias-page-title {
+    font-size: 25px;
+  }
+
+  .osnias-page-head__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .osnias-grid--2,
+  .osnias-grid--3,
+  .osnias-grid--4,
+  .osnias-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .osnias-cyclebar:not(.osnias-cyclebar--header):not(.osnias-cyclebar--fullwidth) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .osnias-btn {
+    min-height: 42px;
+  }
+
+  .osnias-wallet__address {
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 420px) {
+  .osnias-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .osnias-page-head__actions,
+  .osnias-page-head__actions .osnias-btn {
+    width: 100%;
+  }
+
+  .osnias-wallet {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .osnias-wallet .osnias-btn {
+    flex: 1 1 auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1129,158 +1401,5 @@ svg {
     transition: none !important;
     animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
-  }
-}
-
-/*
- * Osnias Clearing — Header layout patch
- * Compatible with end-user-frame v1.9.0
- */
-
-/* Navigation: clear institutional boxed tabs */
-.osnias-nav{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  flex-wrap:wrap;
-}
-
-.osnias-nav__link--boxed{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:36px;
-  padding:0 12px;
-  border:1px solid rgba(255,255,255,.78);
-  border-radius:4px;
-  color:#fff !important;
-  background:transparent;
-  font-weight:600;
-  text-decoration:none;
-  transition:
-    background-color .15s ease,
-    border-color .15s ease,
-    box-shadow .15s ease;
-}
-
-.osnias-nav__link--boxed:hover{
-  background:rgba(255,255,255,.07);
-  border-color:#fff;
-}
-
-.osnias-nav__link--boxed.is-active{
-  color:#fff !important;
-  background:rgba(255,255,255,.10);
-  border-color:#fff;
-  box-shadow:0 0 0 1px rgba(255,255,255,.22) inset;
-}
-
-/* Line 2: balanced network context with wallet truly centered */
-.osnias-header__network{
-  border-top:1px solid rgba(255,255,255,.04);
-  border-bottom:1px solid rgba(255,255,255,.10);
-}
-
-.osnias-header__network-inner{
-  width:100%;
-}
-
-.osnias-networkbar--balanced{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  gap:18px;
-  width:100%;
-  min-height:52px;
-  padding:0 16px;
-  box-sizing:border-box;
-}
-
-.osnias-networkbar__side{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-
-.osnias-networkbar__side--left{
-  justify-self:start;
-}
-
-.osnias-networkbar__side--right{
-  justify-self:end;
-}
-
-.osnias-networkbar__wallet-center{
-  justify-self:center;
-}
-
-.osnias-networkbar__wallet-center .osnias-wallet{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-}
-
-/* Line 3: use the whole available width */
-.osnias-header__status-inner{
-  width:100%;
-}
-
-.osnias-cyclebar--fullwidth{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  width:100%;
-  padding:0 18px;
-  box-sizing:border-box;
-}
-
-.osnias-cyclebar--fullwidth .osnias-cyclebar__item{
-  flex:0 0 auto;
-}
-
-.osnias-cyclebar__countdown-gap{
-  flex:1 1 auto;
-  min-width:28px;
-}
-
-.osnias-cyclebar__item--countdown{
-  margin-left:auto;
-  font-weight:700;
-}
-
-/* Countdown warning state */
-.osnias-cyclebar__value--warning{
-  color:#ffb347 !important;
-}
-
-/* Responsive fallback */
-@media(max-width:980px){
-  .osnias-networkbar--balanced{
-    grid-template-columns:1fr;
-    justify-items:center;
-    gap:8px;
-    padding:10px 12px;
-  }
-
-  .osnias-networkbar__side--left,
-  .osnias-networkbar__side--right{
-    justify-self:center;
-  }
-
-  .osnias-cyclebar--fullwidth{
-    justify-content:center;
-    flex-wrap:wrap;
-    padding:10px 12px;
-  }
-
-  .osnias-cyclebar__countdown-gap{
-    display:none;
-  }
-
-  .osnias-cyclebar__item--countdown{
-    margin-left:0;
   }
 }
