@@ -12,7 +12,7 @@
  * from this source code without the prior written authorization of the author.
  *
  * File: /assets/end-user-frame.js
- * Version: 1.9.1
+ * Version: 1.9.2
  *
  * Responsibilities:
  * - Render the common institutional header
@@ -28,7 +28,7 @@
 (() => {
   "use strict";
 
-  const FRAME_VERSION = "1.9.1";
+  const FRAME_VERSION = "1.9.2";
 
   const DEFAULT_CONFIG = Object.freeze({
     brand: "Osnias ORUSD Clearing Desk",
@@ -61,7 +61,11 @@
     walletAddress: "",
     cycleNumber: null,
     cycleWindow: "—",
+    burnOpen: null,
+    mintOpen: null,
+    p2pOpen: null,
     messagingOpen: null,
+    clearingOpen: null,
     clearingAt: null
   };
 
@@ -270,21 +274,32 @@
         : String(state.cycleNumber);
 
     const windowName = String(state.cycleWindow || "—").toUpperCase();
-    const hasWindow = ["BURN", "MINT", "CLEARING"].includes(windowName);
 
-    const mintOpen = hasWindow ? windowName === "MINT" : null;
-    const burnOpen = hasWindow ? windowName === "BURN" : null;
-    const clearingOpen = hasWindow ? windowName === "CLEARING" : null;
-    const clearingCountdown = clearingCountdownMarkup();
+    // v1.9.2:
+    // Operational permissions are supplied explicitly by the temporal-oracle
+    // provider. Do not infer them from the window name because REST (Sunday)
+    // closes every operation.
+    const burnOpen =
+      state.burnOpen === true ? true :
+      state.burnOpen === false ? false : null;
+
+    const mintOpen =
+      state.mintOpen === true ? true :
+      state.mintOpen === false ? false : null;
+
+    const p2pOpen =
+      state.p2pOpen === true ? true :
+      state.p2pOpen === false ? false : null;
 
     const messagesOpen =
-      state.messagingOpen === true
-        ? true
-        : state.messagingOpen === false
-          ? false
-          : hasWindow
-            ? windowName !== "CLEARING"
-            : null;
+      state.messagingOpen === true ? true :
+      state.messagingOpen === false ? false : null;
+
+    const clearingOpen =
+      state.clearingOpen === true ? true :
+      state.clearingOpen === false ? false : null;
+
+    const clearingCountdown = clearingCountdownMarkup();
 
     function statusText(value) {
       if (value === true) return "OPEN";
@@ -324,6 +339,13 @@
         <span class="osnias-cyclebar__item">
           <span class="osnias-cyclebar__label">CLEARING</span>
           <span class="osnias-cyclebar__value${statusClass(clearingOpen)}" id="osnias-clearing-status">${statusText(clearingOpen)}</span>
+        </span>
+
+        <span class="osnias-separator" aria-hidden="true"></span>
+
+        <span class="osnias-cyclebar__item">
+          <span class="osnias-cyclebar__label">P2P</span>
+          <span class="osnias-cyclebar__value${statusClass(p2pOpen)}" id="osnias-p2p-status">${statusText(p2pOpen)}</span>
         </span>
 
         <span class="osnias-separator" aria-hidden="true"></span>
@@ -481,7 +503,7 @@
 
     mount.innerHTML = `
       <footer class="osnias-footer">
-        Osnias Clearing · ORUSD Clearing Desk · Frame 1.9.1 · 2026-09-11
+        Osnias Clearing · ORUSD Clearing Desk · Frame 1.9.2 · 2026-09-14
       </footer>
     `;
   }
@@ -564,7 +586,16 @@
     renderNetworkBar();
   }
 
-  function setCycle({ cycleNumber, window, messagingOpen, clearingAt } = {}) {
+  function setCycle({
+    cycleNumber,
+    window,
+    burnOpen,
+    mintOpen,
+    p2pOpen,
+    messagingOpen,
+    clearingOpen,
+    clearingAt
+  } = {}) {
     if (cycleNumber !== undefined) {
       state.cycleNumber = cycleNumber;
     }
@@ -573,10 +604,24 @@
       state.cycleWindow = String(window || "—").toUpperCase();
     }
 
+    if (burnOpen !== undefined) {
+      state.burnOpen = Boolean(burnOpen);
+    }
+
+    if (mintOpen !== undefined) {
+      state.mintOpen = Boolean(mintOpen);
+    }
+
+    if (p2pOpen !== undefined) {
+      state.p2pOpen = Boolean(p2pOpen);
+    }
+
     if (messagingOpen !== undefined) {
       state.messagingOpen = Boolean(messagingOpen);
-    } else if (window !== undefined) {
-      state.messagingOpen = state.cycleWindow !== "CLEARING";
+    }
+
+    if (clearingOpen !== undefined) {
+      state.clearingOpen = Boolean(clearingOpen);
     }
 
     if (clearingAt !== undefined) {

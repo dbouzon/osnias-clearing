@@ -3,7 +3,7 @@
  * Shared read-only blockchain layer
  *
  * File: /assets/sei-provider.js
- * Version: 1.4.0
+ * Version: 1.5.0
  *
  * Responsibilities:
  * - Centralize Sei Atlantic-2 Testnet configuration
@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "1.4.0";
+  const VERSION = "1.5.0";
 
   const CONFIG = Object.freeze({
     networkName: "Sei Atlantic-2 Testnet",
@@ -30,28 +30,38 @@
 
     contracts: Object.freeze({
       orusd: "0xA4b51A41534Fd92E4C95AdEcec95B5a5E3236Aee",
-      temporalOracle: "0xf98578bBDf52f87511dfEE2752e442BC29631C7B",
+      temporalOracle: "0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11",
       paymentMessageRegistry: "0xe6225B4CB4a104488Df47D4496F764427dcb0c76"
     })
   });
 
   /*
-   * OsniasTemporalOracle v0.4.1-testnet
+   * OsniasTemporalOracle1W v0.4.2-testnet
    *
-   * Passive reads use currentState()/status() and never write.
+   * Passive reads use currentState()/currentCycleNumber() and never write.
    * Active protocol observations use syncAndGetState() with a wallet signer.
+   *
+   * Window enum:
+   *   0 NETWORK   — Saturday
+   *   1 REST      — Sunday
+   *   2 BURN      — Monday
+   *   3 MINT      — Tuesday through Thursday
+   *   4 CLEARING  — Friday
    */
   const TEMPORAL_ORACLE_ABI = Object.freeze([
     "function initialized() view returns (bool)",
     "function cycleNumber() view returns (uint256)",
+    "function currentCycleNumber() view returns (uint256)",
     "function currentWindow() view returns (string)",
     "function isBurnOpen() view returns (bool)",
     "function isMintOpen() view returns (bool)",
-    "function isSettlementOpen() view returns (bool)",
+    "function isP2POpen() view returns (bool)",
+    "function isMessageOpen() view returns (bool)",
     "function isClearingOpen() view returns (bool)",
-    "function currentState() view returns (tuple(uint256 cycle,uint8 window,bool burnOpen,bool mintOpen,bool settlementOpen,bool clearingOpen,uint256 observedBlock,uint256 observedTimestamp,uint256 cycleStartBoundaryTimestamp,uint256 clearingBoundaryTimestamp))",
-    "function currentCycleRecord() view returns (tuple(uint256 cycleNumber,uint256 calendarWeekId,tuple(uint256 boundaryTimestamp,uint256 lastObservedBlockBefore,uint256 lastObservedTimestampBefore,uint256 firstObservedBlockAfter,uint256 firstObservedTimestampAfter,bool observed) cycleStart,tuple(uint256 boundaryTimestamp,uint256 lastObservedBlockBefore,uint256 lastObservedTimestampBefore,uint256 firstObservedBlockAfter,uint256 firstObservedTimestampAfter,bool observed) clearingStart,bool exists))",
-    "function syncAndGetState() returns (tuple(uint256 cycle,uint8 window,bool burnOpen,bool mintOpen,bool settlementOpen,bool clearingOpen,uint256 observedBlock,uint256 observedTimestamp,uint256 cycleStartBoundaryTimestamp,uint256 clearingBoundaryTimestamp))"
+    "function isRestDay() view returns (bool)",
+    "function currentState() view returns (tuple(uint256 cycle,uint8 window,bool burnOpen,bool mintOpen,bool p2pOpen,bool messageOpen,bool clearingOpen,uint256 observedBlock,uint256 observedTimestamp,uint256 cycleStartBoundaryTimestamp,uint256 clearingBoundaryTimestamp))",
+    "function currentCycleRecord() view returns (tuple(uint256 cycleNumber,uint256 calendarCycleId,tuple(uint256 boundaryTimestamp,uint256 lastObservedBlockBefore,uint256 lastObservedTimestampBefore,uint256 firstObservedBlockAfter,uint256 firstObservedTimestampAfter,bool observed) cycleStart,tuple(uint256 boundaryTimestamp,uint256 lastObservedBlockBefore,uint256 lastObservedTimestampBefore,uint256 firstObservedBlockAfter,uint256 firstObservedTimestampAfter,bool observed) clearingStart,bool exists))",
+    "function syncAndGetState() returns (tuple(uint256 cycle,uint8 window,bool burnOpen,bool mintOpen,bool p2pOpen,bool messageOpen,bool clearingOpen,uint256 observedBlock,uint256 observedTimestamp,uint256 cycleStartBoundaryTimestamp,uint256 clearingBoundaryTimestamp))"
   ]);
 
   const MAX_LOG_BLOCK_SPAN = 1999;
@@ -346,9 +356,11 @@
   function windowNameFromEnum(value) {
     const n = Number(value);
 
-    if (n === 0) return "BURN";
-    if (n === 1) return "MINT";
-    if (n === 2) return "CLEARING";
+    if (n === 0) return "NETWORK";
+    if (n === 1) return "REST";
+    if (n === 2) return "BURN";
+    if (n === 3) return "MINT";
+    if (n === 4) return "CLEARING";
 
     return "UNKNOWN";
   }
@@ -367,9 +379,9 @@
       window: windowNameFromEnum(t.window),
       burnOpen: Boolean(t.burnOpen),
       mintOpen: Boolean(t.mintOpen),
-      settlementOpen: Boolean(t.settlementOpen),
+      p2pOpen: Boolean(t.p2pOpen),
+      messagingOpen: Boolean(t.messageOpen),
       clearingOpen: Boolean(t.clearingOpen),
-      messagingOpen: !Boolean(t.clearingOpen),
       observedBlock: Number(t.observedBlock),
       observedTimestamp: Number(t.observedTimestamp),
       cycleStartBoundaryTimestamp: Number(t.cycleStartBoundaryTimestamp),
@@ -382,13 +394,18 @@
   }
 
   async function getCycleNumber() {
-    return (await getTemporalState()).cycleNumber;
+    const oracle = readTemporalOracle();
+    return Number(await oracle.currentCycleNumber());
   }
 
   /*
-   * The v0.4.1 oracle no longer exposes the old getCycleStartBlock().
+   * The v0.4.2 1W oracle does not expose a synthetic cycle-start block.
    * For RPC indexing, use the first Osnias-observed block after the current
-   * Monday boundary. This is the canonical Osnias traffic boundary.
+   * Saturday boundary when one has actually been materialized.
+   *
+   * If the current cycle has not yet been observed by sync(), return null.
+   * Passive UI reads must never fail merely because a cycle record is not
+   * materialized yet.
    */
   async function getCycleStartBlock() {
     const oracle = readTemporalOracle();
@@ -402,12 +419,15 @@
     }
 
     const c = await oracle.currentCycleRecord();
+
+    if (!Boolean(c.exists)) {
+      return null;
+    }
+
     const block = BigInt(c.cycleStart.firstObservedBlockAfter);
 
     if (block <= 0n) {
-      throw new OsniasRpcError(
-        "Current cycle has no first observed Osnias block."
-      );
+      return null;
     }
 
     if (block > BigInt(Number.MAX_SAFE_INTEGER)) {
@@ -439,7 +459,7 @@
   /*
    * ACTIVE OBSERVATION API
    * ----------------------
-   * Sends syncAndGetState() to OsniasTemporalOracle v0.4.1.
+   * Sends syncAndGetState() to OsniasTemporalOracle1W v0.4.2.
    * This is a state-changing transaction and therefore requires a wallet
    * signature. The caller supplies no timestamp and no block number.
    */
@@ -479,8 +499,12 @@
       window.OsniasFrame.setCycle({
         cycleNumber: state.cycleNumber,
         window: state.window,
+        burnOpen: state.burnOpen,
+        mintOpen: state.mintOpen,
+        p2pOpen: state.p2pOpen,
         messagingOpen: state.messagingOpen,
-        // Temporal Oracle is the canonical source of the clearing cut-off.
+        clearingOpen: state.clearingOpen,
+        // Temporal Oracle is the canonical source of the Friday clearing boundary.
         // clearingBoundaryTimestamp is returned in Unix seconds.
         clearingAt: state.clearingBoundaryTimestamp
       });
