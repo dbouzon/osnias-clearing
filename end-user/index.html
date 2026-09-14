@@ -2,7 +2,7 @@
 <!--
   Osnias Clearing — End-User Console
   Dashboard
-  Version    : 3.1.0-testnet
+  Version    : 3.1.1-testnet
   Copyright  : 2026 Denis Bouzon / Osnias Clearing
   Licence    : UNLICENSED — All rights reserved
   ORCID      : 0009-0007-8894-8902
@@ -21,14 +21,14 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.0">
+  <link rel="stylesheet" href="./assets/end-user.css?v=3.1.1">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
   <!-- Lightweight shared assets only: no payment-messages.js, no log scanning -->
-  <script src="./assets/end-user-frame.js?v=3.1.0" defer></script>
-  <script src="./assets/sei-provider.js?v=3.1.0" defer></script>
-  <script src="./assets/wallet-connect.js?v=3.1.0" defer></script>
+  <script src="./assets/end-user-frame.js?v=1.9.2" defer></script>
+  <script src="./assets/sei-provider.js?v=1.5.0" defer></script>
+  <script src="./assets/wallet-connect.js?v=3.1.1" defer></script>
 
   <style>
     .dashboard-status-grid{
@@ -332,7 +332,10 @@
     $("windowDetail").textContent = windowName;
 
     $("cycleStartBlock").textContent =
-      Number(state.cycle.cycleStartBlock).toLocaleString("en-US");
+      state.cycle.cycleStartBlock === null ||
+      state.cycle.cycleStartBlock === undefined
+        ? "—"
+        : Number(state.cycle.cycleStartBlock).toLocaleString("en-US");
 
     $("currentBlock").textContent =
       Number(state.cycle.currentBlock).toLocaleString("en-US");
@@ -340,20 +343,25 @@
     setBadge("oracleBadge", "ONLINE", true);
 
     /*
-     * Testnet 7-day operating cycle:
-     * BURN       -> BURN open, MINT closed, P2P transfers open, instructions open
-     * MINT       -> MINT open, BURN closed, P2P transfers open, instructions open
-     * CLEARING   -> transfer and instruction creation functions closed
+     * Temporal Oracle 1W v0.4.2 is the sole source of operational
+     * time-window authorizations.
+     *
+     * Do not infer permissions from the window label:
+     * Sunday REST closes every operation.
      */
-    const isBurn = windowName === "BURN";
-    const isMint = windowName === "MINT";
-    const isClearing = windowName === "CLEARING";
+    const burnOpen = Boolean(state.cycle.burnOpen);
+    const mintOpen = Boolean(state.cycle.mintOpen);
+    const p2pOpen = Boolean(state.cycle.p2pOpen);
+    const messagesOpen = Boolean(state.cycle.messagingOpen);
 
-
-    setBadge("burnState", isBurn ? "OPEN" : "CLOSED", isBurn);
-    setBadge("mintState", isMint ? "OPEN" : "CLOSED", isMint);
-    setBadge("p2pState", isClearing ? "CLOSED" : "OPEN", !isClearing);
-    setBadge("messagesState", isClearing ? "CLOSED" : "OPEN", !isClearing);
+    setBadge("burnState", burnOpen ? "OPEN" : "CLOSED", burnOpen);
+    setBadge("mintState", mintOpen ? "OPEN" : "CLOSED", mintOpen);
+    setBadge("p2pState", p2pOpen ? "OPEN" : "CLOSED", p2pOpen);
+    setBadge(
+      "messagesState",
+      messagesOpen ? "OPEN" : "CLOSED",
+      messagesOpen
+    );
   }
 
   async function refreshORUSD() {
