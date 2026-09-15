@@ -9,7 +9,17 @@
   <link rel="stylesheet" href="./assets/node.css?v=1.0.0">
 
   <script>
+    window.OSNIAS_WALLET_NETWORK = {
+      chainId: 11155111,
+      chainIdHex: "0xaa36a7",
+      chainName: "Ethereum Sepolia"
+    };
+
     window.OSNIAS_NODE_ADMIN_CONFIG = {
+      adminWallet: "0x9FcC10582df1dC2E7Da79653535Fd3e5b8De2570",
+      challengeEndpoint: "/api/node/admin/auth/challenge",
+      verifyEndpoint: "/api/node/admin/auth/verify",
+      logoutEndpoint: "/api/node/admin/auth/logout",
       requestsEndpoint: "/api/node/admin/kyc/requests",
       approveEndpoint: "/api/node/admin/kyc/approve",
       rejectEndpoint: "/api/node/admin/kyc/reject",
@@ -19,13 +29,51 @@
     };
   </script>
 
-  <script src="./assets/node-admin.js?v=0.1.0" defer></script>
+  <script src="./assets/wallet-connect.js" defer></script>
+  <script src="./assets/node-admin.js?v=0.2.0" defer></script>
 </head>
 
 <body>
   <div class="osnias-shell">
     <main class="osnias-main">
       <div class="osnias-page">
+        <section id="adminAuthGate" class="osnias-card">
+          <div class="osnias-card__head">
+            <h1 class="osnias-card__title">Accès administrateur</h1>
+            <span id="adminAuthStatus" class="osnias-badge osnias-badge--pending">NON AUTHENTIFIÉ</span>
+          </div>
+          <div class="osnias-card__body osnias-form">
+            <div class="osnias-form-row">
+              <div class="osnias-field">
+                <span class="osnias-label">Wallet administrateur autorisé</span>
+                <div class="osnias-input osnias-mono" style="display:flex;align-items:center;">0x9FcC10582df1dC2E7Da79653535Fd3e5b8De2570</div>
+              </div>
+              <div class="osnias-field">
+                <span class="osnias-label">Wallet connecté</span>
+                <div id="adminConnectedWallet" class="osnias-input osnias-mono" style="display:flex;align-items:center;">—</div>
+              </div>
+            </div>
+
+            <div class="osnias-flex osnias-flex-wrap osnias-gap-12">
+              <button id="adminConnectWallet" class="osnias-btn osnias-btn--primary" type="button">
+                Connecter le wallet administrateur
+              </button>
+              <button id="adminSignChallenge" class="osnias-btn osnias-btn--success" type="button" disabled>
+                Signer et ouvrir l'administration
+              </button>
+              <button id="adminLogout" class="osnias-btn osnias-btn--danger" type="button" hidden>
+                Fermer la session
+              </button>
+            </div>
+
+            <div id="adminAuthMessage" class="osnias-alert">
+              L'accès nécessite le wallet administrateur autorisé et une signature cryptographique.
+            </div>
+          </div>
+        </section>
+
+        <div id="adminProtectedContent" hidden>
+
 
         <div style="display:flex;justify-content:center;gap:8px;font-size:14px;color:#fff;">
           <a href="https://www.osnias-clearing.com" style="color:#fff;">Osnias Network</a>
@@ -232,6 +280,8 @@
           </div>
         </section>
 
+        </div>
+
         <div id="pageMessage" class="osnias-alert">
           Cette page nécessite une authentification administrateur côté serveur avant mise en production.
         </div>
@@ -240,7 +290,7 @@
     </main>
 
     <footer class="osnias-footer">
-      Osnias Network · Node 1 · Administration · v0.1.0
+      Osnias Network · Node 1 · Administration · v0.2.0
     </footer>
   </div>
 </body>
