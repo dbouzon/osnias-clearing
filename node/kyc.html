@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Osnias Clearing — KYC personne morale, Ethereum Sepolia Testnet.">
+  <title>Osnias Clearing — KYC personne morale</title>
+
+  <link rel="stylesheet" href="./assets/end-user.css?v=1.3.0">
+  <link rel="stylesheet" href="./assets/kyc.css?v=0.1.0">
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+
+  <!-- Force the shared Osnias wallet layer to Ethereum Sepolia. -->
+  <script>
+    window.OSNIAS_WALLET_NETWORK = {
+      chainId: 11155111,
+      chainIdHex: "0xaa36a7",
+      chainName: "Ethereum Sepolia",
+      nativeCurrency: { name: "Sepolia ETH", symbol: "ETH", decimals: 18 },
+      rpcUrls: ["https://ethereum-sepolia-rpc.publicnode.com"],
+      blockExplorerUrls: ["https://sepolia.etherscan.io"]
+    };
+
+    window.OSNIAS_KYC_CONFIG = {
+      environment: "testnet",
+      kk: "01",
+      nnn: "001",
+      submitEndpoint: "",
+      provisionalUidStorageKey: "osnias.kyc.pending"
+    };
+  </script>
+  <script src="./assets/wallet-connect.js?v=1.2.0" defer></script>
+  <script src="./assets/kyc.js?v=0.1.0" defer></script>
+</head>
+<body>
+<div class="osnias-shell">
+  <header class="kyc-header">
+    <div class="kyc-header__inner">
+      <a class="kyc-brand" href="/">
+        <img src="/logo.jpg" alt="Osnias Clearing" width="44" height="44">
+        <span>
+          <strong>Osnias Clearing</strong>
+          <small>KYC · Personne morale · Testnet</small>
+        </span>
+      </a>
+      <span class="osnias-badge osnias-badge--pending">Ethereum Sepolia</span>
+    </div>
+  </header>
+
+  <main class="osnias-main">
+    <div class="osnias-page">
+      <section class="osnias-page-head">
+        <div class="osnias-page-head__copy">
+          <h1 class="osnias-page-title">Enregistrement KYC — personne morale</h1>
+          <p class="osnias-page-subtitle">
+            Étape préalable à l'attribution d'un User ID Osnias. Le KYC identifie la personne morale ;
+            il ne crée pas encore de compte de clearing Osnias-ID (OID).
+          </p>
+        </div>
+      </section>
+
+      <section class="kyc-steps" aria-label="Séquence d'enregistrement">
+        <div class="kyc-step is-active"><span>1</span><strong>Wallet</strong><small>Sepolia</small></div>
+        <div class="kyc-step"><span>2</span><strong>KYC</strong><small>Personne morale</small></div>
+        <div class="kyc-step"><span>3</span><strong>UID provisoire</strong><small>Pending</small></div>
+        <div class="kyc-step"><span>4</span><strong>Validation Node</strong><small>UID actif</small></div>
+      </section>
+
+      <section class="osnias-card" id="wallet-card">
+        <div class="osnias-card__head">
+          <h2 class="osnias-card__title">1 · Connexion du wallet</h2>
+          <span id="wallet-status-badge" class="osnias-badge osnias-badge--pending">Non connecté</span>
+        </div>
+        <div class="osnias-card__body">
+          <div class="kyc-wallet-grid">
+            <div>
+              <div class="osnias-label">Réseau requis</div>
+              <div class="kyc-readout">Ethereum Sepolia · Chain ID 11155111</div>
+            </div>
+            <div>
+              <div class="osnias-label">Adresse contrôlée par le demandeur</div>
+              <div id="wallet-address" class="kyc-readout osnias-mono osnias-break">—</div>
+            </div>
+          </div>
+          <div class="kyc-actions">
+            <button id="connect-wallet" type="button" class="osnias-btn osnias-btn--primary">Connecter le wallet</button>
+            <button id="disconnect-wallet" type="button" class="osnias-btn osnias-btn--ghost" disabled>Déconnecter</button>
+          </div>
+          <div id="wallet-message" class="osnias-alert">Le formulaire reste verrouillé tant qu'un wallet n'est pas connecté sur Sepolia.</div>
+        </div>
+      </section>
+
+      <form id="kyc-form" class="osnias-form" novalidate>
+        <fieldset id="kyc-fields" disabled>
+          <section class="osnias-card">
+            <div class="osnias-card__head">
+              <h2 class="osnias-card__title">2 · Identification de la personne morale</h2>
+              <span class="osnias-card__meta">KYC / KYB</span>
+            </div>
+            <div class="osnias-card__body osnias-form">
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Raison sociale *</span>
+                  <input class="osnias-input" name="legalName" autocomplete="organization" required>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Forme juridique *</span>
+                  <input class="osnias-input" name="legalForm" placeholder="SA, Sàrl, SAS, Ltd…" required>
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Pays de constitution *</span>
+                  <input class="osnias-input" name="countryOfIncorporation" autocomplete="country-name" required>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Date de constitution</span>
+                  <input class="osnias-input" name="incorporationDate" type="date">
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">N° Registre du commerce *</span>
+                  <input class="osnias-input" name="registrationNumber" required>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">IDE / UID suisse</span>
+                  <input class="osnias-input" name="swissUid" placeholder="CHE-…">
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">LEI</span>
+                  <input class="osnias-input osnias-mono" name="lei" maxlength="20">
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Site internet</span>
+                  <input class="osnias-input" name="website" type="url" placeholder="https://">
+                </label>
+              </div>
+
+              <label class="osnias-field">
+                <span class="osnias-label">Activité économique / objet *</span>
+                <textarea class="osnias-textarea" name="businessActivity" required></textarea>
+              </label>
+            </div>
+          </section>
+
+          <section class="osnias-card">
+            <div class="osnias-card__head"><h2 class="osnias-card__title">3 · Siège et correspondance</h2></div>
+            <div class="osnias-card__body osnias-form">
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Adresse du siège *</span><input class="osnias-input" name="registeredStreet" autocomplete="street-address" required></label>
+                <label class="osnias-field"><span class="osnias-label">Complément</span><input class="osnias-input" name="registeredAddress2"></label>
+              </div>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Code postal *</span><input class="osnias-input" name="registeredPostalCode" autocomplete="postal-code" required></label>
+                <label class="osnias-field"><span class="osnias-label">Ville *</span><input class="osnias-input" name="registeredCity" autocomplete="address-level2" required></label>
+              </div>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Pays *</span><input class="osnias-input" name="registeredCountry" autocomplete="country-name" required></label>
+                <label class="osnias-field"><span class="osnias-label">Adresse de correspondance</span><input class="osnias-input" name="correspondenceAddress" placeholder="Si différente du siège"></label>
+              </div>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Téléphone fixe de l'entreprise *</span><input class="osnias-input" name="landline" type="tel" autocomplete="tel" required></label>
+                <label class="osnias-field"><span class="osnias-label">E-mail professionnel *</span><input class="osnias-input" name="businessEmail" type="email" autocomplete="email" required></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="osnias-card">
+            <div class="osnias-card__head"><h2 class="osnias-card__title">4 · Personne détenant le contrôle</h2><span class="osnias-card__meta">Logique Form K</span></div>
+            <div class="osnias-card__body osnias-form">
+              <div class="osnias-alert">Déclarer la personne physique détenant directement ou indirectement ≥ 25 % du capital ou des droits de vote, ou exerçant autrement le contrôle. À défaut, renseigner la direction compétente.</div>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Nom *</span><input class="osnias-input" name="controllerLastName" required></label>
+                <label class="osnias-field"><span class="osnias-label">Prénom *</span><input class="osnias-input" name="controllerFirstName" required></label>
+              </div>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Date de naissance *</span><input class="osnias-input" name="controllerBirthDate" type="date" required></label>
+                <label class="osnias-field"><span class="osnias-label">Nationalité *</span><input class="osnias-input" name="controllerNationality" required></label>
+              </div>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Pourcentage de détention / vote</span><input class="osnias-input" name="controllerOwnershipPct" type="number" min="0" max="100" step="0.01"></label>
+                <label class="osnias-field"><span class="osnias-label">Mode de contrôle *</span><select class="osnias-select" name="controllerBasis" required><option value="">Sélectionner</option><option value="capital">Capital</option><option value="voting">Droits de vote</option><option value="other">Contrôle par d'autres moyens</option><option value="management">Direction à défaut de personne de contrôle</option></select></label>
+              </div>
+              <label class="osnias-field"><span class="osnias-label">Adresse personnelle *</span><input class="osnias-input" name="controllerAddress" required></label>
+              <label class="kyc-check"><input type="checkbox" name="controllerPep"><span>Cette personne est une PEP, un membre de la famille d'une PEP ou une personne étroitement associée.</span></label>
+            </div>
+          </section>
+
+          <section class="osnias-card">
+            <div class="osnias-card__head"><h2 class="osnias-card__title">5 · Représentant autorisé</h2></div>
+            <div class="osnias-card__body osnias-form">
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Nom *</span><input class="osnias-input" name="representativeLastName" required></label>
+                <label class="osnias-field"><span class="osnias-label">Prénom *</span><input class="osnias-input" name="representativeFirstName" required></label>
+              </div>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Fonction *</span><input class="osnias-input" name="representativeRole" required></label>
+                <label class="osnias-field"><span class="osnias-label">Pouvoir de signature *</span><select class="osnias-select" name="signaturePower" required><option value="">Sélectionner</option><option value="individual">Individuel</option><option value="collective-two">Collectif à deux</option><option value="power-of-attorney">Procuration</option><option value="other">Autre</option></select></label>
+              </div>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">E-mail professionnel *</span><input class="osnias-input" name="representativeEmail" type="email" required></label>
+                <label class="osnias-field"><span class="osnias-label">Téléphone *</span><input class="osnias-input" name="representativePhone" type="tel" required></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="osnias-card">
+            <div class="osnias-card__head"><h2 class="osnias-card__title">6 · Profil financier et objet de la relation</h2></div>
+            <div class="osnias-card__body osnias-form">
+              <label class="osnias-field"><span class="osnias-label">Objet de la relation avec Osnias Clearing *</span><textarea class="osnias-textarea" name="relationshipPurpose" required placeholder="Utilisation envisagée des clearing rooms du Node."></textarea></label>
+              <div class="osnias-form-row">
+                <label class="osnias-field"><span class="osnias-label">Volume annuel estimé</span><input class="osnias-input" name="estimatedAnnualVolume" inputmode="decimal"></label>
+                <label class="osnias-field"><span class="osnias-label">Devise principale</span><select class="osnias-select" name="primaryCurrency"><option value="USD">USD</option><option value="EUR">EUR</option><option value="CHF">CHF</option><option value="OTHER">Autre</option></select></label>
+              </div>
+              <label class="osnias-field"><span class="osnias-label">Origine des fonds / actifs *</span><textarea class="osnias-textarea" name="sourceOfFunds" required></textarea></label>
+            </div>
+          </section>
+
+          <section class="osnias-card">
+            <div class="osnias-card__head"><h2 class="osnias-card__title">7 · Déclarations</h2></div>
+            <div class="osnias-card__body osnias-form">
+              <div class="kyc-wallet-binding">
+                <span>Wallet lié au dossier</span>
+                <strong id="bound-wallet" class="osnias-mono osnias-break">—</strong>
+              </div>
+              <label class="kyc-check"><input type="checkbox" name="authorityDeclaration" required><span>Je confirme être habilité à soumettre ce dossier au nom de la personne morale.</span></label>
+              <label class="kyc-check"><input type="checkbox" name="accuracyDeclaration" required><span>Je certifie que les informations fournies sont exactes, complètes et à jour.</span></label>
+              <label class="kyc-check"><input type="checkbox" name="privacyDeclaration" required><span>Je comprends que les données KYC restent hors chaîne ; seules les références techniques nécessaires à l'autorisation peuvent être utilisées dans le registre.</span></label>
+            </div>
+          </section>
+
+          <section class="osnias-card">
+            <div class="osnias-card__head"><h2 class="osnias-card__title">8 · Soumission et UID provisoire</h2><span id="submission-badge" class="osnias-badge">Non soumis</span></div>
+            <div class="osnias-card__body osnias-form">
+              <div class="osnias-alert">La soumission demande une signature du wallet. Cette signature prouve le contrôle de l'adresse et ne déclenche aucune transaction on-chain.</div>
+              <button id="submit-kyc" class="osnias-btn osnias-btn--primary osnias-btn--block" type="submit">Signer et soumettre le dossier KYC</button>
+              <div id="submission-message" class="osnias-alert">Après soumission : génération d'un UID provisoire <span class="osnias-mono">KK-NNN-SSSSSSS</span>, statut <strong>PENDING</strong>, puis validation par le Node.</div>
+
+              <div id="uid-result" class="kyc-result" hidden>
+                <div><span>UID provisoire</span><strong id="provisional-uid" class="osnias-mono">—</strong></div>
+                <div><span>Statut</span><strong class="kyc-pending">PENDING</strong></div>
+                <div><span>Wallet</span><strong id="result-wallet" class="osnias-mono osnias-break">—</strong></div>
+                <div><span>Référence dossier</span><strong id="case-reference" class="osnias-mono">—</strong></div>
+              </div>
+            </div>
+          </section>
+        </fieldset>
+      </form>
+
+      <section class="osnias-card kyc-next">
+        <div class="osnias-card__head"><h2 class="osnias-card__title">Après validation du Node</h2></div>
+        <div class="osnias-card__body">
+          <p>Le même UID devient définitif et ouvre l'accès aux formulaires de clearing du Node :</p>
+          <div class="kyc-rooms">
+            <span>USD · 1W</span><span>USD · 4W</span><span>USD · 13W</span>
+          </div>
+          <p class="osnias-muted">Chaque formulaire de chambre appellera ensuite son smart contract dédié et créera l'OID du compte de clearing correspondant.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="kyc-footer">Osnias Clearing · KYC Corporate Testnet · Ethereum Sepolia · v0.1.0</footer>
+</div>
+</body>
+</html>
