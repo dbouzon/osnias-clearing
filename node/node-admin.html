@@ -28,7 +28,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
   <script src="./assets/wallet-connect.js?v=1.2.0" defer></script>
-  <script src="./assets/node-admin.js?v=0.3.0" defer></script>
+  <script src="./assets/node-admin.js?v=0.3.1" defer></script>
   <!--
     TESTNET SECURITY NOTICE
 
@@ -54,7 +54,10 @@
         <section id="adminAuthGate" class="osnias-card">
           <div class="osnias-card__head">
             <h1 class="osnias-card__title">Accès administrateur</h1>
-            <span id="adminAuthStatus" class="osnias-badge osnias-badge--pending">NON AUTHENTIFIÉ</span>
+            <div class="osnias-flex osnias-gap-12" style="align-items:center;justify-content:flex-end;">
+              <span id="adminAuthStatus" class="osnias-badge osnias-badge--pending">NON CONNECTÉ</span>
+              <span id="adminHeaderWalletAddress" class="osnias-mono" style="color:#ffffff;font-size:14px;">—</span>
+            </div>
           </div>
           <div class="osnias-card__body osnias-form">
             <div class="osnias-form-row">
@@ -301,7 +304,7 @@
     </main>
 
     <footer class="osnias-footer">
-      Osnias Network · Node 1 · Administration · v0.3.0
+      Osnias Network · Node 1 · Administration · v0.3.1
     </footer>
   </div>
 </body>
