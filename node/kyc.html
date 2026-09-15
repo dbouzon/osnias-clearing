@@ -8,7 +8,7 @@
   <title>Osnias Clearing — KYC personne morale</title>
 
   <link rel="stylesheet" href="./assets/end-user.css?v=1.4.0">
-  <link rel="stylesheet" href="./assets/kyc.css?v=0.1.1">
+  <link rel="stylesheet" href="./assets/kyc.css?v=0.2.1">
 
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 
@@ -27,12 +27,11 @@
       environment: "testnet",
       kk: "01",
       nnn: "001",
-      submitEndpoint: "",
-      provisionalUidStorageKey: "osnias.kyc.pending"
+      submitEndpoint: "/api/node/kyc/register"
     };
   </script>
   <script src="./assets/wallet-connect.js?v=1.2.0" defer></script>
-  <script src="./assets/kyc.js?v=0.1.0" defer></script>
+  <script src="./assets/kyc.js?v=0.2.0" defer></script>
 </head>
 <body>
 <div class="osnias-shell">
@@ -50,14 +49,50 @@
   </header>
 
   <main class="osnias-main">
+<section class="kyc-hero">
+  <div class="kyc-hero__network">Osnias Network – Chaine Sepolia</div>
+  <div class="kyc-hero__node-line">
+    <span>· Bienvenue sur Node 1 · Juridiction Suisse</span>
+    <img class="kyc-hero__flag" src="./drapeau-suisse.jpg" alt="Drapeau suisse">
+  </div>
+
+  <div class="kyc-regulatory">
+    <strong>Cadre réglementaire suisse</strong>
+    <p>
+      La Suisse dispose d’une réglementation spécifique pour les technologies de registres distribués et les actifs numériques.
+      La législation fédérale DLT/TRD a adapté plusieurs lois fédérales afin d’apporter une sécurité juridique aux actifs tokenisés
+      et aux infrastructures reposant sur la blockchain. Les activités entrant dans le champ de l’intermédiation financière restent,
+      lorsqu’elles sont concernées, soumises aux exigences de la Loi sur le blanchiment d’argent (LBA), de ses ordonnances d’exécution
+      et de la surveillance applicable de la FINMA.
+    </p>
+  </div>
+
+  <div class="kyc-jurisdiction-warning">
+    Ce formulaire est exclusivement destiné aux entreprises constituées ou établies en Suisse.
+    Les personnes morales relevant d’une autre juridiction ne peuvent pas s’enregistrer sur ce nœud.
+  </div>
+</section>
     <div class="osnias-page">
-      <section class="osnias-page-head">
-        <div class="osnias-page-head__copy">
-          <h1 class="osnias-page-title">Enregistrement KYC — personne morale</h1>
+      <section class="osnias-page-head kyc-welcome">
+        <div class="kyc-welcome__copy">
+          <h1 class="osnias-page-title">Bienvenue sur Osnias Network</h1>
+          <p class="kyc-welcome__network">Chaîne Sepolia · Node 1 · Juridiction Suisse</p>
+          <div class="kyc-welcome__regulatory">
+            <strong>Cadre réglementaire suisse</strong>
+            <p>
+              La Suisse dispose d’un cadre juridique spécifique pour les technologies de registres distribués (DLT/TRD) et les actifs numériques. La législation fédérale entrée en vigueur en 2021 a adapté plusieurs lois afin d’apporter une sécurité juridique aux actifs tokenisés et aux infrastructures reposant sur la blockchain. Les activités relevant de l’intermédiation financière restent, lorsqu’elles entrent dans leur champ d’application, soumises notamment à la Loi sur le blanchiment d’argent (LBA), à ses ordonnances d’exécution ainsi qu’aux exigences de surveillance applicables de la FINMA. L’identification de la personne morale, de ses représentants autorisés et des personnes qui la contrôlent constitue donc un élément essentiel du processus d’admission au réseau.
+            </p>
+          </div>
+          <p class="kyc-welcome__notice">
+            Ce formulaire est exclusivement destiné aux entreprises constituées ou établies en Suisse. Les personnes morales relevant d’une autre juridiction ne peuvent pas utiliser ce formulaire d’enregistrement.
+          </p>
           <p class="osnias-page-subtitle">
             Étape préalable à l'attribution d'un User ID Osnias. Le KYC identifie la personne morale ;
             il ne crée pas encore de compte de clearing Osnias-ID (OID).
           </p>
+        </div>
+        <div class="kyc-welcome__flag" aria-label="Juridiction Suisse">
+          <img src="./drapeau-suisse.jpg" alt="Drapeau suisse">
         </div>
       </section>
 
@@ -242,7 +277,7 @@
             <div class="osnias-card__body osnias-form">
               <div class="osnias-alert">La soumission demande une signature du wallet. Cette signature prouve le contrôle de l'adresse et ne déclenche aucune transaction on-chain.</div>
               <button id="submit-kyc" class="osnias-btn osnias-btn--primary osnias-btn--block" type="submit">Signer et soumettre le dossier KYC</button>
-              <div id="submission-message" class="osnias-alert">Après soumission : génération d'un UID provisoire <span class="osnias-mono">KK-NNN-SSSSSSS</span>, statut <strong>PENDING</strong>, puis validation par le Node.</div>
+              <div id="submission-message" class="osnias-alert">Après signature, le dossier est transmis à l'API sécurisée du Node. L'API réserve l'UID provisoire <span class="osnias-mono">KK-NNN-SSSSSSS</span> avec le statut <strong>PENDING</strong>. L'activation du UID reste soumise à une validation humaine par le gestionnaire du Node.</div>
 
               <div id="uid-result" class="kyc-result" hidden>
                 <div><span>UID provisoire</span><strong id="provisional-uid" class="osnias-mono">—</strong></div>
@@ -268,7 +303,7 @@
     </div>
   </main>
 
-  <footer class="kyc-footer">Osnias Clearing · KYC Corporate Testnet · Ethereum Sepolia · v0.1.0</footer>
+  <footer class="kyc-footer">Osnias Clearing · KYC Corporate Testnet · Ethereum Sepolia · v0.2.0</footer>
 </div>
 </body>
 </html>
