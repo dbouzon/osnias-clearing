@@ -1,0 +1,1405 @@
+/*
+ * Osnias Clearing — End-User Console
+ * Shared stylesheet
+ *
+ * Visual language aligned with escrow.html
+ *
+ * File    : /assets/end-user.css
+ * Version : 1.4.0
+ * Date    : 2026-09-11
+ *
+ * UNLICENSED — ALL RIGHTS RESERVED.
+ */
+
+:root {
+  --bg: #07111f;
+  --bg-soft: #091624;
+  --bg-raised: #0d1b2a;
+  --bg-raised-2: #122235;
+  --bg-input: #091624;
+
+  --white: #eef4fb;
+  --green: #64d7a0;
+  --red: #ff7b7b;
+  --accent: #7ab8ff;
+  --warning: #f3c969;
+
+  --muted: #9fb0c4;
+  --line: #20344b;
+
+  --white-90: rgba(238,244,251,.90);
+  --white-75: rgba(238,244,251,.75);
+  --white-60: rgba(159,176,196,.90);
+  --white-35: rgba(159,176,196,.55);
+  --white-18: #20344b;
+  --white-10: rgba(255,255,255,.08);
+  --white-06: rgba(255,255,255,.05);
+
+  --radius: 16px;
+  --radius-small: 10px;
+  --header-height: 72px;
+  --content-width: 1180px;
+
+  --font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--bg);
+  color-scheme: dark;
+  font-size: 14px;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  color: #a8d0ff;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* =========================================================
+   Layout
+   ========================================================= */
+
+.osnias-shell {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.osnias-main {
+  width: min(100%, var(--content-width));
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+}
+
+.osnias-page {
+  display: grid;
+  gap: 18px;
+}
+
+.osnias-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.osnias-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.osnias-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.osnias-grid--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+
+.osnias-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  min-height: var(--header-height);
+  background: rgba(7,17,31,.97);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+}
+
+.osnias-header__inner {
+  width: min(100%, var(--content-width));
+  min-height: var(--header-height);
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.osnias-brand {
+  display: flex;
+  flex: 0 0 auto;
+  min-width: 220px;
+  align-items: center;
+  gap: 11px;
+  line-height: 1.25;
+}
+
+.osnias-brand__logo {
+  width: auto;
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: initial;
+  border-radius: 0;
+}
+
+.osnias-brand__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.osnias-brand__name {
+  color: var(--white);
+  font-weight: 700;
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+
+.osnias-brand__subline {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.osnias-nav {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.osnias-nav__link {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    color 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+.osnias-nav__link:hover,
+.osnias-nav__link:focus-visible {
+  color: var(--white);
+  border-color: var(--line);
+  background: var(--bg-raised-2);
+}
+
+.osnias-nav__link.is-active {
+  color: var(--accent);
+  border-color: #31577f;
+  background: #10263c;
+}
+
+.osnias-header__right {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* =========================================================
+   Page heading
+   ========================================================= */
+
+.osnias-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0 2px;
+}
+
+.osnias-page-head__copy {
+  min-width: 0;
+}
+
+.osnias-page-title {
+  margin: 0;
+  color: var(--white);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.osnias-page-subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.osnias-page-head__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* =========================================================
+   Cards
+   ========================================================= */
+
+.osnias-card {
+  min-width: 0;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0,0,0,.12);
+}
+
+.osnias-card__head {
+  min-height: 54px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.osnias-card__title {
+  margin: 0;
+  color: var(--white);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.osnias-card__meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.osnias-card__body {
+  padding: 20px;
+}
+
+.osnias-card--success {
+  border-color: #24563f;
+}
+
+.osnias-card--danger {
+  border-color: #683838;
+}
+
+/* =========================================================
+   KPI / metrics
+   ========================================================= */
+
+.osnias-kpi {
+  min-width: 0;
+  padding: 20px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.osnias-kpi__label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.osnias-kpi__value {
+  margin-top: 4px;
+  color: var(--white);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.osnias-kpi__value--positive {
+  color: var(--green);
+}
+
+.osnias-kpi__value--negative {
+  color: var(--red);
+}
+
+.osnias-kpi__foot {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* =========================================================
+   Status badges
+   ========================================================= */
+
+.osnias-badge {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--bg-raised);
+  white-space: nowrap;
+}
+
+.osnias-badge--success,
+.osnias-badge--accepted,
+.osnias-badge--settled,
+.osnias-badge--open {
+  color: #b8f1d3;
+  border-color: #24563f;
+}
+
+.osnias-badge--danger,
+.osnias-badge--rejected,
+.osnias-badge--cancelled,
+.osnias-badge--forclosed,
+.osnias-badge--closed {
+  color: #ffc5c5;
+  border-color: #683838;
+}
+
+.osnias-badge--pending {
+  color: #f7e7bd;
+  border-color: #8a6420;
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+
+.osnias-btn {
+  appearance: none;
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #17283b;
+  color: var(--white);
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    opacity 120ms ease,
+    transform 80ms ease;
+}
+
+.osnias-btn:hover {
+  background: #1e344d;
+}
+
+.osnias-btn:active {
+  transform: translateY(1px);
+}
+
+.osnias-btn--primary,
+.osnias-btn--success {
+  background: #2563a8;
+  color: #fff;
+}
+
+.osnias-btn--primary:hover,
+.osnias-btn--success:hover {
+  background: #2f73bd;
+}
+
+.osnias-btn--danger {
+  background: #683838;
+  color: #fff;
+}
+
+.osnias-btn--danger:hover {
+  background: #7a4141;
+}
+
+.osnias-btn--ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.osnias-btn--ghost:hover {
+  background: var(--bg-raised-2);
+  color: var(--white);
+}
+
+.osnias-btn--small {
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.osnias-btn--block {
+  width: 100%;
+}
+
+.osnias-btn:disabled,
+.osnias-btn[aria-disabled="true"] {
+  opacity: .35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Forms
+   ========================================================= */
+
+.osnias-form {
+  display: grid;
+  gap: 14px;
+}
+
+.osnias-form-row {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.osnias-field {
+  display: grid;
+  gap: 6px;
+}
+
+.osnias-label {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.osnias-input,
+.osnias-select,
+.osnias-textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-input);
+  color: var(--white);
+  outline: none;
+}
+
+.osnias-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.osnias-input:hover,
+.osnias-select:hover,
+.osnias-textarea:hover {
+  border-color: #31506f;
+}
+
+.osnias-input:focus,
+.osnias-select:focus,
+.osnias-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(122,184,255,.10);
+}
+
+.osnias-input::placeholder,
+.osnias-textarea::placeholder {
+  color: #6f8297;
+  opacity: 1;
+}
+
+.osnias-help {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.osnias-help--danger {
+  color: #ffc5c5;
+}
+
+.osnias-help--success {
+  color: #b8f1d3;
+}
+
+/* =========================================================
+   Tables
+   ========================================================= */
+
+.osnias-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+
+.osnias-table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: var(--white);
+}
+
+.osnias-table th,
+.osnias-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.osnias-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg-raised-2);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.osnias-table tbody tr:hover {
+  background: rgba(255,255,255,.025);
+}
+
+.osnias-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.osnias-table td.is-positive {
+  color: var(--green);
+}
+
+.osnias-table td.is-negative {
+  color: var(--red);
+}
+
+.osnias-table__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.osnias-table__mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   Cycle / network bar
+   ========================================================= */
+
+.osnias-cyclebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-raised);
+}
+
+.osnias-cyclebar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.osnias-cyclebar__label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.osnias-cyclebar__value {
+  color: var(--white);
+  font-weight: 700;
+}
+
+.osnias-cyclebar__value--open {
+  color: var(--green);
+}
+
+.osnias-cyclebar__value--closed {
+  color: var(--red);
+}
+
+.osnias-separator {
+  width: 1px;
+  height: 18px;
+  background: var(--line);
+}
+
+/* =========================================================
+   Wallet
+   ========================================================= */
+
+.osnias-wallet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.osnias-wallet__address {
+  max-width: 130px;
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.osnias-wallet__dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--bad);
+}
+
+.osnias-wallet.is-connected .osnias-wallet__dot {
+  background: var(--green);
+}
+
+/* Wallet button: visually aligned with escrow Connect Wallet */
+.osnias-wallet .osnias-btn--primary {
+  background: #2563a8;
+  border: 0;
+  color: #fff;
+}
+
+.osnias-wallet .osnias-btn--primary:hover {
+  background: #2f73bd;
+}
+
+/* =========================================================
+   Alerts / notices
+   ========================================================= */
+
+.osnias-alert {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-input);
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+.osnias-alert--success {
+  color: #b8f1d3;
+  border-color: #24563f;
+}
+
+.osnias-alert--danger {
+  color: #ffc5c5;
+  border-color: #683838;
+}
+
+/* =========================================================
+   Empty / loading
+   ========================================================= */
+
+.osnias-empty,
+.osnias-loading {
+  padding: 28px 14px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.osnias-loading::after {
+  content: "...";
+  display: inline-block;
+  width: 20px;
+  overflow: hidden;
+  vertical-align: bottom;
+  animation: osnias-dots 1.2s steps(4, end) infinite;
+}
+
+@keyframes osnias-dots {
+  0% { width: 0; }
+  100% { width: 20px; }
+}
+
+/* =========================================================
+   Utilities
+   ========================================================= */
+
+.osnias-text-white {
+  color: var(--white) !important;
+}
+
+.osnias-text-green {
+  color: var(--green) !important;
+}
+
+.osnias-text-red {
+  color: var(--red) !important;
+}
+
+.osnias-muted {
+  color: var(--muted) !important;
+}
+
+.osnias-mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.osnias-nowrap {
+  white-space: nowrap;
+}
+
+.osnias-break {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.osnias-right {
+  text-align: right !important;
+}
+
+.osnias-center {
+  text-align: center !important;
+}
+
+.osnias-flex {
+  display: flex;
+}
+
+.osnias-flex-wrap {
+  flex-wrap: wrap;
+}
+
+.osnias-gap-8 {
+  gap: 8px;
+}
+
+.osnias-gap-12 {
+  gap: 12px;
+}
+
+.osnias-spacer {
+  flex: 1 1 auto;
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+
+.osnias-footer {
+  width: min(100%, var(--content-width));
+  margin: 28px auto 8px;
+  padding: 16px 18px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+
+
+/* =========================================================
+   Header operational status — centered
+   ========================================================= */
+
+.osnias-header__status {
+  width: 100%;
+  border-top: 1px solid rgba(32,52,75,.72);
+  background: #091624;
+}
+
+.osnias-header__status-inner {
+  width: min(100%, var(--content-width));
+  margin: 0 auto;
+  padding: 7px 24px 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.osnias-cyclebar--header {
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  gap: 12px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.osnias-cyclebar--header::-webkit-scrollbar {
+  display: none;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__item {
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value {
+  font-size: 14px;
+}
+
+.osnias-cyclebar--header .osnias-separator {
+  flex: 0 0 1px;
+  height: 18px;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .osnias-header__inner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .osnias-brand {
+    min-width: 0;
+  }
+
+  .osnias-nav {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .osnias-header__right {
+    margin-left: auto;
+  }
+
+  .osnias-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --header-height: auto;
+  }
+
+  .osnias-header {
+    position: relative;
+  }
+
+  .osnias-header__inner {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .osnias-main {
+    padding: 18px 14px 36px;
+  }
+
+  .osnias-footer {
+    padding: 18px 14px 24px;
+  }
+
+  .osnias-brand {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .osnias-brand__name,
+  .osnias-brand__subline {
+    white-space: normal;
+  }
+
+  .osnias-header__right {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  .osnias-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .osnias-nav__link {
+    justify-content: flex-start;
+    border-color: var(--line);
+    background: var(--bg-raised);
+  }
+
+  .osnias-page-head {
+    flex-direction: column;
+  }
+
+  .osnias-page-title {
+    font-size: 25px;
+  }
+
+  .osnias-page-head__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .osnias-grid--2,
+  .osnias-grid--3,
+  .osnias-grid--4,
+  .osnias-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .osnias-cyclebar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .osnias-separator {
+    display: none;
+  }
+
+  .osnias-btn {
+    min-height: 42px;
+  }
+
+  .osnias-wallet__address {
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 420px) {
+  .osnias-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .osnias-page-head__actions,
+  .osnias-page-head__actions .osnias-btn {
+    width: 100%;
+  }
+
+  .osnias-wallet {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .osnias-wallet .osnias-btn {
+    flex: 1 1 auto;
+  }
+}
+
+/* =========================================================
+   Header — final consolidated layout
+   Compatible with end-user-frame v1.9.1
+   ========================================================= */
+
+/* Header typography */
+.osnias-header .osnias-nav__link,
+.osnias-header .osnias-btn {
+  font-size: 14px;
+  color: #ffffff;
+}
+
+/* Line 1 — institutional navigation */
+.osnias-nav {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.osnias-nav__link--boxed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(255,255,255,.78);
+  border-radius: 4px;
+  color: #ffffff !important;
+  background: transparent;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color .15s ease,
+    border-color .15s ease,
+    box-shadow .15s ease;
+}
+
+.osnias-nav__link--boxed:hover,
+.osnias-nav__link--boxed:focus-visible {
+  color: #ffffff !important;
+  background: rgba(255,255,255,.07);
+  border-color: #ffffff;
+}
+
+.osnias-nav__link--boxed.is-active {
+  color: #ffffff !important;
+  background: rgba(255,255,255,.12);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.28) inset;
+}
+
+/* Line 2 — wallet | network | chain ID */
+.osnias-header__network {
+  width: 100%;
+  border-top: 1px solid rgba(255,255,255,.04);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  background: rgba(7,17,31,.97);
+}
+
+.osnias-header__network-inner {
+  width: 100%;
+}
+
+.osnias-networkbar--inline {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: min(100%, var(--content-width));
+  min-height: 52px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.osnias-networkbar__wallet {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.osnias-networkbar--inline .osnias-cyclebar__item {
+  flex: 0 0 auto;
+}
+
+.osnias-networkbar--inline .osnias-cyclebar__label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.osnias-networkbar--inline .osnias-cyclebar__value {
+  color: var(--white);
+  font-weight: 700;
+}
+
+.osnias-networkbar--inline .osnias-separator {
+  flex: 0 0 1px;
+  height: 18px;
+}
+
+/* Line 3 — operational cycle state */
+.osnias-header__status {
+  width: 100%;
+  border-top: 1px solid rgba(32,52,75,.72);
+  background: #091624;
+}
+
+.osnias-header__status-inner {
+  width: min(100%, var(--content-width));
+  margin: 0 auto;
+  padding: 7px 24px 8px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.osnias-cyclebar--header,
+.osnias-cyclebar--fullwidth {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.osnias-cyclebar--header::-webkit-scrollbar,
+.osnias-cyclebar--fullwidth::-webkit-scrollbar {
+  display: none;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__item,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__item {
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__label,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__value {
+  font-size: 14px;
+}
+
+/* Operational strip color discipline */
+.osnias-cyclebar--header,
+.osnias-cyclebar--fullwidth,
+.osnias-cyclebar--header .osnias-cyclebar__label,
+.osnias-cyclebar--header .osnias-cyclebar__value,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__label,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__value {
+  color: var(--white);
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__value--open,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__value--open {
+  color: var(--green);
+}
+
+.osnias-cyclebar--header .osnias-cyclebar__value--closed,
+.osnias-cyclebar--fullwidth .osnias-cyclebar__value--closed {
+  color: var(--red);
+}
+
+.osnias-cyclebar__value--warning {
+  color: var(--warning) !important;
+}
+
+.osnias-cyclebar--header .osnias-separator,
+.osnias-cyclebar--fullwidth .osnias-separator {
+  flex: 0 0 1px;
+  height: 18px;
+  background: rgba(238,244,251,.28);
+}
+
+/* Small deliberate breathing room before the countdown */
+.osnias-cyclebar__countdown-gap {
+  flex: 0 0 18px;
+  min-width: 18px;
+}
+
+.osnias-cyclebar__countdown-gap--compact {
+  flex: 0 0 18px;
+  min-width: 18px;
+}
+
+.osnias-cyclebar__item--countdown {
+  margin-left: 0;
+  font-weight: 700;
+}
+
+/* =========================================================
+   Responsive — consolidated header behavior
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .osnias-header__inner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .osnias-brand {
+    min-width: 0;
+  }
+
+  .osnias-nav {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .osnias-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .osnias-networkbar--inline {
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+  }
+
+  .osnias-cyclebar--header,
+  .osnias-cyclebar--fullwidth {
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 6px 0;
+  }
+
+  .osnias-cyclebar__countdown-gap,
+  .osnias-cyclebar__countdown-gap--compact {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --header-height: auto;
+  }
+
+  .osnias-header {
+    position: relative;
+  }
+
+  .osnias-header__inner {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .osnias-main {
+    padding: 18px 14px 36px;
+  }
+
+  .osnias-footer {
+    padding: 18px 14px 24px;
+  }
+
+  .osnias-brand {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .osnias-brand__name,
+  .osnias-brand__subline {
+    white-space: normal;
+  }
+
+  .osnias-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .osnias-nav__link--boxed {
+    justify-content: flex-start;
+  }
+
+  .osnias-page-head {
+    flex-direction: column;
+  }
+
+  .osnias-page-title {
+    font-size: 25px;
+  }
+
+  .osnias-page-head__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .osnias-grid--2,
+  .osnias-grid--3,
+  .osnias-grid--4,
+  .osnias-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .osnias-cyclebar:not(.osnias-cyclebar--header):not(.osnias-cyclebar--fullwidth) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .osnias-btn {
+    min-height: 42px;
+  }
+
+  .osnias-wallet__address {
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 420px) {
+  .osnias-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .osnias-page-head__actions,
+  .osnias-page-head__actions .osnias-btn {
+    width: 100%;
+  }
+
+  .osnias-wallet {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .osnias-wallet .osnias-btn {
+    flex: 1 1 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

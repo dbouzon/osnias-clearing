@@ -1,4 +1,6 @@
-/* Osnias Clearing — Corporate KYC — v0.1.0 */
+/* Osnias Clearing — Corporate KYC — v0.1.1
+ * Requires: /node/assets/end-user.css v1.4.0
+ */
 
 .kyc-header{border-bottom:1px solid var(--line);background:rgba(7,17,31,.97)}
 .kyc-header__inner{width:min(100%,var(--content-width));min-height:72px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
