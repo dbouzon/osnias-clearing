@@ -29,8 +29,9 @@
     };
   </script>
 
-  <script src="./assets/wallet-connect.js" defer></script>
-  <script src="./assets/node-admin.js?v=0.2.0" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+  <script src="./assets/wallet-connect.js?v=1.2.0" defer></script>
+  <script src="./assets/node-admin.js?v=0.2.2" defer></script>
 </head>
 
 <body>
@@ -45,12 +46,12 @@
           <div class="osnias-card__body osnias-form">
             <div class="osnias-form-row">
               <div class="osnias-field">
-                <span class="osnias-label">Wallet administrateur autorisé</span>
-                <div class="osnias-input osnias-mono" style="display:flex;align-items:center;">0x9FcC10582df1dC2E7Da79653535Fd3e5b8De2570</div>
-              </div>
-              <div class="osnias-field">
                 <span class="osnias-label">Wallet connecté</span>
                 <div id="adminConnectedWallet" class="osnias-input osnias-mono" style="display:flex;align-items:center;">—</div>
+              </div>
+              <div class="osnias-field">
+                <span class="osnias-label">Autorisation</span>
+                <div id="adminWalletAuthorization" class="osnias-input" style="display:flex;align-items:center;">En attente</div>
               </div>
             </div>
 
@@ -290,7 +291,7 @@
     </main>
 
     <footer class="osnias-footer">
-      Osnias Network · Node 1 · Administration · v0.2.0
+      Osnias Network · Node 1 · Administration · v0.2.2
     </footer>
   </div>
 </body>
