@@ -17,9 +17,6 @@
 
     window.OSNIAS_NODE_ADMIN_CONFIG = {
       adminWallet: "0x9FcC10582df1dC2E7Da79653535Fd3e5b8De2570",
-      challengeEndpoint: "/api/node/admin/auth/challenge",
-      verifyEndpoint: "/api/node/admin/auth/verify",
-      logoutEndpoint: "/api/node/admin/auth/logout",
       requestsEndpoint: "/api/node/admin/kyc/requests",
       approveEndpoint: "/api/node/admin/kyc/approve",
       rejectEndpoint: "/api/node/admin/kyc/reject",
@@ -31,7 +28,23 @@
 
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
   <script src="./assets/wallet-connect.js?v=1.2.0" defer></script>
-  <script src="./assets/node-admin.js?v=0.2.2" defer></script>
+  <script src="./assets/node-admin.js?v=0.3.0" defer></script>
+  <!--
+    TESTNET SECURITY NOTICE
+
+    This page currently uses a static client-side wallet address check
+    for Node 1 administrator access.
+
+    This mechanism is intended for TESTNET development only.
+
+    BEFORE MAINNET:
+    - authorization MUST be enforced server-side;
+    - administrator authentication MUST use a signed wallet challenge;
+    - protected actions MUST require a secure authenticated session;
+    - the admin wallet address MUST NOT be trusted solely from public JavaScript.
+
+    Do not use this static authorization model in production/mainnet.
+  -->
 </head>
 
 <body>
@@ -59,16 +72,13 @@
               <button id="adminConnectWallet" class="osnias-btn osnias-btn--primary" type="button">
                 Connecter le wallet administrateur
               </button>
-              <button id="adminSignChallenge" class="osnias-btn osnias-btn--success" type="button" disabled>
-                Signer et ouvrir l'administration
-              </button>
-              <button id="adminLogout" class="osnias-btn osnias-btn--danger" type="button" hidden>
-                Fermer la session
+              <button id="adminDisconnectWallet" class="osnias-btn osnias-btn--danger" type="button" hidden>
+                Déconnecter
               </button>
             </div>
 
             <div id="adminAuthMessage" class="osnias-alert">
-              L'accès nécessite le wallet administrateur autorisé et une signature cryptographique.
+              Accès testnet : la page vérifie localement que le wallet connecté correspond au wallet administrateur du Node 1.
             </div>
           </div>
         </section>
@@ -284,14 +294,14 @@
         </div>
 
         <div id="pageMessage" class="osnias-alert">
-          Cette page nécessite une authentification administrateur côté serveur avant mise en production.
+          Mode TESTNET : contrôle d’accès statique par adresse wallet. Une authentification serveur renforcée sera requise avant le passage en mainnet.
         </div>
 
       </div>
     </main>
 
     <footer class="osnias-footer">
-      Osnias Network · Node 1 · Administration · v0.2.2
+      Osnias Network · Node 1 · Administration · v0.3.0
     </footer>
   </div>
 </body>
