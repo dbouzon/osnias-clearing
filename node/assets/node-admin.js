@@ -1,6 +1,258 @@
 /*
  * Osnias Network — Node Administration
- * Version 0.1.0
+ * Version 0.2.2
+ *
+ * Admin access:
+ *  - exact wallet allowlist check
+ *  - Sepolia network check
+ *  - server-issued nonce/challenge
+ *  - personal_sign
+ *  - backend verification + secure session cookie
+ *
+ * IMPORTANT: front-end checks alone are not security.
+ * Every /api/node/admin/* endpoint must verify the authenticated server session.
+ */
+
+(function () {
+  "use strict";
+
+  const ADMIN_WALLET = "0x9FcC10582df1dC2E7Da79653535Fd3e5b8De2570".toLowerCase();
+  const cfg = window.OSNIAS_NODE_ADMIN_CONFIG || {};
+  const $ = (id) => document.getElementById(id);
+
+  let connectedAdminWallet = null;
+  let adminAuthenticated = false;
+
+  function authMessage(message, type) {
+    const el = $("adminAuthMessage");
+    if (!el) return;
+    el.className = "osnias-alert";
+    if (type === "success") el.classList.add("osnias-alert--success");
+    if (type === "danger") el.classList.add("osnias-alert--danger");
+    el.textContent = message;
+  }
+
+  function setAuthenticated(authenticated) {
+    adminAuthenticated = Boolean(authenticated);
+    $("adminProtectedContent").hidden = !adminAuthenticated;
+    $("adminLogout").hidden = !adminAuthenticated;
+
+    const badge = $("adminAuthStatus");
+    if (adminAuthenticated) {
+      badge.textContent = "AUTHENTIFIÉ";
+      badge.className = "osnias-badge osnias-badge--success";
+      $("adminAuthGate").classList.add("osnias-card--success");
+    } else {
+      badge.textContent = "NON AUTHENTIFIÉ";
+      badge.className = "osnias-badge osnias-badge--pending";
+      $("adminAuthGate").classList.remove("osnias-card--success");
+    }
+  }
+
+  async function connectAdminWallet() {
+    if (!window.OsniasWallet || typeof window.OsniasWallet.connect !== "function") {
+      throw new Error(
+        "wallet-connect.js n’est pas chargé. Vérifiez /node/assets/wallet-connect.js."
+      );
+    }
+
+    const walletState = await window.OsniasWallet.connect();
+    const address = walletState?.account;
+
+    if (!address) {
+      throw new Error("Le wallet n’a retourné aucune adresse.");
+    }
+
+    connectedAdminWallet = address;
+    $("adminConnectedWallet").textContent = address;
+
+    const authField = $("adminWalletAuthorization");
+
+    if (address.toLowerCase() !== ADMIN_WALLET) {
+      if (authField) authField.textContent = "NON AUTORISÉ";
+      $("adminSignChallenge").disabled = true;
+      setAuthenticated(false);
+      throw new Error("Accès refusé : ce wallet n'est pas autorisé comme Node Admin.");
+    }
+
+    if (authField) authField.textContent = "AUTORISÉ";
+    $("adminSignChallenge").disabled = false;
+    authMessage(
+      "Wallet administrateur reconnu sur Ethereum Sepolia. Signez le challenge pour ouvrir la session.",
+      "success"
+    );
+  }
+
+  async function authenticateAdmin() {
+    if (!connectedAdminWallet || connectedAdminWallet.toLowerCase() !== ADMIN_WALLET) {
+      throw new Error("Wallet administrateur non connecté.");
+    }
+
+    const challengeRes = await fetch(cfg.challengeEndpoint, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({ address: connectedAdminWallet })
+    });
+
+    if (!challengeRes.ok) {
+      throw new Error("Impossible d'obtenir le challenge d'authentification.");
+    }
+
+    const challenge = await challengeRes.json();
+    const message = challenge.message;
+    if (!message || !challenge.nonce) {
+      throw new Error("Challenge serveur invalide.");
+    }
+
+    if (!window.OsniasWallet || typeof window.OsniasWallet.getSigner !== "function") {
+      throw new Error("Signer wallet indisponible.");
+    }
+
+    const signer = await window.OsniasWallet.getSigner();
+    const signature = await signer.signMessage(message);
+
+    const verifyRes = await fetch(cfg.verifyEndpoint, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        address: connectedAdminWallet,
+        nonce: challenge.nonce,
+        signature
+      })
+    });
+
+    if (!verifyRes.ok) {
+      throw new Error("Signature administrateur refusée par le Node.");
+    }
+
+    setAuthenticated(true);
+    authMessage("Session administrateur ouverte.", "success");
+
+    // Load protected data only after server authentication.
+    if (typeof window.OSNIAS_ADMIN_LOAD_ALL === "function") {
+      await window.OSNIAS_ADMIN_LOAD_ALL();
+    }
+  }
+
+  async function logoutAdmin() {
+    try {
+      await fetch(cfg.logoutEndpoint, {
+        method: "POST",
+        credentials: "same-origin"
+      });
+    } catch (_) {}
+
+    setAuthenticated(false);
+
+    if (window.OsniasWallet && typeof window.OsniasWallet.disconnectLocal === "function") {
+      window.OsniasWallet.disconnectLocal("adminLogout");
+    }
+
+    connectedAdminWallet = null;
+    $("adminConnectedWallet").textContent = "—";
+    const authField = $("adminWalletAuthorization");
+    if (authField) authField.textContent = "En attente";
+
+    authMessage("Session administrateur fermée.");
+  }
+
+  $("adminConnectWallet")?.addEventListener("click", async () => {
+    try {
+      await connectAdminWallet();
+    } catch (e) {
+      authMessage(e?.message || "Connexion refusée.", "danger");
+    }
+  });
+
+  $("adminSignChallenge")?.addEventListener("click", async () => {
+    try {
+      $("adminSignChallenge").disabled = true;
+      await authenticateAdmin();
+    } catch (e) {
+      setAuthenticated(false);
+      authMessage(e?.message || "Authentification refusée.", "danger");
+    } finally {
+      if (!adminAuthenticated && connectedAdminWallet?.toLowerCase() === ADMIN_WALLET) {
+        $("adminSignChallenge").disabled = false;
+      }
+    }
+  });
+
+  $("adminLogout")?.addEventListener("click", logoutAdmin);
+
+  document.addEventListener("osnias:wallet-account-changed", (event) => {
+    connectedAdminWallet = event.detail?.account || null;
+    $("adminConnectedWallet").textContent = connectedAdminWallet || "—";
+
+    const authField = $("adminWalletAuthorization");
+    if (authField) {
+      authField.textContent =
+        connectedAdminWallet && connectedAdminWallet.toLowerCase() === ADMIN_WALLET
+          ? "AUTORISÉ"
+          : connectedAdminWallet
+            ? "NON AUTORISÉ"
+            : "En attente";
+    }
+
+    $("adminSignChallenge").disabled =
+      !connectedAdminWallet || connectedAdminWallet.toLowerCase() !== ADMIN_WALLET;
+
+    setAuthenticated(false);
+
+    if (connectedAdminWallet && connectedAdminWallet.toLowerCase() !== ADMIN_WALLET) {
+      authMessage("Accès refusé : wallet administrateur incorrect.", "danger");
+    } else {
+      authMessage("Le wallet a changé. Une nouvelle signature est requise.");
+    }
+  });
+
+  document.addEventListener("osnias:wallet-disconnected", () => {
+    connectedAdminWallet = null;
+    $("adminConnectedWallet").textContent = "—";
+    const authField = $("adminWalletAuthorization");
+    if (authField) authField.textContent = "En attente";
+    $("adminSignChallenge").disabled = true;
+    setAuthenticated(false);
+    authMessage("Wallet déconnecté.");
+  });
+
+  document.addEventListener("osnias:wallet-wrong-network", () => {
+    setAuthenticated(false);
+    authMessage("Ethereum Sepolia est requis pour l’administration du Node.", "danger");
+  });
+
+  document.addEventListener("osnias:wallet-error", (event) => {
+    setAuthenticated(false);
+    authMessage(event.detail?.message || "Erreur wallet.", "danger");
+  });
+
+  document.addEventListener("osnias:wallet-restored", (event) => {
+    const address = event.detail?.account || null;
+    connectedAdminWallet = address;
+    $("adminConnectedWallet").textContent = address || "—";
+
+    const authField = $("adminWalletAuthorization");
+    const allowed = address && address.toLowerCase() === ADMIN_WALLET;
+
+    if (authField) authField.textContent = allowed ? "AUTORISÉ" : address ? "NON AUTORISÉ" : "En attente";
+    $("adminSignChallenge").disabled = !allowed;
+  });
+
+  setAuthenticated(false);
+})();
+
+
+/*
+ * Osnias Network — Node Administration
+ * Version 0.2.2
  *
  * UI scaffold.
  * All sensitive operations must be authorized server-side.
@@ -296,6 +548,14 @@
   $("approveRequest").addEventListener("click", () => performAction("approve"));
   $("rejectRequest").addEventListener("click", () => performAction("reject"));
 
-  // No automatic loading in production until server-side admin authentication exists.
+  window.OSNIAS_ADMIN_LOAD_ALL = async function () {
+    await Promise.allSettled([
+      loadRequests(),
+      loadRegistry(),
+      loadAudit()
+    ]);
+  };
+
+  // Protected content remains hidden until the wallet challenge is verified server-side.
   renderCounters();
 })();
