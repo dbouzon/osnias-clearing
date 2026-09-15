@@ -94,6 +94,35 @@
   }
 </style>
 
+
+<style>
+  .kyc-node-head__networkline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0 0 8px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .kyc-node-head__networkline a,
+  .kyc-node-head__networkline span {
+    color: #ffffff !important;
+    font-size: 14px !important;
+    text-decoration: none;
+  }
+
+  .kyc-node-head__networkline a:hover,
+  .kyc-node-head__networkline a:focus-visible {
+    text-decoration: underline;
+  }
+</style>
+
 </head>
 <body>
 <div class="osnias-shell">
@@ -107,11 +136,10 @@
         <div class="kyc-welcome__copy">
           
 <div class="kyc-node-head">
-  <div class="kyc-node-head__network">
-    <span>Osnias Network</span>
-    <img src="./drapeau-suisse.jpg" alt="Drapeau suisse" class="kyc-node-head__flag-small">
+  <div class="kyc-node-head__networkline">
+    <a href="https://www.osnias-clearing.com" target="_self" rel="noopener">Osnias Network</a>
+    <span>· Chaîne Sépolia</span>
   </div>
-  <div class="kyc-node-head__chain">Chaîne Sépolia</div>
 
   <div class="kyc-node-head__welcome">
     <span>Bienvenue sur le Node 1 - Juridiction Suisse</span>
@@ -171,85 +199,166 @@
           <section class="osnias-card">
             <div class="osnias-card__head">
               <h2 class="osnias-card__title">2 · Identification au registre suisse</h2>
-              <span class="osnias-card__meta">KYC / KYB</span>
+              <span class="osnias-card__meta">Données officielles</span>
             </div>
             <div class="osnias-card__body osnias-form">
-              <div class="osnias-card kyc-registry-lookup" style="box-shadow:none;">
-                <div class="osnias-card__head">
-                  <h3 class="osnias-card__title">Identification officielle suisse</h3>
-                </div>
-                <div class="osnias-card__body osnias-form">
-                  <div class="osnias-form-row">
-                    <label class="osnias-field">
-                      <span class="osnias-label">Identifiant IDE / UID suisse *</span>
-                      <input
-                        class="osnias-input osnias-mono"
-                        id="swissUid"
-                        name="swissUid"
-                        placeholder="CHE-123.456.789"
-                        autocomplete="off"
-                        required
-                      >
-                      <span class="osnias-help">Format attendu : CHE-123.456.789</span>
-                    </label>
-                    <div class="osnias-field">
-                      <span class="osnias-label">Registre suisse</span>
-                      <button id="lookupSwissRegistry" class="osnias-btn osnias-btn--primary" type="button">
-                        Rechercher dans le registre suisse
-                      </button>
-                    </div>
-                  </div>
-                  <div id="swissRegistryStatus" class="osnias-alert" hidden></div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Identifiant IDE / UID suisse *</span>
+                  <input
+                    class="osnias-input osnias-mono"
+                    id="swissUid"
+                    name="swissUid"
+                    placeholder="CHE-123.456.789"
+                    autocomplete="off"
+                    required
+                  >
+                  <span class="osnias-help">Format attendu : CHE-123.456.789</span>
+                </label>
+
+                <div class="osnias-field">
+                  <span class="osnias-label">Registre suisse</span>
+                  <button id="lookupSwissRegistry" class="osnias-btn osnias-btn--primary" type="button">
+                    Rechercher dans le registre suisse
+                  </button>
                 </div>
               </div>
 
+              <div id="swissRegistryStatus" class="osnias-alert" hidden></div>
+
               <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Raison sociale</span>
+                  <input class="osnias-input" name="legalName" readonly required>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Forme juridique</span>
+                  <input class="osnias-input" name="legalForm" readonly required>
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Statut de l'entreprise</span>
+                  <input class="osnias-input" name="companyStatus" readonly>
+                </label>
                 <label class="osnias-field">
                   <span class="osnias-label">N° Registre du commerce</span>
-                  <input class="osnias-input" name="registrationNumber">
-                </label>
-                <label class="osnias-field">
-                  <span class="osnias-label">Source de vérification</span>
-                  <input class="osnias-input" value="Registre suisse / API Node" readonly>
+                  <input class="osnias-input osnias-mono" name="registrationNumber" readonly>
                 </label>
               </div>
 
               <div class="osnias-form-row">
                 <label class="osnias-field">
-                  <span class="osnias-label">LEI</span>
-                  <input class="osnias-input osnias-mono" name="lei" maxlength="20">
+                  <span class="osnias-label">Statut au Registre du commerce</span>
+                  <input class="osnias-input" name="commercialRegisterStatus" readonly>
                 </label>
                 <label class="osnias-field">
-                  <span class="osnias-label">Site internet</span>
-                  <input class="osnias-input" name="website" type="url" placeholder="https://">
+                  <span class="osnias-label">Canton</span>
+                  <input class="osnias-input" name="canton" readonly>
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Adresse du siège</span>
+                  <input class="osnias-input" name="registeredStreet" readonly required>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Complément d'adresse</span>
+                  <input class="osnias-input" name="registeredAddress2" readonly>
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">NPA</span>
+                  <input class="osnias-input" name="registeredPostalCode" readonly required>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Localité</span>
+                  <input class="osnias-input" name="registeredCity" readonly required>
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Commune</span>
+                  <input class="osnias-input" name="municipality" readonly>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Pays</span>
+                  <input class="osnias-input" name="registeredCountry" readonly required>
                 </label>
               </div>
 
               <label class="osnias-field">
-                <span class="osnias-label">Activité économique / objet *</span>
-                <textarea class="osnias-textarea" name="businessActivity" required></textarea>
+                <span class="osnias-label">But / activité inscrite</span>
+                <textarea class="osnias-textarea" name="businessPurpose" readonly></textarea>
               </label>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Statut TVA</span>
+                  <input class="osnias-input" name="vatStatus" readonly>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">N° TVA</span>
+                  <input class="osnias-input osnias-mono" name="vatNumber" readonly>
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Début d'assujettissement TVA</span>
+                  <input class="osnias-input" name="vatStartDate" readonly>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Dernière validation des données</span>
+                  <input class="osnias-input" name="registryLastValidation" readonly>
+                </label>
+              </div>
+
+              <div class="osnias-form-row">
+                <label class="osnias-field">
+                  <span class="osnias-label">Source de vérification</span>
+                  <input class="osnias-input" name="registrySource" value="Registre suisse / API Node" readonly>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">État de vérification</span>
+                  <input class="osnias-input" name="registryVerificationStatus" value="En attente de recherche" readonly>
+                </label>
+              </div>
             </div>
           </section>
 
           <section class="osnias-card">
-            <div class="osnias-card__head"><h2 class="osnias-card__title">3 · Siège et correspondance</h2></div>
+            <div class="osnias-card__head">
+              <h2 class="osnias-card__title">3 · Coordonnées complémentaires</h2>
+              <span class="osnias-card__meta">À compléter par l'entreprise</span>
+            </div>
             <div class="osnias-card__body osnias-form">
               <div class="osnias-form-row">
-                <label class="osnias-field"><span class="osnias-label">Adresse du siège *</span><input class="osnias-input" name="registeredStreet" autocomplete="street-address" required></label>
-                <label class="osnias-field"><span class="osnias-label">Complément</span><input class="osnias-input" name="registeredAddress2"></label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Site internet</span>
+                  <input class="osnias-input" name="website" type="url" placeholder="https://">
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">E-mail professionnel *</span>
+                  <input class="osnias-input" name="businessEmail" type="email" autocomplete="email" required>
+                </label>
               </div>
+
               <div class="osnias-form-row">
-                <label class="osnias-field"><span class="osnias-label">Code postal *</span><input class="osnias-input" name="registeredPostalCode" autocomplete="postal-code" required></label>
-                <label class="osnias-field"><span class="osnias-label">Ville *</span><input class="osnias-input" name="registeredCity" autocomplete="address-level2" required></label>
-              </div>
-              <div class="osnias-form-row">
-                <label class="osnias-field"><span class="osnias-label">Pays *</span><input class="osnias-input" name="registeredCountry" autocomplete="country-name" required></label>
-                <label class="osnias-field"><span class="osnias-label">Adresse de correspondance</span><input class="osnias-input" name="correspondenceAddress" placeholder="Si différente du siège"></label>
-              </div>
-              <div class="osnias-form-row">
-                <label class="osnias-field"><span class="osnias-label">Téléphone fixe de l'entreprise *</span><input class="osnias-input" name="landline" type="tel" autocomplete="tel" required></label>
-                <label class="osnias-field"><span class="osnias-label">E-mail professionnel *</span><input class="osnias-input" name="businessEmail" type="email" autocomplete="email" required></label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Téléphone fixe *</span>
+                  <input class="osnias-input" name="landline" type="tel" autocomplete="tel" required>
+                </label>
+                <label class="osnias-field">
+                  <span class="osnias-label">Téléphone mobile</span>
+                  <input class="osnias-input" name="mobile" type="tel" autocomplete="tel">
+                </label>
               </div>
             </div>
           </section>
@@ -336,7 +445,7 @@
     </div>
   </main>
 
-  <footer class="kyc-footer">Osnias Clearing · KYC Corporate Testnet · Ethereum Sepolia · v0.2.7</footer>
+  <footer class="kyc-footer">Osnias Clearing · KYC Corporate Testnet · Ethereum Sepolia · v0.2.9</footer>
 </div>
 
 <script>
@@ -377,6 +486,8 @@
     button.disabled = true;
     button.textContent = "Recherche en cours…";
     show("Interrogation du registre suisse via l’API du Node…");
+    const verificationField = document.querySelector('[name="registryVerificationStatus"]');
+    if (verificationField) verificationField.value = "Recherche en cours";
 
     try {
       const response = await fetch(endpoint + "/" + encodeURIComponent(uid), {
@@ -394,27 +505,39 @@
 
       const data = await response.json();
 
-      // Future API mapping. Fields are filled only when returned by the Node API.
+      // Données officielles retournées par l'API du Node.
       const form = document.getElementById("kyc-form");
       const setValue = (name, value) => {
-        if (!form || value === undefined || value === null || value === "") return;
+        if (!form || value === undefined || value === null) return;
         const field = form.elements.namedItem(name);
-        if (field && "value" in field) field.value = value;
+        if (field && "value" in field) field.value = String(value);
       };
 
       setValue("legalName", data.legalName);
       setValue("legalForm", data.legalForm);
+      setValue("companyStatus", data.companyStatus || data.uidStatus);
       setValue("registrationNumber", data.commercialRegisterNumber);
-      setValue("registeredStreet", data.address);
+      setValue("commercialRegisterStatus", data.commercialRegisterStatus);
+      setValue("canton", data.canton);
+      setValue("registeredStreet", data.address || data.street);
+      setValue("registeredAddress2", data.address2);
       setValue("registeredPostalCode", data.postalCode);
       setValue("registeredCity", data.city);
+      setValue("municipality", data.municipality);
       setValue("registeredCountry", data.country || "Suisse");
-      setValue("countryOfIncorporation", data.country || "Suisse");
-      setValue("lei", data.lei);
+      setValue("businessPurpose", data.businessPurpose || data.purpose);
+      setValue("vatStatus", data.vatStatus);
+      setValue("vatNumber", data.vatNumber);
+      setValue("vatStartDate", data.vatStartDate);
+      setValue("registryLastValidation", data.lastValidationDate || data.lastValidation);
+      setValue("registrySource", data.source || "Registre suisse / API Node");
+      setValue("registryVerificationStatus", "Données récupérées");
 
       show("Entreprise trouvée dans le registre suisse. Les champs disponibles ont été préremplis.", "success");
     } catch (error) {
       show(error?.message || "Échec de la recherche dans le registre suisse.", "danger");
+      const verificationField = document.querySelector('[name="registryVerificationStatus"]');
+      if (verificationField) verificationField.value = "Non vérifié";
     } finally {
       button.disabled = false;
       button.textContent = "Rechercher dans le registre suisse";
