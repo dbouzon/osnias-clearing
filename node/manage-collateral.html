@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Manage Collateral — Osnias Network</title>
+  <link rel="stylesheet" href="./assets/node.css?v=1.0.0">
+
+  <meta name="description" content="Gestion des contrats de séquestre et des positions de collatéral Osnias.">
+
+<script>
+    window.OSNIAS_WALLET_NETWORK = {
+      chainId: 11155111,
+      chainIdHex: "0xaa36a7",
+      chainName: "Ethereum Sepolia"
+    };
+
+    window.OSNIAS_COLLATERAL_CONFIG = {
+      identityEndpoint: "/api/node/wallet",
+      usdcBalanceEndpoint: "/api/node/wallet/usdc",
+      escrowStatusEndpoint: "/api/node/escrow/status"
+    };
+  </script>
+
+  <script src="./assets/wallet-connect.js" defer></script>
+  <script src="./assets/manage-collateral.js?v=0.1.0" defer></script>
+</head>
+
+<body>
+  <div class="osnias-shell">
+    <main class="osnias-main">
+      <div class="osnias-page">
+
+        <div class="mc-networkline">
+          <a href="https://www.osnias-clearing.com">Osnias Network</a>
+          <span>· Chaîne Sépolia</span>
+        </div>
+
+        <div class="mc-titleline">
+          Manage Collateral · Node 1 · Juridiction Suisse
+        </div>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h1 class="osnias-card__title">Gestion du collatéral</h1>
+            <span id="networkStatus" class="osnias-badge osnias-badge--pending">Wallet non connecté</span>
+          </div>
+
+          <div class="osnias-card__body osnias-form">
+            <div class="osnias-form-row">
+              <div class="osnias-field">
+                <span class="osnias-label">Wallet connecté</span>
+                <div id="walletAddress" class="mc-readout osnias-mono">—</div>
+              </div>
+
+              <div class="osnias-field">
+                <span class="osnias-label">Réseau</span>
+                <div class="mc-readout">Ethereum Sepolia · Chain ID 11155111</div>
+              </div>
+            </div>
+
+            <div>
+              <button id="connectWallet" class="osnias-btn osnias-btn--primary" type="button">
+                Connect Wallet
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">Identité du propriétaire</h2>
+            <span class="osnias-card__meta">Servie par le Node</span>
+          </div>
+
+          <div class="osnias-card__body">
+            <div class="osnias-grid osnias-grid--3">
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">Raison sociale</div>
+                <div id="legalName" class="osnias-kpi__value mc-kpi-text">—</div>
+              </div>
+
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">IDE / UID suisse</div>
+                <div id="swissUid" class="osnias-kpi__value mc-kpi-text osnias-mono">—</div>
+              </div>
+
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">Statut KYC</div>
+                <div id="kycStatus" class="osnias-kpi__value mc-kpi-text">—</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">USDC disponible</h2>
+            <span class="osnias-card__meta">Wallet Sepolia</span>
+          </div>
+
+          <div class="osnias-card__body">
+            <div class="osnias-grid osnias-grid--3">
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">USDC dans le wallet</div>
+                <div id="walletUsdc" class="osnias-kpi__value">—</div>
+              </div>
+
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">USDC sous séquestre</div>
+                <div id="escrowUsdc" class="osnias-kpi__value">—</div>
+              </div>
+
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">USDC disponible</div>
+                <div id="availableUsdc" class="osnias-kpi__value osnias-kpi__value--positive">—</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">Comptes de clearing / OID</h2>
+            <span class="osnias-card__meta">Associés au wallet connecté</span>
+          </div>
+
+          <div class="osnias-card__body">
+            <div id="oidEmpty" class="osnias-empty">
+              Connectez le wallet pour charger les OID associés.
+            </div>
+
+            <div id="oidTableWrap" class="osnias-table-wrap" hidden>
+              <table class="osnias-table">
+                <thead>
+                  <tr>
+                    <th>OID</th>
+                    <th>Devise</th>
+                    <th>Cycle</th>
+                    <th>Contrat de séquestre</th>
+                    <th>Collatéral</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="oidTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">États opérationnels</h2>
+          </div>
+
+          <div class="osnias-card__body">
+            <div class="osnias-grid osnias-grid--3">
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">OID actifs</div>
+                <div id="activeOidCount" class="osnias-kpi__value">0</div>
+              </div>
+
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">Contrats à créer</div>
+                <div id="contractsToCreate" class="osnias-kpi__value osnias-kpi__value--negative">0</div>
+              </div>
+
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">Contrats actifs</div>
+                <div id="activeContracts" class="osnias-kpi__value osnias-kpi__value--positive">0</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div id="pageStatus" class="osnias-alert">
+          En attente de connexion du wallet.
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="osnias-footer">
+      Osnias Network · Node 1 · Manage Collateral · v0.1.1
+    </footer>
+  </div>
+</body>
+</html>

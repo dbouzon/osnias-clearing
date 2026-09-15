@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Node Administration — Osnias Network</title>
+  <meta name="description" content="Administration des demandes KYC et du registre interne du Node Osnias.">
+
+  <link rel="stylesheet" href="./assets/node.css?v=1.0.0">
+
+  <script>
+    window.OSNIAS_NODE_ADMIN_CONFIG = {
+      requestsEndpoint: "/api/node/admin/kyc/requests",
+      approveEndpoint: "/api/node/admin/kyc/approve",
+      rejectEndpoint: "/api/node/admin/kyc/reject",
+      reviewEndpoint: "/api/node/admin/kyc/review",
+      registryEndpoint: "/api/node/admin/registry",
+      auditEndpoint: "/api/node/admin/audit"
+    };
+  </script>
+
+  <script src="./assets/node-admin.js?v=0.1.0" defer></script>
+</head>
+
+<body>
+  <div class="osnias-shell">
+    <main class="osnias-main">
+      <div class="osnias-page">
+
+        <div style="display:flex;justify-content:center;gap:8px;font-size:14px;color:#fff;">
+          <a href="https://www.osnias-clearing.com" style="color:#fff;">Osnias Network</a>
+          <span>· Chaîne Sépolia</span>
+        </div>
+
+        <div style="margin:8px 0 18px;text-align:center;font-size:22px;font-weight:800;color:#fff;">
+          Administration Node 1 · Juridiction Suisse
+        </div>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h1 class="osnias-card__title">Administration du Node</h1>
+            <span id="adminStatus" class="osnias-badge osnias-badge--pending">API non connectée</span>
+          </div>
+          <div class="osnias-card__body">
+            <div class="osnias-grid osnias-grid--4">
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">Demandes en attente</div>
+                <div id="pendingCount" class="osnias-kpi__value osnias-kpi__value--negative">0</div>
+              </div>
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">En revue</div>
+                <div id="reviewCount" class="osnias-kpi__value">0</div>
+              </div>
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">UID actifs</div>
+                <div id="activeUidCount" class="osnias-kpi__value osnias-kpi__value--positive">0</div>
+              </div>
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">OID actifs</div>
+                <div id="activeOidCount" class="osnias-kpi__value osnias-kpi__value--positive">0</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">Demandes KYC</h2>
+            <div class="osnias-page-head__actions">
+              <select id="requestFilter" class="osnias-select">
+                <option value="">Tous les statuts</option>
+                <option value="REQUESTED">REQUESTED</option>
+                <option value="UNDER_REVIEW">UNDER_REVIEW</option>
+                <option value="APPROVED">APPROVED</option>
+                <option value="REJECTED">REJECTED</option>
+              </select>
+              <button id="refreshRequests" class="osnias-btn osnias-btn--primary" type="button">
+                Actualiser
+              </button>
+            </div>
+          </div>
+
+          <div class="osnias-card__body">
+            <div id="requestsEmpty" class="osnias-empty">
+              Aucune demande chargée.
+            </div>
+
+            <div id="requestsTableWrap" class="osnias-table-wrap" hidden>
+              <table class="osnias-table">
+                <thead>
+                  <tr>
+                    <th>Référence</th>
+                    <th>Entreprise</th>
+                    <th>IDE / UID suisse</th>
+                    <th>Wallet</th>
+                    <th>Statut</th>
+                    <th>Soumise le</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="requestsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="requestDetailCard" class="osnias-card" hidden>
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">Détail de la demande</h2>
+            <span id="requestDetailStatus" class="osnias-badge">—</span>
+          </div>
+
+          <div class="osnias-card__body osnias-form">
+            <div class="osnias-grid osnias-grid--3">
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">Référence</div>
+                <div id="detailRequestId" class="osnias-kpi__value" style="font-size:18px;">—</div>
+              </div>
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">Entreprise</div>
+                <div id="detailLegalName" class="osnias-kpi__value" style="font-size:18px;">—</div>
+              </div>
+              <div class="osnias-kpi">
+                <div class="osnias-kpi__label">IDE / UID suisse</div>
+                <div id="detailSwissUid" class="osnias-kpi__value osnias-mono" style="font-size:18px;">—</div>
+              </div>
+            </div>
+
+            <div class="osnias-form-row">
+              <div class="osnias-field">
+                <span class="osnias-label">Wallet</span>
+                <div id="detailWallet" class="osnias-input osnias-mono" style="display:flex;align-items:center;">—</div>
+              </div>
+              <div class="osnias-field">
+                <span class="osnias-label">UID provisoire</span>
+                <div id="detailProvisionalUid" class="osnias-input osnias-mono" style="display:flex;align-items:center;">—</div>
+              </div>
+            </div>
+
+            <div class="osnias-form-row">
+              <div class="osnias-field">
+                <span class="osnias-label">E-mail</span>
+                <div id="detailEmail" class="osnias-input" style="display:flex;align-items:center;">—</div>
+              </div>
+              <div class="osnias-field">
+                <span class="osnias-label">Téléphone fixe</span>
+                <div id="detailLandline" class="osnias-input" style="display:flex;align-items:center;">—</div>
+              </div>
+            </div>
+
+            <label class="osnias-field">
+              <span class="osnias-label">Note interne de revue</span>
+              <textarea id="reviewNote" class="osnias-textarea" placeholder="Observation interne du gestionnaire du Node"></textarea>
+            </label>
+
+            <div class="osnias-flex osnias-flex-wrap osnias-gap-12">
+              <button id="markReview" class="osnias-btn" type="button">
+                Passer en revue
+              </button>
+              <button id="approveRequest" class="osnias-btn osnias-btn--success" type="button">
+                Approuver et activer l’UID
+              </button>
+              <button id="rejectRequest" class="osnias-btn osnias-btn--danger" type="button">
+                Rejeter
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">Registre du Node</h2>
+            <div class="osnias-page-head__actions">
+              <input id="registrySearch" class="osnias-input" type="search" placeholder="UID, entreprise, wallet, OID…">
+              <button id="refreshRegistry" class="osnias-btn osnias-btn--primary" type="button">
+                Actualiser
+              </button>
+            </div>
+          </div>
+
+          <div class="osnias-card__body">
+            <div id="registryEmpty" class="osnias-empty">
+              Aucun enregistrement chargé.
+            </div>
+
+            <div id="registryTableWrap" class="osnias-table-wrap" hidden>
+              <table class="osnias-table">
+                <thead>
+                  <tr>
+                    <th>UID</th>
+                    <th>Entreprise</th>
+                    <th>IDE suisse</th>
+                    <th>Wallet(s)</th>
+                    <th>OID</th>
+                    <th>Statut</th>
+                    <th>Activé le</th>
+                  </tr>
+                </thead>
+                <tbody id="registryTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="osnias-card">
+          <div class="osnias-card__head">
+            <h2 class="osnias-card__title">Journal d’audit</h2>
+            <button id="refreshAudit" class="osnias-btn osnias-btn--primary" type="button">
+              Actualiser
+            </button>
+          </div>
+
+          <div class="osnias-card__body">
+            <div id="auditEmpty" class="osnias-empty">
+              Aucun événement chargé.
+            </div>
+
+            <div id="auditTableWrap" class="osnias-table-wrap" hidden>
+              <table class="osnias-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Action</th>
+                    <th>Référence</th>
+                    <th>Opérateur</th>
+                    <th>Détail</th>
+                  </tr>
+                </thead>
+                <tbody id="auditTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <div id="pageMessage" class="osnias-alert">
+          Cette page nécessite une authentification administrateur côté serveur avant mise en production.
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="osnias-footer">
+      Osnias Network · Node 1 · Administration · v0.1.0
+    </footer>
+  </div>
+</body>
+</html>
