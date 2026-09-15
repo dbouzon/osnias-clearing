@@ -1,4 +1,4 @@
-/* Osnias Clearing — Corporate KYC — v0.1.1
+/* Osnias Clearing — Corporate KYC — v0.1.2
  * Requires: /node/assets/end-user.css v1.4.0
  */
 
@@ -42,3 +42,127 @@
 
 @media(max-width:820px){.kyc-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.kyc-wallet-grid{grid-template-columns:1fr}.osnias-form-row{grid-template-columns:1fr}.kyc-result>div{grid-template-columns:1fr;gap:3px}}
 @media(max-width:520px){.kyc-steps{grid-template-columns:1fr}.kyc-header__inner{padding:10px 16px}.osnias-main{padding-left:16px;padding-right:16px}.kyc-brand small{white-space:normal}}
+
+/* =========================================================
+   Readability policy — v0.1.2
+   14 px minimum. Neutral information = white.
+   Status information = green or red only.
+   ========================================================= */
+
+:root {
+  --muted: var(--white);
+  --warning: var(--red);
+}
+
+body,
+button,
+input,
+select,
+textarea,
+.osnias-label,
+.osnias-help,
+.osnias-card__meta,
+.osnias-kpi__label,
+.osnias-kpi__foot,
+.osnias-wallet__address,
+.kyc-brand small,
+.kyc-step small,
+.kyc-wallet-binding span,
+.kyc-result span,
+.kyc-footer {
+  font-size: 14px !important;
+}
+
+.osnias-page-subtitle,
+.osnias-label,
+.osnias-help,
+.osnias-card__meta,
+.osnias-kpi__label,
+.osnias-kpi__foot,
+.osnias-wallet__address,
+.osnias-muted,
+.kyc-brand small,
+.kyc-step small,
+.kyc-wallet-binding span,
+.kyc-result span,
+.kyc-rooms span,
+.kyc-footer {
+  color: var(--white) !important;
+  opacity: 1 !important;
+}
+
+/* Pending / blocked / negative states: red. */
+.osnias-badge--pending,
+.kyc-result .kyc-pending,
+.osnias-help--danger,
+.osnias-text-red {
+  color: var(--red) !important;
+}
+
+/* Verified / accepted / positive states: green. */
+.osnias-badge--success,
+.osnias-badge--accepted,
+.osnias-badge--settled,
+.osnias-badge--open,
+.osnias-help--success,
+.osnias-text-green {
+  color: var(--green) !important;
+}
+
+/* Disabled controls remain readable without grey text. */
+#kyc-form fieldset:disabled {
+  opacity: 1;
+}
+
+#kyc-form fieldset:disabled .osnias-input,
+#kyc-form fieldset:disabled .osnias-select,
+#kyc-form fieldset:disabled .osnias-textarea {
+  color: var(--white);
+  border-color: var(--line);
+}
+
+#kyc-form fieldset:disabled .osnias-label,
+#kyc-form fieldset:disabled .osnias-help,
+#kyc-form fieldset:disabled span,
+#kyc-form fieldset:disabled small {
+  color: var(--white) !important;
+  opacity: 1 !important;
+}
+
+
+/* =========================================================
+   KYC hero — Node emphasis v0.2.1
+   ========================================================= */
+.kyc-hero__network {
+  margin: 0 0 4px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.kyc-hero__node-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.kyc-hero__flag {
+  width: 34px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 760px) {
+  .kyc-hero__node-line {
+    font-size: 22px;
+    flex-wrap: wrap;
+  }
+}
