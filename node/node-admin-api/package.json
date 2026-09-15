@@ -1,0 +1,17 @@
+{
+  "name": "osnias-node-admin-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Osnias Network Node 1 administrator wallet challenge authentication API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ethers": "^6.13.4",
+    "express": "^4.21.2"
+  }
+}

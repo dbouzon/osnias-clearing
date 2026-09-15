@@ -1,0 +1,10 @@
+# Osnias Node 1 Admin API
+
+PORT=3000
+
+# Public website origin allowed to call this API.
+PUBLIC_ORIGIN=https://www.osnias-clearing.com
+
+# Keep this server-side only.
+# Do NOT put it in a public JS file.
+ADMIN_WALLET=0xYOUR_ADMIN_WALLET
