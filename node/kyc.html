@@ -27,33 +27,98 @@
       environment: "testnet",
       kk: "01",
       nnn: "001",
-      submitEndpoint: "/api/node/kyc/register"
+      submitEndpoint: "/api/node/kyc/register",
+      swissRegistryEndpoint: "/api/node/ch/company"
     };
   </script>
   <script src="./assets/wallet-connect.js?v=1.2.0" defer></script>
   <script src="./assets/kyc.js?v=0.2.0" defer></script>
+
+<style>
+  .kyc-node-head {
+    margin: 0 0 18px;
+    color: #ffffff;
+  }
+
+  .kyc-node-head__network,
+  .kyc-node-head__chain {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .kyc-node-head__network {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kyc-node-head__chain {
+    margin-top: 2px;
+  }
+
+  .kyc-node-head__welcome {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+    color: #ffffff;
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .kyc-node-head__flag-small {
+    width: 26px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex: 0 0 auto;
+  }
+
+  .kyc-node-head__flag {
+    width: 34px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex: 0 0 auto;
+  }
+
+  @media (max-width: 760px) {
+    .kyc-node-head__welcome {
+      font-size: 22px;
+      flex-wrap: wrap;
+    }
+  }
+</style>
+
 </head>
 <body>
 <div class="osnias-shell">
   <header class="kyc-header">
-    <div class="kyc-header__inner">
-      <a class="kyc-brand" href="/">
-        <img src="/logo.jpg" alt="Osnias Clearing" width="44" height="44">
-        <span>
-          <strong>Osnias Clearing</strong>
-          <small>KYC · Personne morale · Testnet</small>
-        </span>
-      </a>
-      <span class="osnias-badge osnias-badge--pending">Ethereum Sepolia</span>
-    </div>
+    
   </header>
 
   <main class="osnias-main">
 <div class="osnias-page">
       <section class="osnias-page-head kyc-welcome">
         <div class="kyc-welcome__copy">
-          <h1 class="osnias-page-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">Bienvenue sur Osnias Network <img src="./drapeau-suisse.jpg" alt="Drapeau suisse" width="34" height="24" style="width:34px;height:24px;object-fit:cover;border-radius:2px;flex:0 0 auto;"></h1>
-          <p class="kyc-welcome__network">Chaîne Sepolia · Node 1 · Juridiction Suisse</p>
+          
+<div class="kyc-node-head">
+  <div class="kyc-node-head__network">
+    <span>Osnias Network</span>
+    <img src="./drapeau-suisse.jpg" alt="Drapeau suisse" class="kyc-node-head__flag-small">
+  </div>
+  <div class="kyc-node-head__chain">Chaîne Sépolia</div>
+
+  <div class="kyc-node-head__welcome">
+    <span>Bienvenue sur le Node 1 - Juridiction Suisse</span>
+    <img src="./drapeau-suisse.jpg" alt="Drapeau suisse" class="kyc-node-head__flag">
+  </div>
+</div>
+
           <div class="kyc-welcome__regulatory">
             <strong>Cadre réglementaire suisse</strong>
             <p>
@@ -131,14 +196,43 @@
                 </label>
               </div>
 
+              <div class="osnias-card kyc-registry-lookup" style="box-shadow:none;">
+                <div class="osnias-card__head">
+                  <h3 class="osnias-card__title">Identification officielle suisse</h3>
+                </div>
+                <div class="osnias-card__body osnias-form">
+                  <div class="osnias-form-row">
+                    <label class="osnias-field">
+                      <span class="osnias-label">Identifiant IDE / UID suisse *</span>
+                      <input
+                        class="osnias-input osnias-mono"
+                        id="swissUid"
+                        name="swissUid"
+                        placeholder="CHE-123.456.789"
+                        autocomplete="off"
+                        required
+                      >
+                      <span class="osnias-help">Format attendu : CHE-123.456.789</span>
+                    </label>
+                    <div class="osnias-field">
+                      <span class="osnias-label">Registre suisse</span>
+                      <button id="lookupSwissRegistry" class="osnias-btn osnias-btn--primary" type="button">
+                        Rechercher dans le registre suisse
+                      </button>
+                    </div>
+                  </div>
+                  <div id="swissRegistryStatus" class="osnias-alert" hidden></div>
+                </div>
+              </div>
+
               <div class="osnias-form-row">
                 <label class="osnias-field">
-                  <span class="osnias-label">N° Registre du commerce *</span>
-                  <input class="osnias-input" name="registrationNumber" required>
+                  <span class="osnias-label">N° Registre du commerce</span>
+                  <input class="osnias-input" name="registrationNumber">
                 </label>
                 <label class="osnias-field">
-                  <span class="osnias-label">IDE / UID suisse</span>
-                  <input class="osnias-input" name="swissUid" placeholder="CHE-…">
+                  <span class="osnias-label">Source de vérification</span>
+                  <input class="osnias-input" value="Registre suisse / API Node" readonly>
                 </label>
               </div>
 
@@ -220,21 +314,8 @@
               </div>
             </div>
           </section>
-
-          <section class="osnias-card">
-            <div class="osnias-card__head"><h2 class="osnias-card__title">6 · Profil financier et objet de la relation</h2></div>
-            <div class="osnias-card__body osnias-form">
-              <label class="osnias-field"><span class="osnias-label">Objet de la relation avec Osnias Clearing *</span><textarea class="osnias-textarea" name="relationshipPurpose" required placeholder="Utilisation envisagée des clearing rooms du Node."></textarea></label>
-              <div class="osnias-form-row">
-                <label class="osnias-field"><span class="osnias-label">Volume annuel estimé</span><input class="osnias-input" name="estimatedAnnualVolume" inputmode="decimal"></label>
-                <label class="osnias-field"><span class="osnias-label">Devise principale</span><select class="osnias-select" name="primaryCurrency"><option value="USD">USD</option><option value="EUR">EUR</option><option value="CHF">CHF</option><option value="OTHER">Autre</option></select></label>
-              </div>
-              <label class="osnias-field"><span class="osnias-label">Origine des fonds / actifs *</span><textarea class="osnias-textarea" name="sourceOfFunds" required></textarea></label>
-            </div>
-          </section>
-
-          <section class="osnias-card">
-            <div class="osnias-card__head"><h2 class="osnias-card__title">7 · Déclarations</h2></div>
+<section class="osnias-card">
+            <div class="osnias-card__head"><h2 class="osnias-card__title">6 · Déclarations</h2></div>
             <div class="osnias-card__body osnias-form">
               <div class="kyc-wallet-binding">
                 <span>Wallet lié au dossier</span>
@@ -247,7 +328,7 @@
           </section>
 
           <section class="osnias-card">
-            <div class="osnias-card__head"><h2 class="osnias-card__title">8 · Soumission et UID provisoire</h2><span id="submission-badge" class="osnias-badge">Non soumis</span></div>
+            <div class="osnias-card__head"><h2 class="osnias-card__title">7 · Soumission et UID provisoire</h2><span id="submission-badge" class="osnias-badge">Non soumis</span></div>
             <div class="osnias-card__body osnias-form">
               <div class="osnias-alert">La soumission demande une signature du wallet. Cette signature prouve le contrôle de l'adresse et ne déclenche aucune transaction on-chain.</div>
               <button id="submit-kyc" class="osnias-btn osnias-btn--primary osnias-btn--block" type="submit">Signer et soumettre le dossier KYC</button>
@@ -277,7 +358,92 @@
     </div>
   </main>
 
-  <footer class="kyc-footer">Osnias Clearing · KYC Corporate Testnet · Ethereum Sepolia · v0.2.0</footer>
+  <footer class="kyc-footer">Osnias Clearing · KYC Corporate Testnet · Ethereum Sepolia · v0.2.6</footer>
 </div>
+
+<script>
+(function () {
+  "use strict";
+
+  const uidInput = document.getElementById("swissUid");
+  const button = document.getElementById("lookupSwissRegistry");
+  const status = document.getElementById("swissRegistryStatus");
+
+  if (!uidInput || !button || !status) return;
+
+  function show(message, state) {
+    status.hidden = false;
+    status.className = "osnias-alert";
+    if (state === "success") status.classList.add("osnias-alert--success");
+    if (state === "danger") status.classList.add("osnias-alert--danger");
+    status.textContent = message;
+  }
+
+  button.addEventListener("click", async () => {
+    const uid = String(uidInput.value || "").trim().toUpperCase();
+
+    if (!/^CHE-\d{3}\.\d{3}\.\d{3}$/.test(uid)) {
+      show("Veuillez saisir un identifiant IDE / UID suisse valide au format CHE-123.456.789.", "danger");
+      uidInput.focus();
+      return;
+    }
+
+    uidInput.value = uid;
+    const endpoint = window.OSNIAS_KYC_CONFIG?.swissRegistryEndpoint;
+
+    if (!endpoint) {
+      show("L’API du registre suisse n’est pas encore configurée sur ce Node.", "danger");
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Recherche en cours…";
+    show("Interrogation du registre suisse via l’API du Node…");
+
+    try {
+      const response = await fetch(endpoint + "/" + encodeURIComponent(uid), {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        credentials: "same-origin"
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("Aucune entreprise trouvée pour cet identifiant suisse.");
+        }
+        throw new Error("Le service du registre suisse n’est pas encore disponible.");
+      }
+
+      const data = await response.json();
+
+      // Future API mapping. Fields are filled only when returned by the Node API.
+      const form = document.getElementById("kyc-form");
+      const setValue = (name, value) => {
+        if (!form || value === undefined || value === null || value === "") return;
+        const field = form.elements.namedItem(name);
+        if (field && "value" in field) field.value = value;
+      };
+
+      setValue("legalName", data.legalName);
+      setValue("legalForm", data.legalForm);
+      setValue("registrationNumber", data.commercialRegisterNumber);
+      setValue("registeredStreet", data.address);
+      setValue("registeredPostalCode", data.postalCode);
+      setValue("registeredCity", data.city);
+      setValue("registeredCountry", data.country || "Suisse");
+      setValue("countryOfIncorporation", data.country || "Suisse");
+      setValue("lei", data.lei);
+
+      show("Entreprise trouvée dans le registre suisse. Les champs disponibles ont été préremplis.", "success");
+    } catch (error) {
+      show(error?.message || "Échec de la recherche dans le registre suisse.", "danger");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Rechercher dans le registre suisse";
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
