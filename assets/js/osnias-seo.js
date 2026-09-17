@@ -72,7 +72,10 @@
       "SeiScan verified contract",
       "ORUSD",
       "OEURO",
-      "OSNIAS"
+      "OSNIAS",
+      "Denis Bouzon",
+      "Osnias Clearing Denis Bouzon",
+      "ORCID 0009-0007-8894-8902"
     ].join(", "),
 
     siteName: "Osnias Clearing",
@@ -237,6 +240,26 @@
     upsertMeta(
       "twitter:description",
       description
+    );
+
+    upsertProperty(
+      "og:profile:first_name",
+      "Denis"
+    );
+
+    upsertProperty(
+      "og:profile:last_name",
+      "Bouzon"
+    );
+
+    upsertProperty(
+      "article:author",
+      "https://www.linkedin.com/in/denis-bouzon-3b766a437/"
+    );
+
+    upsertMeta(
+      "author-linkedin",
+      "https://www.linkedin.com/in/denis-bouzon-3b766a437/"
     );
   }
 
