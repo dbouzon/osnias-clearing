@@ -52,7 +52,7 @@ a:hover,a:focus-visible{text-decoration:underline}
 .site-nav-buttons a{
   display:inline-flex;align-items:center;justify-content:center;min-height:34px;
   padding:.48rem .74rem;border:1px solid rgba(255,255,255,.38);border-radius:999px;
-  background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:700;
+  background:rgba(255,255,255,.06);color:#fff;font-size:.69rem;font-weight:700;
   letter-spacing:.03em;text-decoration:none;white-space:nowrap;transition:.18s ease
 }
 .site-nav-buttons a:hover,
@@ -63,7 +63,7 @@ a:hover,a:focus-visible{text-decoration:underline}
   text-decoration:none
 }
 .site-nav-buttons a[aria-current="page"]{
-  color:#fff;
+  color:var(--accent);
   border-color:var(--accent-soft)
 }
 .menu-toggle{
@@ -637,4 +637,135 @@ footer{
     align-items:flex-start;
     flex-direction:column
   }
+}
+
+/* =========================================================
+   Architecture page
+   ========================================================= */
+.arch-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:1rem;
+    }
+    .arch-card{
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:1rem;
+      padding:1.15rem;
+    }
+    .arch-card h3{
+      margin:.2rem 0 .45rem;
+      font-size:1.02rem;
+    }
+    .arch-card p{
+      color:var(--muted);
+      font-size:.88rem;
+    }
+    .arch-kicker{
+      color:var(--accent);
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-weight:700;
+    }
+    .arch-links{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1rem;
+      margin-top:1rem;
+    }
+    .arch-link{
+      display:block;
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:1rem;
+      padding:1.1rem;
+      text-decoration:none!important;
+    }
+    .arch-link:hover{
+      border-color:var(--accent-soft);
+    }
+    .arch-link strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:.3rem;
+    }
+    .arch-link span{
+      color:var(--muted);
+      font-size:.84rem;
+    }
+    .arch-flow{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:.8rem;
+      margin-top:1.2rem;
+    }
+    .arch-step{
+      border:1px solid var(--border);
+      border-radius:.9rem;
+      background:var(--panel);
+      padding:1rem;
+      text-align:center;
+    }
+    .arch-step strong{
+      display:block;
+      color:var(--accent);
+      margin-bottom:.25rem;
+    }
+    .arch-step span{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+    .arch-diagram{
+      margin:1.25rem 0 0;
+      padding:1rem;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:1rem;
+      overflow:hidden;
+    }
+
+    .arch-diagram:empty{
+      display:none;
+      margin:0;
+      padding:0;
+      border:0;
+    }
+    .arch-diagram img{
+      display:block;
+      width:100%;
+      height:auto;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    .arch-diagram figcaption{
+      max-width:1200px;
+      margin:.8rem auto 0;
+      color:#374151;
+      font-size:.8rem;
+      line-height:1.55;
+    }
+    .arch-note{
+      margin-top:1rem;
+      border-left:3px solid var(--accent);
+      padding:.75rem 1rem;
+      background:var(--panel);
+      color:var(--muted);
+      font-size:.88rem;
+    }
+    @media(max-width:900px){
+      .arch-grid,.arch-flow{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:640px){
+      .arch-grid,.arch-links,.arch-flow{grid-template-columns:1fr}
+    }
+
+/* Architecture page — compact transition from hero to section 01 */
+.container > .hero{
+  margin-bottom:0 !important;
+  padding-bottom:1.5rem !important;
+}
+
+main.container{
+  padding-top:1.5rem !important;
 }
