@@ -75,7 +75,7 @@
       <div class="pitch-subtitle">01 · Project Overview</div>
       <h2>Osnias Clearing technical scope</h2>
       <p class="pitch-intro">
-        Osnias Clearing is a blockchain clearing infrastructure project built around a 91-day clearing cycle, restricted clearing-register tokens, oracle-controlled settlement boundaries and a strict separation between clearing, custody, lending and governance.
+        Osnias Clearing is a blockchain clearing infrastructure built around a canonical clearing layer on Sei Network, restricted clearing-register tokens (ORUSD / OEURO), a strict functional separation between clearing and settlement, and NNN nodes responsible for independent settlement execution across 1-, 4- and 13-week clearing cycles.
       </p>
     </section>
 
@@ -83,9 +83,9 @@
       <div class="pitch-subtitle">02 · Architecture Summary</div>
       <h2>Core architecture</h2>
       <div class="pitch-grid-3">
-        <article class="pitch-card"><h3>91-Day Clearing Cycle</h3><p>Positions circulate during a defined operating cycle, allowing progressive compensation before final reconciliation.</p></article>
-        <article class="pitch-card"><h3>Multichain EVM Integration</h3><p>Participating EVM networks connect through integration layers while local lending and collateral custody remain with independent protocols.</p></article>
-        <article class="pitch-card"><h3>Strict Functional Separation</h3><p>Clearing, custody, lending and governance are separate domains with distinct technical roles and trust boundaries.</p></article>
+        <article class="pitch-card"><h3>Canonical Clearing on Sei</h3><p>Sei hosts the clearing register, ISO 20022 financial messaging, the Sei Controller and the temporal oracle. Clearing cycles of 1, 4 and 13 weeks. Osnias calculates net positions but does not execute settlement.</p></article>
+        <article class="pitch-card"><h3>EVM Escrow Infrastructure</h3><p>Connected EVM environments host local Osnias-ID registries, collateral escrow arrangements and the infrastructure of registered NNN nodes. Technical controller messages between chains are encrypted and signed.</p></article>
+        <article class="pitch-card"><h3>Strict Functional Separation</h3><p>Clearing and settlement are distinct functions. NNN nodes execute inter-NNN and intra-NNN settlement independently. Osnias does not take custody of collateral and does not execute settlement.</p></article>
       </div>
     </section>
 
@@ -93,18 +93,18 @@
       <div class="pitch-subtitle">03 · Clearing Principle</div>
       <h2>Horizontal clearing leverage</h2>
       <div class="pitch-notice">
-        <strong>Financial leverage increases simultaneous exposure. Clearing leverage increases cumulative economic throughput over time.</strong><br />
-        Osnias seeks capital efficiency through circulation and multilateral netting rather than by stacking immediate debt on top of the same collateral.
+        <strong>Clearing identifies accepted obligations, reconciles them and offsets them on a multilateral basis. Its output is a set of net positions and settlement instructions.</strong><br />
+        Osnias calculates the netting result but does not execute settlement. Settlement is executed exclusively by NNN nodes under their own legal and regulatory framework. Clearing and settlement are distinct functions governed by separate technical states and applicable legal frameworks.
       </div>
     </section>
 
     <section class="pitch-section">
       <div class="pitch-subtitle">04 · Architecture</div>
-      <h2>Three distinct protocol domains</h2>
+      <h2>Two networks, three clearing components</h2>
       <div class="pitch-grid-3">
-        <article class="pitch-card"><div class="pitch-metric">OSNIAS</div><p>Governance and strategic-reserve token. Canonical governance state on Sei, with separate economic mobility across compatible EVM environments.</p></article>
-        <article class="pitch-card"><div class="pitch-metric">ORUSD</div><p>Restricted USD-denominated clearing-register token. EOA-focused circulation with explicit mint/burn and oracle settlement boundaries.</p></article>
-        <article class="pitch-card"><div class="pitch-metric">OEURO</div><p>Restricted EUR-denominated clearing-register token following the same clearing-only architecture and separation principles.</p></article>
+        <article class="pitch-card"><div class="pitch-metric">ORUSD</div><p>USD-denominated clearing-register token on Sei. Restricted to eligible EOA accounts registered in the Osnias network. Not designed for market circulation, bridging or smart-contract routing.</p></article>
+        <article class="pitch-card"><div class="pitch-metric">OEURO</div><p>EUR-denominated clearing-register token following the same canonical clearing architecture. ISO 4217 currency code embedded in the Osnias-ID at creation.</p></article>
+        <article class="pitch-card"><div class="pitch-metric">Osnias-ID</div><p>19-digit clearing account identifier (KK-NNN-MMM-WW-SSSSSSS-XX). Links the canonical Sei registry to the local EVM registry. MOD-97 checksum. uint64 on-chain storage.</p></article>
       </div>
     </section>
 
@@ -149,64 +149,62 @@
       <p class="pitch-intro">Direct links to the principal public technical documents, institutional architecture reference, deployment records and permanent archives of the current Osnias Clearing publication set.</p>
 
       <div class="pitch-resources">
-        <a class="pitch-resource" href="/documentation/osnias-institutional-architecture-pack.pdf" target="_blank" rel="noopener noreferrer">
-          <div>
-            <strong>Institutional Architecture Pack</strong>
-            <span>Technical, operational and control framework for financial institutions, auditors, infrastructure partners and supervisory authorities</span>
-          </div>
+
+        <a class="pitch-resource" href="/architecture/Osnias_Clearing_Functional_Architecture.pdf" target="_blank" rel="noopener noreferrer">
+          <div><strong>Functional Position Paper</strong><span>Functional separation of clearing and settlement · Canonical clearing on Sei · Settlement by NNN nodes</span></div>
           <div class="pitch-resource-type">PDF ↗</div>
         </a>
 
+        <a class="pitch-resource" href="https://doi.org/10.5281/zenodo.22807190" target="_blank" rel="noopener noreferrer">
+          <div><strong>Functional Position Paper — Zenodo</strong><span>Permanent archive · DOI 10.5281/zenodo.22807190</span></div>
+          <div class="pitch-resource-type">DOI ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf" target="_blank" rel="noopener noreferrer">
+          <div><strong>Osnias-ID White Paper Release 2.0</strong><span>19-digit clearing account identifier · ISO 4217 · MOD-97 · uint64</span></div>
+          <div class="pitch-resource-type">PDF ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="https://doi.org/10.5281/zenodo.22704626" target="_blank" rel="noopener noreferrer">
+          <div><strong>Osnias-ID Release 2.0 — Zenodo</strong><span>Permanent archive · DOI 10.5281/zenodo.22704626</span></div>
+          <div class="pitch-resource-type">DOI ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/osniasid/osniasid.html">
+          <div><strong>Osnias-ID Specification</strong><span>Public specification · Multi-chain clearing identifier · Release 2.0</span></div>
+          <div class="pitch-resource-type">HTML ↗</div>
+        </a>
+
         <a class="pitch-resource" href="/deployment/deployment.html">
-          <div><strong>Official Deployment Registry</strong><span>Official Sei Testnet contract addresses, transaction hashes and verification status</span></div><div class="pitch-resource-type">REGISTRY ↗</div>
+          <div><strong>Official Draft Deployment Registry</strong><span>Contract addresses, creation hashes, compiler parameters · Sei Testnet & Ethereum Sepolia</span></div>
+          <div class="pitch-resource-type">REGISTRY ↗</div>
         </a>
+
+        <a class="pitch-resource" href="/end-user/" target="_blank">
+          <div><strong>End-user testnet interface</strong><span>Interactive testnet interface for draft deployment testing</span></div>
+          <div class="pitch-resource-type">APP ↗</div>
+        </a>
+
+        <a class="pitch-resource" href="/architecture/architecture.html">
+          <div><strong>Architecture</strong><span>Multi-chain architecture · Sei clearing rail · EVM escrow infrastructure</span></div>
+          <div class="pitch-resource-type">HTML ↗</div>
+        </a>
+
         <a class="pitch-resource" href="/cycle/onias-clearing-calendrier.pdf">
-          <div><strong>91-Day & Jubilee Cycle Calendar</strong><span>Official annual clearing-cycle calendar</span></div><div class="pitch-resource-type">PDF ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="/osnias/OSNIAS_Technical_White.pdf">
-          <div><strong>OSNIAS Technical White Paper</strong><span>Governance token · Technical & audit reference</span></div><div class="pitch-resource-type">PDF ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="https://doi.org/10.5281/zenodo.22139986" target="_blank" rel="noopener noreferrer">
-          <div><strong>OSNIAS — Zenodo Technical Archive</strong><span>Permanent archive · DOI 10.5281/zenodo.22139986</span></div><div class="pitch-resource-type">DOI ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="/orusd/ORUSD_Technical_White_Paper.pdf">
-          <div><strong>ORUSD Technical White Paper</strong><span>USD clearing register · Technical & audit reference</span></div><div class="pitch-resource-type">PDF ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="https://doi.org/10.5281/zenodo.22200260" target="_blank" rel="noopener noreferrer">
-          <div><strong>ORUSD — Zenodo Technical Archive</strong><span>Permanent archive · DOI 10.5281/zenodo.22200260</span></div><div class="pitch-resource-type">DOI ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="/oeuro/OEURO_Technical_White_Paper.pdf">
-          <div><strong>OEURO Technical White Paper</strong><span>EUR clearing register · Technical & audit reference</span></div><div class="pitch-resource-type">PDF ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="https://doi.org/10.5281/zenodo.22195130" target="_blank" rel="noopener noreferrer">
-          <div><strong>OEURO — Zenodo Technical Archive</strong><span>Permanent archive · DOI 10.5281/zenodo.22195130</span></div><div class="pitch-resource-type">DOI ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="/tokenomics/tokenomics.html">
-          <div><strong>OSNIAS Tokenomics</strong><span>Supply, allocation, vesting and strategic reserve</span></div><div class="pitch-resource-type">HTML ↗</div>
+          <div><strong>Clearing Cycle Calendar</strong><span>Official clearing cycle calendar · 1, 4 and 13-week cycles</span></div>
+          <div class="pitch-resource-type">PDF ↗</div>
         </a>
 
         <a class="pitch-resource" href="/regulation/regulation.html">
-          <div><strong>Regulatory Positioning</strong><span>Functional and regulatory boundaries of the architecture</span></div><div class="pitch-resource-type">HTML ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="/oracle/oracle.html">
-          <div><strong>Oracle Architecture</strong><span>Mint / burn request and settlement coordination layer</span></div><div class="pitch-resource-type">HTML ↗</div>
-        </a>
-
-        <a class="pitch-resource" href="/sei/sei.html">
-          <div><strong>Sei Architecture</strong><span>Canonical governance and reference deployment environment</span></div><div class="pitch-resource-type">HTML ↗</div>
+          <div><strong>Regulatory Positioning</strong><span>Functional and regulatory boundaries of the architecture</span></div>
+          <div class="pitch-resource-type">HTML ↗</div>
         </a>
 
         <a class="pitch-resource" href="/history/history.html">
-          <div><strong>Historical Foundations</strong><span>Historical framing of the Osnias Clearing project</span></div><div class="pitch-resource-type">HTML ↗</div>
+          <div><strong>Historical Foundations</strong><span>Historical framing of the Osnias Clearing project</span></div>
+          <div class="pitch-resource-type">HTML ↗</div>
         </a>
+
       </div>
     </section>
 
@@ -214,10 +212,13 @@
       <div class="pitch-subtitle">08 · Source & Verification</div>
       <h2>Review the implementation directly</h2>
       <div class="pitch-resources">
-        <a class="pitch-resource" href="/osnias/osnias-sei-testnet.sol"><div><strong>OSNIAS Solidity Source</strong><span>Sei Testnet reference source</span></div><div class="pitch-resource-type">SOL ↗</div></a>
-        <a class="pitch-resource" href="/orusd/orusd-sei-testnet.sol"><div><strong>ORUSD Solidity Source</strong><span>Sei Testnet reference source</span></div><div class="pitch-resource-type">SOL ↗</div></a>
-        <a class="pitch-resource" href="https://testnet.seiscan.io/address/0x129C294D476748E5b4D67B6EC403c97c399b756d#code" target="_blank" rel="noopener noreferrer"><div><strong>OSNIAS on SeiScan</strong><span>0x129C294D476748E5b4D67B6EC403c97c399b756d</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
-        <a class="pitch-resource" href="https://testnet.seiscan.io/address/0x0c3a19455b898913A1DaD93d724c24062293dB5F#code" target="_blank" rel="noopener noreferrer"><div><strong>ORUSD on SeiScan</strong><span>0x0c3a19455b898913A1DaD93d724c24062293dB5F</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+        <a class="pitch-resource" href="https://testnet.seiscan.io/address/0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11#code" target="_blank" rel="noopener noreferrer"><div><strong>Osnias 1W Temporal Oracle — SeiScan</strong><span>0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+        <a class="pitch-resource" href="https://testnet.seiscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE#code" target="_blank" rel="noopener noreferrer"><div><strong>Osnias SEI Registry — SeiScan</strong><span>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+        <a class="pitch-resource" href="https://testnet.seiscan.io/address/0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4#code" target="_blank" rel="noopener noreferrer"><div><strong>Osnias Sei Controller — SeiScan</strong><span>0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+        <a class="pitch-resource" href="https://testnet.seiscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d#code" target="_blank" rel="noopener noreferrer"><div><strong>ORUSD Token — SeiScan</strong><span>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+        <a class="pitch-resource" href="https://sepolia.etherscan.io/address/0xD14C1b90635521A1C586ec9B871D797458cB1Db8#code" target="_blank" rel="noopener noreferrer"><div><strong>Node Registrar — Etherscan Sepolia</strong><span>0xD14C1b90635521A1C586ec9B871D797458cB1Db8</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+        <a class="pitch-resource" href="https://sepolia.etherscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE#code" target="_blank" rel="noopener noreferrer"><div><strong>Escrow Smart Contract — Etherscan Sepolia</strong><span>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</span></div><div class="pitch-resource-type">VERIFY ↗</div></a>
+        <a class="pitch-resource" href="https://github.com/dbouzon/osnias-clearing" target="_blank" rel="noopener noreferrer"><div><strong>GitHub Repository</strong><span>Source code, contracts and documentation</span></div><div class="pitch-resource-type">GITHUB ↗</div></a>
       </div>
     </section>
 
