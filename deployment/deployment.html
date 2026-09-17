@@ -6,25 +6,13 @@
   <title>Official Draft Deployment — Osnias Clearing</title>
   <meta name="description" content="Osnias Clearing official draft smart contracts deployed on Sei Testnet and Ethereum Sepolia. Draft stage, not production.">
   <meta name="robots" content="index,follow">
-
   <link rel="stylesheet" href="/assets/css/osnias.css">
   <script src="/assets/js/osnias-seo.js" defer></script>
   <script src="/assets/js/osnias-nav.js" defer></script>
-
   <style>
-    :root{
-      --bg:#07111d;
-      --panel:#0c1928;
-      --panel2:#102235;
-      --text:#eaf2f8;
-      --muted:#9fb0bf;
-      --line:#24394d;
-      --accent:#68d7ff;
-      --ok:#76e6b1;
-      --warn:#ffb85c;
-    }
+    :root{--bg:#07111d;--panel:#0c1928;--panel2:#102235;--text:#eaf2f8;--muted:#9fb0bf;--line:#24394d;--accent:#68d7ff;--ok:#76e6b1;--warn:#ffb85c;}
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55;}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif;line-height:1.55;}
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
     .wrap{width:min(1180px,calc(100% - 32px));margin:0 auto;}
@@ -39,22 +27,20 @@
     .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:18px;flex-wrap:wrap;}
     .card h2{margin:0;font-size:1.35rem;}
     .status{font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--warn);color:var(--warn);padding:6px 10px;border-radius:999px;white-space:nowrap;}
+    .status.verified{border-color:var(--ok);color:var(--ok);}
     table{width:100%;border-collapse:collapse;margin:4px 0 22px;}
     th,td{text-align:left;vertical-align:top;padding:11px 10px;border-bottom:1px solid var(--line);}
-    th{width:220px;color:var(--muted);font-weight:600;}
-    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem;overflow-wrap:anywhere;word-break:break-word;color:#d9f5ff;}
+    th{width:200px;color:var(--muted);font-weight:600;font-size:.9rem;}
+    td{font-size:.9rem;}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;overflow-wrap:anywhere;word-break:break-all;color:#d9f5ff;}
     .actions{display:flex;gap:10px;flex-wrap:wrap;}
-    .btn{display:inline-block;padding:10px 14px;border-radius:9px;border:1px solid var(--line);background:#0b1724;color:var(--text);font-weight:600;}
+    .btn{display:inline-block;padding:10px 14px;border-radius:9px;border:1px solid var(--line);background:#0b1724;color:var(--text);font-weight:600;font-size:.9rem;}
     .btn.primary{border-color:var(--accent);color:#dff8ff;}
+    .note-cell{color:var(--warn);font-size:.82rem;font-style:italic;}
     footer{border-top:1px solid var(--line);color:var(--muted);padding:26px 0 38px;font-size:.88rem;}
-    @media(max-width:760px){
-      th,td{display:block;width:100%}
-      th{padding-bottom:2px;border-bottom:0}
-      td{padding-top:2px}
-    }
+    @media(max-width:760px){th,td{display:block;width:100%}th{padding-bottom:2px;border-bottom:0}td{padding-top:2px}}
   </style>
 </head>
-
 <body>
 
 <div class="site-nav-fixed">
@@ -74,93 +60,19 @@
       This page lists the Osnias Clearing smart contracts currently deployed on public testnets.
       All contracts are at draft stage. They are not production contracts.
       Only contracts listed on this page are official Osnias Clearing testnet deployments.
+      Architecture and functional documentation: <a href="/architecture/Osnias_Clearing_Functional_Architecture.pdf" target="_blank">Functional Position Paper (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.22807190" target="_blank" rel="noopener">Zenodo DOI</a>
     </p>
 
     <div class="notice">
       <strong>Draft stage — testnet only.</strong>
-      EVM side contracts are deployed on Ethereum Sepolia.
-      Sei chain side contracts are deployed on Sei Testnet (Atlantic-2).
+      EVM side contracts are deployed on Ethereum Sepolia (Chain ID 11155111).
+      Sei chain side contracts are deployed on Sei Testnet Atlantic-2 (EVM Chain ID 1328).
       No Mainnet contract is currently active.
-    </div>
-
-    <!-- EVM SIDE -->
-    <div class="section-title">EVM Side — Ethereum Sepolia</div>
-    <div class="registry">
-
-      <section class="card" id="node-registrar">
-        <div class="card-head">
-          <div>
-            <div class="eyebrow">EVM — Node infrastructure</div>
-            <h2>Node Registrar</h2>
-          </div>
-          <div class="status">Draft</div>
-        </div>
-        <table>
-          <tr><th>Network</th><td>Ethereum Sepolia</td></tr>
-          <tr><th>Contract address</th><td><code>0xD14C1b90635521A1C586ec9B871D797458cB1Db8</code></td></tr>
-          <tr><th>Production status</th><td>Draft — testnet only · Not Mainnet production</td></tr>
-        </table>
-        <div class="actions">
-          <a class="btn primary" href="https://sepolia.etherscan.io/address/0xD14C1b90635521A1C586ec9B871D797458cB1Db8#code" target="_blank" rel="noopener">View on Etherscan Sepolia</a>
-        </div>
-      </section>
-
-      <section class="card" id="evm-registry">
-        <div class="card-head">
-          <div>
-            <div class="eyebrow">EVM — Identity</div>
-            <h2>Osnias EVM Registry</h2>
-          </div>
-          <div class="status">Draft</div>
-        </div>
-        <table>
-          <tr><th>Network</th><td>Ethereum Sepolia</td></tr>
-          <tr><th>Contract address</th><td><code>0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55</code></td></tr>
-          <tr><th>Production status</th><td>Draft — testnet only · Not Mainnet production</td></tr>
-        </table>
-        <div class="actions">
-          <a class="btn primary" href="https://sepolia.etherscan.io/address/0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55#code" target="_blank" rel="noopener">View on Etherscan Sepolia</a>
-        </div>
-      </section>
-
-      <section class="card" id="escrow-evm">
-        <div class="card-head">
-          <div>
-            <div class="eyebrow">EVM — Collateral</div>
-            <h2>Escrow Smart Contract</h2>
-          </div>
-          <div class="status">Draft</div>
-        </div>
-        <table>
-          <tr><th>Network</th><td>Ethereum Sepolia</td></tr>
-          <tr><th>Contract address</th><td><code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code></td></tr>
-          <tr><th>Note</th><td>Same contract address as Osnias SEI Registry on Sei Testnet — deployed from the same wallet at the same nonce on a different chain. Both contracts are independent deployments on their respective networks.</td></tr>
-          <tr><th>Production status</th><td>Draft — testnet only · Not Mainnet production</td></tr>
-        </div>
-      </section>
-
-      <section class="card" id="evm-controller">
-        <div class="card-head">
-          <div>
-            <div class="eyebrow">EVM — Protocol control</div>
-            <h2>Osnias EVM Controller</h2>
-          </div>
-          <div class="status">Draft</div>
-        </div>
-        <table>
-          <tr><th>Network</th><td>Ethereum Sepolia</td></tr>
-          <tr><th>Contract address</th><td><code>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</code></td></tr>
-          <tr><th>Production status</th><td>Draft — testnet only · Not Mainnet production</td></tr>
-        </table>
-        <div class="actions">
-          <a class="btn primary" href="https://sepolia.etherscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d#code" target="_blank" rel="noopener">View on Etherscan Sepolia</a>
-        </div>
-      </section>
-
+      Deployer on all contracts: <code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
     </div>
 
     <!-- SEI CHAIN SIDE -->
-    <div class="section-title">Sei Chain Side — Sei Testnet Atlantic-2</div>
+    <div class="section-title">Sei Chain Side — Sei Testnet Atlantic-2 (Chain ID 1328)</div>
     <div class="registry">
 
       <section class="card" id="sei-oracle">
@@ -169,17 +81,23 @@
             <div class="eyebrow">Sei — Temporal control</div>
             <h2>Osnias 1W Sei Temporal Oracle</h2>
           </div>
-          <div class="status">Draft</div>
+          <div class="status verified">Verified · Exact Match</div>
         </div>
         <table>
-          <tr><th>Network</th><td>Sei Testnet — Atlantic-2</td></tr>
-          <tr><th>EVM Chain ID</th><td><code>1328 (0x530)</code></td></tr>
+          <tr><th>Contract name</th><td><code>OsniasTemporalOracle1W</code></td></tr>
           <tr><th>Contract address</th><td><code>0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11</code></td></tr>
+          <tr><th>Creation transaction</th><td><code>0xfa2b3fd8da4997a202df7580a9ce8afb42b87194f76a4804c72504e623819e15</code></td></tr>
+          <tr><th>Deployed</th><td>15 September 2026</td></tr>
           <tr><th>Clearing cycle</th><td>1 week (7 days)</td></tr>
+          <tr><th>Compiler</th><td><code>v0.8.24+commit.e11b9ed9</code></td></tr>
+          <tr><th>Optimizer</th><td>Enabled · 200 runs</td></tr>
+          <tr><th>EVM version</th><td>Cancun</td></tr>
+          <tr><th>Verification</th><td>Source Code Verified — Exact Match</td></tr>
           <tr><th>Production status</th><td>Draft — testnet only · Not Sei Mainnet production</td></tr>
         </table>
         <div class="actions">
           <a class="btn primary" href="https://testnet.seiscan.io/address/0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11#code" target="_blank" rel="noopener">View on SeiScan</a>
+          <a class="btn" href="https://testnet.seiscan.io/tx/0xfa2b3fd8da4997a202df7580a9ce8afb42b87194f76a4804c72504e623819e15" target="_blank" rel="noopener">Creation transaction</a>
         </div>
       </section>
 
@@ -189,14 +107,23 @@
             <div class="eyebrow">Sei — Identity</div>
             <h2>Osnias SEI Registry</h2>
           </div>
-          <div class="status">Draft</div>
+          <div class="status verified">Verified · Exact Match</div>
         </div>
         <table>
-          <tr><th>Network</th><td>Sei Testnet — Atlantic-2</td></tr>
-          <tr><th>EVM Chain ID</th><td><code>1328 (0x530)</code></td></tr>
+          <tr><th>Contract name</th><td><code>OsniasRegistrySei</code></td></tr>
           <tr><th>Contract address</th><td><code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code></td></tr>
-          <tr><th>Note</th><td>Same contract address as Escrow Smart Contract on Ethereum Sepolia — deployed from the same wallet at the same nonce on a different chain. Both contracts are independent deployments on their respective networks.</td></tr>
+          <tr><th>Creation transaction</th><td><code>0x64eecbaeda3207dd040eadc58804b985330c5a2a1cd12498f14a034a3c798f17</code></td></tr>
+          <tr><th>Deployed</th><td>10 September 2026</td></tr>
+          <tr><th>Compiler</th><td><code>v0.8.26+commit.8a97fa7a</code></td></tr>
+          <tr><th>Optimizer</th><td>Enabled · 200 runs</td></tr>
+          <tr><th>EVM version</th><td>Cancun</td></tr>
+          <tr><th>Verification</th><td>Source Code Verified — Exact Match</td></tr>
+          <tr><th>Note</th><td class="note-cell">Same contract address as Escrow Smart Contract on Ethereum Sepolia — deployed from the same wallet at the same nonce on a different chain. Both contracts are independent deployments on their respective networks.</td></tr>
           <tr><th>Production status</th><td>Draft — testnet only · Not Sei Mainnet production</td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://testnet.seiscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE#code" target="_blank" rel="noopener">View on SeiScan</a>
+          <a class="btn" href="https://testnet.seiscan.io/tx/0x64eecbaeda3207dd040eadc58804b985330c5a2a1cd12498f14a034a3c798f17" target="_blank" rel="noopener">Creation transaction</a>
         </div>
       </section>
 
@@ -206,16 +133,28 @@
             <div class="eyebrow">Sei — Protocol control</div>
             <h2>Osnias Sei Controller</h2>
           </div>
-          <div class="status">Draft</div>
+          <div class="status verified">Verified · Exact Match</div>
         </div>
         <table>
-          <tr><th>Network</th><td>Sei Testnet — Atlantic-2</td></tr>
-          <tr><th>EVM Chain ID</th><td><code>1328 (0x530)</code></td></tr>
+          <tr><th>Contract name</th><td><code>OsniasSeiController</code></td></tr>
           <tr><th>Contract address</th><td><code>0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4</code></td></tr>
+          <tr><th>Creation transaction</th><td><code>0xe548afef2393795925b9ac0f7078cc02eab340664b917276c3692375f5ecc1d3</code></td></tr>
+          <tr><th>Deployed</th><td>10 September 2026</td></tr>
+          <tr><th>Compiler</th><td><code>v0.8.26+commit.8a97fa7a</code></td></tr>
+          <tr><th>Optimizer</th><td>Enabled · 200 runs</td></tr>
+          <tr><th>EVM version</th><td>Cancun</td></tr>
+          <tr><th>Linked contracts</th><td>
+            Temporal Oracle: <code>0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11</code><br>
+            Registry: <code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code><br>
+            Clearing Token: <code>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</code><br>
+            EVM Chain ID: <code>11155111</code> (Ethereum Sepolia)
+          </td></tr>
+          <tr><th>Verification</th><td>Source Code Verified — Exact Match</td></tr>
           <tr><th>Production status</th><td>Draft — testnet only · Not Sei Mainnet production</td></tr>
         </table>
         <div class="actions">
           <a class="btn primary" href="https://testnet.seiscan.io/address/0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4#code" target="_blank" rel="noopener">View on SeiScan</a>
+          <a class="btn" href="https://testnet.seiscan.io/tx/0xe548afef2393795925b9ac0f7078cc02eab340664b917276c3692375f5ecc1d3" target="_blank" rel="noopener">Creation transaction</a>
         </div>
       </section>
 
@@ -228,13 +167,117 @@
           <div class="status">Draft</div>
         </div>
         <table>
-          <tr><th>Network</th><td>Sei Testnet — Atlantic-2</td></tr>
-          <tr><th>EVM Chain ID</th><td><code>1328 (0x530)</code></td></tr>
           <tr><th>Contract address</th><td><code>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</code></td></tr>
+          <tr><th>Creation transaction</th><td><code>0x3bcc588069769cb482af8711b818e3863b8167eb248aa9aad332596926f4850e</code></td></tr>
+          <tr><th>Compiler</th><td><code>v0.8.26</code></td></tr>
+          <tr><th>Optimizer</th><td>Enabled · 200 runs</td></tr>
+          <tr><th>EVM version</th><td>Cancun</td></tr>
           <tr><th>Production status</th><td>Draft — testnet only · Not Sei Mainnet production</td></tr>
         </table>
         <div class="actions">
           <a class="btn primary" href="https://testnet.seiscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d#code" target="_blank" rel="noopener">View on SeiScan</a>
+          <a class="btn" href="https://testnet.seiscan.io/tx/0x3bcc588069769cb482af8711b818e3863b8167eb248aa9aad332596926f4850e" target="_blank" rel="noopener">Creation transaction</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- EVM SIDE -->
+    <div class="section-title">EVM Side — Ethereum Sepolia (Chain ID 11155111)</div>
+    <div class="registry">
+
+      <section class="card" id="node-registrar">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">EVM — Node infrastructure</div>
+            <h2>Node Registrar</h2>
+          </div>
+          <div class="status">Draft</div>
+        </div>
+        <table>
+          <tr><th>Contract address</th><td><code>0xD14C1b90635521A1C586ec9B871D797458cB1Db8</code></td></tr>
+          <tr><th>Creation transaction</th><td><code>0x12d3937457418a7eccbb03f6540214f9f6b6fe6389c07416fb4af2be27750a26</code></td></tr>
+          <tr><th>Network</th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+          <tr><th>KK / NNN</th><td><code>90 / 017</code> — Node Denis</td></tr>
+          <tr><th>Compiler</th><td><code>Solidity v0.8.26</code></td></tr>
+          <tr><th>Optimizer</th><td>Enabled · 200 runs · viaIR disabled</td></tr>
+          <tr><th>EVM version</th><td>Cancun</td></tr>
+          <tr><th>Production status</th><td>Draft — testnet only · Not Mainnet production</td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://sepolia.etherscan.io/address/0xD14C1b90635521A1C586ec9B871D797458cB1Db8#code" target="_blank" rel="noopener">View on Etherscan Sepolia</a>
+          <a class="btn" href="https://sepolia.etherscan.io/tx/0x12d3937457418a7eccbb03f6540214f9f6b6fe6389c07416fb4af2be27750a26" target="_blank" rel="noopener">Creation transaction</a>
+        </div>
+      </section>
+
+      <section class="card" id="evm-registry">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">EVM — Identity</div>
+            <h2>Osnias EVM Registry</h2>
+          </div>
+          <div class="status">Draft</div>
+        </div>
+        <table>
+          <tr><th>Contract address</th><td><code>0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55</code></td></tr>
+          <tr><th>Creation transaction</th><td><code>0x310f31ecaca523f4f942e913e843b4d714896f78d2aa5a6a4c516d5daeecebb8</code></td></tr>
+          <tr><th>Network</th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+          <tr><th>KK</th><td><code>90</code></td></tr>
+          <tr><th>Compiler</th><td><code>Solidity v0.8.26</code></td></tr>
+          <tr><th>Optimizer</th><td>Enabled · 200 runs · viaIR disabled</td></tr>
+          <tr><th>EVM version</th><td>Cancun</td></tr>
+          <tr><th>Production status</th><td>Draft — testnet only · Not Mainnet production</td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://sepolia.etherscan.io/address/0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55#code" target="_blank" rel="noopener">View on Etherscan Sepolia</a>
+          <a class="btn" href="https://sepolia.etherscan.io/tx/0x310f31ecaca523f4f942e913e843b4d714896f78d2aa5a6a4c516d5daeecebb8" target="_blank" rel="noopener">Creation transaction</a>
+        </div>
+      </section>
+
+      <section class="card" id="escrow-evm">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">EVM — Collateral</div>
+            <h2>Escrow Smart Contract</h2>
+          </div>
+          <div class="status">Draft</div>
+        </div>
+        <table>
+          <tr><th>Contract address</th><td><code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code></td></tr>
+          <tr><th>Creation transaction</th><td><code>0x7817c87c2cbd67be3a680fce0b72c91223668904ba84c4cad309062c0e948365</code></td></tr>
+          <tr><th>Network</th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+          <tr><th>Compiler</th><td><code>Solidity v0.8.26</code></td></tr>
+          <tr><th>Optimizer</th><td>Enabled · 200 runs · viaIR disabled</td></tr>
+          <tr><th>EVM version</th><td>Cancun</td></tr>
+          <tr><th>Note</th><td class="note-cell">Same contract address as Osnias SEI Registry on Sei Testnet — deployed from the same wallet at the same nonce on a different chain. Both contracts are independent deployments on their respective networks.</td></tr>
+          <tr><th>Production status</th><td>Draft — testnet only · Not Mainnet production</td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://sepolia.etherscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE#code" target="_blank" rel="noopener">View on Etherscan Sepolia</a>
+          <a class="btn" href="https://sepolia.etherscan.io/tx/0x7817c87c2cbd67be3a680fce0b72c91223668904ba84c4cad309062c0e948365" target="_blank" rel="noopener">Creation transaction</a>
+        </div>
+      </section>
+
+      <section class="card" id="evm-controller">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">EVM — Protocol control</div>
+            <h2>Osnias EVM Controller</h2>
+          </div>
+          <div class="status">Draft</div>
+        </div>
+        <table>
+          <tr><th>Contract address</th><td><code>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</code></td></tr>
+          <tr><th>Creation transaction</th><td><code>0x178851722296208bed425df0f581165430df32abe9fce5fabf7869eabc3020f7</code></td></tr>
+          <tr><th>Network</th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+          <tr><th>Compiler</th><td><code>Solidity v0.8.26</code></td></tr>
+          <tr><th>Optimizer</th><td>Enabled · 200 runs · viaIR disabled</td></tr>
+          <tr><th>EVM version</th><td>Cancun</td></tr>
+          <tr><th>Production status</th><td>Draft — testnet only · Not Mainnet production</td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://sepolia.etherscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d#code" target="_blank" rel="noopener">View on Etherscan Sepolia</a>
+          <a class="btn" href="https://sepolia.etherscan.io/tx/0x178851722296208bed425df0f581165430df32abe9fce5fabf7869eabc3020f7" target="_blank" rel="noopener">Creation transaction</a>
         </div>
       </section>
 
