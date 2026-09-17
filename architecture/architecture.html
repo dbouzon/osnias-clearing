@@ -161,8 +161,45 @@
 
   <main class="container">
 
+    <section id="interrail">
+      <div class="section-label">01 · Inter-chain Architecture</div>
+      <h2>A hard boundary between clearing cycle on Sei chain and settlement on EVM chain</h2>
+      <p class="section-intro">
+        The diagram below shows the two-network architecture of Osnias Clearing. Sei Network is the canonical
+        clearing chain. Connected EVM environments host local Osnias-ID registries, collateral escrow arrangements
+        and the infrastructure of registered NNN nodes. Technical controller messages between the two networks
+        are encrypted and signed; they carry no payment instructions.
+      </p>
+
+      <figure class="arch-diagram">
+        <img
+          src="/architecture/Osnias-architecture.png"
+          width="800"
+          height="600"
+          alt="Osnias Clearing multi-chain architecture — Sei Network canonical clearing rail and EVM escrow infrastructure, Version 2.0, 11 September 2026."
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>
+          Osnias Clearing multi-chain architecture — Version 2.0, 11 September 2026.
+          Sei Network hosts the canonical clearing register, ISO 20022 financial messaging, the Sei Controller
+          and the temporal oracle. EVM Network (Chain KK:90) hosts the escrow infrastructure, the node registrar,
+          the client directory and the EVM-ID registry. Technical controller messages between the two networks
+          are encrypted and signed; they are non-financial operational messages only.
+          ORUSD and OEURO remain on the canonical Sei clearing layer and are not designed for market circulation,
+          bridging or smart-contract routing.
+        </figcaption>
+      </figure>
+
+      <div class="arch-note">
+        <strong>Architectural invariant:</strong> Osnias calculates the netting result but does not execute settlement.
+        NNN nodes execute settlement at two levels: inter-NNN settlement of residual obligations between nodes
+        and intra-NNN settlement for accounts registered with the same node.
+      </div>
+    </section>
+
     <section id="core">
-      <div class="section-label">01 · Core Architecture</div>
+      <div class="section-label">02 · Core Architecture</div>
       <h2>Canonical clearing layer on Sei</h2>
       <p class="section-intro">
         Sei hosts the canonical clearing register: clearing accounts, clearing-room parameters, register positions,
@@ -204,7 +241,7 @@
     </section>
 
     <section id="execution">
-      <div class="section-label">02 · Execution Layer</div>
+      <div class="section-label">03 · Execution Layer</div>
       <h2>Commitment register on the canonical clearing layer</h2>
       <p class="section-intro">
         Within the clearing layer on Sei, participants exchange commitment orders — not payments.
@@ -231,43 +268,6 @@
           <strong>Oracle Architecture →</strong>
           <span>Mint/burn request, attestation and settlement coordination model.</span>
         </a>
-      </div>
-    </section>
-
-    <section id="interrail">
-      <div class="section-label">03 · Inter-Rail Architecture</div>
-      <h2>A hard boundary between clearing cycle on Sei chain and settlement on EVM chain</h2>
-      <p class="section-intro">
-        The diagram below shows the two-network architecture of Osnias Clearing. Sei Network is the canonical
-        clearing chain. Connected EVM environments host local Osnias-ID registries, collateral escrow arrangements
-        and the infrastructure of registered NNN nodes. Technical controller messages between the two networks
-        are encrypted and signed; they carry no payment instructions.
-      </p>
-
-      <figure class="arch-diagram">
-        <img
-          src="/architecture/Osnias-architecture.png"
-          width="800"
-          height="600"
-          alt="Osnias Clearing multi-chain architecture — Sei Network canonical clearing rail and EVM escrow infrastructure, Version 2.0, 11 September 2026."
-          loading="lazy"
-          decoding="async"
-        />
-        <figcaption>
-          Osnias Clearing multi-chain architecture — Version 2.0, 11 September 2026.
-          Sei Network hosts the canonical clearing register, ISO 20022 financial messaging, the Sei Controller
-          and the temporal oracle. EVM Network (Chain KK:90) hosts the escrow infrastructure, the node registrar,
-          the client directory and the EVM-ID registry. Technical controller messages between the two networks
-          are encrypted and signed; they are non-financial operational messages only.
-          ORUSD and OEURO remain on the canonical Sei clearing layer and are not designed for market circulation,
-          bridging or smart-contract routing.
-        </figcaption>
-      </figure>
-
-      <div class="arch-note">
-        <strong>Architectural invariant:</strong> Osnias calculates the netting result but does not execute settlement.
-        NNN nodes execute settlement at two levels: inter-NNN settlement of residual obligations between nodes
-        and intra-NNN settlement for accounts registered with the same node.
       </div>
     </section>
 
