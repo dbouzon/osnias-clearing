@@ -10,10 +10,10 @@
 .mb-1{margin-bottom:1rem}
 
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:14px}
+html{scroll-behavior:smooth}
 body{
   min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  color:var(--text);font-size:14px;line-height:1.65;
+  color:var(--text);font-size:16px;line-height:1.65;
   background:
     radial-gradient(circle at 82% 0%,rgba(63,209,255,.10),transparent 29rem),
     radial-gradient(circle at 10% 5%,rgba(63,209,255,.05),transparent 23rem),
@@ -128,14 +128,15 @@ h2{
 }
 .hero-lead,
 .section-intro{
-  color:var(--muted);
+  color:#f5f7ff;
   max-width:55rem
 }
 .hero-lead{
-  font-size:1.04rem;
+  font-size:14px;
   margin-bottom:1.5rem
 }
 .section-intro{
+  font-size:14px;
   margin-bottom:1.5rem
 }
 
