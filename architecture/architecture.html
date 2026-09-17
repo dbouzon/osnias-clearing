@@ -205,18 +205,21 @@
 
     <section id="execution">
       <div class="section-label">02 · Execution Layer</div>
-      <h2>Payment flow on the canonical clearing layer</h2>
+      <h2>Commitment register on the canonical clearing layer</h2>
       <p class="section-intro">
-        Within the clearing layer on Sei, Osnias incorporates a financial messaging function for the exchange
-        of structured, identified and traceable payment requests between participants. A payment request follows
-        three functional stages before producing a net position allocated to the relevant NNN node for settlement.
+        Within the clearing layer on Sei, participants exchange commitment orders — not payments.
+        The canonical register records accepted obligations, tracks their status across the clearing cycle
+        and calculates net positions at cycle close. At no point does Osnias Clearing access, move
+        or authorise movement of custody assets held in client escrow accounts.
+        Settlement of net positions is executed exclusively by the operator of each NNN node,
+        under their own responsibility, both internally within the node and between nodes across the network.
       </p>
 
       <div class="arch-flow">
-        <div class="arch-step"><strong>Payment Request</strong><span>ISO 20022 message on Sei</span></div>
+        <div class="arch-step"><strong>Commitment Order</strong><span>Engagement submitted on Sei</span></div>
         <div class="arch-step"><strong>Accept / Reject</strong><span>Recipient review</span></div>
-        <div class="arch-step"><strong>Transfer</strong><span>Recorded in clearing register</span></div>
-        <div class="arch-step"><strong>Net Position</strong><span>Settlement by NNN node</span></div>
+        <div class="arch-step"><strong>Register</strong><span>Accepted obligation recorded</span></div>
+        <div class="arch-step"><strong>Net Position</strong><span>Settlement by NNN node operator</span></div>
       </div>
 
       <div class="arch-links">
@@ -233,7 +236,7 @@
 
     <section id="interrail">
       <div class="section-label">03 · Inter-Rail Architecture</div>
-      <h2>A hard boundary between clearing and external DeFi protocols</h2>
+      <h2>A hard boundary between clearing cycle on Sei chain and settlement on EVM chain</h2>
       <p class="section-intro">
         The diagram below shows the two-network architecture of Osnias Clearing. Sei Network is the canonical
         clearing chain. Connected EVM environments host local Osnias-ID registries, collateral escrow arrangements
@@ -364,17 +367,6 @@
         to the responsible NNN nodes.
       </p>
 
-      <div class="arch-link">
-        <strong>Open the complete 91-Day & Jubilee Cycle →</strong>
-        <span>
-          Burn window, Day-4 reference deposit, Days 4–88 circulation, Day-89 registry snapshot,
-          Day-90 validation, Day-91 compensation and the seven-year epoch framework.
-        </span>
-      </div>
-      <div class="actions">
-        <a class="btn btn-primary" href="/cycle/cycle.html">Open Cycle Architecture</a>
-        <a class="btn" href="/cycle/onias-clearing-calendrier.pdf">Official Calendar PDF</a>
-      </div>
     </section>
 
     <section id="history">
