@@ -52,7 +52,7 @@ a:hover,a:focus-visible{text-decoration:underline}
 .site-nav-buttons a{
   display:inline-flex;align-items:center;justify-content:center;min-height:34px;
   padding:.48rem .74rem;border:1px solid rgba(255,255,255,.38);border-radius:999px;
-  background:rgba(255,255,255,.06);color:#fff;font-size:.69rem;font-weight:700;
+  background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:700;
   letter-spacing:.03em;text-decoration:none;white-space:nowrap;transition:.18s ease
 }
 .site-nav-buttons a:hover,
@@ -63,7 +63,7 @@ a:hover,a:focus-visible{text-decoration:underline}
   text-decoration:none
 }
 .site-nav-buttons a[aria-current="page"]{
-  color:var(--accent);
+  color:#fff;
   border-color:var(--accent-soft)
 }
 .menu-toggle{
