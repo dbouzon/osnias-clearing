@@ -6,7 +6,7 @@
 
   <title>Osnias Clearing — Multichain Clearing Project on Sei EVM</title>
 
-  <meta name="description" content="Osnias Clearing is a Sei EVM clearing infrastructure with restricted USD and EUR clearing registers, canonical governance, strict separation from custody and lending, public technical documentation and auditable testnet deployments.">
+  <meta name="description" content="Osnias Clearing is a blockchain clearing infrastructure on Sei Network with strict functional separation between clearing and settlement. Clearing cycles of 1, 4 and 13 weeks. Non-custodial. ISO 20022. Public testnet deployments.">
   <meta name="author" content="Denis Bouzon">
   <meta name="creator" content="Denis Bouzon">
   <meta name="publisher" content="Osnias Clearing">
@@ -18,7 +18,7 @@
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
   <meta property="og:title" content="Osnias Clearing — Multichain Clearing Project">
-  <meta property="og:description" content="Programmable clearing infrastructure on Sei EVM with separate governance, clearing, custody and lending domains. Public technical documentation by Denis Bouzon.">
+  <meta property="og:description" content="Blockchain clearing infrastructure on Sei Network. Canonical clearing layer with ISO 20022 messaging. Clearing cycles of 1, 4 and 13 weeks. Non-custodial. Settlement by independent NNN nodes. Public technical documentation by Denis Bouzon.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.osnias-clearing.com/">
   <meta property="og:site_name" content="Osnias Clearing">
@@ -176,9 +176,9 @@
             </div>
 
             <p class="hero-lead" style="margin-left:auto;margin-right:auto;">
-              Osnias Clearing is a blockchain-based clearing house operating on Sei EVM.
-              It provides a common clearing registry for positions backed by funds managed by
-              independent DeFi protocols across EVM networks.
+              Osnias Clearing is a blockchain-based clearing infrastructure operating on Sei Network.
+              It provides a canonical clearing register for USD and EUR positions, with strict functional
+              separation between clearing and settlement. NNN nodes execute settlement independently.
             </p>
 
             <p class="hero-lead" style="margin-left:auto;margin-right:auto;">
@@ -251,7 +251,7 @@
 
       <div class="resources">
         <a class="resource" href="/architecture/architecture.html">
-          <div><strong>Architecture</strong><span>Sei EVM · Clearing domains · Oracle · 91-day cycle · Historical foundations</span></div>
+          <div><strong>Architecture</strong><span>Sei Network · Clearing rail · ISO 20022 · Cycles 1, 4 and 13 weeks · Historical foundations</span></div>
           <div class="resource-type">OPEN →</div>
         </a>
 
@@ -289,8 +289,8 @@
       <div class="grid-3">
         <article class="card">
           <div class="card-kicker">Time</div>
-          <h3>91-day clearing cycle</h3>
-          <p>Economic positions are given time to circulate, offset and rebalance before final net settlement.</p>
+          <h3>1, 4 and 13-week clearing cycles</h3>
+          <p>Each clearing room defines its own cycle duration. The temporal oracle on Sei manages the phase — Register, Clearing, Settlement — and freezes accepted positions at cut-off for multilateral netting.</p>
           <div class="actions">
             <a class="btn" href="/architecture/architecture.html#cycle">Explore the cycle →</a>
           </div>
