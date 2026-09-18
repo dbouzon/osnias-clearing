@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Clearing vs Settlement Infrastructure — Architectural Comparison — Osnias Clearing</title>
+  <meta name="description" content="Architectural comparison between clearing infrastructure and settlement systems. Asset security, functional separation, ISO 20022 compliance and CeFi compatibility."/>
+  <meta name="robots" content="index, follow"/>
+  <meta name="author" content="Denis Bouzon"/>
+  <link rel="canonical" href="https://www.osnias-clearing.com/comparison/comparison.html"/>
+  <meta property="og:title" content="Clearing vs Settlement Infrastructure — Architectural Comparison — Osnias Clearing"/>
+  <meta property="og:description" content="Architectural comparison between clearing infrastructure and settlement systems. Asset security, functional separation, ISO 20022 compliance and CeFi compatibility."/>
+  <meta property="og:url" content="https://www.osnias-clearing.com/comparison/comparison.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:site_name" content="Osnias Clearing"/>
+  <link rel="stylesheet" href="/assets/css/osnias.css"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Osnias Clearing","item":"https://www.osnias-clearing.com"},
+      {"@type":"ListItem","position":2,"name":"Clearing vs Settlement","item":"https://www.osnias-clearing.com/comparison/comparison.html"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between clearing and settlement?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Clearing identifies accepted obligations, calculates net positions and produces settlement instructions. Settlement discharges the residual obligation through asset transfer. Osnias Clearing performs clearing only — settlement is executed exclusively by NNN node operators under their own legal and regulatory framework."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is Osnias Clearing non-custodial?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Osnias Clearing never holds collateral and never executes either leg of settlement. Collateral remains subject to the node-specific escrow contract and the legal arrangements between the NNN node operator and the participant."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does Osnias Clearing align with ISO 20022?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Osnias incorporates structured financial messaging aligned with ISO 20022 on Sei Network — Payment Request, Accept/Reject, Transfer. ISO 4217 currency codes are embedded in the Osnias-ID at account creation and are immutable."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Osnias Clearing compatible with CeFi infrastructure?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Osnias Clearing maintains strict functional separation between clearing, settlement, custody and credit — the same boundaries that CeFi institutions maintain under their regulatory frameworks. Each NNN node operates as an independent settlement operator compatible with existing institutional settlement infrastructure."
+        }
+      }
+    ]
+  }
+  </script>
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+  <style>
+    .comp-table{width:100%;border-collapse:collapse;margin:1.5rem 0;background:var(--panel);border-radius:var(--radius);overflow:hidden}
+    .comp-table th,.comp-table td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--border);font-size:.84rem;vertical-align:top}
+    .comp-table th{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .comp-table th.col-osnias{color:var(--accent)}
+    .comp-table tr:last-child td,.comp-table tr:last-child th{border-bottom:none}
+    .comp-table td.col-osnias{color:#f5f7ff}
+    .comp-table td.col-other{color:var(--muted)}
+    .check{color:var(--ok);font-weight:700}
+    .neutral{color:var(--muted)}
+    .warn{color:var(--warning)}
+    .section-block{margin-bottom:3rem}
+    .note-box{border-left:3px solid var(--accent);padding:.85rem 1rem;background:var(--panel);border-radius:0 var(--radius) var(--radius) 0;font-size:.84rem;color:var(--muted);margin-top:1.5rem}
+    .note-box strong{color:#f5f7ff}
+    .dim-label{color:var(--accent);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.3rem}
+    @media(max-width:768px){
+      .comp-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+      .comp-table th,.comp-table td{white-space:nowrap;min-width:140px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="site-nav-fixed">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+    <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
+  </div>
+</div>
+
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Architecture · Security · Compliance</div>
+    <h1>Clearing vs Settlement Infrastructure</h1>
+    <p class="hero-lead">
+      This page compares the architectural and security properties of Osnias Clearing
+      with those of integrated on-chain settlement architectures. The comparison focuses on functional design,
+      asset security, regulatory architecture and institutional compatibility — not on performance claims.
+    </p>
+  </section>
+</div>
+
+<main class="container">
+
+  <section class="section-block">
+    <div class="section-label">01 · Functional Design</div>
+    <h2>What each system does</h2>
+    <p class="section-intro">
+      Clearing and settlement are distinct functions. Clearing identifies accepted obligations,
+      calculates net positions and produces settlement instructions. Settlement discharges the
+      residual obligation through asset transfer. Combining clearing and settlement within the same technical layer can concentrate
+      custody, operational and counterparty dependencies. Osnias separates these functions by design.
+    </p>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="width:30%">Dimension</th>
+          <th class="col-other" style="width:35%">Integrated Settlement Architecture</th>
+          <th class="col-osnias" style="width:35%">Osnias Clearing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Primary function</strong></td>
+          <td class="col-other">Direct transfer of settlement assets between counterparties</td>
+          <td class="col-osnias">Multilateral netting of accepted obligations — settlement executed by NNN nodes</td>
+        </tr>
+        <tr>
+          <td><strong>Netting</strong></td>
+          <td class="col-other"><span class="neutral">Typically bilateral or gross depending on system design</span></td>
+          <td class="col-osnias"><span class="check">✓</span> Multilateral — all accepted obligations within a clearing room offset before settlement</td>
+        </tr>
+        <tr>
+          <td><strong>Settlement execution</strong></td>
+          <td class="col-other">Settlement execution may be integrated within the same technical stack</td>
+          <td class="col-osnias">Executed exclusively by NNN node operators under their own legal and regulatory framework</td>
+        </tr>
+        <tr>
+          <td><strong>Clearing cycle</strong></td>
+          <td class="col-other"><span class="neutral">Typically immediate or near-real-time — no fixed cycle boundary</span></td>
+          <td class="col-osnias"><span class="check">✓</span> Defined cycles: 1, 4 and 13 weeks — each clearing room sets its own duration at creation</td>
+        </tr>
+        <tr>
+          <td><strong>Obligation state transition</strong></td>
+          <td class="col-other">Depends on the legal and technical model</td>
+          <td class="col-osnias">Accepted obligations and subsequent state changes are recorded against Osnias-IDs. Any legal novation, where applicable, remains governed by clearing-room documentation and applicable law</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <strong>Scope of comparison:</strong> The comparison describes common characteristics of integrated on-chain settlement architectures.
+      It does not purport to describe every settlement system, regulated FMI or institutional operating model.
+    </div>
+
+    <div class="note-box">
+      <strong>Functional boundary:</strong> Osnias calculates and records the net settlement position. It does not perform settlement.
+      Settlement occurs between and/or within NNN nodes according to their own settlement infrastructure, contracts and applicable regulatory framework.
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-label">02 · Asset Security</div>
+    <h2>Who holds the assets and who can move them</h2>
+    <p class="section-intro">
+      Asset security depends on custody architecture. In a non-custodial system,
+      the protocol cannot move client assets under any circumstance. Custody remains
+      with the operator of each node, not with the clearing infrastructure.
+    </p>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="width:30%">Dimension</th>
+          <th class="col-other" style="width:35%">Integrated Settlement Architecture</th>
+          <th class="col-osnias" style="width:35%">Osnias Clearing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Custody model</strong></td>
+          <td class="col-other">Protocol or smart contract may hold or route assets — custody risk depends on architecture</td>
+          <td class="col-osnias"><span class="check">✓</span> Non-custodial — Osnias never holds collateral and never executes either leg of settlement</td>
+        </tr>
+        <tr>
+          <td><strong>Collateral location</strong></td>
+          <td class="col-other">May be held in protocol smart contract, liquidity pool or custodian arrangement</td>
+          <td class="col-osnias"><span class="check">✓</span> Node-specific escrow contract — each NNN node operates its own audited escrow</td>
+        </tr>
+        <tr>
+          <td><strong>Collateral integrity</strong></td>
+          <td class="col-other">Depends on collateral and liquidity design</td>
+          <td class="col-osnias"><span class="check">✓</span> Collateral invariant maintained — netting reduces gross flows but does not reduce escrow backing</td>
+        </tr>
+        <tr>
+          <td><strong>Asset movement authority</strong></td>
+          <td class="col-other">Movement authority depends on the settlement and custody model</td>
+          <td class="col-osnias"><span class="check">✓</span> Only the NNN node operator authorises movement — Osnias has no access to escrow accounts</td>
+        </tr>
+        <tr>
+          <td><strong>EOA restriction</strong></td>
+          <td class="col-other">Smart-contract routing may be permitted depending on system design</td>
+          <td class="col-osnias"><span class="check">✓</span> EOA-only — transfers restricted to externally owned accounts registered in the Osnias network</td>
+        </tr>
+        <tr>
+          <td><strong>Default risk</strong></td>
+          <td class="col-other">Default allocation depends on system rules and contractual arrangements</td>
+          <td class="col-osnias">Default management remains governed at NNN-node and clearing-room level under the applicable contractual and regulatory framework; Osnias does not mutualise participant losses</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <strong>Architectural invariant:</strong> Osnias Clearing does not take custody of the settlement asset
+      or collateral and does not execute either leg of settlement. Collateral remains subject to the
+      node-specific escrow contract and the legal arrangements between the node and the participant.
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-label">03 · Standards and Regulatory Architecture</div>
+    <h2>Regulatory architecture and institutional requirements</h2>
+    <p class="section-intro">
+      Institutional deployment requires an architecture capable of operating within established regulatory, governance and risk-management frameworks. Osnias therefore separates clearing, settlement, custody and credit functions by design, while leaving regulated activities and participant onboarding within the perimeter of the relevant NNN node operator.
+    </p>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="width:30%">Standard / Norm</th>
+          <th class="col-other" style="width:35%">Integrated Settlement Architecture</th>
+          <th class="col-osnias" style="width:35%">Osnias Clearing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>CPMI-IOSCO Principles for FMIs</strong></td>
+          <td class="col-other"><span class="neutral">Reference depends on operator, system documentation and regulatory status</span></td>
+          <td class="col-osnias"><span class="check">✓</span> Declared reference in the Functional Position Paper</td>
+        </tr>
+        <tr>
+          <td><strong>ISO 20022 messaging</strong></td>
+          <td class="col-other"><span class="neutral">Implementation varies by system and operator</span></td>
+          <td class="col-osnias"><span class="check">✓</span> Structured financial messaging aligned with ISO 20022 on Sei — Payment Request → Accept/Reject → Transfer</td>
+        </tr>
+        <tr>
+          <td><strong>ISO 4217 currency codes</strong></td>
+          <td class="col-other"><span class="neutral">Identifier and currency representation vary by system</span></td>
+          <td class="col-osnias"><span class="check">✓</span> Embedded in Osnias-ID at account creation — immutable per clearing account</td>
+        </tr>
+        <tr>
+          <td><strong>MOD-97 checksum</strong></td>
+          <td class="col-other"><span class="neutral">Checksum model varies by identifier scheme</span></td>
+          <td class="col-osnias"><span class="check">✓</span> Osnias-ID includes MOD-97 checksum — same standard as IBAN</td>
+        </tr>
+        <tr>
+          <td><strong>EMIR (EU No 648/2012)</strong></td>
+          <td class="col-other"><span class="neutral">Depends on the operator, jurisdiction and system documentation</span></td>
+          <td class="col-osnias">Referenced in the Functional Position Paper as part of the regulatory perimeter analysis; classification remains subject to applicable rulebook, contracts, governance and jurisdiction</td>
+        </tr>
+        <tr>
+          <td><strong>FINMA guidelines</strong></td>
+          <td class="col-other"><span class="neutral">Depends on the operator, jurisdiction and system documentation</span></td>
+          <td class="col-osnias">Swiss regulatory perimeter considered in the Functional Position Paper; classification remains subject to applicable Swiss law and the role performed by each operator</td>
+        </tr>
+        <tr>
+          <td><strong>AML / KYC perimeter</strong></td>
+          <td class="col-other">Responsibility varies by operator, architecture and regulatory perimeter</td>
+          <td class="col-osnias"><span class="check">✓</span> Each NNN node retains responsibility for onboarding, AML and sanctions controls within its own regulatory perimeter</td>
+        </tr>
+        <tr>
+          <td><strong>Identity confidentiality</strong></td>
+          <td class="col-other">Identity and address models vary by architecture</td>
+          <td class="col-osnias"><span class="check">✓</span> Osnias-ID separates clearing identifier from participant identity — mapping maintained outside canonical clearing layer</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section-block">
+    <div class="section-label">04 · Institutional Compatibility</div>
+    <h2>Integration with regulated financial infrastructure</h2>
+    <p class="section-intro">
+      Integration with regulated financial infrastructure requires more than API access. It requires an architecture that preserves the functional boundaries of clearing, settlement, custody and credit, allowing connected operators to retain their own legal, compliance and operational perimeter.
+    </p>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="width:30%">Dimension</th>
+          <th class="col-other" style="width:35%">Integrated Settlement Architecture</th>
+          <th class="col-osnias" style="width:35%">Osnias Clearing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Clearing / settlement separation</strong></td>
+          <td class="col-other"><span class="neutral">May be integrated within a single technical stack</span></td>
+          <td class="col-osnias"><span class="check">✓</span> Strict functional separation — design principle, not a configuration option</td>
+        </tr>
+        <tr>
+          <td><strong>Legal finality</strong></td>
+          <td class="col-other">Legal finality depends on the applicable system rules, asset, contracts and governing law</td>
+          <td class="col-osnias">Legal finality arises at NNN node level under applicable system rules, contracts, settlement asset and governing law</td>
+        </tr>
+        <tr>
+          <td><strong>Auditability</strong></td>
+          <td class="col-other">Auditability depends on implementation, disclosure and operator controls</td>
+          <td class="col-osnias"><span class="check">✓</span> All contracts deployed with creation hashes and compiler parameters — publicly verifiable on SeiScan and Etherscan Sepolia</td>
+        </tr>
+        <tr>
+          <td><strong>No DEX / AMM / CEX</strong></td>
+          <td class="col-other">May be integrated or adjacent depending on architecture</td>
+          <td class="col-osnias"><span class="check">✓</span> Explicitly excluded — Osnias does not operate a DEX, AMM or CEX and does not provide leveraged trading or investment services</td>
+        </tr>
+        <tr>
+          <td><strong>No token speculation</strong></td>
+          <td class="col-other">Market circulation depends on the system and asset design</td>
+          <td class="col-osnias"><span class="check">✓</span> ORUSD and OEURO not designed for market circulation, bridging or smart-contract routing</td>
+        </tr>
+        <tr>
+          <td><strong>NNN node model</strong></td>
+          <td class="col-other">Operator and counterparty model varies by system architecture</td>
+          <td class="col-osnias"><span class="check">✓</span> Each NNN node is an independent settlement operator — compatible with existing institutional settlement infrastructure</td>
+        </tr>
+        <tr>
+          <td><strong>Accounting treatment</strong></td>
+          <td class="col-other">Accounting treatment depends on the relevant transaction, asset and jurisdiction</td>
+          <td class="col-osnias">Participants remain responsible for their own tax and accounting treatment — Osnias does not define accounting rules</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <strong>Regulatory note:</strong> This page describes the intended allocation of technical functions.
+      It is not a legal opinion and does not determine the regulatory classification of Osnias Clearing,
+      ORUSD, OEURO, an NNN node, an escrow arrangement or a connected settlement service.
+      Classification depends on the applicable rulebook, contracts, governance and actual operation of the network.
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-label">05 · References</div>
+    <h2>Technical documentation</h2>
+    <div class="resources">
+      <a class="resource" href="/architecture/Osnias_Clearing_Functional_Architecture.pdf" target="_blank">
+        <div><strong>Functional Position Paper</strong><span>Functional separation of clearing and settlement · PDF</span></div>
+        <div class="resource-type">PDF ↗</div>
+      </a>
+      <a class="resource" href="https://doi.org/10.5281/zenodo.22807190" target="_blank" rel="noopener">
+        <div><strong>Zenodo — Permanent Archive</strong><span>DOI 10.5281/zenodo.22807190</span></div>
+        <div class="resource-type">DOI ↗</div>
+      </a>
+      <a class="resource" href="/osniasid/osniasid.html">
+        <div><strong>Osnias-ID Specification</strong><span>19-digit clearing account identifier · MOD-97 · ISO 4217</span></div>
+        <div class="resource-type">HTML ↗</div>
+      </a>
+      <a class="resource" href="/deployment/deployment.html">
+        <div><strong>Official Draft Deployment Registry</strong><span>Contract addresses · Creation hashes · Compiler parameters</span></div>
+        <div class="resource-type">REGISTRY ↗</div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    © 2026 Denis Bouzon — Osnias Clearing · Architectural Comparison · Public Technical Documentation
+  </div>
+</footer>
+<script
+  data-goatcounter="https://denis-osnias.goatcounter.com/count"
+  async
+  src="//gc.zgo.at/count.js">
+</script>
+</body>
+</html>
