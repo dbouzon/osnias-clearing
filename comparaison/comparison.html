@@ -66,26 +66,6 @@
   </script>
   <script src="/assets/js/osnias-seo.js" defer></script>
   <script src="/assets/js/osnias-nav.js" defer></script>
-  <style>
-    .comp-table{width:100%;border-collapse:collapse;margin:1.5rem 0;background:var(--panel);border-radius:var(--radius);overflow:hidden}
-    .comp-table th,.comp-table td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--border);font-size:.84rem;vertical-align:top}
-    .comp-table th{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-    .comp-table th.col-osnias{color:var(--accent)}
-    .comp-table tr:last-child td,.comp-table tr:last-child th{border-bottom:none}
-    .comp-table td.col-osnias{color:#f5f7ff}
-    .comp-table td.col-other{color:var(--muted)}
-    .check{color:var(--ok);font-weight:700}
-    .neutral{color:var(--muted)}
-    .warn{color:var(--warning)}
-    .section-block{margin-bottom:3rem}
-    .note-box{border-left:3px solid var(--accent);padding:.85rem 1rem;background:var(--panel);border-radius:0 var(--radius) var(--radius) 0;font-size:.84rem;color:var(--muted);margin-top:1.5rem}
-    .note-box strong{color:#f5f7ff}
-    .dim-label{color:var(--accent);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.3rem}
-    @media(max-width:768px){
-      .comp-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
-      .comp-table th,.comp-table td{white-space:nowrap;min-width:140px}
-    }
-  </style>
 </head>
 <body>
 
@@ -110,7 +90,7 @@
 
 <main class="container">
 
-  <section class="section-block">
+  <section class="card" style="padding:0;border:none;background:none;margin-bottom:3rem">
     <div class="section-label">01 · Functional Design</div>
     <h2>What each system does</h2>
     <p class="section-intro">
@@ -120,12 +100,12 @@
       custody, operational and counterparty dependencies. Osnias separates these functions by design.
     </p>
 
-    <table class="comp-table">
+    <table class="spec-table">
       <thead>
         <tr>
-          <th style="width:30%">Dimension</th>
-          <th class="col-other" style="width:35%">Integrated Settlement Architecture</th>
-          <th class="col-osnias" style="width:35%">Osnias Clearing</th>
+          <th>Dimension</th>
+          <th class="col-other">Integrated Settlement Architecture</th>
+          <th class="col-osnias">Osnias Clearing</th>
         </tr>
       </thead>
       <tbody>
@@ -157,18 +137,18 @@
       </tbody>
     </table>
 
-    <div class="note-box">
+    <div class="notice">
       <strong>Scope of comparison:</strong> The comparison describes common characteristics of integrated on-chain settlement architectures.
       It does not purport to describe every settlement system, regulated FMI or institutional operating model.
     </div>
 
-    <div class="note-box">
+    <div class="notice">
       <strong>Functional boundary:</strong> Osnias calculates and records the net settlement position. It does not perform settlement.
       Settlement occurs between and/or within NNN nodes according to their own settlement infrastructure, contracts and applicable regulatory framework.
     </div>
   </section>
 
-  <section class="section-block">
+  <section class="card" style="padding:0;border:none;background:none;margin-bottom:3rem">
     <div class="section-label">02 · Asset Security</div>
     <h2>Who holds the assets and who can move them</h2>
     <p class="section-intro">
@@ -177,12 +157,12 @@
       with the operator of each node, not with the clearing infrastructure.
     </p>
 
-    <table class="comp-table">
+    <table class="spec-table">
       <thead>
         <tr>
-          <th style="width:30%">Dimension</th>
-          <th class="col-other" style="width:35%">Integrated Settlement Architecture</th>
-          <th class="col-osnias" style="width:35%">Osnias Clearing</th>
+          <th>Dimension</th>
+          <th class="col-other">Integrated Settlement Architecture</th>
+          <th class="col-osnias">Osnias Clearing</th>
         </tr>
       </thead>
       <tbody>
@@ -219,26 +199,26 @@
       </tbody>
     </table>
 
-    <div class="note-box">
+    <div class="notice">
       <strong>Architectural invariant:</strong> Osnias Clearing does not take custody of the settlement asset
       or collateral and does not execute either leg of settlement. Collateral remains subject to the
       node-specific escrow contract and the legal arrangements between the node and the participant.
     </div>
   </section>
 
-  <section class="section-block">
+  <section class="card" style="padding:0;border:none;background:none;margin-bottom:3rem">
     <div class="section-label">03 · Standards and Regulatory Architecture</div>
     <h2>Regulatory architecture and institutional requirements</h2>
     <p class="section-intro">
       Institutional deployment requires an architecture capable of operating within established regulatory, governance and risk-management frameworks. Osnias therefore separates clearing, settlement, custody and credit functions by design, while leaving regulated activities and participant onboarding within the perimeter of the relevant NNN node operator.
     </p>
 
-    <table class="comp-table">
+    <table class="spec-table">
       <thead>
         <tr>
-          <th style="width:30%">Standard / Norm</th>
-          <th class="col-other" style="width:35%">Integrated Settlement Architecture</th>
-          <th class="col-osnias" style="width:35%">Osnias Clearing</th>
+          <th>Standard / Norm</th>
+          <th class="col-other">Integrated Settlement Architecture</th>
+          <th class="col-osnias">Osnias Clearing</th>
         </tr>
       </thead>
       <tbody>
@@ -286,19 +266,19 @@
     </table>
   </section>
 
-  <section class="section-block">
+  <section class="card" style="padding:0;border:none;background:none;margin-bottom:3rem">
     <div class="section-label">04 · Institutional Compatibility</div>
     <h2>Integration with regulated financial infrastructure</h2>
     <p class="section-intro">
       Integration with regulated financial infrastructure requires more than API access. It requires an architecture that preserves the functional boundaries of clearing, settlement, custody and credit, allowing connected operators to retain their own legal, compliance and operational perimeter.
     </p>
 
-    <table class="comp-table">
+    <table class="spec-table">
       <thead>
         <tr>
-          <th style="width:30%">Dimension</th>
-          <th class="col-other" style="width:35%">Integrated Settlement Architecture</th>
-          <th class="col-osnias" style="width:35%">Osnias Clearing</th>
+          <th>Dimension</th>
+          <th class="col-other">Integrated Settlement Architecture</th>
+          <th class="col-osnias">Osnias Clearing</th>
         </tr>
       </thead>
       <tbody>
@@ -340,7 +320,7 @@
       </tbody>
     </table>
 
-    <div class="note-box">
+    <div class="notice">
       <strong>Regulatory note:</strong> This page describes the intended allocation of technical functions.
       It is not a legal opinion and does not determine the regulatory classification of Osnias Clearing,
       ORUSD, OEURO, an NNN node, an escrow arrangement or a connected settlement service.
@@ -348,7 +328,7 @@
     </div>
   </section>
 
-  <section class="section-block">
+  <section class="card" style="padding:0;border:none;background:none;margin-bottom:3rem">
     <div class="section-label">05 · References</div>
     <h2>Technical documentation</h2>
     <div class="resources">
