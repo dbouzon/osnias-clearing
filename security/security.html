@@ -4,14 +4,45 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Security & Dispute Management — Osnias Clearing</title>
-  <meta name="description" content="Security architecture of Osnias Clearing: restricted clearing tokens, temporal security, dispute escrow, controlled mint and burn, AI-assisted cyberattack containment, operational separation, pre-audit validation and external dispute resolution.">
+  <title>Security & Dispute Management — Temporal Clearing Security — Osnias Clearing</title>
+  <meta name="description" content="Osnias Clearing security architecture: temporal security layer, dispute escrow, restricted clearing tokens, EOA-only transfers, controlled mint and burn. The clearing cycle creates time for verification and anomaly containment before final settlement.">
+  <meta name="keywords" content="Osnias Clearing security, temporal security, clearing cycle, dispute escrow, blockchain security, non-custodial clearing, EOA-only, controlled mint burn, settlement finality, clearing dispute resolution, Sei Network security">
   <meta name="theme-color" content="#050814">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="author" content="Denis Bouzon">
 
+  <meta property="og:title" content="Security & Dispute Management — Osnias Clearing"/>
+  <meta property="og:description" content="Temporal security layer, dispute escrow and controlled clearing architecture. The clearing cycle creates time for verification before final settlement."/>
+  <meta property="og:url" content="https://www.osnias-clearing.com/security/security.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:site_name" content="Osnias Clearing"/>
+  <meta property="og:image" content="https://www.osnias-clearing.com/security/porte-container.jpg"/>
+  <meta property="og:image:alt" content="Osnias Clearing — Start on time, Thousands of orders, Arrive on time"/>
+
   <link rel="canonical" href="https://www.osnias-clearing.com/security/security.html">
   <link rel="stylesheet" href="/assets/css/osnias.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Security & Dispute Management — Osnias Clearing",
+    "description": "Temporal security layer, dispute escrow and controlled clearing architecture. The clearing cycle creates time for verification before final settlement.",
+    "author": {
+      "@type": "Person",
+      "name": "Denis Bouzon",
+      "sameAs": ["https://orcid.org/0009-0007-8894-8902"]
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Osnias Clearing",
+      "url": "https://www.osnias-clearing.com/"
+    },
+    "url": "https://www.osnias-clearing.com/security/security.html",
+    "dateModified": "2026-09-18",
+    "inLanguage": "en"
+  }
+  </script>
 
   <script src="/assets/js/osnias-seo.js" defer></script>
   <script src="/assets/js/osnias-nav.js" defer></script>
@@ -130,6 +161,21 @@
     <section id="temporal">
       <div class="section-label">02 · Temporal Security Layer</div>
       <h2>The clearing cycle creates a security window</h2>
+
+      <figure style="margin:1.5rem 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);">
+        <img
+          src="/security/porte-container.jpg"
+          alt="Osnias Clearing — Start on time, Thousands of orders, Arrive on time"
+          width="1024"
+          height="576"
+          loading="lazy"
+          decoding="async"
+          style="width:100%;height:auto;display:block;"
+        />
+        <figcaption style="padding:.75rem 1rem;color:var(--muted);font-size:.82rem;background:var(--panel);">
+          Clearing accumulates thousands of obligations over a defined cycle and delivers a single net position per NNN node — like a container ship loading cargo over time and delivering it all at once.
+        </figcaption>
+      </figure>
 
       <p class="section-intro">
         High-speed automated attacks benefit from immediate finality.
