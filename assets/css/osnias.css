@@ -5,7 +5,7 @@
 }
 
 /* Typography standard
-   All non-title text: .88rem (~14 px).
+   All non-title text: 14px minimum.
    Titles and major headings remain larger. */
 
 /* Utilities */
@@ -17,13 +17,15 @@
 html{scroll-behavior:smooth}
 body{
   min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  color:var(--text);font-size:.88rem;line-height:1.65;
+  color:var(--text);font-size:14px;line-height:1.65;
   background:
     radial-gradient(circle at 82% 0%,rgba(63,209,255,.10),transparent 29rem),
     radial-gradient(circle at 10% 5%,rgba(63,209,255,.05),transparent 23rem),
     var(--bg);
 }
 img{max-width:100%;height:auto}
+
+small{font-size:14px}
 a{color:var(--accent);text-decoration:none}
 a:hover,a:focus-visible{text-decoration:underline}
 .container{width:min(100% - 3rem,var(--max));margin-inline:auto}
@@ -38,12 +40,12 @@ a:hover,a:focus-visible{text-decoration:underline}
   display:flex;align-items:center;gap:1rem;flex-wrap:wrap
 }
 .site-nav-brand{
-  color:#fff;font-size:.88rem;font-weight:800;letter-spacing:.09em;
+  color:#fff;font-size:14px;font-weight:800;letter-spacing:.09em;
   text-transform:uppercase;white-space:nowrap
 }
 .site-nav-brand span{color:var(--accent)}
 .site-nav-notice{
-  color:var(--warning);font-size:.88rem;font-weight:700;letter-spacing:.07em;
+  color:var(--warning);font-size:14px;font-weight:700;letter-spacing:.07em;
   text-transform:uppercase;white-space:nowrap;margin-right:auto
 }
 .site-nav-buttons{
@@ -56,7 +58,7 @@ a:hover,a:focus-visible{text-decoration:underline}
 .site-nav-buttons a{
   display:inline-flex;align-items:center;justify-content:center;min-height:34px;
   padding:.48rem .74rem;border:1px solid rgba(255,255,255,.38);border-radius:999px;
-  background:rgba(255,255,255,.06);color:#fff;font-size:.88rem;font-weight:700;
+  background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:700;
   letter-spacing:.03em;text-decoration:none;white-space:nowrap;transition:.18s ease
 }
 .site-nav-buttons a:hover,
@@ -73,7 +75,7 @@ a:hover,a:focus-visible{text-decoration:underline}
 .menu-toggle{
   display:none;border:1px solid rgba(255,255,255,.38);border-radius:999px;
   background:rgba(255,255,255,.06);color:#fff;min-height:34px;padding:.45rem .8rem;
-  font-size:.88rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer
+  font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer
 }
 
 /* Header / hero */
@@ -97,7 +99,7 @@ header{
 .eyebrow,
 .section-label{
   color:var(--accent);
-  font-size:.88rem;
+  font-size:14px;
   font-weight:700;
   text-transform:uppercase;
   letter-spacing:.14em
@@ -136,11 +138,11 @@ h2{
   max-width:55rem
 }
 .hero-lead{
-  font-size:.88rem;
+  font-size:14px;
   margin-bottom:1.5rem
 }
 .section-intro{
-  font-size:.88rem;
+  font-size:14px;
   margin-bottom:1.5rem
 }
 
@@ -166,7 +168,7 @@ h2{
   border-radius:999px;
   background:rgba(5,8,20,.72);
   color:var(--text);
-  font-size:.88rem;
+  font-size:14px;
   font-weight:700;
   text-transform:uppercase;
   letter-spacing:.065em
@@ -191,13 +193,13 @@ h2{
 }
 .tag{
   padding:.3rem .72rem;
-  font-size:.88rem;
+  font-size:14px;
   text-transform:uppercase;
   letter-spacing:.075em
 }
 .badge{
   padding:.15rem .58rem;
-  font-size:.88rem
+  font-size:14px
 }
 .tag-accent,
 .badge-ok{
@@ -249,7 +251,7 @@ main>section,
 }
 .card-kicker{
   color:var(--muted);
-  font-size:.88rem;
+  font-size:14px;
   text-transform:uppercase;
   letter-spacing:.09em;
   margin-bottom:.28rem
@@ -260,7 +262,7 @@ main>section,
 }
 .card p{
   color:var(--muted);
-  font-size:.88rem
+  font-size:14px
 }
 .panel{
   padding:1.4rem
@@ -269,7 +271,7 @@ main>section,
   color:var(--muted);
   text-transform:uppercase;
   letter-spacing:.1em;
-  font-size:.88rem;
+  font-size:14px;
   margin-bottom:1rem
 }
 .notice{
@@ -277,7 +279,7 @@ main>section,
   padding:1rem 1.1rem;
   border-left:3px solid var(--accent-soft);
   color:var(--muted);
-  font-size:.88rem
+  font-size:14px
 }
 .notice strong{
   color:var(--text)
@@ -307,7 +309,7 @@ main>section,
   color:var(--muted);
   text-transform:uppercase;
   letter-spacing:.075em;
-  font-size:.88rem;
+  font-size:14px;
   margin-bottom:.22rem
 }
 .stat strong{
@@ -316,7 +318,7 @@ main>section,
 }
 .stat span{
   color:var(--muted);
-  font-size:.88rem
+  font-size:14px
 }
 
 /* Lists */
@@ -324,7 +326,7 @@ main>section,
 .card-list{
   list-style:none;
   color:var(--muted);
-  font-size:.88rem;
+  font-size:14px;
   margin-top:.75rem
 }
 .list li,
@@ -354,7 +356,7 @@ main>section,
 }
 .flow-box p{
   color:var(--muted);
-  font-size:.88rem
+  font-size:14px
 }
 .flow-bottom{
   display:grid;
@@ -364,7 +366,7 @@ main>section,
 .flow-separator{
   text-align:center;
   color:var(--accent);
-  font-size:.88rem;
+  font-size:14px;
   text-transform:uppercase;
   letter-spacing:.14em;
   font-weight:600
@@ -385,7 +387,7 @@ main>section,
   text-align:left;
   border-bottom:1px solid var(--border);
   vertical-align:top;
-  font-size:.88rem
+  font-size:14px
 }
 .spec-table th{
   color:var(--text);
@@ -422,17 +424,17 @@ main>section,
 .resource strong{
   display:block;
   color:var(--text);
-  font-size:.88rem;
+  font-size:14px;
   margin-bottom:.12rem
 }
 .resource span{
   color:var(--muted);
-  font-size:.88rem
+  font-size:14px
 }
 .resource-type{
   color:var(--accent);
   white-space:nowrap;
-  font-size:.88rem
+  font-size:14px
 }
 .mono{
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -464,7 +466,7 @@ main>section,
   padding:.7rem;
   text-transform:uppercase;
   letter-spacing:.09em;
-  font-size:.88rem
+  font-size:14px
 }
 
 /* History */
@@ -481,14 +483,14 @@ main>section,
 }
 .timeline-date{
   color:var(--accent);
-  font-size:.88rem;
+  font-size:14px;
   font-weight:750;
   text-transform:uppercase;
   letter-spacing:.08em
 }
 .timeline-item p{
   color:var(--muted);
-  font-size:.88rem
+  font-size:14px
 }
 .hero-illustration{
   margin:1.4rem 0 1.8rem;
@@ -505,7 +507,7 @@ main>section,
 .hero-illustration figcaption{
   padding:.75rem 1rem;
   color:var(--text);
-  font-size:.88rem;
+  font-size:14px;
   text-align:center;
   border-top:1px solid var(--border)
 }
@@ -537,7 +539,7 @@ main>section,
 }
 .cycle-figure span{
   color:var(--muted);
-  font-size:.88rem
+  font-size:14px
 }
 
 /* Footer */
@@ -545,7 +547,7 @@ footer{
   border-top:1px solid var(--border);
   padding:1.8rem 0 2.2rem;
   color:var(--muted);
-  font-size:.88rem
+  font-size:14px
 }
 .footer-grid{
   display:flex;
@@ -557,7 +559,7 @@ footer{
   border-top:1px solid var(--border);
   padding-top:1.2rem;
   margin-top:1.2rem;
-  font-size:.88rem;
+  font-size:14px;
   line-height:1.6;
   color:#7f8bad
 }
@@ -663,11 +665,11 @@ footer{
     }
     .arch-card p{
       color:var(--muted);
-      font-size:.88rem;
+      font-size:14px;
     }
     .arch-kicker{
       color:var(--accent);
-      font-size:.88rem;
+      font-size:14px;
       text-transform:uppercase;
       letter-spacing:.12em;
       font-weight:700;
@@ -696,7 +698,7 @@ footer{
     }
     .arch-link span{
       color:var(--muted);
-      font-size:.88rem;
+      font-size:14px;
     }
     .arch-flow{
       display:grid;
@@ -718,7 +720,7 @@ footer{
     }
     .arch-step span{
       color:var(--muted);
-      font-size:.88rem;
+      font-size:14px;
     }
     .arch-diagram{
       margin:1.25rem 0 0;
@@ -746,7 +748,7 @@ footer{
       max-width:1200px;
       margin:.8rem auto 0;
       color:#374151;
-      font-size:.88rem;
+      font-size:14px;
       line-height:1.55;
     }
     .arch-note{
@@ -755,7 +757,7 @@ footer{
       padding:.75rem 1rem;
       background:var(--panel);
       color:var(--muted);
-      font-size:.88rem;
+      font-size:14px;
     }
     @media(max-width:900px){
       .arch-grid,.arch-flow{grid-template-columns:1fr 1fr}
@@ -779,29 +781,29 @@ main.container{
    ========================================================= */
 .pitch-hero{padding:2.4rem 0 3rem}
     .pitch-hero h1{font-size:clamp(2.5rem,7vw,4.8rem);line-height:.98;margin:.35rem 0 1rem}
-    .pitch-lead{max-width:60rem;color:var(--muted);font-size:.88rem}
+    .pitch-lead{max-width:60rem;color:var(--muted);font-size:14px}
     .pitch-actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.5rem}
     .pitch-grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
     .pitch-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
     .pitch-card,.pitch-resource,.pitch-notice{border:1px solid var(--border);background:var(--panel);border-radius:1rem}
     .pitch-card{padding:1.15rem}
     .pitch-card h3{font-size:1rem;margin-bottom:.45rem}
-    .pitch-card p{color:var(--muted);font-size:.88rem}
+    .pitch-card p{color:var(--muted);font-size:14px}
     .pitch-metric{font-size:1.35rem;font-weight:800;color:var(--accent);margin-bottom:.25rem}
     .pitch-notice{padding:1rem 1.1rem;border-left:3px solid var(--accent-soft);color:var(--muted)}
     .pitch-notice strong{color:var(--text)}
     .pitch-resources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem;margin-top:1.2rem}
     .pitch-resource{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem;text-decoration:none!important}
     .pitch-resource:hover{border-color:var(--accent-soft)}
-    .pitch-resource strong{display:block;color:var(--text);font-size:.88rem;margin-bottom:.12rem}
-    .pitch-resource span{display:block;color:var(--muted);font-size:.88rem}
-    .pitch-resource-type{color:var(--accent);font-size:.88rem;white-space:nowrap}
-    .pitch-subtitle{color:var(--accent);text-transform:uppercase;letter-spacing:.14em;font-size:.88rem;font-weight:700;margin-bottom:.45rem}
+    .pitch-resource strong{display:block;color:var(--text);font-size:14px;margin-bottom:.12rem}
+    .pitch-resource span{display:block;color:var(--muted);font-size:14px}
+    .pitch-resource-type{color:var(--accent);font-size:14px;white-space:nowrap}
+    .pitch-subtitle{color:var(--accent);text-transform:uppercase;letter-spacing:.14em;font-size:14px;font-weight:700;margin-bottom:.45rem}
     .pitch-intro{color:var(--muted);max-width:60rem;margin-bottom:1.3rem}
     .pitch-section{margin-bottom:3.7rem}
-    .pitch-list{list-style:none;color:var(--muted);font-size:.88rem}
+    .pitch-list{list-style:none;color:var(--muted);font-size:14px}
     .pitch-list li{margin:.38rem 0}
     .pitch-list li::before{content:"•";color:var(--accent);margin-right:.45rem}
-    .pitch-status{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:.28rem .7rem;color:var(--muted);font-size:.88rem;margin-top:.9rem}
+    .pitch-status{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:.28rem .7rem;color:var(--muted);font-size:14px;margin-top:.9rem}
     @media(max-width:900px){.pitch-grid-3,.pitch-grid-2,.pitch-resources{grid-template-columns:1fr}}
     @media(max-width:560px){.pitch-actions{flex-direction:column}.pitch-actions .btn{width:100%}.pitch-resource{align-items:flex-start;flex-direction:column}}
