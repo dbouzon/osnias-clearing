@@ -47,6 +47,10 @@
       {
         label: "Documentation",
         href: prefix + "/documentation/documentation.html"
+      },
+      {
+        label: "Partnership",
+        href: prefix + "/partnership/partnership.html"
       }
     ];
 
