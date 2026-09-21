@@ -34,7 +34,7 @@
       },
       {
         label: "Security",
-        href: prefix + "/security/security.html"
+        href: prefix + "/security/"
       },
       {
         label: "Regulation",
