@@ -169,12 +169,13 @@
       display:grid;
       grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);
       gap:2.4rem;
-      align-items:center;
+      align-items:start;
     }
     .security-v4 .security-hero-visual{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:center;
+      padding-top:0;
     }
     .security-v4 .security-hero-visual img{
       display:block;
@@ -198,6 +199,51 @@
         max-width:680px;
       }
     }
+
+
+    /* Security hero layout refinement */
+    .security-v4 .security-hero-grid{
+      display:block;
+    }
+    .security-v4 .security-hero-top{
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr);
+      gap:2.6rem;
+      align-items:start;
+    }
+    .security-v4 .security-hero-visual{
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-end;
+      padding-top:0;
+      align-self:start;
+    }
+    .security-v4 .security-hero-visual img{
+      width:100%;
+      max-width:560px;
+      height:auto;
+      margin-top:0;
+    }
+    .security-v4 .security-hero-grid > .architecture-strip{
+      width:100%;
+      margin-top:1.6rem;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+    @media(max-width:980px){
+      .security-v4 .security-hero-top{
+        grid-template-columns:1fr;
+        gap:1.4rem;
+      }
+      .security-v4 .security-hero-visual{
+        justify-content:flex-start;
+      }
+      .security-v4 .security-hero-visual img{
+        max-width:680px;
+      }
+      .security-v4 .security-hero-grid > .architecture-strip{
+        grid-template-columns:1fr;
+      }
+    }
 </style>
 </head>
 <body class="security-v4">
@@ -216,18 +262,14 @@
 <header>
 <div class="container">
 <section class="hero">
-<div class="hero-grid security-hero-grid"><div>
+<div class="hero-grid security-hero-grid"><div class="security-hero-top"><div>
 <div class="eyebrow"><span class="i18n-text" data-en="Internal Security Assessment · Audit Readiness · Release 1.0" data-fr="Évaluation interne de sécurité · Préparation à l’audit · Release 1.0">Internal Security Assessment · Audit Readiness · Release 1.0</span></div>
 <h1><span class="i18n-text" data-en="Security Audit Readiness &amp; Internal Technical Assessment" data-fr="Préparation à l’audit de sécurité &amp; Évaluation technique interne">Security Audit Readiness &amp; Internal Technical Assessment</span></h1>
 <div class="hero-role"><span class="i18n-text" data-en="Design assessed. Implementation evidence, adversarial testing and independent review pending." data-fr="Conception évaluée. Preuves d’implémentation, tests adversariaux et revue indépendante en attente.">Design assessed. Implementation evidence, adversarial testing and independent review pending.</span></div>
 <p class="hero-lead"><span class="i18n-text" data-en="This page documents the current security-design assessment of Osnias Clearing: its trust boundaries, target invariants, open risks, required evidence and planned validation steps. It does not represent an independent third-party audit, certification, formal verification or production-security approval." data-fr="Cette page documente l’évaluation actuelle de la conception de sécurité d’Osnias Clearing : frontières de confiance, invariants cibles, risques ouverts, preuves requises et étapes de validation prévues. Elle ne constitue ni un audit indépendant par un tiers, ni une certification, ni une vérification formelle, ni une approbation de sécurité en production.">This page documents the current security-design assessment of Osnias Clearing: its trust boundaries, target invariants, open risks, required evidence and planned validation steps. It does not represent an independent third-party audit, certification, formal verification or production-security approval.</span></p>
-<div class="audit-banner"><strong><span class="i18n-text" data-en="Document level · Internal Security Audit Readiness &amp; Technical Assessment" data-fr="Niveau documentaire · Préparation interne à l’audit de sécurité &amp; Évaluation technique">Document level · Internal Security Audit Readiness &amp; Technical Assessment</span></strong><span class="i18n-text" data-en="Current evidence level: design reviewed and controls specified where stated. Contract-level enforcement, cross-chain verifier evidence, adversarial testnet results and independent third-party review remain pending unless explicitly marked otherwise." data-fr="Niveau de preuve actuel : conception revue et contrôles spécifiés lorsqu’indiqué. L’application au niveau des contrats, les preuves du vérificateur cross-chain, les résultats adversariaux sur testnet et la revue indépendante par un tiers restent en attente sauf mention explicite contraire.">Current evidence level: design reviewed and controls specified where stated. Contract-level enforcement, cross-chain verifier evidence, adversarial testnet results and independent third-party review remain pending unless explicitly marked otherwise.</span></div>
-<div class="security-thesis"><span class="i18n-text" data-en="Operational signer ≠ independent authorization ≠ fund destination" data-fr="Signataire opérationnel ≠ autorisation indépendante ≠ destination des fonds">Operational signer ≠ independent authorization ≠ fund destination</span></div>
-<div aria-label="Three security roles" class="architecture-strip">
-<article><small>Domain A</small><strong><span class="i18n-text" data-en="EVM operational signer" data-fr="Signataire opérationnel EVM">EVM operational signer</span></strong><span><span class="i18n-text" data-en="Routine signing domain. Exposed by normal transaction activity and treated as an operational key." data-fr="Domaine de signature courante. Exposé par l’activité transactionnelle normale et traité comme une clé opérationnelle.">Routine signing domain. Exposed by normal transaction activity and treated as an operational key.</span></span></article>
-<article><small>Domain B</small><strong><span class="i18n-text" data-en="Independent Sei authorization" data-fr="Autorisation Sei indépendante">Independent Sei authorization</span></strong><span><span class="i18n-text" data-en="Separately generated authorization domain linked through Osnias-ID and canonical state." data-fr="Domaine d’autorisation généré séparément, lié via Osnias-ID et l’état canonique.">Separately generated authorization domain linked through Osnias-ID and canonical state.</span></span></article>
-<article><small><span class="i18n-text" data-en="Release domain" data-fr="Domaine de release">Release domain</span></small><strong><span class="i18n-text" data-en="Cold EVM destination" data-fr="Destination EVM froide">Cold EVM destination</span></strong><span><span class="i18n-text" data-en="Third independent seed. Pre-committed, receive-only while active as the designated release beneficiary." data-fr="Troisième seed indépendante. Pré-engagée et non-signante pendant sa phase de réception comme bénéficiaire de release désigné.">Third independent seed. Pre-committed, receive-only while active as the designated release beneficiary.</span></span></article>
-</div>
+
+
+
 <div class="tags">
 <span class="tag tag-accent"><span class="i18n-text" data-en="Single-key insufficiency" data-fr="Insuffisance d’une clé unique">Single-key insufficiency</span></span>
 <span class="tag"><span class="i18n-text" data-en="Independent cold release" data-fr="Release froide indépendante">Independent cold release</span></span>
@@ -242,7 +284,11 @@
 <a class="btn" href="#publication"><span class="i18n-text" data-en="Publication" data-fr="Publication">Publication</span></a>
 <a class="btn" href="#validation"><span class="i18n-text" data-en="Validation roadmap" data-fr="Feuille de validation">Validation roadmap</span></a>
 </div>
-</div><div class="security-hero-visual"><img alt="Coffre-fort protégé par trois cadenas représentant les trois domaines de sécurité indépendants A, B et C" decoding="async" height="465" loading="eager" src="./coffre-fort.jpg" width="620"/></div></div>
+</div><div class="security-hero-visual"><img alt="Coffre-fort protégé par trois cadenas représentant les trois domaines de sécurité indépendants A, B et C" decoding="async" height="465" loading="eager" src="./coffre-fort.jpg" width="620"/></div></div><div aria-label="Three security roles" class="architecture-strip">
+<article><small>Domain A</small><strong><span class="i18n-text" data-en="EVM operational signer" data-fr="Signataire opérationnel EVM">EVM operational signer</span></strong><span><span class="i18n-text" data-en="Routine signing domain. Exposed by normal transaction activity and treated as an operational key." data-fr="Domaine de signature courante. Exposé par l’activité transactionnelle normale et traité comme une clé opérationnelle.">Routine signing domain. Exposed by normal transaction activity and treated as an operational key.</span></span></article>
+<article><small>Domain B</small><strong><span class="i18n-text" data-en="Independent Sei authorization" data-fr="Autorisation Sei indépendante">Independent Sei authorization</span></strong><span><span class="i18n-text" data-en="Separately generated authorization domain linked through Osnias-ID and canonical state." data-fr="Domaine d’autorisation généré séparément, lié via Osnias-ID et l’état canonique.">Separately generated authorization domain linked through Osnias-ID and canonical state.</span></span></article>
+<article><small><span class="i18n-text" data-en="Release domain" data-fr="Domaine de release">Release domain</span></small><strong><span class="i18n-text" data-en="Cold EVM destination" data-fr="Destination EVM froide">Cold EVM destination</span></strong><span><span class="i18n-text" data-en="Third independent seed. Pre-committed, receive-only while active as the designated release beneficiary." data-fr="Troisième seed indépendante. Pré-engagée et non-signante pendant sa phase de réception comme bénéficiaire de release désigné.">Third independent seed. Pre-committed, receive-only while active as the designated release beneficiary.</span></span></article>
+</div></div>
 </section>
 </div>
 </header>
