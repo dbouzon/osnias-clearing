@@ -244,6 +244,23 @@
         grid-template-columns:1fr;
       }
     }
+
+
+    /* Full-width introductory block below title + hero image */
+    .security-v4 .security-hero-below{
+      width:100%;
+      margin-top:1.35rem;
+      max-width:none;
+    }
+    .security-v4 .security-hero-below .hero-lead{
+      max-width:none;
+      width:100%;
+      margin:0 0 1rem;
+    }
+    .security-v4 .security-hero-below .tags{
+      width:100%;
+      margin-top:.8rem;
+    }
 </style>
 </head>
 <body class="security-v4">
@@ -266,25 +283,14 @@
 <div class="eyebrow"><span class="i18n-text" data-en="Internal Security Assessment · Audit Readiness · Release 1.0" data-fr="Évaluation interne de sécurité · Préparation à l’audit · Release 1.0">Internal Security Assessment · Audit Readiness · Release 1.0</span></div>
 <h1><span class="i18n-text" data-en="Security Audit Readiness &amp; Internal Technical Assessment" data-fr="Préparation à l’audit de sécurité &amp; Évaluation technique interne">Security Audit Readiness &amp; Internal Technical Assessment</span></h1>
 <div class="hero-role"><span class="i18n-text" data-en="Design assessed. Implementation evidence, adversarial testing and independent review pending." data-fr="Conception évaluée. Preuves d’implémentation, tests adversariaux et revue indépendante en attente.">Design assessed. Implementation evidence, adversarial testing and independent review pending.</span></div>
-<p class="hero-lead"><span class="i18n-text" data-en="This page documents the current security-design assessment of Osnias Clearing: its trust boundaries, target invariants, open risks, required evidence and planned validation steps. It does not represent an independent third-party audit, certification, formal verification or production-security approval." data-fr="Cette page documente l’évaluation actuelle de la conception de sécurité d’Osnias Clearing : frontières de confiance, invariants cibles, risques ouverts, preuves requises et étapes de validation prévues. Elle ne constitue ni un audit indépendant par un tiers, ni une certification, ni une vérification formelle, ni une approbation de sécurité en production.">This page documents the current security-design assessment of Osnias Clearing: its trust boundaries, target invariants, open risks, required evidence and planned validation steps. It does not represent an independent third-party audit, certification, formal verification or production-security approval.</span></p>
-
-
-
-<div class="tags">
+</div><div class="security-hero-visual"><img alt="Coffre-fort protégé par trois cadenas représentant les trois domaines de sécurité indépendants A, B et C" decoding="async" height="465" loading="eager" src="./coffre-fort.jpg" width="620"/></div></div><div class="security-hero-below"><p class="hero-lead"><span class="i18n-text" data-en="This page documents the current security-design assessment of Osnias Clearing: its trust boundaries, target invariants, open risks, required evidence and planned validation steps. It does not represent an independent third-party audit, certification, formal verification or production-security approval." data-fr="Cette page documente l’évaluation actuelle de la conception de sécurité d’Osnias Clearing : frontières de confiance, invariants cibles, risques ouverts, preuves requises et étapes de validation prévues. Elle ne constitue ni un audit indépendant par un tiers, ni une certification, ni une vérification formelle, ni une approbation de sécurité en production.">This page documents the current security-design assessment of Osnias Clearing: its trust boundaries, target invariants, open risks, required evidence and planned validation steps. It does not represent an independent third-party audit, certification, formal verification or production-security approval.</span></p><div class="tags">
 <span class="tag tag-accent"><span class="i18n-text" data-en="Single-key insufficiency" data-fr="Insuffisance d’une clé unique">Single-key insufficiency</span></span>
 <span class="tag"><span class="i18n-text" data-en="Independent cold release" data-fr="Release froide indépendante">Independent cold release</span></span>
 <span class="tag"><span class="i18n-text" data-en="Osnias-ID binding" data-fr="Liaison Osnias-ID">Osnias-ID binding</span></span>
 <span class="tag"><span class="i18n-text" data-en="Fail closed" data-fr="Échec fermé">Fail closed</span></span>
 <span class="tag"><span class="i18n-text" data-en="Cryptographic hygiene" data-fr="Hygiène cryptographique">Cryptographic hygiene</span></span>
 <span class="tag"><span class="i18n-text" data-en="Testnet adversarial validation" data-fr="Validation adversariale testnet">Testnet adversarial validation</span></span>
-</div>
-<div class="actions">
-<a class="btn btn-primary" href="#audit-summary"><span class="i18n-text" data-en="Audit summary →" data-fr="Synthèse d’audit →">Audit summary →</span></a>
-<a class="btn" href="#findings"><span class="i18n-text" data-en="Control findings" data-fr="Constats de contrôle">Control findings</span></a>
-<a class="btn" href="#publication"><span class="i18n-text" data-en="Publication" data-fr="Publication">Publication</span></a>
-<a class="btn" href="#validation"><span class="i18n-text" data-en="Validation roadmap" data-fr="Feuille de validation">Validation roadmap</span></a>
-</div>
-</div><div class="security-hero-visual"><img alt="Coffre-fort protégé par trois cadenas représentant les trois domaines de sécurité indépendants A, B et C" decoding="async" height="465" loading="eager" src="./coffre-fort.jpg" width="620"/></div></div><div aria-label="Three security roles" class="architecture-strip">
+</div></div><div aria-label="Three security roles" class="architecture-strip">
 <article><small>Domain A</small><strong><span class="i18n-text" data-en="EVM operational signer" data-fr="Signataire opérationnel EVM">EVM operational signer</span></strong><span><span class="i18n-text" data-en="Routine signing domain. Exposed by normal transaction activity and treated as an operational key." data-fr="Domaine de signature courante. Exposé par l’activité transactionnelle normale et traité comme une clé opérationnelle.">Routine signing domain. Exposed by normal transaction activity and treated as an operational key.</span></span></article>
 <article><small>Domain B</small><strong><span class="i18n-text" data-en="Independent Sei authorization" data-fr="Autorisation Sei indépendante">Independent Sei authorization</span></strong><span><span class="i18n-text" data-en="Separately generated authorization domain linked through Osnias-ID and canonical state." data-fr="Domaine d’autorisation généré séparément, lié via Osnias-ID et l’état canonique.">Separately generated authorization domain linked through Osnias-ID and canonical state.</span></span></article>
 <article><small><span class="i18n-text" data-en="Release domain" data-fr="Domaine de release">Release domain</span></small><strong><span class="i18n-text" data-en="Cold EVM destination" data-fr="Destination EVM froide">Cold EVM destination</span></strong><span><span class="i18n-text" data-en="Third independent seed. Pre-committed, receive-only while active as the designated release beneficiary." data-fr="Troisième seed indépendante. Pré-engagée et non-signante pendant sa phase de réception comme bénéficiaire de release désigné.">Third independent seed. Pre-committed, receive-only while active as the designated release beneficiary.</span></span></article>
@@ -324,7 +330,7 @@
 <a class="btn btn-primary" download="" href="./Osnias_End_User_Security_Audit_Readiness.pdf"><span class="i18n-text" data-en="Download PDF" data-fr="Télécharger le PDF">Download PDF</span></a>
 <a class="btn" href="https://zenodo.org/records/22870678" rel="noopener noreferrer" target="_blank">Zenodo — DOI 10.5281/zenodo.22870678</a>
 <a class="btn" href="https://hal.science/hal-05756811" rel="noopener noreferrer" target="_blank">HAL — hal-05756811</a>
-<a class="btn" href="https://orcid.org/0009-0007-8894-8902" rel="noopener noreferrer">ORCID — Denis Bouzon</a>
+
 </div>
 </div>
 </section><section id="audit-summary">
