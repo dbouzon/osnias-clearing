@@ -39,13 +39,18 @@
 </head>
 <body>
 <div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a><nav aria-label="Main site navigation" class="site-nav-buttons" id="mainNav"></nav></div></div>
-
+<div class="container">
+<div aria-label="Language selector" class="actions">
+<a aria-pressed="true" class="btn btn-primary" data-set-lang="en" href="#" role="button">🇬🇧 EN</a>
+<a aria-pressed="false" class="btn" data-set-lang="fr" href="#" role="button">🇫🇷 FR</a>
+</div>
+</div>
 <div data-lang-panel="en">
 <header class="hero">
 <div class="container">
 <div class="hero-grid"><div>
 <p class="eyebrow">Infrastructure Partnership</p>
-<h1>Clearing for People.</h1><div aria-label="Language selector" class="actions"><a aria-pressed="true" class="btn btn-primary" data-set-lang="en" href="#" role="button">🇬🇧 EN</a><a aria-pressed="false" class="btn" data-set-lang="fr" href="#" role="button">🇫🇷 FR</a></div>
+<h1>Clearing for People.</h1>
 <p class="hero-role">Institutional clearing principles, extended to the real economy.</p>
 <p class="hero-lead">
         Osnias Clearing is designed to make multilateral clearing accessible to small-cap companies,
@@ -164,19 +169,7 @@
 <div class="stat"><span class="big">≈ 96%</span><strong>CLS multilateral netting</strong><br/>Approximate reduction in gross payment funding requirements reported by CLS.<br/><small>CLS benchmark, not an Osnias performance forecast.</small></div>
 </div>
 </section>
-<section class="card">
-<h2>Five-Year Strategic Objective</h2>
-<p>Osnias intends to build a distributed clearing network for small-cap, mid-market and international businesses across multiple jurisdictions.</p>
-<p>The five-year strategic objective is to build adoption progressively and, as a reference scale, to aim for gross annual clearing activity equivalent to approximately <strong>0.1% of a major institutional clearing benchmark</strong>. This is a scale objective, not a guaranteed market share.</p>
-<div class="panel">
-<h3>Illustrative Five-Year Scale</h3>
-<p>Using a reference annual clearing volume of approximately <strong>USD 1.941 quadrillion</strong>:</p>
-<div class="hero-role">0.1% = approximately USD 1.941 trillion of annual gross clearing volume</div>
-<p>At the reference clearing fee of <strong>0.15%</strong>, this level of activity would correspond to approximately <strong>USD 2.91 billion in gross annual network clearing fees</strong>, before allocation between participating nodes, infrastructure partners and operating entities, and before operating costs.</p>
-<p>This is a strategic scale objective. It is not a forecast or commitment of adoption, revenue or profitability.</p>
-</div>
-<div class="notice"><strong>The objective is not to reproduce the scale or operating perimeter of the largest market infrastructures.</strong> It is to make clearing accessible to a much broader population of businesses and to build meaningful scale within that new segment.</div>
-</section>
+<section class="card"><h2>Working-Capital Efficiency for Participating Companies</h2><p>For a participating company, the immediate economic purpose of clearing is to reduce the amount of cash that must be mobilised to settle gross bilateral obligations. Receivables and payables are reconciled and netted before settlement, so only the residual position must ultimately be funded.</p><div class="notice"><strong>External benchmark:</strong> CLS reports that multilateral netting can reduce gross payment funding requirements by approximately 96%. This is a reference benchmark from the FX settlement environment, not a forecast of Osnias performance.</div><p>For Osnias, a more conservative <strong>illustrative four-week scenario</strong> is to assume that 70% of eligible gross obligations are offset through multilateral netting. Under that assumption, approximately 30% remains as a residual amount to be settled.</p><div class="grid-3"><div class="card"><strong>Illustrative gross activity</strong><p><strong>EUR 200,000</strong> of eligible obligations processed during a four-week cycle.</p></div><div class="card"><strong>Illustrative netting at 70%</strong><p>Approximately <strong>EUR 140,000</strong> offset through clearing, leaving about <strong>EUR 60,000</strong> to be settled.</p></div><div class="card"><strong>Liquidity effect</strong><p>The company funds the <strong>residual position</strong> rather than every gross bilateral payment individually.</p></div></div><p>A second source of efficiency is the <strong>sequential reuse of fully collateralised capacity</strong>. If EUR 50,000 of collateral supports four successive EUR 50,000 exposures during a cycle, the same collateral capacity can support up to EUR 200,000 of cumulative gross activity over time, while remaining 1:1 collateralised at each point in time. This is a temporal reuse effect, not balance-sheet leverage.</p><div class="notice"><strong>High-netting example:</strong> if EUR 200,000 of gross eligible obligations ultimately produce a residual position of only EUR 15,000, the implied netting rate is 92.5%, and the gross-flow-to-final-payment ratio is approximately 13.3×. This should be treated as an illustrative high-netting case, not as the 70% base assumption.</div><p><strong>This combination of multilateral netting and sequential reuse of fully collateralised capacity is the economic engine targeted by Osnias Clearing:</strong> reducing working-capital pressure while preserving 1:1 security of outstanding commitments.</p></section>
 <section class="card">
 <h2>Illustrative Adoption Scenarios</h2>
 <p>Osnias does not assume or guarantee any future market share. Adoption will depend on the usefulness of the infrastructure, the participation of businesses, the quality of the node network and the operating frameworks established in each jurisdiction.</p>
@@ -191,17 +184,8 @@
 <section class="card">
 <h2>Node Expansion Strategy</h2>
 <p>The first production node is intended to establish the reference operating model. Once validated, the objective is to progressively deploy at least one clearing node in each priority jurisdiction.</p>
-<div class="grid-4">
-<div class="card"><strong>London</strong><p>Access point for UK and international middle-market business flows.</p></div>
-<div class="card"><strong>Switzerland</strong><p>Institutional infrastructure and cross-border financial connectivity.</p></div>
-<div class="card"><strong>Frankfurt</strong><p>Euro-area industrial and commercial clearing environment.</p></div>
-<div class="card"><strong>Doha</strong><p>Regional node for Gulf and international trade flows.</p></div>
-<div class="card"><strong>Mumbai</strong><p>Access point for Indian mid-market and international business flows.</p></div>
-<div class="card"><strong>Singapore</strong><p>Regional hub for Asian and cross-border commercial activity.</p></div>
-<div class="card"><strong>Hong Kong</strong><p>Gateway for international and Asian business clearing activity.</p></div>
-<div class="card"><strong>Additional jurisdictions</strong><p>Deployment according to partner capability, business demand and local operating conditions.</p></div>
-</div>
-<div class="notice"><strong>Distributed jurisdictional model:</strong> each node is intended to operate within its local legal, regulatory and operational framework while remaining connected to the common Osnias Clearing architecture.</div>
+<div class="grid-4"><div class="card"><strong>Node 1 · Bordeaux</strong><p>French reference node for South-West Europe, combining certified data-center infrastructure, regional banking connectivity and access to mid-market companies.</p></div><div class="card"><strong>Node 2 · Zug</strong><p>Swiss node positioned within a mature financial, institutional and digital-asset infrastructure environment.</p></div><div class="card"><strong>Node 3 · Frankfurt</strong><p>Euro-area node for industrial, commercial and institutional clearing activity.</p></div><div class="card"><strong>Node 4 · London</strong><p>UK and international node for cross-border middle-market and institutional business flows.</p></div><div class="card"><strong>Node 5 · Doha</strong><p>Gulf-region node for international trade, infrastructure and cross-border commercial flows.</p></div><div class="card"><strong>Node 6 · Mumbai</strong><p>Indian node for mid-market, industrial and international business activity.</p></div><div class="card"><strong>Node 7 · Singapore</strong><p>Asian regional hub for cross-border commercial activity and international clearing participation.</p></div></div>
+<div class="notice"><strong>Indicative deployment sequence:</strong> Bordeaux → Zug → Frankfurt → London → Doha → Mumbai → Singapore. Each node remains subject to partner capability, legal and regulatory assessment, infrastructure readiness and local operating conditions.</div>
 </section>
 <section class="card">
 <h2>Jurisdictional Accountability</h2>
@@ -284,7 +268,7 @@
 <div class="container">
 <div class="hero-grid"><div>
 <p class="eyebrow">Partenariat d’infrastructure</p>
-<h1>Clearing for People.</h1><div aria-label="Language selector" class="actions"><a aria-pressed="true" class="btn btn-primary" data-set-lang="en" href="#" role="button">🇬🇧 EN</a><a aria-pressed="false" class="btn" data-set-lang="fr" href="#" role="button">🇫🇷 FR</a></div>
+<h1>Clearing for People.</h1>
 <p class="hero-role">Les principes du clearing institutionnel, étendus à l’économie réelle.</p>
 <p class="hero-lead">
         Osnias Clearing est conçu pour rendre le clearing multilatéral accessible aux petites capitalisations,
@@ -403,19 +387,7 @@
 <div class="stat"><span class="big">≈ 96 %</span><strong>Netting multilatéral CLS</strong><br/>Réduction approximative des besoins bruts de financement des paiements rapportée par CLS.<br/><small>Référence CLS, et non prévision de performance Osnias.</small></div>
 </div>
 </section>
-<section class="card">
-<h2>Objectif stratégique à cinq ans</h2>
-<p>Osnias entend construire un réseau distribué de clearing pour les petites capitalisations, les entreprises mid-market et les entreprises internationales dans plusieurs juridictions.</p>
-<p>L’objectif stratégique à cinq ans est de développer progressivement l’adoption et, comme échelle de référence, de viser une activité brute annuelle de clearing équivalente à environ <strong>0,1 % d’une grande référence institutionnelle de clearing</strong>. Il s’agit d’un objectif d’échelle et non d’une part de marché garantie.</p>
-<div class="panel">
-<h3>Échelle illustrative à cinq ans</h3>
-<p>Sur la base d’un volume annuel de clearing de référence d’environ <strong>1,941 quadrillion USD</strong> :</p>
-<div class="hero-role">0,1 % = environ 1,941 trillion USD de volume brut annuel de clearing</div>
-<p>Avec des frais de clearing de référence de <strong>0,15 %</strong>, ce niveau d’activité correspondrait à environ <strong>2,91 milliards USD de frais bruts annuels de clearing du réseau</strong>, avant répartition entre les nœuds participants, les partenaires d’infrastructure et les entités d’exploitation, et avant coûts d’exploitation.</p>
-<p>Il s’agit d’un objectif stratégique d’échelle. Ce n’est ni une prévision ni un engagement d’adoption, de revenus ou de rentabilité.</p>
-</div>
-<div class="notice"><strong>L’objectif n’est pas de reproduire l’échelle ni le périmètre opérationnel des plus grandes infrastructures de marché.</strong> Il s’agit de rendre le clearing accessible à une population beaucoup plus large d’entreprises et de construire une échelle significative sur ce nouveau segment.</div>
-</section>
+<section class="card"><h2>Réduction du besoin en fonds de roulement</h2><p>Pour une entreprise participante, l’intérêt économique immédiat du clearing est de réduire le montant de trésorerie à mobiliser pour régler les obligations bilatérales brutes. Les créances et dettes sont réconciliées puis compensées avant le settlement, de sorte que seule la position résiduelle doit finalement être financée.</p><div class="notice"><strong>Référence externe :</strong> CLS indique que le netting multilatéral peut réduire d’environ 96 % les besoins bruts de financement des paiements. Il s’agit d’une référence issue du settlement FX, et non d’une prévision de performance d’Osnias.</div><p>Pour Osnias, un <strong>scénario illustratif plus conservateur sur un cycle de quatre semaines</strong> consiste à retenir une compensation de 70 % des obligations brutes éligibles. Dans cette hypothèse, environ 30 % demeure sous forme de position résiduelle à régler.</p><div class="grid-3"><div class="card"><strong>Activité brute illustrative</strong><p><strong>200 000 EUR</strong> d’obligations éligibles traitées pendant un cycle de quatre semaines.</p></div><div class="card"><strong>Compensation illustrative à 70 %</strong><p>Environ <strong>140 000 EUR</strong> sont compensés par le clearing, laissant environ <strong>60 000 EUR</strong> à régler.</p></div><div class="card"><strong>Effet sur la liquidité</strong><p>L’entreprise finance la <strong>position résiduelle</strong> au lieu de financer séparément chaque paiement bilatéral brut.</p></div></div><p>Une seconde source d’efficacité réside dans la <strong>réutilisation séquentielle d’une capacité entièrement collatéralisée</strong>. Si 50 000 EUR de collatéral garantissent successivement quatre expositions de 50 000 EUR pendant un cycle, la même capacité de collatéral peut soutenir jusqu’à 200 000 EUR d’activité brute cumulée dans le temps, tout en restant garantie à 1:1 à chaque instant. Il s’agit d’un effet de réutilisation temporelle, et non d’un levier de bilan.</p><div class="notice"><strong>Exemple de netting élevé :</strong> si 200 000 EUR d’obligations brutes éligibles aboutissent finalement à une position résiduelle de seulement 15 000 EUR, le taux de compensation implicite est de 92,5 %, et le ratio entre flux bruts et paiement final est d’environ 13,3×. Cet exemple doit être présenté comme un cas illustratif de netting élevé, et non comme l’hypothèse de base à 70 %.</div><p><strong>La combinaison du netting multilatéral et de la réutilisation séquentielle d’une capacité entièrement collatéralisée constitue le moteur économique visé par Osnias Clearing :</strong> réduire la pression sur le besoin en fonds de roulement tout en conservant une sécurisation 1:1 des engagements en cours.</p></section>
 <section class="card">
 <h2>Scénarios illustratifs d’adoption</h2>
 <p>Osnias ne suppose ni ne garantit aucune part de marché future. L’adoption dépendra de l’utilité de l’infrastructure, de la participation des entreprises, de la qualité du réseau de nœuds et des cadres opérationnels établis dans chaque juridiction.</p>
@@ -430,17 +402,8 @@
 <section class="card">
 <h2>Stratégie d’expansion des nœuds</h2>
 <p>Le premier nœud de production a vocation à établir le modèle opérationnel de référence. Une fois validé, l’objectif est de déployer progressivement au moins un nœud de clearing dans chaque juridiction prioritaire.</p>
-<div class="grid-4">
-<div class="card"><strong>Londres</strong><p>Point d’accès pour les flux des entreprises britanniques et internationales du mid-market.</p></div>
-<div class="card"><strong>Suisse</strong><p>Infrastructure institutionnelle et connectivité financière transfrontalière.</p></div>
-<div class="card"><strong>Francfort</strong><p>Environnement de clearing industriel et commercial de la zone euro.</p></div>
-<div class="card"><strong>Doha</strong><p>Nœud régional pour les flux commerciaux du Golfe et internationaux.</p></div>
-<div class="card"><strong>Mumbai</strong><p>Point d’accès pour les entreprises indiennes mid-market et les flux internationaux.</p></div>
-<div class="card"><strong>Singapour</strong><p>Hub régional pour l’activité commerciale asiatique et transfrontalière.</p></div>
-<div class="card"><strong>Hong Kong</strong><p>Passerelle pour l’activité de clearing internationale et asiatique.</p></div>
-<div class="card"><strong>Juridictions supplémentaires</strong><p>Déploiement selon les capacités des partenaires, la demande commerciale et les conditions locales d’exploitation.</p></div>
-</div>
-<div class="notice"><strong>Modèle juridictionnel distribué :</strong> chaque nœud a vocation à opérer dans son cadre juridique, réglementaire et opérationnel local, tout en restant connecté à l’architecture commune Osnias Clearing.</div>
+<div class="grid-4"><div class="card"><strong>Nœud 1 · Bordeaux</strong><p>Nœud français de référence pour le Sud-Ouest européen, combinant infrastructure de datacenter certifiée, connectivité bancaire régionale et accès aux entreprises mid-market.</p></div><div class="card"><strong>Nœud 2 · Zoug</strong><p>Nœud suisse implanté dans un environnement financier, institutionnel et digital-asset mature.</p></div><div class="card"><strong>Nœud 3 · Francfort</strong><p>Nœud de la zone euro destiné aux activités de clearing industrielles, commerciales et institutionnelles.</p></div><div class="card"><strong>Nœud 4 · Londres</strong><p>Nœud britannique et international pour les flux transfrontaliers des entreprises mid-market et institutionnelles.</p></div><div class="card"><strong>Nœud 5 · Doha</strong><p>Nœud régional du Golfe pour les flux commerciaux internationaux, les infrastructures et les échanges transfrontaliers.</p></div><div class="card"><strong>Nœud 6 · Mumbai</strong><p>Nœud indien destiné aux entreprises mid-market, industrielles et aux activités internationales.</p></div><div class="card"><strong>Nœud 7 · Singapour</strong><p>Hub régional asiatique pour l’activité commerciale transfrontalière et la participation internationale au clearing.</p></div></div>
+<div class="notice"><strong>Séquence indicative de déploiement :</strong> Bordeaux → Zoug → Francfort → Londres → Doha → Mumbai → Singapour. Chaque nœud reste soumis aux capacités du partenaire, à l’analyse juridique et réglementaire, à la préparation de l’infrastructure et aux conditions locales d’exploitation.</div>
 </section>
 <section class="card">
 <h2>Responsabilité juridictionnelle</h2>
