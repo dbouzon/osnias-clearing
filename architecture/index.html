@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>Architecture — Osnias Clearing</title>
+  <meta name="description" content="Osnias Clearing architecture: Sei EVM canonical state, ORUSD and OEURO clearing registers, OSNIAS governance separation, oracle coordination, 91-day clearing cycle and historical foundations."/>
+  <meta name="robots" content="index, follow, max-image-preview:large"/>
+  <meta name="author" content="Denis Bouzon"/>
+  <meta name="theme-color" content="#050814"/>
+
+  <link rel="canonical" href="https://www.osnias-clearing.com/architecture/"/>
+  <link rel="stylesheet" href="/assets/css/osnias.css"/>
+
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+</head>
+
+<body>
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="actions" aria-label="Language selector">
+      <a class="btn btn-primary" href="#" id="lang-en-btn" aria-pressed="true">EN</a>
+      <a class="btn" href="#" id="lang-fr-btn" aria-pressed="false">FR</a>
+    </div>
+  </div>
+
+  <div id="content-en">
+    <div class="container">
+      <section class="hero">
+        <div class="eyebrow">Protocol architecture · Clearing · Time · Functional separation</div>
+        <h1>Architecture</h1>
+        <p class="hero-lead">
+          Osnias Clearing is designed as a blockchain clearing infrastructure with a canonical Sei EVM execution layer,
+          restricted clearing registers, oracle-controlled cycle boundaries and a strict separation between clearing,
+          settlement, custody and lending.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/architecture/Osnias_Clearing_Functional_Architecture.pdf" target="_blank">Local PDF</a>
+          <a class="btn" href="https://doi.org/10.5281/zenodo.22807190" target="_blank" rel="noopener">Zenodo / DOI</a>
+          <a class="btn" href="https://hal.science/hal-05752756" target="_blank" rel="noopener">HAL / ArXiv</a>
+        </div>
+      </section>
+    </div>
+
+    <main class="container">
+      <section id="interrail-en">
+        <div class="section-label">01 · Inter-chain Architecture</div>
+        <h2>A hard boundary between clearing on Sei and settlement on connected EVM infrastructure</h2>
+        <p class="section-intro">
+          The diagram below shows the two-network architecture of Osnias Clearing. Sei Network is the canonical clearing chain.
+          Connected EVM environments host local Osnias-ID registries, collateral escrow arrangements and the infrastructure of
+          registered NNN nodes. Technical controller messages between the two networks are encrypted and signed; they carry no payment instructions.
+        </p>
+        <figure class="arch-diagram">
+          <img src="/architecture/Osnias-architecture.png" width="800" height="600"
+               alt="Osnias Clearing multi-chain architecture — Sei Network canonical clearing rail and EVM escrow infrastructure, Version 2.0, 11 September 2026."
+               loading="lazy" decoding="async" onerror="this.closest('.arch-diagram')?.remove()" />
+          <figcaption>
+            Osnias Clearing multi-chain architecture — Version 2.0, 11 September 2026. Sei Network hosts the canonical clearing register,
+            structured financial messaging, the Sei Controller and the temporal oracle. Connected EVM infrastructure hosts local registries,
+            escrow arrangements and registered NNN-node infrastructure. Technical controller messages are non-financial operational messages only.
+          </figcaption>
+        </figure>
+        <div class="arch-note">
+          <strong>Architectural invariant:</strong> Osnias calculates and records the net clearing position but does not execute settlement.
+          NNN nodes execute settlement at two levels: inter-NNN settlement of residual obligations between nodes and intra-NNN settlement
+          for accounts registered with the same node.
+        </div>
+      </section>
+
+      <section id="core-en">
+        <div class="section-label">02 · Core Architecture</div>
+        <h2>Canonical clearing layer on Sei</h2>
+        <p class="section-intro">
+          Sei hosts the canonical clearing register: clearing accounts, clearing-room parameters, register positions, cycle status and
+          multilateral netting. The canonical layer incorporates structured financial messaging for the issuance, processing and acceptance
+          of commitment orders between participants.
+        </p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Sei — Clearing register</div><h3>Osnias-ID Registry</h3><p>Global registry of clearing accounts on Sei. Each Osnias-ID identifies the connected chain, the NNN node, the ISO 4217 currency, the clearing cycle and the account sequence, with a MOD-97 checksum.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Sei — Financial messaging</div><h3>Structured Messages</h3><p>Structured financial messaging for submission, processing and acceptance of commitment orders between participants: Request, Accept/Reject and Transfer state recorded in the canonical clearing register.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Sei — Cycle control</div><h3>Sei Controller &amp; Oracle</h3><p>The Sei Controller manages the clearing cycle, records accepted transfers and calculates net positions. The temporal oracle determines the applicable phase according to the clearing-room cycle.</p></article>
+        </div>
+      </section>
+
+      <section id="execution-en">
+        <div class="section-label">03 · Execution Layer</div>
+        <h2>Commitment register on the canonical clearing layer</h2>
+        <p class="section-intro">
+          Within the clearing layer on Sei, participants exchange commitment orders — not payments. The canonical register records accepted obligations,
+          tracks their status across the clearing cycle and calculates net positions at cycle close. At no point does Osnias Clearing access, move or
+          authorise movement of custody assets held in client escrow accounts. Settlement is executed exclusively by the relevant NNN-node operators,
+          under their own responsibility and applicable legal framework.
+        </p>
+        <div class="arch-flow">
+          <div class="arch-step"><strong>Commitment Order</strong><span>Commitment submitted on Sei</span></div>
+          <div class="arch-step"><strong>Accept / Reject</strong><span>Recipient review</span></div>
+          <div class="arch-step"><strong>Register</strong><span>Accepted obligation recorded</span></div>
+          <div class="arch-step"><strong>Net Position</strong><span>Settlement by NNN-node operator</span></div>
+        </div>
+        <div class="arch-links">
+          <a class="arch-link" href="/sei/sei.html"><strong>Sei Architecture →</strong><span>Canonical network, deployment environment and EVM integration.</span></a>
+          <a class="arch-link" href="/oracle/oracle.html"><strong>Oracle Architecture →</strong><span>Cycle control, attestation and settlement-coordination model.</span></a>
+        </div>
+      </section>
+
+      <section id="osniasid-en">
+        <div class="section-label">04 · Cross-Architecture Identifier</div>
+        <h2>Osnias-ID — the common reference across the architecture</h2>
+        <p class="section-intro">
+          Osnias-ID is the transversal clearing-account identifier across the Osnias architecture. Its 19-digit format identifies the connected chain,
+          the NNN node responsible for the account, the ISO 4217 currency, the clearing cycle and the account sequence, with a MOD-97 checksum.
+          It links the canonical Sei clearing register to the corresponding local EVM registry without treating a blockchain address as the corporate identity.
+        </p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Sei — clearing side</div><h3>Canonical registry</h3><p>The global Osnias-ID registry on Sei associates each clearing account with its NNN node, currency and cycle. Obligation-state transitions are recorded on-chain against the relevant Osnias-IDs.</p></article>
+          <article class="arch-card"><div class="arch-kicker">EVM — escrow side</div><h3>Local EVM registry</h3><p>Each connected EVM environment can maintain a local Osnias-ID registry matching the relevant escrow account with its Osnias-ID.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Format</div><h3>KK-NNN-MMM-WW-SSSSSSS-XX</h3><p>19 decimal digits — uint64 / 8-byte on-chain storage. Currency and clearing-cycle fields are fixed at creation. MOD-97 checksum. Fail closed on mismatch.</p></article>
+        </div>
+        <div class="actions"><a class="btn btn-primary" href="/osniasid/osniasid.html">Osnias-ID Specification →</a></div>
+      </section>
+
+      <section id="separation-en">
+        <div class="section-label">05 · Functional Separation</div>
+        <h2>Clearing is not custody, lending or DeFi</h2>
+        <p class="section-intro">
+          The clearing-register contracts do not implement customer deposits, custody, lending, collateral valuation, liquidity pools, farming or native conversion.
+          External custody, escrow and settlement arrangements remain outside the canonical clearing-register contracts.
+        </p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Clearing — Sei</div><h3>Clearing function</h3><p>Identifies accepted obligations, reconciles them under clearing-room rules and offsets them on a multilateral basis. Produces net positions and settlement instructions. Does not itself discharge the payment obligation.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Settlement — NNN nodes</div><h3>Settlement function</h3><p>Settlement discharges the residual obligation through transfer of the relevant settlement asset. Osnias does not perform that transfer. NNN nodes execute inter-NNN and intra-NNN settlement under their own legal and regulatory framework.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Regulatory perimeter</div><h3>No DEX, AMM or CEX</h3><p>Osnias does not operate a DEX, AMM or CEX and does not provide leveraged trading or investment services. Clearing registers are not designed for market circulation, bridging or smart-contract routing.</p></article>
+        </div>
+      </section>
+
+      <section id="cycle-en">
+        <div class="section-label">06 · Clearing Time Architecture</div>
+        <h2>Operating cycle and controls</h2>
+        <p class="section-intro">
+          Each clearing room defines its currency, participants and cycle duration. The temporal oracle on Sei determines the applicable phase and applies the same
+          phase status to the clearing register. At the cycle cut-off, accepted positions are time-stamped and frozen for calculation before residual settlement
+          instructions are released to the responsible NNN nodes.
+        </p>
+      </section>
+
+      <section id="history-en">
+        <div class="section-label">07 · Historical Foundations</div>
+        <h2>Why the name Osnias?</h2>
+        <p class="section-intro">The historical section documents the Oniad inspiration behind the project: institutional continuity, stewardship, ordered time and periodic reconciliation. It is historical and intellectual context, not a claim that an ancient clearing system is being reproduced.</p>
+        <div class="arch-link"><strong>Open Historical Foundations →</strong><span>Onias III, Onias IV, Leontopolis, Zadokite memory, Qumran context and the modern interpretation adopted by Osnias Clearing.</span></div>
+        <div class="actions"><a class="btn" href="/history/history.html">Open Historical Foundations</a></div>
+      </section>
+
+      <section id="references-en">
+        <div class="section-label">08 · Architecture References</div>
+        <h2>Continue to the technical evidence</h2>
+        <div class="arch-links">
+          <a class="arch-link" href="/deployment/deployment.html"><strong>Official Deployment Registry →</strong><span>Contract addresses, creation transactions, verification status and public on-chain references.</span></a>
+          <a class="arch-link" href="/documentation/documentation.html"><strong>Documentation →</strong><span>Technical papers, DOI archives, source code and supporting documentation.</span></a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="content-fr" hidden>
+    <div class="container">
+      <section class="hero">
+        <div class="eyebrow">Architecture du protocole · Compensation · Temps · Séparation fonctionnelle</div>
+        <h1>Architecture</h1>
+        <p class="hero-lead">
+          Osnias Clearing est conçu comme une infrastructure de compensation blockchain reposant sur une couche canonique d’exécution Sei EVM,
+          des registres de compensation restreints, des limites de cycle contrôlées par oracle et une séparation stricte entre compensation,
+          règlement, conservation et crédit.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/architecture/Osnias_Clearing_Functional_Architecture.pdf" target="_blank">PDF local</a>
+          <a class="btn" href="https://doi.org/10.5281/zenodo.22807190" target="_blank" rel="noopener">Zenodo / DOI</a>
+          <a class="btn" href="https://hal.science/hal-05752756" target="_blank" rel="noopener">HAL / ArXiv</a>
+        </div>
+      </section>
+    </div>
+
+    <main class="container">
+      <section id="interrail-fr">
+        <div class="section-label">01 · Architecture inter-chaînes</div>
+        <h2>Une frontière stricte entre la compensation sur Sei et le règlement sur l’infrastructure EVM connectée</h2>
+        <p class="section-intro">
+          Le schéma ci-dessous présente l’architecture à deux réseaux d’Osnias Clearing. Sei Network constitue la chaîne canonique de compensation.
+          Les environnements EVM connectés hébergent les registres Osnias-ID locaux, les dispositifs de séquestre du collatéral et l’infrastructure
+          des nœuds NNN enregistrés. Les messages techniques de contrôle entre les deux réseaux sont chiffrés et signés ; ils ne transportent aucune instruction de paiement.
+        </p>
+        <figure class="arch-diagram">
+          <img src="/architecture/Osnias-architecture.png" width="800" height="600"
+               alt="Architecture multi-chaînes Osnias Clearing — registre canonique de compensation sur Sei Network et infrastructure de séquestre EVM, version 2.0 du 11 septembre 2026."
+               loading="lazy" decoding="async" onerror="this.closest('.arch-diagram')?.remove()" />
+          <figcaption>
+            Architecture multi-chaînes Osnias Clearing — Version 2.0, 11 septembre 2026. Sei Network héberge le registre canonique de compensation,
+            la messagerie financière structurée, le contrôleur Sei et l’oracle temporel. L’infrastructure EVM connectée héberge les registres locaux,
+            les dispositifs de séquestre et l’infrastructure des nœuds NNN enregistrés. Les messages techniques de contrôle sont exclusivement opérationnels et non financiers.
+          </figcaption>
+        </figure>
+        <div class="arch-note">
+          <strong>Invariant architectural :</strong> Osnias calcule et enregistre la position nette de compensation mais n’exécute pas le règlement.
+          Les nœuds NNN exécutent le règlement à deux niveaux : règlement inter-NNN des obligations résiduelles entre nœuds et règlement intra-NNN
+          pour les comptes enregistrés auprès d’un même nœud.
+        </div>
+      </section>
+
+      <section id="core-fr">
+        <div class="section-label">02 · Architecture cœur</div>
+        <h2>Couche canonique de compensation sur Sei</h2>
+        <p class="section-intro">
+          Sei héberge le registre canonique de compensation : comptes de compensation, paramètres des chambres de compensation, positions de registre,
+          statut du cycle et compensation multilatérale. La couche canonique intègre une messagerie financière structurée permettant l’émission,
+          le traitement et l’acceptation des ordres d’engagement entre participants.
+        </p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Sei — Registre de compensation</div><h3>Registre Osnias-ID</h3><p>Registre global des comptes de compensation sur Sei. Chaque Osnias-ID identifie la chaîne connectée, le nœud NNN, la devise ISO 4217, le cycle de compensation et la séquence du compte, avec un contrôle MOD-97.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Sei — Messagerie financière</div><h3>Messages structurés</h3><p>Messagerie financière structurée pour l’émission, le traitement et l’acceptation des ordres d’engagement entre participants : Request, Accept/Reject et état Transfer enregistrés dans le registre canonique de compensation.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Sei — Contrôle du cycle</div><h3>Contrôleur Sei &amp; Oracle</h3><p>Le contrôleur Sei gère le cycle de compensation, enregistre les transferts acceptés et calcule les positions nettes. L’oracle temporel détermine la phase applicable selon le cycle défini par la chambre de compensation.</p></article>
+        </div>
+      </section>
+
+      <section id="execution-fr">
+        <div class="section-label">03 · Couche d’exécution</div>
+        <h2>Registre d’engagement sur la couche canonique de compensation</h2>
+        <p class="section-intro">
+          Dans la couche de compensation sur Sei, les participants échangent des ordres d’engagement — et non des paiements. Le registre canonique enregistre
+          les obligations acceptées, suit leur état pendant le cycle et calcule les positions nettes à la clôture. À aucun moment Osnias Clearing n’accède,
+          ne déplace ni n’autorise le déplacement des actifs conservés dans les comptes de séquestre des clients. Le règlement est exécuté exclusivement
+          par les opérateurs des nœuds NNN concernés, sous leur propre responsabilité et dans leur cadre juridique applicable.
+        </p>
+        <div class="arch-flow">
+          <div class="arch-step"><strong>Ordre d’engagement</strong><span>Engagement soumis sur Sei</span></div>
+          <div class="arch-step"><strong>Accepter / Rejeter</strong><span>Examen par le destinataire</span></div>
+          <div class="arch-step"><strong>Registre</strong><span>Obligation acceptée enregistrée</span></div>
+          <div class="arch-step"><strong>Position nette</strong><span>Règlement par l’opérateur NNN</span></div>
+        </div>
+        <div class="arch-links">
+          <a class="arch-link" href="/sei/sei.html"><strong>Architecture Sei →</strong><span>Réseau canonique, environnement de déploiement et intégration EVM.</span></a>
+          <a class="arch-link" href="/oracle/oracle.html"><strong>Architecture Oracle →</strong><span>Contrôle du cycle, attestation et modèle de coordination du règlement.</span></a>
+        </div>
+      </section>
+
+      <section id="osniasid-fr">
+        <div class="section-label">04 · Identifiant transversal</div>
+        <h2>Osnias-ID — la référence commune à toute l’architecture</h2>
+        <p class="section-intro">
+          Osnias-ID est l’identifiant transversal du compte de compensation dans l’ensemble de l’architecture Osnias. Son format à 19 chiffres identifie
+          la chaîne connectée, le nœud NNN responsable du compte, la devise ISO 4217, le cycle de compensation et la séquence du compte, avec un contrôle MOD-97.
+          Il relie le registre canonique Sei au registre EVM local correspondant sans assimiler une adresse blockchain à l’identité juridique de l’entreprise.
+        </p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Sei — côté compensation</div><h3>Registre canonique</h3><p>Le registre global Osnias-ID sur Sei associe chaque compte de compensation à son nœud NNN, sa devise et son cycle. Les changements d’état des obligations sont enregistrés on-chain sur les Osnias-ID concernés.</p></article>
+          <article class="arch-card"><div class="arch-kicker">EVM — côté séquestre</div><h3>Registre EVM local</h3><p>Chaque environnement EVM connecté peut maintenir un registre Osnias-ID local faisant correspondre le compte de séquestre concerné à son Osnias-ID.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Format</div><h3>KK-NNN-MMM-WW-SSSSSSS-XX</h3><p>19 chiffres décimaux — stockage on-chain uint64 / 8 octets. Les champs devise et cycle sont fixés lors de la création. Contrôle MOD-97. Rejet en cas d’incohérence.</p></article>
+        </div>
+        <div class="actions"><a class="btn btn-primary" href="/osniasid/osniasid.html">Spécification Osnias-ID →</a></div>
+      </section>
+
+      <section id="separation-fr">
+        <div class="section-label">05 · Séparation fonctionnelle</div>
+        <h2>La compensation n’est ni de la conservation, ni du crédit, ni de la DeFi</h2>
+        <p class="section-intro">
+          Les contrats du registre de compensation n’implémentent ni dépôts clients, ni conservation, ni crédit, ni valorisation du collatéral,
+          ni pools de liquidité, ni farming, ni conversion native. Les dispositifs externes de conservation, de séquestre et de règlement restent hors
+          des contrats du registre canonique de compensation.
+        </p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Compensation — Sei</div><h3>Fonction de compensation</h3><p>Identifie les obligations acceptées, les réconcilie selon les règles de la chambre de compensation et les compense de manière multilatérale. Produit les positions nettes et les instructions de règlement. N’éteint pas elle-même l’obligation de paiement.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Règlement — Nœuds NNN</div><h3>Fonction de règlement</h3><p>Le règlement éteint l’obligation résiduelle par transfert de l’actif de règlement concerné. Osnias n’effectue pas ce transfert. Les nœuds NNN exécutent les règlements inter-NNN et intra-NNN dans leur propre cadre juridique et réglementaire.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Périmètre réglementaire</div><h3>Pas de DEX, AMM ou CEX</h3><p>Osnias n’exploite ni DEX, ni AMM, ni CEX et ne fournit ni trading à effet de levier ni service d’investissement. Les registres de compensation ne sont pas conçus pour la circulation de marché, le bridging ou le routage par smart contract.</p></article>
+        </div>
+      </section>
+
+      <section id="cycle-fr">
+        <div class="section-label">06 · Architecture temporelle du clearing</div>
+        <h2>Cycle opérationnel et contrôles</h2>
+        <p class="section-intro">
+          Chaque chambre de compensation définit sa devise, ses participants et la durée de son cycle. L’oracle temporel sur Sei détermine la phase applicable
+          et applique le même statut de phase au registre de compensation. À la date de clôture, les positions acceptées sont horodatées et figées pour calcul
+          avant transmission des instructions de règlement résiduelles aux nœuds NNN responsables.
+        </p>
+      </section>
+
+      <section id="history-fr">
+        <div class="section-label">07 · Fondements historiques</div>
+        <h2>Pourquoi le nom Osnias ?</h2>
+        <p class="section-intro">La section historique documente l’inspiration oniadique du projet : continuité institutionnelle, garde, temps ordonné et réconciliation périodique. Elle constitue un contexte historique et intellectuel, sans prétendre reproduire un système antique de compensation.</p>
+        <div class="arch-link"><strong>Ouvrir les fondements historiques →</strong><span>Onias III, Onias IV, Léontopolis, mémoire zadokite, contexte de Qumrân et interprétation moderne retenue par Osnias Clearing.</span></div>
+        <div class="actions"><a class="btn" href="/history/history.html">Ouvrir les fondements historiques</a></div>
+      </section>
+
+      <section id="references-fr">
+        <div class="section-label">08 · Références d’architecture</div>
+        <h2>Poursuivre vers les éléments techniques</h2>
+        <div class="arch-links">
+          <a class="arch-link" href="/deployment/deployment.html"><strong>Registre officiel des déploiements →</strong><span>Adresses de contrats, transactions de création, statut de vérification et références publiques on-chain.</span></a>
+          <a class="arch-link" href="/documentation/documentation.html"><strong>Documentation →</strong><span>Documents techniques, archives DOI, code source et documentation associée.</span></a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="container">© 2026 Osnias Clearing · Architecture · Public Technical Documentation</div>
+  </footer>
+
+  <script>
+    (function(){
+      const en = document.getElementById('content-en');
+      const fr = document.getElementById('content-fr');
+      const enBtn = document.getElementById('lang-en-btn');
+      const frBtn = document.getElementById('lang-fr-btn');
+
+      function setLanguage(lang){
+        const isFr = lang === 'fr';
+        en.hidden = isFr;
+        fr.hidden = !isFr;
+        enBtn.classList.toggle('btn-primary', !isFr);
+        frBtn.classList.toggle('btn-primary', isFr);
+        enBtn.setAttribute('aria-pressed', String(!isFr));
+        frBtn.setAttribute('aria-pressed', String(isFr));
+        document.documentElement.lang = isFr ? 'fr' : 'en';
+        try { localStorage.setItem('osnias-language', isFr ? 'fr' : 'en'); } catch(e) {}
+      }
+
+      enBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('en'); });
+      frBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('fr'); });
+
+      let preferred = 'en';
+      const params = new URLSearchParams(window.location.search);
+      if(params.get('lang') === 'fr' || params.get('lang') === 'en') preferred = params.get('lang');
+      else {
+        try { preferred = localStorage.getItem('osnias-language') || (((navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en'); } catch(e) {}
+      }
+      setLanguage(preferred === 'fr' ? 'fr' : 'en');
+    })();
+  </script>
+
+  <script data-goatcounter="https://denis-osnias.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
