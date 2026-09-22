@@ -50,7 +50,7 @@
       },
       {
         label: "Partnership",
-        href: prefix + "/partnership/partnership.html"
+        href: prefix + "/partnership/"
       }
     ];
 
