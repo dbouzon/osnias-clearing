@@ -26,7 +26,7 @@
     const items = [
       {
         label: "Architecture",
-        href: prefix + "/architecture/architecture.html"
+        href: prefix + "/architecture/"
       },
       {
         label: "Official Deployment",
