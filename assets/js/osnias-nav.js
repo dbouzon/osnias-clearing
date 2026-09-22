@@ -42,7 +42,7 @@
       },
       {
         label: "Osnias-ID",
-        href: prefix + "/osniasid/osniasid.html"
+        href: prefix + "/osniasid/"
       },
       {
         label: "Documentation",
