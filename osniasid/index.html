@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>Osnias-ID — Internal Interchain Clearing Identifier</title>
+  <meta name="description" content="Osnias-ID Release 2.0 is a 19-digit internal interchain clearing identifier for Osnias Clearing. It embeds the ISO 4217 monetary code and the clearing-cycle duration in weeks, while remaining compact enough for uint64 / 8-byte on-chain storage."/>
+  <meta name="keywords" content="Osnias Clearing, Osnias-ID, Clearing, Internal Interchain Clearing Identifier, Clearing Participant Identifier, Blockchain, Multi-Chain Clearing, On-chain Clearing, Multilateral Netting, Digital Identity, Participant Registry, Wallet Identity, KYC, KYB, AML, Payment Infrastructure, Financial Infrastructure, Smart Contracts, Interoperability, ISO 20022, ISO 4217, Clearing Cycle, uint64, MOD-97 Checksum, Institutional Blockchain"/>
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+  <meta name="author" content="Denis Bouzon"/>
+  <meta name="creator" content="Denis Bouzon"/>
+  <meta name="publisher" content="Osnias Clearing"/>
+  <meta name="theme-color" content="#050814"/>
+
+  <link rel="canonical" href="https://www.osnias-clearing.com/osniasid/"/>
+  <link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/osniasid/"/>
+  <link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/osniasid/"/>
+  <link rel="alternate" href="https://www.osnias-clearing.com/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf" title="Osnias-ID White Paper — HAL version" type="application/pdf"/>
+  <link rel="author" href="https://orcid.org/0009-0007-8894-8902"/>
+
+  <meta property="og:type" content="article"/>
+  <meta property="og:site_name" content="Osnias Clearing"/>
+  <meta property="og:title" content="Osnias-ID: An Internal Interchain Identifier for Multi-Chain Clearing"/>
+  <meta property="og:description" content="Release 2.0 of the Osnias internal 19-digit interchain clearing identifier, embedding ISO 4217 currency and clearing-cycle duration in weeks, with registry resolution and MOD-97 checksum."/>
+  <meta property="og:url" content="https://www.osnias-clearing.com/osniasid/"/>
+  <meta property="og:image" content="https://www.osnias-clearing.com/index-picture.jpg"/>
+  <meta property="article:published_time" content="2026-09-11"/>
+  <meta property="article:modified_time" content="2026-09-11"/>
+  <meta property="article:author" content="Denis Bouzon"/>
+
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Osnias-ID — Internal Interchain Clearing Identifier"/>
+  <meta name="twitter:description" content="Public Release 2.0: a compact 19-digit clearing-account identifier embedding ISO 4217 currency and the clearing cycle in weeks, with uint64 / 8-byte on-chain representation."/>
+  <meta name="twitter:image" content="https://www.osnias-clearing.com/index-picture.jpg"/>
+
+  <meta name="citation_title" content="Osnias-ID: An Internal Interchain Identifier for Multi-Chain Clearing"/>
+  <meta name="citation_author" content="Bouzon, Denis"/>
+  <meta name="citation_publication_date" content="2026/09/11"/>
+  <meta name="citation_language" content="en"/>
+  <meta name="citation_pdf_url" content="https://www.osnias-clearing.com/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf"/>
+  <meta name="citation_technical_report_institution" content="Osnias Clearing"/>
+  <meta name="citation_technical_report_number" content="HAL Id: hal-05746489"/>
+
+  <meta name="DC.title" content="Osnias-ID: An Internal Interchain Identifier for Multi-Chain Clearing"/>
+  <meta name="DC.creator" content="Denis Bouzon"/>
+  <meta name="DC.date" content="2026-09-11"/>
+  <meta name="DC.type" content="Text"/>
+  <meta name="DC.language" content="en"/>
+  <meta name="DC.rights" content="Creative Commons Attribution 4.0 International (CC BY 4.0)"/>
+  <meta name="DC.identifier" content="hal-05746489"/>
+
+  <link rel="stylesheet" href="/assets/css/osnias.css"/>
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Osnias-ID: An Internal Interchain Identifier for Multi-Chain Clearing",
+    "alternativeHeadline": "Internal Interchain Clearing Identifier · Technical White Paper & Public Specification",
+    "description": "Osnias-ID is a project-specific internal identifier issued and interpreted by Osnias Clearing for interchain clearing. Release 2.0 provides a compact and persistent 19-digit reference linking an Osnias-assigned network code, authorized server code, ISO 4217 monetary code, clearing-cycle duration in weeks, server-local account sequence and checksum, independently of native wallet-address formats.",
+    "datePublished": "2026-09-11",
+    "dateModified": "2026-09-11",
+    "inLanguage": "en",
+    "version": "2.0",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "isAccessibleForFree": true,
+    "url": "https://www.osnias-clearing.com/osniasid/osniasid.html",
+    "mainEntityOfPage": "https://www.osnias-clearing.com/osniasid/osniasid.html",
+    "author": {
+      "@type": "Person",
+      "name": "Denis Bouzon",
+      "url": "https://orcid.org/0009-0007-8894-8902",
+      "sameAs": [
+        "https://orcid.org/0009-0007-8894-8902",
+        "https://hal.science/hal-05746489"
+      ],
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Osnias Clearing",
+        "url": "https://www.osnias-clearing.com/"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Osnias Clearing",
+      "url": "https://www.osnias-clearing.com/"
+    },
+    "sameAs": [
+      "https://hal.science/hal-05746489",
+      "https://zenodo.org/records/22704626"
+    ],
+    "encoding": {
+      "@type": "MediaObject",
+      "contentUrl": "https://www.osnias-clearing.com/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf",
+      "encodingFormat": "application/pdf"
+    },
+    "keywords": [
+      "Osnias Clearing", "Osnias-ID", "Clearing", "Internal Interchain Clearing Identifier", "Clearing Participant Identifier", "Blockchain", "Multi-Chain Clearing", "On-chain Clearing", "Multilateral Netting", "Digital Identity", "Participant Registry", "Wallet Identity", "KYC", "KYB", "AML", "Financial Infrastructure", "Smart Contracts", "Interoperability", "ISO 20022", "ISO 4217", "Clearing Cycle", "uint64", "MOD-97 Checksum", "Institutional Blockchain"
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="actions" aria-label="Language selection">
+      <button class="btn btn-primary" type="button" data-lang-button="en" aria-pressed="true">🇬🇧 EN</button>
+      <button class="btn" type="button" data-lang-button="fr" aria-pressed="false">🇫🇷 FR</button>
+    </div>
+  </div>
+
+  <div data-lang-panel="en">
+    <header>
+      <div class="container">
+        <section class="hero">
+          <div class="hero-grid">
+            <div>
+              <div class="eyebrow">Public Specification · Multi-Chain Clearing · Release 2.0 · 11 September 2026</div>
+              <h1>Osnias-ID</h1>
+              <p class="hero-lead"><strong>An Internal Interchain Identifier for Multi-Chain Clearing.</strong> Release 2.0 introduces a compact 19-digit clearing-account identifier that embeds both the ISO 4217 monetary code and the clearing-cycle duration in weeks, while preserving separation between legal identity, clearing-account identity and technical wallet addresses.</p>
+
+              <div class="arch-note">
+                <strong>Release 2.0 · 11 September 2026</strong><br/>
+                This major release hardens clearing-account identity by binding each Osnias-ID to both a monetary rail and a clearing cycle at creation. The complete 19-digit decimal identifier fits in a single 64-bit unsigned integer (<code>uint64</code>), using the full 8-byte representation on-chain.
+              </div>
+
+              <div class="actions">
+                <a class="btn btn-primary" href="/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf">Read White Paper</a>
+                <a class="btn" href="#multi-chain-architecture-en">Registry Architecture</a>
+                <a class="btn" href="https://hal.science/hal-05746489" target="_blank" rel="noopener noreferrer">HAL · hal-05746489</a>
+                <a class="btn" href="https://zenodo.org/records/22704626" target="_blank" rel="noopener noreferrer">Zenodo</a>
+              </div>
+            </div>
+
+            <figure class="hero-illustration">
+              <img src="/osniasid/osniasid.jpg"
+                   alt="Osnias-ID — interchain clearing identifier"
+                   loading="eager"
+                   decoding="async"/>
+            </figure>
+          </div>
+        </section>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="why-en">
+        <div class="section-label">01 · Design Intent</div>
+        <h2>Why Osnias-ID?</h2>
+        <p class="section-intro">Osnias-ID was designed to provide Osnias Clearing with a compact internal reference usable across different escrow-capable blockchain chains, independently of each chain's native addressing system, account model or execution environment.</p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Chain independent</div><h3>One internal interchain reference</h3><p>The identifier remains meaningful across the Osnias interchain architecture and does not depend on a chain-native wallet format.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Compact messaging</div><h3>19 digits instead of repeated identity data</h3><p>Clearing messages can transport the Osnias-ID and resolve detailed participant information through the registry where appropriate.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Counterparty resolution</div><h3>Identify the clearing account</h3><p>A receivable, invoice or clearing request can reference an Osnias-ID rather than relying solely on a hexadecimal wallet address.</p></article>
+        </div>
+      </section>
+
+      <section id="format-en">
+        <div class="section-label">02 · Identifier Format</div>
+        <h2>Deterministic 19-digit format · Release 2.0</h2>
+        <p class="section-intro">Release 2.0 binds a clearing account to its network, authorized server, monetary unit and clearing cycle directly inside the identifier. Currency and cycle are therefore protocol-level identity attributes rather than mutable off-chain metadata.</p>
+
+        <div class="arch-note"><strong>KK-NNN-MMM-WW-SSSSSSS-XX</strong></div>
+
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">KK</div><h3>Network namespace</h3><p>2 digits · Osnias-assigned escrow-capable network / rail namespace.</p></article>
+          <article class="arch-card"><div class="arch-kicker">NNN</div><h3>Authorized node</h3><p>3 digits · Osnias-assigned authorized server / escrow-node code.</p></article>
+          <article class="arch-card"><div class="arch-kicker">MMM</div><h3>Monetary code</h3><p>3 digits · ISO 4217 numeric monetary code, e.g. USD 840, EUR 978, CHF 756.</p></article>
+          <article class="arch-card"><div class="arch-kicker">WW</div><h3>Clearing cycle</h3><p>2 digits · clearing-cycle duration in weeks, e.g. 01 = 7 days, 04 = 28 days, 13 = 91 days.</p></article>
+          <article class="arch-card"><div class="arch-kicker">SSSSSSS</div><h3>Account sequence</h3><p>7 digits · server-local clearing-account sequence within the monetary and cycle namespace.</p></article>
+          <article class="arch-card"><div class="arch-kicker">XX</div><h3>Checksum</h3><p>2 digits · checksum calculated under the Osnias-defined MOD-97 rule.</p></article>
+        </div>
+
+        <p class="section-intro">The complete identifier contains <strong>19 decimal digits</strong>. Its maximum decimal space remains below 10<sup>19</sup>, which fits inside an unsigned 64-bit integer. The human-readable decimal representation can therefore be encoded on-chain as a single <strong><code>uint64</code> / 8-byte value</strong> and rendered back into its structured decimal form by the interface.</p>
+
+        <div class="arch-note"><strong>Release 2.0 monetary and cycle invariant:</strong> the currency encoded in <strong>MMM</strong> and the clearing cycle encoded in <strong>WW</strong> are fixed at Osnias-ID creation and must correspond to the associated escrow and clearing room. A mismatch must fail closed.</div>
+
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Currency binding</div><h3>MMM · ISO 4217</h3><p>The clearing account is intrinsically associated with one normalized monetary unit. A USD clearing account cannot be admitted into an EUR, CNY or other monetary clearing rail.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Cycle binding</div><h3>WW · Number of weeks</h3><p>The clearing account is intrinsically associated with its clearing-room duration. A 7-day account cannot be silently routed into a 28-day or 91-day clearing room.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Compact on-chain form</div><h3>uint64 · 8 bytes</h3><p>The complete 19-digit OID uses the full 64-bit integer container while remaining human-readable in decimal form and compact in smart-contract storage.</p></article>
+        </div>
+      </section>
+
+      <section id="multi-chain-architecture-en">
+        <div class="section-label">03 · Multi-Chain Registry Architecture</div>
+        <h2>One Osnias-ID across different escrow networks</h2>
+        <p class="section-intro">Osnias-ID provides the common clearing reference between the native escrow account on its local network or rail and the corresponding clearing account on Sei. Each escrow network keeps its own native account identifier — for example an EVM 0x address, a Solana address, a TRON address or a banking account identifier — while the Osnias-ID is the shared clearing identifier used by the two registries.</p>
+        <div class="arch-note"><strong>Native escrow account identifier → Escrow-network registry → Osnias-ID → Sei clearing registry → Local Sei 0x clearing address</strong></div>
+        <figure class="arch-diagram">
+          <img src="/osniasid/osniasid.jpg" alt="Osnias-ID multi-chain registry architecture: escrow network registry and Sei clearing registry linked by the same Osnias-ID" loading="lazy" decoding="async"/>
+          <figcaption>The escrow-network registry immutably matches the local escrow account, using the native identifier of that network, with its Osnias-ID. The Sei clearing registry matches the same Osnias-ID with the corresponding local 0x clearing address on Sei.</figcaption>
+        </figure>
+        <div class="actions">
+          <a class="btn btn-primary" href="/osniasid/Osnias-ID_KK_Network_Registry_Annex_v0.7.1.xlsx">Network ↔ Osnias-ID correspondence</a>
+          <a class="btn" href="/osniasid/Osnias-ID-resereved adress.pdf">KK Network Registry PDF</a>
+        </div>
+      </section>
+
+      <section id="layers-en">
+        <div class="section-label">04 · Identity Architecture</div>
+        <h2>Legal Entity → Clearing Account → Technical Address</h2>
+        <p class="section-intro">An Osnias-ID is not a company identifier. A company or institution may hold several Osnias-ID clearing accounts, all linked by the Osnias Registry to the same legal entity.</p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Identity</div><h3>Legal Entity</h3><p>SIREN · UID/CHE · LEI · other recognized identifier.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Clearing</div><h3>Osnias-ID Clearing Account(s)</h3><p>Persistent clearing-account identifier.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Execution</div><h3>Technical Address(es)</h3><p>Authorized wallet / execution endpoint.</p></article>
+        </div>
+        <div class="arch-note"><strong>Core principle:</strong> An Osnias-ID is not a legal-entity identifier. It identifies a clearing account linked to an identified participant.</div>
+      </section>
+
+      <section id="registry-en">
+        <div class="section-label">05 · Registry &amp; Access Control</div>
+        <h2>No valid Osnias-ID, no clearing admission</h2>
+        <p class="section-intro">The Osnias Registry is the authoritative resolution layer between a clearing account, its identified participant and its currently authorized operational addresses. Release 2.0 adds two admission invariants before a clearing request can be accepted: the OID monetary code must match the escrow and clearing rail, and the OID cycle must match the target clearing room. Checksum validity alone is never sufficient: the identifier must also resolve to an active and eligible registry record.</p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Resolve</div><h3>Wallet → Osnias-ID</h3><p>The initiating or receiving technical address is resolved against an authorized clearing account.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Validate</div><h3>Status and authorization</h3><p>The system verifies registry status, wallet authorization and applicable network or transaction eligibility rules.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Fail closed</div><h3>Admission invariant</h3><p>If registry status, checksum, monetary code or clearing-cycle compatibility cannot be resolved and validated, the clearing request is rejected.</p></article>
+        </div>
+      </section>
+
+      <section id="network-codes-en">
+        <div class="section-label">06 · KK Network Registry</div>
+        <h2>Pre-allocated and reserved network namespace</h2>
+        <p class="section-intro">KK is the two-digit Osnias network or rail namespace. KK=00 is permanently reserved as a null/unassigned value. Allocated public-network codes identify escrow-capable blockchain environments, while dedicated ranges are reserved for future public networks, institutional rails and Osnias internal infrastructure. A reserved code is a namespace allocation and does not imply integration, validation, participation or endorsement.</p>
+        <figure class="arch-diagram">
+          <img src="/osniasid/OsniasID-Others-match-table.jpg" alt="Osnias-ID KK network registry and native escrow account formats across EVM, non-EVM and institutional banking rails" loading="lazy" decoding="async"/>
+          <figcaption>Osnias-ID correspondence between KK network namespaces and native escrow-account identifiers across public blockchain networks and institutional banking rails.</figcaption>
+        </figure>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Allocated EVM</div><h3>01–06</h3><p>Ethereum, Sei EVM, Arbitrum One, Avalanche C-Chain, Base and BNB Smart Chain.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Allocated non-EVM</div><h3>16–18</h3><p>Solana, TRON and Stellar/Soroban, using their native programmable execution environments.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Institutional &amp; internal reserve</div><h3>80–99</h3><p>80–89 are reserved institutional rail namespaces; 90–99 are reserved for Osnias internal infrastructure and protocol functions.</p></article>
+        </div>
+        <div class="actions">
+          <a class="btn" href="/osniasid/Osnias-ID_KK_Network_Registry_Annex_v0.7.1.xlsx">Download KK Network Registry</a>
+          <a class="btn" href="/osniasid/Osnias-ID-resereved adress.pdf">Reserved Network IDs PDF</a>
+        </div>
+      </section>
+
+      <section id="research-en">
+        <div class="section-label">07 · Public Research Record</div>
+        <h2>Published, citable and versioned</h2>
+        <p class="section-intro">Osnias-ID <strong>Release 2.0, dated 11 September 2026</strong>, is publicly archived and citable through both HAL and Zenodo. The repository-hosted HAL PDF below is the public Release 2.0 paper corresponding to the current specification.</p>
+        <div class="arch-links">
+          <a class="arch-link" href="https://hal.science/hal-05746489" target="_blank" rel="noopener noreferrer"><strong>HAL — hal-05746489 →</strong><span>Release 2.0 preprint · 11 September 2026 · Denis Bouzon · CC BY 4.0.</span></a>
+          <a class="arch-link" href="https://zenodo.org/records/22704626" target="_blank" rel="noopener noreferrer"><strong>Zenodo — record 22704626 →</strong><span>Release 2.0 permanent public research archive record.</span></a>
+          <a class="arch-link" href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer"><strong>ORCID — Denis Bouzon →</strong><span>0009-0007-8894-8902</span></a>
+          <a class="arch-link" href="/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf"><strong>HAL White Paper PDF →</strong><span>Release 2.0 HAL PDF hosted in the Osnias Clearing repository.</span></a>
+        </div>
+      </section>
+
+      <section id="scope-en">
+        <div class="section-label">08 · Scope Boundary</div>
+        <h2>What Osnias-ID is — and is not</h2>
+        <p class="section-intro">Osnias-ID is an internal Osnias Clearing identifier and registry reference for interchain clearing. It is not a bank account number, legal-entity identifier, wallet address, regulatory authorization number, security, token or credential of legal status. <strong>KK</strong> and <strong>NNN</strong> are allocated by Osnias Clearing; <strong>MMM</strong> carries the ISO 4217 numeric monetary code; <strong>WW</strong> records the clearing-cycle duration in weeks; <strong>SSSSSSS</strong> is allocated by the authorized server inside that server/currency/cycle namespace; and <strong>XX</strong> is calculated under the Osnias-defined checksum rule. References to ISO 4217, ISO 20022, LEI, UID/CHE, FINMA or other external frameworks are interoperability references only and do not imply certification, regulatory status or endorsement.</p>
+      </section>
+    </main>
+  </div>
+
+  <div data-lang-panel="fr" hidden>
+    <header>
+      <div class="container">
+        <section class="hero">
+          <div class="hero-grid">
+            <div>
+              <div class="eyebrow">Spécification publique · Clearing multi-chaînes · Version 2.0 · 11 septembre 2026</div>
+              <h1>Osnias-ID</h1>
+              <p class="hero-lead"><strong>Un identifiant inter-chaînes interne pour le clearing multi-chaînes.</strong> La version 2.0 introduit un identifiant compact de compte de clearing à 19 chiffres intégrant à la fois le code monétaire ISO 4217 et la durée du cycle de clearing en semaines, tout en préservant la séparation entre identité juridique, identité du compte de clearing et adresses techniques de portefeuille.</p>
+
+              <div class="arch-note">
+                <strong>Version 2.0 · 11 septembre 2026</strong><br/>
+                Cette version majeure renforce l’identité du compte de clearing en liant chaque Osnias-ID, dès sa création, à un rail monétaire et à un cycle de clearing. L’identifiant décimal complet de 19 chiffres tient dans un entier non signé de 64 bits (<code>uint64</code>), soit une représentation on-chain complète sur 8 octets.
+              </div>
+
+              <div class="actions">
+                <a class="btn btn-primary" href="/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf">Lire le White Paper</a>
+                <a class="btn" href="#multi-chain-architecture-fr">Architecture des registres</a>
+                <a class="btn" href="https://hal.science/hal-05746489" target="_blank" rel="noopener noreferrer">HAL · hal-05746489</a>
+                <a class="btn" href="https://zenodo.org/records/22704626" target="_blank" rel="noopener noreferrer">Zenodo</a>
+              </div>
+            </div>
+
+            <figure class="hero-illustration">
+              <img src="/osniasid/osniasid.jpg"
+                   alt="Osnias-ID — identifiant inter-chaînes de clearing"
+                   loading="eager"
+                   decoding="async"/>
+            </figure>
+          </div>
+        </section>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="why-fr">
+        <div class="section-label">01 · Intention de conception</div>
+        <h2>Pourquoi Osnias-ID ?</h2>
+        <p class="section-intro">Osnias-ID a été conçu pour fournir à Osnias Clearing une référence interne compacte, utilisable sur différentes blockchains capables d’héberger des mécanismes d’escrow, indépendamment du système d’adressage natif, du modèle de compte ou de l’environnement d’exécution propre à chaque chaîne.</p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Indépendant de la chaîne</div><h3>Une référence inter-chaînes interne unique</h3><p>L’identifiant conserve sa signification dans l’architecture inter-chaînes Osnias et ne dépend pas du format natif d’un portefeuille blockchain.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Messagerie compacte</div><h3>19 chiffres au lieu de répéter les données d’identité</h3><p>Les messages de clearing peuvent transporter l’Osnias-ID et résoudre, lorsque nécessaire, les informations détaillées du participant via le registre.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Résolution de contrepartie</div><h3>Identifier le compte de clearing</h3><p>Une créance, une facture ou une demande de clearing peut référencer un Osnias-ID plutôt que de reposer uniquement sur une adresse hexadécimale de portefeuille.</p></article>
+        </div>
+      </section>
+
+      <section id="format-fr">
+        <div class="section-label">02 · Format de l’identifiant</div>
+        <h2>Format déterministe à 19 chiffres · Version 2.0</h2>
+        <p class="section-intro">La version 2.0 lie directement dans l’identifiant un compte de clearing à son réseau, son serveur autorisé, son unité monétaire et son cycle de clearing. La devise et le cycle deviennent ainsi des attributs d’identité au niveau protocolaire plutôt que des métadonnées off-chain modifiables.</p>
+
+        <div class="arch-note"><strong>KK-NNN-MMM-WW-SSSSSSS-XX</strong></div>
+
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">KK</div><h3>Espace de noms réseau</h3><p>2 chiffres · réseau compatible escrow / espace de noms de rail attribué par Osnias.</p></article>
+          <article class="arch-card"><div class="arch-kicker">NNN</div><h3>Nœud autorisé</h3><p>3 chiffres · code du serveur autorisé / nœud d’escrow attribué par Osnias.</p></article>
+          <article class="arch-card"><div class="arch-kicker">MMM</div><h3>Code monétaire</h3><p>3 chiffres · code monétaire numérique ISO 4217, par ex. USD 840, EUR 978, CHF 756.</p></article>
+          <article class="arch-card"><div class="arch-kicker">WW</div><h3>Cycle de clearing</h3><p>2 chiffres · durée du cycle de clearing exprimée en semaines, par ex. 01 = 7 jours, 04 = 28 jours, 13 = 91 jours.</p></article>
+          <article class="arch-card"><div class="arch-kicker">SSSSSSS</div><h3>Séquence du compte</h3><p>7 chiffres · séquence locale du compte de clearing dans l’espace de noms serveur / devise / cycle.</p></article>
+          <article class="arch-card"><div class="arch-kicker">XX</div><h3>Somme de contrôle</h3><p>2 chiffres · checksum calculé selon la règle MOD-97 définie par Osnias.</p></article>
+        </div>
+
+        <p class="section-intro">L’identifiant complet contient <strong>19 chiffres décimaux</strong>. Son espace décimal maximal reste inférieur à 10<sup>19</sup>, ce qui tient dans un entier non signé de 64 bits. La représentation décimale lisible peut donc être encodée on-chain dans une seule valeur <strong><code>uint64</code> / 8 octets</strong>, puis restituée par l’interface sous sa forme décimale structurée.</p>
+
+        <div class="arch-note"><strong>Invariant monétaire et de cycle — Version 2.0 :</strong> la devise encodée dans <strong>MMM</strong> et le cycle de clearing encodé dans <strong>WW</strong> sont figés à la création de l’Osnias-ID et doivent correspondre à l’escrow et à la clearing room associés. Toute incompatibilité doit provoquer un rejet en mode fail-closed.</div>
+
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Liaison devise</div><h3>MMM · ISO 4217</h3><p>Le compte de clearing est intrinsèquement associé à une seule unité monétaire normalisée. Un compte de clearing USD ne peut pas être admis dans un rail EUR, CNY ou autre.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Liaison cycle</div><h3>WW · Nombre de semaines</h3><p>Le compte de clearing est intrinsèquement associé à la durée de sa clearing room. Un compte à 7 jours ne peut pas être routé silencieusement vers une clearing room de 28 ou 91 jours.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Forme on-chain compacte</div><h3>uint64 · 8 octets</h3><p>L’OID complet de 19 chiffres utilise le conteneur entier 64 bits tout en restant lisible en décimal et compact en stockage smart contract.</p></article>
+        </div>
+      </section>
+
+      <section id="multi-chain-architecture-fr">
+        <div class="section-label">03 · Architecture des registres multi-chaînes</div>
+        <h2>Un Osnias-ID à travers différents réseaux d’escrow</h2>
+        <p class="section-intro">Osnias-ID fournit la référence commune de clearing entre le compte d’escrow natif sur son réseau ou rail local et le compte de clearing correspondant sur Sei. Chaque réseau d’escrow conserve son propre identifiant natif — par exemple une adresse EVM 0x, une adresse Solana, une adresse TRON ou un identifiant de compte bancaire — tandis que l’Osnias-ID constitue l’identifiant de clearing commun utilisé par les deux registres.</p>
+        <div class="arch-note"><strong>Identifiant du compte d’escrow natif → Registre du réseau d’escrow → Osnias-ID → Registre de clearing Sei → Adresse locale 0x de clearing sur Sei</strong></div>
+        <figure class="arch-diagram">
+          <img src="/osniasid/osniasid.jpg" alt="Architecture multi-chaînes Osnias-ID : registre du réseau d’escrow et registre de clearing Sei liés par le même Osnias-ID" loading="lazy" decoding="async"/>
+          <figcaption>Le registre du réseau d’escrow associe de manière immuable le compte d’escrow local, via l’identifiant natif de ce réseau, à son Osnias-ID. Le registre de clearing Sei associe le même Osnias-ID à l’adresse locale 0x de clearing correspondante sur Sei.</figcaption>
+        </figure>
+        <div class="actions">
+          <a class="btn btn-primary" href="/osniasid/Osnias-ID_KK_Network_Registry_Annex_v0.7.1.xlsx">Correspondance réseau ↔ Osnias-ID</a>
+          <a class="btn" href="/osniasid/Osnias-ID-resereved adress.pdf">Registre réseau KK PDF</a>
+        </div>
+      </section>
+
+      <section id="layers-fr">
+        <div class="section-label">04 · Architecture d’identité</div>
+        <h2>Entité juridique → Compte de clearing → Adresse technique</h2>
+        <p class="section-intro">Un Osnias-ID n’est pas un identifiant d’entreprise. Une société ou une institution peut détenir plusieurs comptes de clearing Osnias-ID, tous reliés par le registre Osnias à la même entité juridique.</p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Identité</div><h3>Entité juridique</h3><p>SIREN · UID/CHE · LEI · autre identifiant reconnu.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Clearing</div><h3>Compte(s) de clearing Osnias-ID</h3><p>Identifiant persistant du compte de clearing.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Exécution</div><h3>Adresse(s) technique(s)</h3><p>Portefeuille autorisé / point d’exécution.</p></article>
+        </div>
+        <div class="arch-note"><strong>Principe central :</strong> un Osnias-ID n’est pas un identifiant d’entité juridique. Il identifie un compte de clearing relié à un participant identifié.</div>
+      </section>
+
+      <section id="registry-fr">
+        <div class="section-label">05 · Registre &amp; contrôle d’accès</div>
+        <h2>Pas d’Osnias-ID valide, pas d’admission au clearing</h2>
+        <p class="section-intro">Le registre Osnias constitue la couche de résolution de référence entre un compte de clearing, son participant identifié et ses adresses opérationnelles actuellement autorisées. La version 2.0 ajoute deux invariants d’admission avant l’acceptation d’une demande de clearing : le code monétaire de l’OID doit correspondre à l’escrow et au rail de clearing, et le cycle de l’OID doit correspondre à la clearing room cible. La validité du checksum n’est jamais suffisante à elle seule : l’identifiant doit également être résolu vers un enregistrement actif et éligible.</p>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">Résoudre</div><h3>Wallet → Osnias-ID</h3><p>L’adresse technique initiatrice ou destinataire est résolue vers un compte de clearing autorisé.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Valider</div><h3>Statut et autorisation</h3><p>Le système vérifie le statut du registre, l’autorisation du wallet et les règles applicables d’éligibilité réseau ou transactionnelle.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Fail closed</div><h3>Invariant d’admission</h3><p>Si le statut du registre, le checksum, le code monétaire ou la compatibilité du cycle de clearing ne peuvent pas être résolus et validés, la demande de clearing est rejetée.</p></article>
+        </div>
+      </section>
+
+      <section id="network-codes-fr">
+        <div class="section-label">06 · Registre réseau KK</div>
+        <h2>Espace de noms réseau préalloué et réservé</h2>
+        <p class="section-intro">KK est l’espace de noms réseau ou rail Osnias sur deux chiffres. KK=00 est réservé de manière permanente comme valeur nulle / non attribuée. Les codes de réseaux publics attribués identifient des environnements blockchain compatibles avec l’escrow, tandis que des plages dédiées sont réservées aux futurs réseaux publics, rails institutionnels et infrastructures internes Osnias. Un code réservé constitue une allocation d’espace de noms et n’implique ni intégration, ni validation, ni participation, ni approbation.</p>
+        <figure class="arch-diagram">
+          <img src="/osniasid/OsniasID-Others-match-table.jpg" alt="Registre réseau KK Osnias-ID et formats de comptes d’escrow natifs sur rails EVM, non-EVM et bancaires institutionnels" loading="lazy" decoding="async"/>
+          <figcaption>Correspondance Osnias-ID entre espaces de noms réseau KK et identifiants de comptes d’escrow natifs sur réseaux blockchain publics et rails bancaires institutionnels.</figcaption>
+        </figure>
+        <div class="arch-grid">
+          <article class="arch-card"><div class="arch-kicker">EVM attribués</div><h3>01–06</h3><p>Ethereum, Sei EVM, Arbitrum One, Avalanche C-Chain, Base et BNB Smart Chain.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Non-EVM attribués</div><h3>16–18</h3><p>Solana, TRON et Stellar/Soroban, avec leurs environnements d’exécution programmables natifs.</p></article>
+          <article class="arch-card"><div class="arch-kicker">Réserve institutionnelle &amp; interne</div><h3>80–99</h3><p>80–89 sont réservés aux espaces de noms de rails institutionnels ; 90–99 sont réservés à l’infrastructure interne et aux fonctions protocolaires Osnias.</p></article>
+        </div>
+        <div class="actions">
+          <a class="btn" href="/osniasid/Osnias-ID_KK_Network_Registry_Annex_v0.7.1.xlsx">Télécharger le registre réseau KK</a>
+          <a class="btn" href="/osniasid/Osnias-ID-resereved adress.pdf">PDF des identifiants réseau réservés</a>
+        </div>
+      </section>
+
+      <section id="research-fr">
+        <div class="section-label">07 · Archive publique de recherche</div>
+        <h2>Publié, citable et versionné</h2>
+        <p class="section-intro">Osnias-ID <strong>Version 2.0, datée du 11 septembre 2026</strong>, est archivé publiquement et citable via HAL et Zenodo. Le PDF HAL hébergé dans le dépôt correspond au document public de Version 2.0 associé à la spécification actuelle.</p>
+        <div class="arch-links">
+          <a class="arch-link" href="https://hal.science/hal-05746489" target="_blank" rel="noopener noreferrer"><strong>HAL — hal-05746489 →</strong><span>Prépublication Version 2.0 · 11 septembre 2026 · Denis Bouzon · CC BY 4.0.</span></a>
+          <a class="arch-link" href="https://zenodo.org/records/22704626" target="_blank" rel="noopener noreferrer"><strong>Zenodo — record 22704626 →</strong><span>Archive publique permanente de la Version 2.0.</span></a>
+          <a class="arch-link" href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer"><strong>ORCID — Denis Bouzon →</strong><span>0009-0007-8894-8902</span></a>
+          <a class="arch-link" href="/osniasid/Osnias-ID_White_Paper_Release_2.0-HAL.pdf"><strong>PDF White Paper HAL →</strong><span>PDF HAL de la Version 2.0 hébergé dans le dépôt Osnias Clearing.</span></a>
+        </div>
+      </section>
+
+      <section id="scope-fr">
+        <div class="section-label">08 · Périmètre</div>
+        <h2>Ce qu’est Osnias-ID — et ce qu’il n’est pas</h2>
+        <p class="section-intro">Osnias-ID est un identifiant interne d’Osnias Clearing et une référence de registre pour le clearing inter-chaînes. Ce n’est ni un numéro de compte bancaire, ni un identifiant d’entité juridique, ni une adresse de portefeuille, ni un numéro d’autorisation réglementaire, ni un titre, ni un token, ni une preuve de statut juridique. <strong>KK</strong> et <strong>NNN</strong> sont attribués par Osnias Clearing ; <strong>MMM</strong> porte le code monétaire numérique ISO 4217 ; <strong>WW</strong> enregistre la durée du cycle de clearing en semaines ; <strong>SSSSSSS</strong> est attribué par le serveur autorisé à l’intérieur de son espace de noms serveur / devise / cycle ; et <strong>XX</strong> est calculé selon la règle de checksum définie par Osnias. Les références à ISO 4217, ISO 20022, LEI, UID/CHE, FINMA ou à d’autres cadres externes sont uniquement des références d’interopérabilité et n’impliquent ni certification, ni statut réglementaire, ni approbation.</p>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="container">
+      © 2026 Osnias Clearing · Osnias-ID Release 2.0 · 11 September 2026 · CC BY 4.0<br/>
+      Denis Bouzon · ORCID
+      <a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer">0009-0007-8894-8902</a>
+      · HAL
+      <a href="https://hal.science/hal-05746489" target="_blank" rel="noopener noreferrer">hal-05746489</a>
+      · Zenodo
+      <a href="https://zenodo.org/records/22704626" target="_blank" rel="noopener noreferrer">22704626</a>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      "use strict";
+
+      const panels = document.querySelectorAll("[data-lang-panel]");
+      const buttons = document.querySelectorAll("[data-lang-button]");
+
+      function setLanguage(lang){
+        panels.forEach(function(panel){
+          panel.hidden = panel.getAttribute("data-lang-panel") !== lang;
+        });
+
+        buttons.forEach(function(button){
+          const active = button.getAttribute("data-lang-button") === lang;
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+          button.classList.toggle("btn-primary", active);
+        });
+
+        document.documentElement.lang = lang;
+        try{ localStorage.setItem("osnias-lang", lang); }catch(e){}
+      }
+
+      buttons.forEach(function(button){
+        button.addEventListener("click", function(){
+          setLanguage(button.getAttribute("data-lang-button"));
+        });
+      });
+
+      let initial = "en";
+      try{
+        const saved = localStorage.getItem("osnias-lang");
+        if(saved === "fr" || saved === "en") initial = saved;
+      }catch(e){}
+
+      setLanguage(initial);
+    })();
+  </script>
+
+  <script async data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
