@@ -9,6 +9,15 @@
   <link rel="stylesheet" href="/assets/css/osnias.css">
   <script src="/assets/js/osnias-nav.js" defer></script>
   <script src="/assets/js/osnias-seo.js" defer></script>
+  <style>
+    .hero-split { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 3rem; align-items: center; }
+    .hero-media { margin: 0; justify-self: end; width: 100%; max-width: 480px; }
+    .hero-media img { display: block; width: 100%; height: auto; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35); }
+    @media (max-width: 860px) {
+      .hero-split { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-media { justify-self: start; max-width: 100%; }
+    }
+  </style>
 </head>
 <body>
   <nav class="site-nav-fixed" aria-label="Navigation principale">
@@ -34,13 +43,18 @@
     </div>
   </div>
   <header>
-    <div class="container hero">
+    <div class="container hero hero-split">
+      <div class="hero-text">
       <p class="eyebrow">Documentation · Release 1.1</p>
       <h1 data-fr="Règles de clearing" data-en="Clearing Rules">Règles de clearing</h1>
       <p class="hero-role" data-fr="Revue réglementaire et technique" data-en="Regulatory and Technical Review">Revue réglementaire et technique</p>
       
       <p class="hero-lead" data-fr="Ce document présente le cadre de clearing multilatéral d’Osnias : des règles déterministes et auditables, une séparation entre le calcul des positions, le contrôle des risques et l’exécution du règlement, et une lecture au regard des référentiels internationaux." data-en="This document presents the Osnias multilateral clearing framework: deterministic, auditable rules, a separation between position calculation, risk controls and settlement execution, and an analysis against international reference frameworks.">Ce document présente le cadre de clearing multilatéral d’Osnias : des règles déterministes et auditables, une séparation entre le calcul des positions, le contrôle des risques et l’exécution du règlement, et une lecture au regard des référentiels internationaux.</p>
       <p><strong>Denis Bouzon</strong> · <time datetime="2026-09-23" data-fr="23 septembre 2026" data-en="23 September 2026">23 septembre 2026</time> · <span data-fr="Français &amp; anglais" data-en="French &amp; English">Français &amp; anglais</span></p>
+      </div>
+      <figure class="hero-media">
+        <img src="./rules.jpg" width="480" height="480" alt="Plans, règle et recueil de règles de construction sur une table à dessin — illustration des règles de clearing / Drawings, ruler and building rules on a drafting table — illustrating the clearing rules">
+      </figure>
     </div>
   </header>
   <main class="container">
