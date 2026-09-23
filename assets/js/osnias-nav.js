@@ -26,7 +26,7 @@
     const items = [
       {
         label: "Architecture",
-        href: prefix + "/architecture/"
+        href: prefix + "/architecture/architecture.html"
       },
       {
         label: "Official Deployment",
@@ -42,10 +42,10 @@
       },
       {
         label: "Osnias-ID",
-        href: prefix + "/osniasid/"
+        href: prefix + "/osniasid/osniasid.html"
       },
-        {
-        label: "Osnias-ID",
+      {
+        label: "Rules",
         href: prefix + "/rules/"
       },
       {
