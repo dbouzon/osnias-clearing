@@ -7,11 +7,24 @@
   <meta name="description" content="Osnias Clearing — Règles de clearing et revue réglementaire et technique. Release 1.0 : PDF français et anglais, publication Zenodo et notice HAL.">
   <title>Règles de clearing · Osnias Clearing</title>
   <link rel="stylesheet" href="/assets/css/osnias.css">
+  <script src="/assets/js/osnias-nav.js" defer></script>
+  <script src="/assets/js/osnias-seo.js" defer></script>
 </head>
 <body>
   <nav class="site-nav-fixed" aria-label="Navigation principale">
     <div class="site-nav-inner">
       <a class="site-nav-brand" href="/" aria-label="Osnias Clearing — accueil">OSNIAS <span>CLEARING</span></a>
+      <span class="site-nav-notice">UNDER DEVELOPMENT · NO TOKEN SALE</span>
+      <div class="site-nav-buttons">
+        <a href="/architecture/architecture.html">Architecture</a>
+        <a href="/deployment/deployment.html">Official Deployment</a>
+        <a href="/security/">Security</a>
+        <a href="/regulation/regulation.html">Regulation</a>
+        <a href="/osniasid/osniasid.html">Osnias-ID</a>
+        <a href="/rules/" aria-current="page">Rules</a>
+        <a href="/documentation/documentation.html">Documentation</a>
+        <a href="/partnership/">Partnership</a>
+      </div>
     </div>
   </nav>
   <div class="site-nav-inner">
@@ -95,6 +108,15 @@
         });
         document.title = (language === 'en' ? 'Clearing Rules' : 'Règles de clearing') + ' · Osnias Clearing';
         document.querySelector('meta[name="description"]').content = descriptions[language];
+        const socialMetadata = {
+          'og:title': document.title,
+          'og:description': descriptions[language],
+          'og:locale': language === 'en' ? 'en_US' : 'fr_FR'
+        };
+        Object.entries(socialMetadata).forEach(([property, content]) => {
+          const meta = document.querySelector('meta[property="' + property + '"]');
+          if (meta) meta.setAttribute('content', content);
+        });
         document.querySelector('nav').setAttribute('aria-label', language === 'en' ? 'Main navigation' : 'Navigation principale');
         document.querySelector('.site-nav-brand').setAttribute('aria-label', language === 'en' ? 'Osnias Clearing — home' : 'Osnias Clearing — accueil');
         try { localStorage.setItem('osnias-rules-language', language); } catch (_) {}
@@ -108,6 +130,7 @@
       const requested = new URLSearchParams(window.location.search).get('lang');
       if (requested === 'en' || requested === 'fr') initial = requested;
       setLanguage(initial);
+      document.addEventListener('DOMContentLoaded', () => setLanguage(document.documentElement.lang));
     })();
   </script>
 </body>
