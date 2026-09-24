@@ -25,30 +25,30 @@
 
     const items = [
       {
-        label: "Architecture",
+        label: "1-Architecture",
         href: prefix + "/architecture/"
+      },
+        {
+        label: "2-Security",
+        href: prefix + "/security/"
+      },
+        {
+        label: "3-Osnias-ID",
+        href: prefix + "/osniasid/"
+      },
+        {
+        label: "4-Rules",
+        href: prefix + "/rules/"
       },
       {
         label: "Official Deployment",
         href: prefix + "/deployment/deployment.html"
       },
-      {
-        label: "Security",
-        href: prefix + "/security/"
-      },
-      {
+    {
         label: "Regulation",
         href: prefix + "/regulation/regulation.html"
       },
-      {
-        label: "Osnias-ID",
-        href: prefix + "/osniasid/"
-      },
-      {
-        label: "Rules",
-        href: prefix + "/rules/"
-      },
-      {
+  {
         label: "Documentation",
         href: prefix + "/documentation/documentation.html"
       },
