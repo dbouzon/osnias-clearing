@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Osnias Clearing — Regulatory Analysis / Analyse réglementaire · Livre 5</title>
+  <meta name="description" content="Osnias Clearing — bilingual regulatory analysis based on Livre 5: technical facts, functional perimeter, MiCA qualification questions, Sei clearing register, external escrow, node responsibilities and protocol invariants." />
+  <meta name="author" content="Denis Bouzon" />
+  <meta name="creator" content="Denis Bouzon" />
+  <meta name="publisher" content="Osnias Clearing" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#050814" />
+
+  <link rel="canonical" href="https://www.osnias-clearing.com/regulation/regulation.html" />
+  <link rel="author" href="https://orcid.org/0009-0007-8894-8902" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+  <meta property="og:title" content="Osnias Clearing — Regulatory Analysis / Analyse réglementaire · Livre 5" />
+  <meta property="og:description" content="Bilingual first legal analysis of the Osnias Clearing protocol under MiCA, prepared as a response to the AMF email of 22 September 2026." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.osnias-clearing.com/regulation/regulation.html" />
+  <meta property="og:site_name" content="Osnias Clearing" />
+  <meta property="og:image" content="https://www.osnias-clearing.com/index-picture.png" />
+  <meta property="og:image:alt" content="Osnias Clearing architecture" />
+
+  <meta name="citation_author" content="Denis Bouzon" />
+  <meta name="citation_title" content="Première analyse juridique au regard du règlement (UE) 2023/1114 (MiCA)" />
+  <meta name="citation_publication_date" content="2026-09-25" />
+  <meta name="citation_pdf_url" content="https://www.osnias-clearing.com/regulation/Osnias_Clearing_Livre_5_AMF.pdf" />
+
+  <link rel="stylesheet" href="/assets/css/osnias.css"/>
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+
+  <style>
+    .lang-switcher{display:flex;gap:.55rem;align-items:center;justify-content:flex-end;margin:0 0 1rem}
+    .lang-btn{border:1px solid rgba(255,255,255,.18);background:transparent;color:inherit;border-radius:999px;padding:.5rem .8rem;cursor:pointer;font:inherit}
+    .lang-btn[aria-pressed="true"]{background:rgba(255,255,255,.10)}
+    [data-lang-panel]{display:none}
+    [data-lang-panel].is-active{display:block}
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://www.osnias-clearing.com/#denis-bouzon",
+        "name": "Denis Bouzon",
+        "sameAs": ["https://orcid.org/0009-0007-8894-8902"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.osnias-clearing.com/#website",
+        "url": "https://www.osnias-clearing.com/",
+        "name": "Osnias Clearing"
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "@id": "https://www.osnias-clearing.com/regulation/regulation.html#article",
+        "headline": "Première analyse juridique au regard du règlement (UE) 2023/1114 (MiCA)",
+        "alternativeHeadline": "Osnias Clearing — Livre 5 — First Legal Analysis",
+        "description": "Bilingual first legal analysis of the Osnias Clearing protocol, its clearing tokens, technical invariants and allocation of responsibilities.",
+        "url": "https://www.osnias-clearing.com/regulation/regulation.html",
+        "author": {"@id": "https://www.osnias-clearing.com/#denis-bouzon"},
+        "datePublished": "2026-09-25",
+        "dateModified": "2026-09-25",
+        "inLanguage": ["fr", "en"],
+        "isPartOf": {"@id": "https://www.osnias-clearing.com/#website"}
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+
+<div class="site-nav-fixed">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="/index.html">OSNIAS <span>CLEARING</span></a>
+    <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
+  </div>
+</div>
+
+<header>
+  <div class="container">
+    <section class="hero">
+      <div class="lang-switcher" aria-label="Language selector">
+        <button type="button" class="lang-btn" data-lang-btn="en" aria-pressed="true">🇬🇧 English</button>
+        <button type="button" class="lang-btn" data-lang-btn="fr" aria-pressed="false">🇫🇷 Français</button>
+      </div>
+
+      <div data-lang-panel="en" class="is-active">
+        <div class="hero-grid single">
+          <div>
+            <div class="eyebrow">Regulation · Livre 5 · First legal analysis</div>
+            <h1>Regulatory Analysis</h1>
+            <div class="hero-role">Technical facts first. Legal qualification second.</div>
+            <p class="hero-lead">
+              This page presents the regulatory perimeter described in <strong>Livre 5</strong>, prepared as a response to the email sent by AMF Innovation &amp; Finance Digitale on 22 September 2026. The protocol is described as it is designed and documented: technical fact → functional effect → possible legal qualification → point for discussion with the authority.
+            </p>
+            <div class="tags">
+              <span class="tag tag-accent">Sei clearing register</span>
+              <span class="tag">External escrow</span>
+              <span class="tag">1:1 chamber invariant</span>
+              <span class="tag">Fail-closed controls</span>
+              <span class="tag">No governance token</span>
+              <span class="tag">No Osnias custody</span>
+            </div>
+            <div class="actions">
+              <a class="btn btn-primary" href="/regulation/Osnias_Clearing_Livre_5_AMF.pdf" target="_blank" rel="noopener noreferrer">Open Livre 5 PDF ↗</a>
+              <a class="btn" href="/architecture/">Architecture</a>
+              <a class="btn" href="/rules/">Clearing Rules</a>
+              <a class="btn" href="/security/">Security</a>
+            </div>
+          </div>
+
+          <aside class="panel">
+            <div class="panel-title">Current project status</div>
+            <div class="stats">
+              <div class="stat"><small>Legal entity</small><strong>Not yet constituted</strong><span>Current testnet project held by Denis Bouzon</span></div>
+              <div class="stat"><small>Deployments</small><strong>Testnet</strong><span>Sei testnet + Ethereum Sepolia</span></div>
+              <div class="stat"><small>Commercial service</small><strong>None</strong><span>No service currently offered to the public</span></div>
+              <div class="stat"><small>Future governance</small><strong>Swiss Verein</strong><span>Osnias Clearing Consortium — contemplated structure</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div data-lang-panel="fr" lang="fr">
+        <div class="hero-grid single">
+          <div>
+            <div class="eyebrow">Régulation · Livre 5 · Première analyse juridique</div>
+            <h1>Analyse réglementaire</h1>
+            <div class="hero-role">Les faits techniques d’abord. La qualification juridique ensuite.</div>
+            <p class="hero-lead">
+              Cette page présente le périmètre réglementaire décrit dans le <strong>Livre 5</strong>, préparé en réponse au courriel de l’équipe AMF Innovation &amp; Finance digitale du 22 septembre 2026. Le protocole est décrit tel qu’il est conçu et documenté : fait technique → fait fonctionnel → qualification juridique possible → point à discuter avec l’autorité.
+            </p>
+            <div class="tags">
+              <span class="tag tag-accent">Registre de clearing sur Sei</span>
+              <span class="tag">Séquestre externe</span>
+              <span class="tag">Invariant 1:1 de chambre</span>
+              <span class="tag">Contrôles fail-closed</span>
+              <span class="tag">Aucun token de gouvernance</span>
+              <span class="tag">Aucune conservation par Osnias</span>
+            </div>
+            <div class="actions">
+              <a class="btn btn-primary" href="/regulation/Osnias_Clearing_Livre_5_AMF.pdf" target="_blank" rel="noopener noreferrer">Ouvrir le Livre 5 PDF ↗</a>
+              <a class="btn" href="/architecture/">Architecture</a>
+              <a class="btn" href="/rules/">Règles de clearing</a>
+              <a class="btn" href="/security/">Sécurité</a>
+            </div>
+          </div>
+
+          <aside class="panel">
+            <div class="panel-title">Situation actuelle du projet</div>
+            <div class="stats">
+              <div class="stat"><small>Personne morale</small><strong>Non constituée à ce jour</strong><span>Projet testnet actuellement détenu par Denis Bouzon</span></div>
+              <div class="stat"><small>Déploiements</small><strong>Testnet</strong><span>Sei testnet + Ethereum Sepolia</span></div>
+              <div class="stat"><small>Service commercial</small><strong>Aucun</strong><span>Aucun service actuellement proposé au public</span></div>
+              <div class="stat"><small>Gouvernance future</small><strong>Verein suisse</strong><span>Osnias Clearing Consortium — structure envisagée</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </div>
+</header>
+
+<main class="container">
+
+  <div data-lang-panel="en" class="is-active">
+    <section id="amf-response-en">
+      <div class="section-label">01 · AMF response</div>
+      <h2>Purpose and method of Livre 5</h2>
+      <p class="section-intro">
+        Livre 5 is a first legal analysis of the Osnias Clearing protocol. It does not redesign the protocol to fit a presumed regulatory category. It describes the published architecture and its invariants first, then tests possible legal qualifications against those facts.
+      </p>
+      <div class="notice"><strong>Method.</strong> Technical fact → functional effect → possible legal qualification → point remaining for discussion with the AMF.</div>
+    </section>
+
+    <section id="architecture-en">
+      <div class="section-label">02 · Architecture invariant</div>
+      <h2>Sei clearing register — external escrow</h2>
+      <p class="section-intro">Osnias separates the canonical clearing register from the escrow layer. The two layers are not merged and are not carried by the same technical infrastructure.</p>
+      <div class="grid-3">
+        <article class="card"><div class="card-kicker">Clearing layer</div><h3>Sei</h3><p>Clearing tokens are recorded and transferred on Sei. Each clearing account is identified by an Osnias-ID containing the network, node, currency and clearing-cycle fields.</p></article>
+        <article class="card"><div class="card-kicker">Escrow layer — branch A</div><h3>EVM</h3><p>The escrow may be maintained on an EVM infrastructure such as Ethereum or Arbitrum through an escrow contract holding eligible assets, including authorised EMTs such as USDC or EURC.</p></article>
+        <article class="card"><div class="card-kicker">Escrow layer — branch B</div><h3>CeFi / SEPA</h3><p>The escrow may alternatively be maintained in official currency on a segregated bank account using the SEPA rail, with the external banking layer connected to the protocol.</p></article>
+      </div>
+      <div class="notice"><strong>Structural invariant.</strong> Sei = clearing register and clearing tokens · EVM or CeFi/SEPA = external escrow · the 1:1 chamber invariant provides the consistency link between the two layers.</div>
+    </section>
+
+    <section id="token-invariants-en">
+      <div class="section-label">03 · Clearing-token invariants</div>
+      <h2>A closed registry token, not a general-purpose crypto-asset</h2>
+      <div class="grid-2">
+        <article class="card"><h3>One chamber · one currency · one cycle</h3><p>A clearing token belongs to a defined clearing chamber, currency and cycle. Tokens from different currencies or different cycles are not merged, diluted or mixed.</p></article>
+        <article class="card"><h3>No third-party smart-contract use</h3><p>The token is not designed as a generic programmable asset. Use in third-party smart contracts, DEXs, CEXs, AMMs, liquidity pools, lending, farming, staking or yield mechanisms is excluded by the protocol perimeter.</p></article>
+        <article class="card"><h3>No swap</h3><p>The clearing token is not designed to be freely exchanged against another token or crypto-asset. Swap functionality is outside the permitted code path and functional perimeter.</p></article>
+        <article class="card"><h3>Temporal-oracle control</h3><p>MINT, BURN, P2P and clearing states are governed by the temporal oracle. Outside the authorised state, the relevant action is rejected.</p></article>
+        <article class="card"><h3>P2P only between registered members</h3><p>P2P is permitted only between addresses mapped to valid Osnias-ID records. A Sei 0x address that is not mapped to a valid Osnias-ID is rejected fail-closed.</p></article>
+        <article class="card"><h3>No cross-chain token transport</h3><p>The clearing token remains on Sei. The architecture does not use LayerZero, bridging, wrapping or token migration to move the clearing token to another chain.</p></article>
+        <article class="card"><h3>1:1 chamber conservation</h3><p>For each chamber, aggregate eligible escrow must correspond to the aggregate quantity of clearing tokens within the same chamber, currency and cycle perimeter.</p></article>
+        <article class="card"><h3>Fail-closed by default</h3><p>A mismatch in Osnias-ID, node, currency, cycle, registry state, escrow state or oracle state causes the operation to be rejected rather than silently accepted.</p></article>
+      </div>
+    </section>
+
+    <section id="cycle-en">
+      <div class="section-label">04 · Clearing cycle</div>
+      <h2>24-hour clearing window — P2P closed and balances frozen</h2>
+      <p class="section-intro">During the 24-hour clearing window, P2P is closed and clearing-token balances are frozen in each member wallet. This provides the canonical snapshot used to calculate member positions, aggregate them by node and compute the cycle netting.</p>
+      <div class="notice"><strong>Data-integrity effect.</strong> The calculation dataset cannot be changed by P2P transfers while clearing, contestation and finalisation are in progress.</div>
+    </section>
+
+    <section id="roles-en">
+      <div class="section-label">05 · Allocation of responsibilities</div>
+      <h2>Each actor remains responsible for its own perimeter</h2>
+      <table class="spec-table">
+        <tr><th>Actor</th><th>Primary perimeter</th><th>Funds / keys</th></tr>
+        <tr><td>End-user</td><td>Commercial activity, transaction initiation, accounting and tax treatment; contractual relationship with its local node</td><td>Owns its funds and keeps its own wallet seed phrases</td></tr>
+        <tr><td>Node operator</td><td>Client relationship, onboarding, local compliance, escrow, MINT/BURN authority for its own accounts and settlement</td><td>Responsible for the escrow perimeter; no end-user seed phrases</td></tr>
+        <tr><td>Osnias Clearing</td><td>Common registry, clearing engine, temporal oracle, protocol controls, documentation and auditability</td><td>No settlement funds and no end-user private keys</td></tr>
+      </table>
+      <div class="notice"><strong>Contractual topology.</strong> Osnias contracts with node operators. End-users contract with their local node operator. Osnias has no direct contractual relationship with end-users.</div>
+    </section>
+
+    <section id="mica-en">
+      <div class="section-label">06 · Preliminary MiCA analysis</div>
+      <h2>Classification remains open beyond the general crypto-asset definition</h2>
+      <p class="section-intro">Livre 5 considers that the clearing tokens fall within MiCA's general crypto-asset definition because they are digital representations capable of being stored and transferred on DLT. The precise legal category remains open and must be assessed from the rights attached to the unit, the 1:1 escrow arrangement, the role of node operators and the protocol invariants.</p>
+      <div class="grid-3">
+        <article class="card"><h3>Possible EMT analysis</h3><p>The single-currency denomination and 1:1 escrow are relevant facts, but they do not determine the classification by themselves.</p></article>
+        <article class="card"><h3>Possible ART analysis</h3><p>ART treatment is another legal category to be tested against the actual rights and reference mechanism of the clearing token.</p></article>
+        <article class="card"><h3>Other crypto-assets</h3><p>The residual MiCA category remains relevant if the token satisfies the general definition without meeting the specific conditions of another category.</p></article>
+      </div>
+      <div class="notice"><strong>No protocol redesign is presumed.</strong> The question submitted to the authority is which regulatory qualification follows from the documented protocol as designed.</div>
+    </section>
+
+    <section id="amf-points-en">
+      <div class="section-label">07 · Points for regulatory discussion</div>
+      <h2>Questions identified in Livre 5</h2>
+      <ul class="list">
+        <li>Legal category applicable to the clearing tokens given their documented technical and functional characteristics.</li>
+        <li>Regulatory treatment of the 1:1 escrow, whether based on authorised EMTs on EVM or official currency on a bank escrow account.</li>
+        <li>Legal significance of the BURN invariant, which is limited to the opening window of each clearing cycle.</li>
+        <li>Identification of the legal issuer in a multi-node chamber where each node can MINT/BURN only for its own accounts.</li>
+        <li>Treatment of the escrow and multilateral set-off in insolvency or other collective proceedings.</li>
+      </ul>
+    </section>
+  </div>
+
+  <div data-lang-panel="fr" lang="fr">
+    <section id="amf-response-fr">
+      <div class="section-label">01 · Réponse à l’AMF</div>
+      <h2>Objet et méthode du Livre 5</h2>
+      <p class="section-intro">
+        Le Livre 5 constitue une première analyse juridique du protocole Osnias Clearing. Il ne modifie pas le protocole pour le faire entrer dans une catégorie réglementaire présupposée. Il décrit d’abord l’architecture publiée et ses invariants, puis confronte à ces faits les qualifications juridiques possibles.
+      </p>
+      <div class="notice"><strong>Méthode.</strong> Fait technique → fait fonctionnel → qualification juridique possible → point restant à discuter avec l’AMF.</div>
+    </section>
+
+    <section id="architecture-fr">
+      <div class="section-label">02 · Invariant d’architecture</div>
+      <h2>Registre de clearing sur Sei — séquestre externe</h2>
+      <p class="section-intro">Osnias sépare le registre canonique de clearing de la couche de séquestre. Les deux couches ne sont ni confondues ni portées par la même infrastructure technique.</p>
+      <div class="grid-3">
+        <article class="card"><div class="card-kicker">Couche clearing</div><h3>Sei</h3><p>Les tokens de clearing sont inscrits et transférés sur Sei. Chaque compte de clearing est identifié par un Osnias-ID intégrant notamment le réseau, le nœud, la devise et le cycle de clearing.</p></article>
+        <article class="card"><div class="card-kicker">Couche séquestre — branche A</div><h3>EVM</h3><p>Le séquestre peut être maintenu sur une infrastructure EVM telle qu’Ethereum ou Arbitrum au moyen d’un contrat de séquestre détenant des actifs éligibles, notamment des EMT autorisés tels qu’USDC ou EURC.</p></article>
+        <article class="card"><div class="card-kicker">Couche séquestre — branche B</div><h3>CeFi / SEPA</h3><p>Le séquestre peut alternativement être maintenu en monnaie officielle sur un compte bancaire séquestre utilisant le circuit SEPA, la couche bancaire externe étant reliée au protocole.</p></article>
+      </div>
+      <div class="notice"><strong>Invariant structurel.</strong> Sei = registre et tokens de clearing · EVM ou CeFi/SEPA = séquestre externe · l’invariant 1:1 de la chambre assure le lien de cohérence entre les deux couches.</div>
+    </section>
+
+    <section id="token-invariants-fr">
+      <div class="section-label">03 · Invariants du token de clearing</div>
+      <h2>Un jeton de registre fermé, non un crypto-actif générique</h2>
+      <div class="grid-2">
+        <article class="card"><h3>Une chambre · une devise · un cycle</h3><p>Un token de clearing appartient à une chambre, une devise et un cycle déterminés. Les tokens de devises ou de cycles différents ne sont ni fusionnés, ni dilués, ni mélangés.</p></article>
+        <article class="card"><h3>Pas d’usage dans des smart contracts tiers</h3><p>Le token n’est pas conçu comme un actif programmable générique. Son utilisation dans des smart contracts tiers, DEX, CEX, AMM, pools de liquidité, lending, farming, staking ou mécanismes de yield est exclue du périmètre du protocole.</p></article>
+        <article class="card"><h3>Pas de swap</h3><p>Le token de clearing n’est pas conçu pour être librement échangé contre un autre token ou crypto-actif. Le swap est exclu du chemin de code autorisé et du périmètre fonctionnel.</p></article>
+        <article class="card"><h3>Contrôle par l’Oracle temporel</h3><p>Les états MINT, BURN, P2P et clearing sont gouvernés par l’Oracle temporel. Hors de l’état autorisé, l’opération concernée est rejetée.</p></article>
+        <article class="card"><h3>P2P réservé aux membres enregistrés</h3><p>Le P2P n’est admis qu’entre des adresses mappées vers des Osnias-ID valides. Une adresse 0x sur Sei non associée à un Osnias-ID valide est rejetée en mode fail-closed.</p></article>
+        <article class="card"><h3>Pas de transport cross-chain du token</h3><p>Le token de clearing reste sur Sei. L’architecture n’utilise ni LayerZero, ni bridge, ni wrapping, ni mécanisme de migration permettant de déplacer le token vers une autre chaîne.</p></article>
+        <article class="card"><h3>Conservation 1:1 de la chambre</h3><p>Pour chaque chambre, l’escrow éligible agrégé doit correspondre à la quantité agrégée de tokens de clearing dans le même périmètre de chambre, devise et cycle.</p></article>
+        <article class="card"><h3>Fail-closed par défaut</h3><p>Toute incohérence portant sur l’Osnias-ID, le nœud, la devise, le cycle, l’état du registre, l’état du séquestre ou l’état oracle entraîne le rejet de l’opération.</p></article>
+      </div>
+    </section>
+
+    <section id="cycle-fr">
+      <div class="section-label">04 · Cycle de clearing</div>
+      <h2>Fenêtre de clearing de 24 h — P2P fermé et soldes figés</h2>
+      <p class="section-intro">Pendant la fenêtre de clearing de 24 heures, le P2P est fermé et les soldes de tokens de clearing sont figés dans chaque wallet membre. Cet état fournit le snapshot canonique utilisé pour calculer les positions individuelles, les agréger par nœud et déterminer le netting du cycle.</p>
+      <div class="notice"><strong>Effet d’intégrité.</strong> Le jeu de données utilisé pour les calculs ne peut pas être modifié par des transferts P2P pendant le clearing, la contestation et la finalisation.</div>
+    </section>
+
+    <section id="roles-fr">
+      <div class="section-label">05 · Allocation des responsabilités</div>
+      <h2>Chaque acteur demeure responsable de son propre périmètre</h2>
+      <table class="spec-table">
+        <tr><th>Acteur</th><th>Périmètre principal</th><th>Fonds / clés</th></tr>
+        <tr><td>End-user</td><td>Activité commerciale, initiation des transactions, comptabilité et fiscalité ; relation contractuelle avec son nœud local</td><td>Propriétaire de ses fonds et détenteur de ses propres seed phrases</td></tr>
+        <tr><td>Opérateur de nœud</td><td>Relation client, onboarding, conformité locale, séquestre, autorité MINT/BURN pour ses propres comptes et règlement</td><td>Responsable du périmètre de séquestre ; aucune seed phrase des end-users</td></tr>
+        <tr><td>Osnias Clearing</td><td>Registre commun, moteur de clearing, Oracle temporel, contrôles protocolaires, documentation et auditabilité</td><td>Aucun fonds de règlement et aucune clé privée des end-users</td></tr>
+      </table>
+      <div class="notice"><strong>Topologie contractuelle.</strong> Osnias est sous contrat avec les opérateurs de nœuds. Les end-users sont sous contrat avec leur opérateur de nœud local. Osnias n’a aucun lien contractuel direct avec les end-users.</div>
+    </section>
+
+    <section id="mica-fr">
+      <div class="section-label">06 · Première analyse MiCA</div>
+      <h2>La catégorie juridique demeure ouverte au-delà de la définition générale du crypto-actif</h2>
+      <p class="section-intro">Le Livre 5 considère que les tokens de clearing entrent dans la définition générale du crypto-actif au sens de MiCA, puisqu’ils constituent des représentations numériques pouvant être stockées et transférées sur DLT. La catégorie juridique précise demeure ouverte et doit être appréciée à partir des droits attachés à l’unité, de l’adossement 1:1, du rôle des opérateurs de nœuds et des invariants du protocole.</p>
+      <div class="grid-3">
+        <article class="card"><h3>Analyse EMT possible</h3><p>Le rattachement à une seule devise et le séquestre 1:1 sont des faits pertinents, mais ils ne déterminent pas à eux seuls la qualification juridique.</p></article>
+        <article class="card"><h3>Analyse ART possible</h3><p>La catégorie ART constitue une autre qualification à confronter aux droits effectifs et au mécanisme de référence du token de clearing.</p></article>
+        <article class="card"><h3>Autres crypto-actifs</h3><p>La catégorie résiduelle MiCA reste pertinente si le token satisfait à la définition générale sans remplir les conditions spécifiques d’une autre catégorie.</p></article>
+      </div>
+      <div class="notice"><strong>Aucune modification du protocole n’est présupposée.</strong> La question soumise à l’autorité est celle de la qualification réglementaire qui résulte du protocole documenté tel qu’il est conçu.</div>
+    </section>
+
+    <section id="amf-points-fr">
+      <div class="section-label">07 · Points de discussion réglementaire</div>
+      <h2>Questions identifiées dans le Livre 5</h2>
+      <ul class="list">
+        <li>Catégorie juridique applicable aux tokens de clearing au regard de leurs caractéristiques techniques et fonctionnelles documentées.</li>
+        <li>Traitement réglementaire du séquestre 1:1, qu’il repose sur des EMT autorisés sur EVM ou sur de la monnaie officielle sur compte bancaire séquestre.</li>
+        <li>Portée juridique de l’invariant de BURN, limité à la fenêtre d’ouverture de chaque cycle.</li>
+        <li>Identification de l’émetteur juridique dans une chambre multi-nœuds où chaque nœud ne peut MINT/BURN que pour ses propres comptes.</li>
+        <li>Traitement du séquestre et de la compensation multilatérale en cas de procédure collective.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section id="documents">
+    <div class="section-label">08 · Reference documentation / Documentation de référence</div>
+    <h2>Published Osnias documentation / Documentation Osnias publiée</h2>
+
+    <div class="grid-2">
+      <article class="card">
+        <h3>Livre 1 — Architecture</h3>
+        <p>Functional architecture and separation of clearing, settlement and collateral/escrow layers.<br><span lang="fr">Architecture fonctionnelle et séparation des couches clearing, règlement et collatéral/séquestre.</span></p>
+        <div class="badges">
+          <a class="badge" href="/architecture/" rel="noopener noreferrer">Architecture ↗</a>
+          <a class="badge" href="https://doi.org/10.5281/zenodo.22807190" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22807190 ↗</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Livre 2 — Security / Sécurité</h3>
+        <p>End-user security, key separation, release predicate and audit-readiness controls.<br><span lang="fr">Sécurité end-user, séparation des clés, prédicat de libération et contrôles d’auditabilité.</span></p>
+        <div class="badges">
+          <a class="badge" href="/security/" rel="noopener noreferrer">Security / Sécurité ↗</a>
+          <a class="badge" href="https://doi.org/10.5281/zenodo.22870678" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22870678 ↗</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Livre 3 — Osnias-ID Release 2.0</h3>
+        <p>Network, node, currency and cycle identification; registry and fail-closed admission controls.<br><span lang="fr">Identification réseau, nœud, devise et cycle ; registre et contrôles d’admission fail-closed.</span></p>
+        <div class="badges">
+          <a class="badge" href="/osniasid/" rel="noopener noreferrer">Osnias-ID ↗</a>
+          <a class="badge" href="https://doi.org/10.5281/zenodo.22704626" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22704626 ↗</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Livre 4 — Clearing Rules / Règles de clearing</h3>
+        <p>Clearing rules, actors, invariants, controls and clearing-cycle calendar.<br><span lang="fr">Règles de clearing, acteurs, invariants, contrôles et calendrier des cycles.</span></p>
+        <div class="badges">
+          <a class="badge" href="/rules/" rel="noopener noreferrer">Rules / Règles ↗</a>
+          <a class="badge" href="https://doi.org/10.5281/zenodo.22922199" target="_blank" rel="noopener noreferrer">DOI 10.5281/zenodo.22922199 ↗</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Livre 5 — First Legal Analysis / Première analyse juridique</h3>
+        <p>First legal analysis under MiCA and response to the AMF email of 22 September 2026.<br><span lang="fr">Première analyse juridique au regard de MiCA et réponse au courriel de l’AMF du 22 septembre 2026.</span></p>
+        <div class="badges">
+          <a class="badge badge-ok" href="/regulation/Osnias_Clearing_Livre_5_AMF.pdf" target="_blank" rel="noopener noreferrer">Livre 5 PDF ↗</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>© 2026 Osnias Clearing · Regulatory Analysis / Analyse réglementaire · Last update / Dernière mise à jour : 25 September / septembre 2026</div>
+      <div>
+        <a href="/">Home / Accueil</a>
+        &nbsp;·&nbsp;
+        <a href="#documents">Documents</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      Author / Auteur : Denis Bouzon · ORCID
+      <a href="https://orcid.org/0009-0007-8894-8902" target="_blank" rel="noopener noreferrer">0009-0007-8894-8902</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const buttons = document.querySelectorAll('[data-lang-btn]');
+  const panels = document.querySelectorAll('[data-lang-panel]');
+
+  function setLanguage(lang) {
+    panels.forEach(panel => {
+      panel.classList.toggle('is-active', panel.getAttribute('data-lang-panel') === lang);
+    });
+    buttons.forEach(button => {
+      button.setAttribute('aria-pressed', button.getAttribute('data-lang-btn') === lang ? 'true' : 'false');
+    });
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('osnias-regulation-lang', lang); } catch (e) {}
+  }
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => setLanguage(button.getAttribute('data-lang-btn')));
+  });
+
+  let initial = 'en';
+  try {
+    const saved = localStorage.getItem('osnias-regulation-lang');
+    if (saved === 'fr' || saved === 'en') initial = saved;
+    else if ((navigator.language || '').toLowerCase().startsWith('fr')) initial = 'fr';
+  } catch (e) {}
+
+  setLanguage(initial);
+})();
+</script>
+
+<script
+  data-goatcounter="https://denis-osnias.goatcounter.com/count"
+  async
+  src="//gc.zgo.at/count.js">
+</script>
+</body>
+</html>
