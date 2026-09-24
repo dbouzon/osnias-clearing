@@ -34,9 +34,31 @@
   <script src="/assets/js/osnias-nav.js" defer></script>
 
   <style>
-    .lang-switcher{display:flex;gap:.55rem;align-items:center;justify-content:flex-end;margin:0 0 1rem}
-    .lang-btn{border:1px solid rgba(255,255,255,.18);background:transparent;color:inherit;border-radius:999px;padding:.5rem .8rem;cursor:pointer;font:inherit}
-    .lang-btn[aria-pressed="true"]{background:rgba(255,255,255,.10)}
+    .lang-switcher{
+      display:flex;
+      gap:.55rem;
+      align-items:center;
+      justify-content:flex-start;
+      width:100%;
+      margin:0 0 1.25rem 0;
+    }
+    .lang-btn{
+      border:1px solid rgba(255,255,255,.18);
+      background:transparent;
+      color:inherit;
+      border-radius:999px;
+      padding:.55rem .9rem;
+      cursor:pointer;
+      font:inherit;
+      font-weight:700;
+      line-height:1;
+      min-width:72px;
+    }
+    .lang-btn[aria-pressed="true"]{
+      background:#2bb9e6;
+      color:#07111e;
+      border-color:#2bb9e6;
+    }
     [data-lang-panel]{display:none}
     [data-lang-panel].is-active{display:block}
   </style>
@@ -88,8 +110,8 @@
   <div class="container">
     <section class="hero">
       <div class="lang-switcher" aria-label="Language selector">
-        <button type="button" class="lang-btn" data-lang-btn="en" aria-pressed="true">🇬🇧 English</button>
-        <button type="button" class="lang-btn" data-lang-btn="fr" aria-pressed="false">🇫🇷 Français</button>
+        <button type="button" class="lang-btn" data-lang-btn="en" aria-pressed="true">🇬🇧 EN</button>
+        <button type="button" class="lang-btn" data-lang-btn="fr" aria-pressed="false">🇫🇷 FR</button>
       </div>
 
       <div data-lang-panel="en" class="is-active">
@@ -110,10 +132,7 @@
               <span class="tag">No Osnias custody</span>
             </div>
             <div class="actions">
-              <a class="btn btn-primary" href="/regulation/Osnias_Clearing_Livre_5_AMF.pdf" target="_blank" rel="noopener noreferrer">Open Livre 5 PDF ↗</a>
-              <a class="btn" href="/architecture/">Architecture</a>
-              <a class="btn" href="/rules/">Clearing Rules</a>
-              <a class="btn" href="/security/">Security</a>
+              <a class="btn btn-primary" href="/regulation/Osnias_Clearing_Livre_5_AMF_EN.pdf" target="_blank" rel="noopener noreferrer">Open Livre 5 PDF — English ↗</a>
             </div>
           </div>
 
@@ -147,10 +166,7 @@
               <span class="tag">Aucune conservation par Osnias</span>
             </div>
             <div class="actions">
-              <a class="btn btn-primary" href="/regulation/Osnias_Clearing_Livre_5_AMF.pdf" target="_blank" rel="noopener noreferrer">Ouvrir le Livre 5 PDF ↗</a>
-              <a class="btn" href="/architecture/">Architecture</a>
-              <a class="btn" href="/rules/">Règles de clearing</a>
-              <a class="btn" href="/security/">Sécurité</a>
+              <a class="btn btn-primary" href="/regulation/Osnias_Clearing_Livre_5_AMF.pdf" target="_blank" rel="noopener noreferrer">Ouvrir le Livre 5 PDF — Français ↗</a>
             </div>
           </div>
 
@@ -378,7 +394,8 @@
         <h3>Livre 5 — First Legal Analysis / Première analyse juridique</h3>
         <p>First legal analysis under MiCA and response to the AMF email of 22 September 2026.<br><span lang="fr">Première analyse juridique au regard de MiCA et réponse au courriel de l’AMF du 22 septembre 2026.</span></p>
         <div class="badges">
-          <a class="badge badge-ok" href="/regulation/Osnias_Clearing_Livre_5_AMF.pdf" target="_blank" rel="noopener noreferrer">Livre 5 PDF ↗</a>
+          <a class="badge badge-ok" href="/regulation/Osnias_Clearing_Livre_5_AMF.pdf" target="_blank" rel="noopener noreferrer">Livre 5 PDF — FR ↗</a>
+          <a class="badge badge-ok" href="/regulation/Osnias_Clearing_Livre_5_AMF_EN.pdf" target="_blank" rel="noopener noreferrer">Livre 5 PDF — EN ↗</a>
         </div>
       </article>
     </div>
