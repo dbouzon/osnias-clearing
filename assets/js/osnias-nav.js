@@ -40,13 +40,13 @@
         label: "4-Rules",
         href: prefix + "/rules/"
       },
+        {
+        label: "5-Regulation",
+        href: prefix + "/regulation/"
+      },
       {
         label: "Official Deployment",
         href: prefix + "/deployment/deployment.html"
-      },
-    {
-        label: "Regulation",
-        href: prefix + "/regulation/regulation.html"
       },
   {
         label: "Documentation",
