@@ -38,7 +38,7 @@
       },
       {
         label: "4-Cycles",
-        href: prefix + "/cycles/"
+        href: prefix + "/cycle/"
       },
       {
         label: "5-Security",
