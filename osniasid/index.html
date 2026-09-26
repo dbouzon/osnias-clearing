@@ -7,33 +7,84 @@
   <meta name="citation_doi" content="10.5281/zenodo.22978105">
   <link rel="canonical" href="https://www.osnias-clearing.com/osniasid/">
   <title>Osnias-ID — Livre I / Book I · 3.0</title>
+  <link rel="stylesheet" href="/assets/osnias.css">
   <style>
-    :root { color-scheme: dark; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; background: #080d1b; color: #f1f4fb; line-height: 1.65; }
-    main { width: min(100% - 2rem, 760px); margin: clamp(3rem, 10vh, 7rem) auto; }
-    .brand { color: #9fb9ea; text-decoration: none; font-size: .86rem; letter-spacing: .12em; font-weight: 700; }
-    .language { display: flex; gap: .5rem; margin-top: 1.5rem; }
-    .language button { cursor: pointer; background: transparent; color: #f1f4fb; border: 1px solid #687da3; border-radius: .4rem; padding: .3rem .65rem; font: inherit; }
-    .language button[aria-pressed="true"] { background: #315fb4; border-color: #315fb4; }
-    h1 { font-size: clamp(2.8rem, 8vw, 5rem); letter-spacing: -.05em; line-height: 1.05; margin: 2.3rem 0 .5rem; }
-    .release { color: #9fb9ea; font-weight: 650; margin: 0 0 1.3rem; }
-    .intro { font-size: clamp(1.07rem, 2.5vw, 1.28rem); color: #d3dcef; max-width: 65ch; }
-    .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin: 2.2rem 0 3.5rem; }
-    .button { display: inline-block; padding: .8rem 1.1rem; border: 1px solid #687da3; border-radius: .5rem; color: #f7f9ff; text-decoration: none; font-weight: 650; }
-    .button:hover, .button:focus-visible, .language button:focus-visible { background: #1b2b4b; outline: 2px solid #b5ceff; outline-offset: 2px; }
-    .button.primary { background: #315fb4; border-color: #315fb4; }
-    h2 { font-size: 1.05rem; margin: 0 0 .5rem; }
-    .history { border-top: 1px solid #34435d; padding-top: 1.5rem; color: #b6c2d8; font-size: .94rem; }
-    .history p { margin: .35rem 0; }
-    .history a { color: #b9d0ff; }
-    footer { margin-top: 3.5rem; color: #8493ad; font-size: .82rem; }
-    [hidden] { display: none !important; }
+    .osniasid-page{
+      width:min(calc(100% - 48px),760px);
+      margin:0 auto;
+      padding:56px 0 64px;
+    }
+    .language{
+      display:flex;
+      gap:8px;
+      margin-bottom:34px;
+    }
+    .language button{
+      cursor:pointer;
+      min-height:40px;
+      padding:8px 13px;
+      border:1px solid rgba(255,255,255,.38);
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font:inherit;
+      font-size:14px;
+      font-weight:700;
+    }
+    .language button[aria-pressed="true"]{
+      color:#03101a;
+      border-color:var(--accent);
+      background:linear-gradient(135deg,var(--accent-soft),var(--accent));
+    }
+    .osniasid-page h1{
+      font-size:clamp(48px,8vw,80px);
+      line-height:1.05;
+      letter-spacing:-.04em;
+      margin-bottom:8px;
+    }
+    .release{
+      color:#9fb9ea;
+      font-weight:700;
+      margin-bottom:22px;
+    }
+    .intro{
+      font-size:20px;
+      line-height:1.7;
+      color:#d3dcef;
+      max-width:65ch;
+    }
+    .osniasid-page .actions{
+      margin:30px 0 48px;
+    }
+    .history{
+      border-top:1px solid var(--border);
+      padding-top:24px;
+      color:var(--muted);
+    }
+    .history h2{
+      font-size:20px;
+      margin-bottom:10px;
+    }
+    .history p{ margin:6px 0; }
+    [hidden]{display:none!important}
+    @media(max-width:600px){
+      .osniasid-page{
+        width:min(calc(100% - 28px),760px);
+        padding:36px 0 44px;
+      }
+      .intro{font-size:17px}
+    }
   </style>
 </head>
 <body>
-  <main>
-    <a class="brand" href="/">OSNIAS CLEARING</a>
+  <nav class="site-nav-fixed" aria-label="Osnias Clearing">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+      <div class="site-nav-buttons" aria-label="Main navigation"></div>
+    </div>
+  </nav>
+
+  <main class="osniasid-page">
     <div class="language" role="group" aria-label="Language / Langue">
       <button type="button" data-lang="fr" aria-pressed="true">🇫🇷 FR</button>
       <button type="button" data-lang="en" aria-pressed="false">🇬🇧 EN</button>
@@ -43,9 +94,9 @@
       <p class="release">Livre I · Version 3.0 · 26 septembre 2026</p>
       <p class="intro">Osnias-ID est l’identifiant interne d’un compte de clearing au sein du réseau Osnias Clearing. Son format à 19 chiffres associe ce compte à une devise, à une durée de cycle et à un registre de participants, indépendamment de l’adresse technique d’un portefeuille. Il ne constitue ni une identité juridique ni une autorisation réglementaire.</p>
       <div class="actions" aria-label="Documents Osnias-ID">
-        <a class="button primary" href="/osniasid/Livre_I-Osnias-ID-3.0-FR-2026-09-26.pdf">PDF en français</a>
-        <a class="button" href="/osniasid/Book_I-Osnias-ID-3.0-2026-09-26.pdf">PDF en anglais</a>
-        <a class="button" href="https://doi.org/10.5281/zenodo.22978105" target="_blank" rel="noopener noreferrer">DOI Zenodo</a>
+        <a class="btn btn-primary" href="/osniasid/Livre_I-Osnias-ID-3.0-FR-2026-09-26.pdf">PDF en français</a>
+        <a class="btn" href="/osniasid/Book_I-Osnias-ID-3.0-2026-09-26.pdf">PDF en anglais</a>
+        <a class="btn" href="https://doi.org/10.5281/zenodo.22978105" target="_blank" rel="noopener noreferrer">DOI Zenodo</a>
       </div>
       <section class="history" aria-labelledby="history-fr">
         <h2 id="history-fr">Versions antérieures</h2>
@@ -58,9 +109,9 @@
       <p class="release">Book I · Release 3.0 · 26 September 2026</p>
       <p class="intro">Osnias-ID is an internal clearing account identifier within the Osnias Clearing network. Its 19-digit format binds the account to a currency, a clearing cycle and a participant registry, independently of a wallet’s technical address. It is neither a legal identity nor a regulatory authorization.</p>
       <div class="actions" aria-label="Osnias-ID documents">
-        <a class="button primary" href="/osniasid/Book_I-Osnias-ID-3.0-2026-09-26.pdf">English PDF</a>
-        <a class="button" href="/osniasid/Livre_I-Osnias-ID-3.0-FR-2026-09-26.pdf">French PDF</a>
-        <a class="button" href="https://doi.org/10.5281/zenodo.22978105" target="_blank" rel="noopener noreferrer">Zenodo DOI</a>
+        <a class="btn btn-primary" href="/osniasid/Book_I-Osnias-ID-3.0-2026-09-26.pdf">English PDF</a>
+        <a class="btn" href="/osniasid/Livre_I-Osnias-ID-3.0-FR-2026-09-26.pdf">French PDF</a>
+        <a class="btn" href="https://doi.org/10.5281/zenodo.22978105" target="_blank" rel="noopener noreferrer">Zenodo DOI</a>
       </div>
       <section class="history" aria-labelledby="history-en">
         <h2 id="history-en">Earlier versions</h2>
@@ -70,6 +121,15 @@
     </section>
     <footer>© 2026 Osnias Clearing · Denis Bouzon</footer>
   </main>
+  <script>
+    window.OSNIAS_SEO = {
+      title: "Osnias-ID — Livre I / Book I · 3.0",
+      description: "Osnias-ID : identifiant interne de compte de clearing. Livre I, version 3.0, disponible en français et en anglais.",
+      canonical: "https://www.osnias-clearing.com/osniasid/"
+    };
+  </script>
+  <script src="/assets/osnias-seo.js" defer></script>
+  <script src="/assets/osnias-nav.js" defer></script>
   <script>
     const buttons = document.querySelectorAll('[data-lang]');
     const panels = document.querySelectorAll('[data-panel]');
