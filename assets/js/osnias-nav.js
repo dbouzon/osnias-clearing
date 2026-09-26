@@ -24,36 +24,40 @@
     const prefix = getPrefix();
 
     const items = [
-      {
-        label: "1-Architecture",
-        href: prefix + "/architecture/"
-      },
         {
-        label: "2-Security",
-        href: prefix + "/security/"
-      },
-        {
-        label: "3-Osnias-ID",
+        label: "1-Osnias-ID",
         href: prefix + "/osniasid/"
       },
-        {
-        label: "4-Rules",
+      {
+        label: "2-Architecture",
+        href: prefix + "/architecture/"
+      },
+       {
+        label: "3-Rules",
         href: prefix + "/rules/"
       },
-        {
-        label: "5-Regulation",
+      {
+        label: "4-Cycles",
+        href: prefix + "/cycles/"
+      },
+      {
+        label: "5-Security",
+        href: prefix + "/security/"
+      },
+    {
+        label: "A-Regulation",
         href: prefix + "/regulation/"
       },
       {
-        label: "Official Deployment",
+        label: "B-Official Deployment",
         href: prefix + "/deployment/deployment.html"
       },
   {
-        label: "Documentation",
+        label: "C-Documentation",
         href: prefix + "/documentation/documentation.html"
       },
       {
-        label: "Partnership",
+        label: "D-Partnership",
         href: prefix + "/partnership/"
       }
     ];
