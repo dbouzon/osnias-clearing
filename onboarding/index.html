@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>Onboarding — Livre VI / Book VI · 1.0</title>
+  <meta name="description" content="Osnias Clearing Book VI: client onboarding through a node, from admission and escrow funding to access to the canonical clearing layer on Sei."/>
+  <meta name="robots" content="index, follow, max-image-preview:large"/>
+  <meta name="author" content="Denis Bouzon"/>
+  <meta name="theme-color" content="#050814"/>
+  <meta name="citation_doi" content="10.5281/zenodo.23010805"/>
+
+  <link rel="canonical" href="https://www.osnias-clearing.com/onboarding/"/>
+  <link rel="stylesheet" href="/assets/css/osnias.css"/>
+
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+</head>
+
+<body>
+  <div class="site-nav-fixed">
+    <div class="site-nav-inner">
+      <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="actions" aria-label="Sélecteur de langue / Language selector">
+      <a class="btn btn-primary" href="#" id="lang-fr-btn" aria-pressed="true">🇫🇷 FR</a>
+      <a class="btn" href="#" id="lang-en-btn" aria-pressed="false">🇬🇧 EN</a>
+    </div>
+  </div>
+
+  <div id="content-fr">
+    <div class="container">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Livre VI · Onboarding client · Nœud · Escrow · Sei</div>
+            <h1>Onboarding via un nœud</h1>
+            <p class="hero-lead">
+              Le Livre VI décrit le processus opérationnel par lequel une entreprise devient participante d’un nœud
+              Osnias Clearing, alimente un contrat d’escrow en EURC natif sur Ethereum et accède à la couche canonique
+              de clearing sur Sei. Il transforme les principes d’identité, d’architecture, de clearing, de synchronisation
+              et de sécurité établis dans les Livres précédents en un processus cohérent d’admission, d’activation et de sortie.
+            </p>
+            <p class="section-intro"><strong>Livre VI · Release 1.0 · 28 septembre 2026</strong></p>
+            <div class="actions">
+              <a class="btn btn-primary" href="/onboarding/Livre%206-Onboarding-1-0-fr.pdf" target="_blank">PDF en français</a>
+              <a class="btn" href="/onboarding/Book_6_Onboarding_1-0-en.pdf" target="_blank">PDF en anglais</a>
+              <a class="btn" href="https://doi.org/10.5281/zenodo.23010805" target="_blank" rel="noopener">DOI Zenodo</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <main class="container">
+      <section>
+        <div class="section-label">Périmètre</div>
+        <h2>Admission, activation et sortie</h2>
+        <div class="arch-note">
+          Le parcours couvre l’intégration au nœud, les contrôles d’admission, le financement de l’escrow,
+          l’activation de l’accès au clearing et les conditions de sortie du participant.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="content-en" hidden>
+    <div class="container">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Book VI · Client onboarding · Node · Escrow · Sei</div>
+            <h1>Client Onboarding Through a Node</h1>
+            <p class="hero-lead">
+              Book VI describes the operational process through which a company becomes a participant of an Osnias
+              Clearing node, funds an escrow contract with native EURC on Ethereum and gains access to the canonical
+              clearing layer on Sei. It turns the identity, architecture, clearing, synchronization and security principles
+              established in the preceding Books into a coherent admission, activation and exit process.
+            </p>
+            <p class="section-intro"><strong>Book VI · Release 1.0 · 28 September 2026</strong></p>
+            <div class="actions">
+              <a class="btn btn-primary" href="/onboarding/Book_6_Onboarding_1-0-en.pdf" target="_blank">English PDF</a>
+              <a class="btn" href="/onboarding/Livre%206-Onboarding-1-0-fr.pdf" target="_blank">French PDF</a>
+              <a class="btn" href="https://doi.org/10.5281/zenodo.23010805" target="_blank" rel="noopener">Zenodo DOI</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <main class="container">
+      <section>
+        <div class="section-label">Scope</div>
+        <h2>Admission, activation and exit</h2>
+        <div class="arch-note">
+          The workflow covers node admission, onboarding controls, escrow funding, activation of clearing access,
+          and the conditions under which a participant exits the system.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="container">© 2026 Osnias Clearing · Book VI · Public Technical Documentation</div>
+  </footer>
+
+  <script>
+    (function(){
+      const en = document.getElementById('content-en');
+      const fr = document.getElementById('content-fr');
+      const enBtn = document.getElementById('lang-en-btn');
+      const frBtn = document.getElementById('lang-fr-btn');
+
+      function setLanguage(lang){
+        const isFr = lang === 'fr';
+        en.hidden = isFr;
+        fr.hidden = !isFr;
+        enBtn.classList.toggle('btn-primary', !isFr);
+        frBtn.classList.toggle('btn-primary', isFr);
+        enBtn.setAttribute('aria-pressed', String(!isFr));
+        frBtn.setAttribute('aria-pressed', String(isFr));
+        document.documentElement.lang = isFr ? 'fr' : 'en';
+        try { localStorage.setItem('osnias-language', isFr ? 'fr' : 'en'); } catch(e) {}
+      }
+
+      enBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('en'); });
+      frBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('fr'); });
+
+      let preferred = 'fr';
+      const params = new URLSearchParams(window.location.search);
+      if(params.get('lang') === 'fr' || params.get('lang') === 'en') preferred = params.get('lang');
+      else {
+        try { preferred = localStorage.getItem('osnias-language') || (((navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en'); } catch(e) {}
+      }
+      setLanguage(preferred === 'en' ? 'en' : 'fr');
+    })();
+  </script>
+
+  <script data-goatcounter="https://denis-osnias.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
