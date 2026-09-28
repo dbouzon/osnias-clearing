@@ -173,9 +173,9 @@ header{
 h1,
 .hero h1,
 .pitch-hero h1{
-  font-size:56px;
-  line-height:1.05;
-  letter-spacing:.5px;
+  font-size:clamp(38px,4vw,48px);
+  line-height:1.08;
+  letter-spacing:.3px;
   margin-bottom:16px;
 }
 
@@ -192,7 +192,7 @@ h3{
 }
 
 .hero-role{
-  font-size:28px;
+  font-size:24px;
   line-height:1.35;
   font-weight:650;
   margin-bottom:16px;
@@ -609,14 +609,8 @@ footer{
     grid-template-columns:1fr;
   }
 
-  h1,
-  .hero h1,
-  .pitch-hero h1{
-    font-size:44px;
-  }
-
   .hero-role{
-    font-size:24px;
+    font-size:22px;
   }
 }
 
@@ -636,12 +630,6 @@ footer{
 
   .hero{
     padding:36px 0 30px;
-  }
-
-  h1,
-  .hero h1,
-  .pitch-hero h1{
-    font-size:36px;
   }
 
   h2{
