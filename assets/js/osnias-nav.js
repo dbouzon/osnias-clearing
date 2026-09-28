@@ -44,6 +44,10 @@
         label: "5-Security",
         href: prefix + "/security/"
       },
+         {
+        label: "6-Onboarding",
+        href: prefix + "/onboarding/"
+      },
     {
         label: "A-Regulation",
         href: prefix + "/regulation/"
