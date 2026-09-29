@@ -12,6 +12,18 @@
   <style>
     .lang-switch{display:flex;gap:.6rem;justify-content:flex-end;flex-wrap:wrap;margin:0 0 1rem}
     .lang-switch .btn[aria-pressed="true"]{font-weight:700}
+    .app-showcase{margin:2rem 0 2.5rem}
+    .app-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:1.25rem;align-items:stretch}
+    .app-shot,.app-info{border:1px solid rgba(148,163,184,.22);border-radius:18px;overflow:hidden;background:rgba(15,23,42,.45)}
+    .app-shot img{display:block;width:100%;height:100%;object-fit:cover}
+    .app-info{padding:1.35rem}
+    .app-info h2{margin:.2rem 0 .65rem}
+    .app-status{display:inline-flex;gap:.45rem;align-items:center;margin-bottom:.8rem;font-weight:700}
+    .app-dot{width:.55rem;height:.55rem;border-radius:999px;background:#48c78e;box-shadow:0 0 0 4px rgba(72,199,142,.12)}
+    .app-features{margin:.9rem 0 1.15rem;padding-left:1.1rem}
+    .app-features li{margin:.38rem 0}
+    .app-actions{display:flex;gap:.65rem;flex-wrap:wrap}
+    @media (max-width:860px){.app-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -56,6 +68,69 @@
       <span data-fr="Déployeur pour l’ensemble des contrats :" data-en="Deployer on all contracts:">Déployeur pour l’ensemble des contrats :</span>
       <code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
     </div>
+
+
+    <!-- LIVE END-USER TESTNET -->
+    <section class="app-showcase" id="end-user-testnet">
+      <div class="section-title"
+           data-fr="Application end-user — Testnet en ligne"
+           data-en="End-user application — Live testnet">
+        Application end-user — Testnet en ligne
+      </div>
+
+      <div class="app-grid">
+        <div class="app-shot">
+          <a href="/end-user/" target="_blank" rel="noopener">
+            <img src="./end-user.jpg"
+                 alt="Osnias ORUSD Clearing Desk — interface testnet end-user"
+                 loading="lazy">
+          </a>
+        </div>
+
+        <div class="app-info">
+          <div class="app-status">
+            <span class="app-dot" aria-hidden="true"></span>
+            <span data-fr="EN LIGNE · DRAFT · TESTNET"
+                  data-en="ONLINE · DRAFT · TESTNET">EN LIGNE · DRAFT · TESTNET</span>
+          </div>
+
+          <h2 data-fr="ORUSD Clearing Desk"
+              data-en="ORUSD Clearing Desk">ORUSD Clearing Desk</h2>
+
+          <p data-fr="Une application end-user Osnias Clearing est actuellement accessible en ligne sur Sei Atlantic-2 Testnet. Elle permet de visualiser l’état du registre, le cycle de clearing et l’état de l’oracle temporel depuis une interface opérationnelle de démonstration."
+             data-en="An Osnias Clearing end-user application is currently available online on Sei Atlantic-2 Testnet. It provides an operational demonstration interface for viewing the register state, clearing cycle and temporal-oracle status.">
+            Une application end-user Osnias Clearing est actuellement accessible en ligne sur Sei Atlantic-2 Testnet. Elle permet de visualiser l’état du registre, le cycle de clearing et l’état de l’oracle temporel depuis une interface opérationnelle de démonstration.
+          </p>
+
+          <ul class="app-features">
+            <li data-fr="Connexion wallet et lecture de la position ORUSD du compte connecté."
+                data-en="Wallet connection and ORUSD register-position display for the connected account.">
+              Connexion wallet et lecture de la position ORUSD du compte connecté.
+            </li>
+            <li data-fr="Affichage du cycle, des fenêtres MINT / BURN / CLEARING / P2P et de l’état de l’oracle."
+                data-en="Display of the cycle, MINT / BURN / CLEARING / P2P windows and oracle state.">
+              Affichage du cycle, des fenêtres MINT / BURN / CLEARING / P2P et de l’état de l’oracle.
+            </li>
+            <li data-fr="Interfaces de test pour instructions, transferts, registre et burn."
+                data-en="Test interfaces for instructions, transfers, register and burn functions.">
+              Interfaces de test pour instructions, transferts, registre et burn.
+            </li>
+          </ul>
+
+          <p class="note-cell"
+             data-fr="Cette interface est un environnement de démonstration en cours de développement. Elle fonctionne uniquement sur testnet et ne constitue pas un service de production."
+             data-en="This interface is a demonstration environment under active development. It operates on testnet only and is not a production service.">
+            Cette interface est un environnement de démonstration en cours de développement. Elle fonctionne uniquement sur testnet et ne constitue pas un service de production.
+          </p>
+
+          <div class="app-actions">
+            <a class="btn primary" href="/end-user/" target="_blank" rel="noopener"
+               data-fr="Ouvrir l’application testnet"
+               data-en="Open the testnet application">Ouvrir l’application testnet</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- SEI CHAIN SIDE -->
     <div class="section-title" data-fr="Couche Sei — Sei Testnet Atlantic-2 (Chain ID 1328)" data-en="Sei Chain Side — Sei Testnet Atlantic-2 (Chain ID 1328)">Couche Sei — Sei Testnet Atlantic-2 (Chain ID 1328)</div>
