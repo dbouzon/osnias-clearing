@@ -106,11 +106,25 @@
     .hero h1{font-size:clamp(2.4rem,5vw,4rem);line-height:1.05;margin:.35rem 0 .8rem}
     .hero-role{font-size:clamp(1.1rem,2vw,1.55rem);line-height:1.25;margin-bottom:1rem}
     .hero-lead{max-width:62rem}
-    .language-switch{display:flex;justify-content:center;gap:.5rem;margin:0 0 1.25rem;flex-wrap:wrap}
+    .hero-split{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);gap:2.25rem;align-items:center}
+    .hero-copy{text-align:left}
+    .hero-copy .hero-lead{max-width:none;margin-left:0 !important;margin-right:0 !important}
+    .hero-copy .hero-role{max-width:54rem}
+    .hero-illustration{margin:0 !important;text-align:center}
+    .hero-illustration img{width:100%;max-width:100%;height:auto;display:block;margin:0 auto;border-radius:16px}
+    .language-switch{display:flex;justify-content:center;gap:.5rem;margin:0 0 1.5rem;flex-wrap:wrap}
     .language-switch button{cursor:pointer;border:1px solid rgba(255,255,255,.18);background:transparent;color:inherit;border-radius:999px;padding:.45rem .8rem;font:inherit}
     .language-switch button.active{background:rgba(255,255,255,.10)}
     .lang-en{display:none}
-    @media (max-width:900px){.hero{padding-top:1.5rem}.hero h1{font-size:clamp(2.1rem,10vw,3.2rem)}}
+    @media (max-width:900px){
+      .hero{padding-top:1.5rem}
+      .hero h1{font-size:clamp(2.1rem,10vw,3.2rem)}
+      .hero-split{grid-template-columns:1fr;gap:1.5rem}
+      .hero-copy{text-align:center}
+      .hero-copy .hero-role{max-width:none}
+      .hero-copy .hero-lead{margin-left:auto !important;margin-right:auto !important}
+      .hero-illustration{margin-top:.25rem !important}
+    }
   </style>
 </head>
 
@@ -125,13 +139,13 @@
   <header>
     <div class="container">
       <section class="hero">
-        <div class="hero-grid single">
-          <div style="text-align:center;">
-            <div class="language-switch" aria-label="Language selection">
-              <button type="button" id="frBtn" class="active" onclick="setLanguage('fr')">🇫🇷 Français</button>
-              <button type="button" id="enBtn" onclick="setLanguage('en')">🇬🇧 English</button>
-            </div>
+        <div class="language-switch" aria-label="Language selection">
+          <button type="button" id="frBtn" class="active" onclick="setLanguage('fr')">🇫🇷 Français</button>
+          <button type="button" id="enBtn" onclick="setLanguage('en')">🇬🇧 English</button>
+        </div>
 
+        <div class="hero-split">
+          <div class="hero-copy">
             <div class="lang-fr">
               <div class="eyebrow">Infrastructure de clearing décentralisé</div>
               <h1>Réseau de clearing multi-nœuds</h1>
@@ -163,13 +177,13 @@
                 Assets remain under client control and under the supervision of node operators in accordance with their jurisdiction. By design, the <strong>clearing layer</strong> operates on its own blockchain infrastructure and remains <strong>strictly separated and isolated from the asset custody and settlement layer</strong>.
               </p>
             </div>
-
-            <figure class="hero-illustration" style="text-align:center;margin-top:1.5rem;">
-              <a href="/osnias-network.jpg" target="_blank" rel="noopener noreferrer" title="View full size">
-                <img src="/osnias-network.jpg" alt="Osnias Clearing — réseau européen de nœuds de clearing sous juridictions locales" loading="eager" decoding="async" style="width:100%;max-width:100%;height:auto;display:block;margin:0 auto;">
-              </a>
-            </figure>
           </div>
+
+          <figure class="hero-illustration">
+            <a href="/osnias-network.jpg" target="_blank" rel="noopener noreferrer" title="View full size">
+              <img src="/osnias-network.jpg" alt="Osnias Clearing — réseau européen de nœuds de clearing sous juridictions locales" loading="eager" decoding="async">
+            </a>
+          </figure>
         </div>
       </section>
     </div>
