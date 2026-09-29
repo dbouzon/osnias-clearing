@@ -1,81 +1,75 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
   <url>
     <loc>https://www.osnias-clearing.com/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/architecture/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/osniasid/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/rules/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/cycles/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/security/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/onboarding/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/regulation/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/deployment/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
-
-  <url>
-    <loc>https://www.osnias-clearing.com/documentation/</loc>
-    <lastmod>2026-09-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.90</priority>
-  </url>
-
   <url>
     <loc>https://www.osnias-clearing.com/end-user/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
-
+  <url>
+    <loc>https://www.osnias-clearing.com/partnership/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/faq/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
 </urlset>
