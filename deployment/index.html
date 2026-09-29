@@ -10,8 +10,20 @@
   <script src="/assets/js/osnias-seo.js" defer></script>
   <script src="/assets/js/osnias-nav.js" defer></script>
   <style>
-    .lang-switch{display:flex;gap:.6rem;justify-content:flex-end;flex-wrap:wrap;margin:0 0 1rem}
+    .lang-switch{display:flex;gap:.6rem;justify-content:flex-start;flex-wrap:wrap;margin:0 0 1.35rem}
     .lang-switch .btn[aria-pressed="true"]{font-weight:700}
+    .deployment-hero{
+      text-align:center;
+      max-width:980px;
+      margin:0 auto 1.5rem auto;
+    }
+    .deployment-hero .eyebrow{
+      margin-bottom:.75rem;
+    }
+    .deployment-hero h1{
+      margin-top:0;
+      margin-bottom:1rem;
+    }
     .app-showcase{margin:2rem 0 2.5rem}
     .app-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:1.25rem;align-items:stretch}
     .app-shot,.app-info{border:1px solid rgba(148,163,184,.22);border-radius:18px;overflow:hidden;background:rgba(15,23,42,.45)}
@@ -38,12 +50,14 @@
 <main>
   <div class="wrap">
 
-    <div class="eyebrow" data-fr="Registre public on-chain" data-en="Public on-chain registry">Registre public on-chain</div>
-    <h1 data-fr="Déploiement officiel — Testnet" data-en="Official Testnet Deployment">Déploiement officiel — Testnet</h1>
-
     <div class="lang-switch" aria-label="Language selector">
       <button type="button" class="btn" id="lang-fr" aria-pressed="true">🇫🇷 Français</button>
       <button type="button" class="btn" id="lang-en" aria-pressed="false">🇬🇧 English</button>
+    </div>
+
+    <div class="deployment-hero">
+      <div class="eyebrow" data-fr="Registre public on-chain" data-en="Public on-chain registry">Registre public on-chain</div>
+      <h1 data-fr="Déploiement officiel — Testnet" data-en="Official Testnet Deployment">Déploiement officiel — Testnet</h1>
     </div>
 
     <p class="lead">
