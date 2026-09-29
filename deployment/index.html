@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Déploiement officiel testnet / Official Testnet Deployment — Osnias Clearing</title>
+  <meta name="description" content="Déploiements testnet officiels Osnias Clearing sur Sei Testnet et Ethereum Sepolia. Official Osnias Clearing testnet deployments on Sei Testnet and Ethereum Sepolia.">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="/assets/css/osnias.css">
+  <script src="/assets/js/osnias-seo.js" defer></script>
+  <script src="/assets/js/osnias-nav.js" defer></script>
+  <style>
+    .lang-switch{display:flex;gap:.6rem;justify-content:flex-end;flex-wrap:wrap;margin:0 0 1rem}
+    .lang-switch .btn[aria-pressed="true"]{font-weight:700}
+  </style>
+</head>
+<body>
+
+<div class="site-nav-fixed">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+    <nav id="mainNav" class="site-nav-buttons" aria-label="Navigation principale / Main site navigation"></nav>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+
+    <div class="eyebrow" data-fr="Registre public on-chain" data-en="Public on-chain registry">Registre public on-chain</div>
+    <h1 data-fr="Déploiement officiel — Testnet" data-en="Official Testnet Deployment">Déploiement officiel — Testnet</h1>
+
+    <div class="lang-switch" aria-label="Language selector">
+      <button type="button" class="btn" id="lang-fr" aria-pressed="true">🇫🇷 Français</button>
+      <button type="button" class="btn" id="lang-en" aria-pressed="false">🇬🇧 English</button>
+    </div>
+
+    <p class="lead">
+      <span data-fr="Cette page recense les smart contracts Osnias Clearing actuellement déployés sur des réseaux testnet publics. Tous les contrats présentés ici sont à l’état de brouillon/testnet et ne constituent pas des contrats de production. Seuls les contrats listés sur cette page constituent les déploiements testnet officiels d’Osnias Clearing."
+            data-en="This page lists the Osnias Clearing smart contracts currently deployed on public testnets. All contracts shown here are at draft/testnet stage and are not production contracts. Only contracts listed on this page are official Osnias Clearing testnet deployments.">
+        Cette page recense les smart contracts Osnias Clearing actuellement déployés sur des réseaux testnet publics. Tous les contrats présentés ici sont à l’état de brouillon/testnet et ne constituent pas des contrats de production. Seuls les contrats listés sur cette page constituent les déploiements testnet officiels d’Osnias Clearing.
+      </span>
+      <br><br>
+      <span data-fr="Documentation d’architecture et fonctionnelle :" data-en="Architecture and functional documentation:">Documentation d’architecture et fonctionnelle :</span>
+      <a href="/architecture/Osnias_Clearing_Functional_Architecture.pdf" target="_blank" data-fr="Position Paper fonctionnel (PDF)" data-en="Functional Position Paper (PDF)">Position Paper fonctionnel (PDF)</a>
+      · <a href="https://doi.org/10.5281/zenodo.22807190" target="_blank" rel="noopener">Zenodo DOI</a>
+      · <a href="/end-user/" target="_blank" data-fr="Interface testnet utilisateur" data-en="End-user testnet interface">Interface testnet utilisateur</a>
+    </p>
+
+    <div class="notice">
+      <strong data-fr="Stade brouillon — testnet uniquement." data-en="Draft stage — testnet only.">Stade brouillon — testnet uniquement.</strong>
+      <span data-fr="Les contrats côté EVM sont déployés sur Ethereum Sepolia (Chain ID 11155111). Les contrats côté Sei sont déployés sur Sei Testnet Atlantic-2 (EVM Chain ID 1328). Aucun contrat Mainnet n’est actuellement actif."
+            data-en="EVM side contracts are deployed on Ethereum Sepolia (Chain ID 11155111). Sei chain side contracts are deployed on Sei Testnet Atlantic-2 (EVM Chain ID 1328). No Mainnet contract is currently active.">
+        Les contrats côté EVM sont déployés sur Ethereum Sepolia (Chain ID 11155111). Les contrats côté Sei sont déployés sur Sei Testnet Atlantic-2 (EVM Chain ID 1328). Aucun contrat Mainnet n’est actuellement actif.
+      </span>
+      <br>
+      <span data-fr="Déployeur pour l’ensemble des contrats :" data-en="Deployer on all contracts:">Déployeur pour l’ensemble des contrats :</span>
+      <code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
+    </div>
+
+    <!-- SEI CHAIN SIDE -->
+    <div class="section-title" data-fr="Couche Sei — Sei Testnet Atlantic-2 (Chain ID 1328)" data-en="Sei Chain Side — Sei Testnet Atlantic-2 (Chain ID 1328)">Couche Sei — Sei Testnet Atlantic-2 (Chain ID 1328)</div>
+    <div class="registry">
+
+      <section class="card" id="sei-oracle">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">Sei — Temporal control</div>
+            <h2>Osnias 1W Sei Temporal Oracle</h2>
+          </div>
+          <div class="status verified"><span data-fr="Vérifié · Correspondance exacte" data-en="Verified · Exact Match">Vérifié · Correspondance exacte</span></div>
+        </div>
+        <table>
+          <tr><th><span data-fr="Nom du contrat" data-en="Contract name">Nom du contrat</span></th><td><code>OsniasTemporalOracle1W</code></td></tr>
+          <tr><th><span data-fr="Adresse du contrat" data-en="Contract address">Adresse du contrat</span></th><td><code>0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11</code></td></tr>
+          <tr><th><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></th><td><code>0xfa2b3fd8da4997a202df7580a9ce8afb42b87194f76a4804c72504e623819e15</code></td></tr>
+          <tr><th><span data-fr="Déployé le" data-en="Deployed">Déployé le</span></th><td>15 September 2026</td></tr>
+          <tr><th><span data-fr="Cycle de clearing" data-en="Clearing cycle">Cycle de clearing</span></th><td><span data-fr="1 semaine (7 jours)" data-en="1 week (7 days)">1 semaine (7 jours)</span></td></tr>
+          <tr><th><span data-fr="Compilateur" data-en="Compiler">Compilateur</span></th><td><code>v0.8.24+commit.e11b9ed9</code></td></tr>
+          <tr><th><span data-fr="Optimiseur" data-en="Optimizer">Optimiseur</span></th><td><span data-fr="Activé · 200 runs" data-en="Enabled · 200 runs">Activé · 200 runs</span></td></tr>
+          <tr><th><span data-fr="Version EVM" data-en="EVM version">Version EVM</span></th><td>Cancun</td></tr>
+          <tr><th><span data-fr="Vérification" data-en="Verification">Vérification</span></th><td><span data-fr="Code source vérifié — Correspondance exacte" data-en="Source Code Verified — Exact Match">Code source vérifié — Correspondance exacte</span></td></tr>
+          <tr><th><span data-fr="Statut de production" data-en="Production status">Statut de production</span></th><td><span data-fr="Brouillon — testnet uniquement · Pas de production Sei Mainnet" data-en="Draft — testnet only · Not Sei Mainnet production">Brouillon — testnet uniquement · Pas de production Sei Mainnet</span></td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://testnet.seiscan.io/address/0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11#code" target="_blank" rel="noopener"><span data-fr="Voir sur SeiScan" data-en="View on SeiScan">Voir sur SeiScan</span></a>
+          <a class="btn" href="https://testnet.seiscan.io/tx/0xfa2b3fd8da4997a202df7580a9ce8afb42b87194f76a4804c72504e623819e15" target="_blank" rel="noopener"><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></a>
+        </div>
+      </section>
+
+      <section class="card" id="sei-registry">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">Sei — Identity</div>
+            <h2>Osnias SEI Registry</h2>
+          </div>
+          <div class="status verified"><span data-fr="Vérifié · Correspondance exacte" data-en="Verified · Exact Match">Vérifié · Correspondance exacte</span></div>
+        </div>
+        <table>
+          <tr><th><span data-fr="Nom du contrat" data-en="Contract name">Nom du contrat</span></th><td><code>OsniasRegistrySei</code></td></tr>
+          <tr><th><span data-fr="Adresse du contrat" data-en="Contract address">Adresse du contrat</span></th><td><code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code></td></tr>
+          <tr><th><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></th><td><code>0x64eecbaeda3207dd040eadc58804b985330c5a2a1cd12498f14a034a3c798f17</code></td></tr>
+          <tr><th><span data-fr="Déployé le" data-en="Deployed">Déployé le</span></th><td>10 September 2026</td></tr>
+          <tr><th><span data-fr="Compilateur" data-en="Compiler">Compilateur</span></th><td><code>v0.8.26+commit.8a97fa7a</code></td></tr>
+          <tr><th><span data-fr="Optimiseur" data-en="Optimizer">Optimiseur</span></th><td><span data-fr="Activé · 200 runs" data-en="Enabled · 200 runs">Activé · 200 runs</span></td></tr>
+          <tr><th><span data-fr="Version EVM" data-en="EVM version">Version EVM</span></th><td>Cancun</td></tr>
+          <tr><th><span data-fr="Vérification" data-en="Verification">Vérification</span></th><td><span data-fr="Code source vérifié — Correspondance exacte" data-en="Source Code Verified — Exact Match">Code source vérifié — Correspondance exacte</span></td></tr>
+          <tr><th><span data-fr="Note" data-en="Note">Note</span></th><td class="note-cell"><span data-fr="Même adresse de contrat que l’Escrow Smart Contract sur Ethereum Sepolia — déployé depuis le même wallet avec le même nonce sur une chaîne différente. Les deux contrats constituent des déploiements indépendants sur leurs réseaux respectifs." data-en="Same contract address as Escrow Smart Contract on Ethereum Sepolia — deployed from the same wallet at the same nonce on a different chain. Both contracts are independent deployments on their respective networks.">Même adresse de contrat que l’Escrow Smart Contract sur Ethereum Sepolia — déployé depuis le même wallet avec le même nonce sur une chaîne différente. Les deux contrats constituent des déploiements indépendants sur leurs réseaux respectifs.</span></td></tr>
+          <tr><th><span data-fr="Statut de production" data-en="Production status">Statut de production</span></th><td><span data-fr="Brouillon — testnet uniquement · Pas de production Sei Mainnet" data-en="Draft — testnet only · Not Sei Mainnet production">Brouillon — testnet uniquement · Pas de production Sei Mainnet</span></td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://testnet.seiscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE#code" target="_blank" rel="noopener"><span data-fr="Voir sur SeiScan" data-en="View on SeiScan">Voir sur SeiScan</span></a>
+          <a class="btn" href="https://testnet.seiscan.io/tx/0x64eecbaeda3207dd040eadc58804b985330c5a2a1cd12498f14a034a3c798f17" target="_blank" rel="noopener"><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></a>
+        </div>
+      </section>
+
+      <section class="card" id="sei-controller">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">Sei — Protocol control</div>
+            <h2>Osnias Sei Controller</h2>
+          </div>
+          <div class="status verified"><span data-fr="Vérifié · Correspondance exacte" data-en="Verified · Exact Match">Vérifié · Correspondance exacte</span></div>
+        </div>
+        <table>
+          <tr><th><span data-fr="Nom du contrat" data-en="Contract name">Nom du contrat</span></th><td><code>OsniasSeiController</code></td></tr>
+          <tr><th><span data-fr="Adresse du contrat" data-en="Contract address">Adresse du contrat</span></th><td><code>0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4</code></td></tr>
+          <tr><th><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></th><td><code>0xe548afef2393795925b9ac0f7078cc02eab340664b917276c3692375f5ecc1d3</code></td></tr>
+          <tr><th><span data-fr="Déployé le" data-en="Deployed">Déployé le</span></th><td>10 September 2026</td></tr>
+          <tr><th><span data-fr="Compilateur" data-en="Compiler">Compilateur</span></th><td><code>v0.8.26+commit.8a97fa7a</code></td></tr>
+          <tr><th><span data-fr="Optimiseur" data-en="Optimizer">Optimiseur</span></th><td><span data-fr="Activé · 200 runs" data-en="Enabled · 200 runs">Activé · 200 runs</span></td></tr>
+          <tr><th><span data-fr="Version EVM" data-en="EVM version">Version EVM</span></th><td>Cancun</td></tr>
+          <tr><th><span data-fr="Contrats liés" data-en="Linked contracts">Contrats liés</span></th><td>
+            Temporal Oracle: <code>0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11</code><br>
+            Registry: <code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code><br>
+            Clearing Token: <code>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</code><br>
+            EVM Chain ID: <code>11155111</code> (Ethereum Sepolia)
+          </td></tr>
+          <tr><th><span data-fr="Vérification" data-en="Verification">Vérification</span></th><td><span data-fr="Code source vérifié — Correspondance exacte" data-en="Source Code Verified — Exact Match">Code source vérifié — Correspondance exacte</span></td></tr>
+          <tr><th><span data-fr="Statut de production" data-en="Production status">Statut de production</span></th><td><span data-fr="Brouillon — testnet uniquement · Pas de production Sei Mainnet" data-en="Draft — testnet only · Not Sei Mainnet production">Brouillon — testnet uniquement · Pas de production Sei Mainnet</span></td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://testnet.seiscan.io/address/0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4#code" target="_blank" rel="noopener"><span data-fr="Voir sur SeiScan" data-en="View on SeiScan">Voir sur SeiScan</span></a>
+          <a class="btn" href="https://testnet.seiscan.io/tx/0xe548afef2393795925b9ac0f7078cc02eab340664b917276c3692375f5ecc1d3" target="_blank" rel="noopener"><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></a>
+        </div>
+      </section>
+
+      <section class="card" id="orusd">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">Sei — USD clearing register</div>
+            <h2>ORUSD Token</h2>
+          </div>
+          <div class="status"><span data-fr="Brouillon" data-en="Draft">Brouillon</span></div>
+        </div>
+        <table>
+          <tr><th><span data-fr="Adresse du contrat" data-en="Contract address">Adresse du contrat</span></th><td><code>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</code></td></tr>
+          <tr><th><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></th><td><code>0x3bcc588069769cb482af8711b818e3863b8167eb248aa9aad332596926f4850e</code></td></tr>
+          <tr><th><span data-fr="Compilateur" data-en="Compiler">Compilateur</span></th><td><code>v0.8.26</code></td></tr>
+          <tr><th><span data-fr="Optimiseur" data-en="Optimizer">Optimiseur</span></th><td><span data-fr="Activé · 200 runs" data-en="Enabled · 200 runs">Activé · 200 runs</span></td></tr>
+          <tr><th><span data-fr="Version EVM" data-en="EVM version">Version EVM</span></th><td>Cancun</td></tr>
+          <tr><th><span data-fr="Statut de production" data-en="Production status">Statut de production</span></th><td><span data-fr="Brouillon — testnet uniquement · Pas de production Sei Mainnet" data-en="Draft — testnet only · Not Sei Mainnet production">Brouillon — testnet uniquement · Pas de production Sei Mainnet</span></td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://testnet.seiscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d#code" target="_blank" rel="noopener"><span data-fr="Voir sur SeiScan" data-en="View on SeiScan">Voir sur SeiScan</span></a>
+          <a class="btn" href="https://testnet.seiscan.io/tx/0x3bcc588069769cb482af8711b818e3863b8167eb248aa9aad332596926f4850e" target="_blank" rel="noopener"><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- EVM SIDE -->
+    <div class="section-title" data-fr="Couche EVM — Ethereum Sepolia (Chain ID 11155111)" data-en="EVM Side — Ethereum Sepolia (Chain ID 11155111)">Couche EVM — Ethereum Sepolia (Chain ID 11155111)</div>
+    <div class="registry">
+
+      <section class="card" id="node-registrar">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">EVM — Node infrastructure</div>
+            <h2>Node Registrar</h2>
+          </div>
+          <div class="status"><span data-fr="Brouillon" data-en="Draft">Brouillon</span></div>
+        </div>
+        <table>
+          <tr><th><span data-fr="Adresse du contrat" data-en="Contract address">Adresse du contrat</span></th><td><code>0xD14C1b90635521A1C586ec9B871D797458cB1Db8</code></td></tr>
+          <tr><th><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></th><td><code>0x12d3937457418a7eccbb03f6540214f9f6b6fe6389c07416fb4af2be27750a26</code></td></tr>
+          <tr><th><span data-fr="Réseau" data-en="Network">Réseau</span></th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+          <tr><th>KK / NNN</th><td><code>90 / 017</code> — Node Denis</td></tr>
+          <tr><th><span data-fr="Compilateur" data-en="Compiler">Compilateur</span></th><td><code>Solidity v0.8.26</code></td></tr>
+          <tr><th><span data-fr="Optimiseur" data-en="Optimizer">Optimiseur</span></th><td><span data-fr="Activé · 200 runs · viaIR désactivé" data-en="Enabled · 200 runs · viaIR disabled">Activé · 200 runs · viaIR désactivé</span></td></tr>
+          <tr><th><span data-fr="Version EVM" data-en="EVM version">Version EVM</span></th><td>Cancun</td></tr>
+          <tr><th><span data-fr="Statut de production" data-en="Production status">Statut de production</span></th><td><span data-fr="Brouillon — testnet uniquement · Pas de production Mainnet" data-en="Draft — testnet only · Not Mainnet production">Brouillon — testnet uniquement · Pas de production Mainnet</span></td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://sepolia.etherscan.io/address/0xD14C1b90635521A1C586ec9B871D797458cB1Db8#code" target="_blank" rel="noopener"><span data-fr="Voir sur Etherscan Sepolia" data-en="View on Etherscan Sepolia">Voir sur Etherscan Sepolia</span></a>
+          <a class="btn" href="https://sepolia.etherscan.io/tx/0x12d3937457418a7eccbb03f6540214f9f6b6fe6389c07416fb4af2be27750a26" target="_blank" rel="noopener"><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></a>
+        </div>
+      </section>
+
+      <section class="card" id="evm-registry">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">EVM — Identity</div>
+            <h2>Osnias EVM Registry</h2>
+          </div>
+          <div class="status"><span data-fr="Brouillon" data-en="Draft">Brouillon</span></div>
+        </div>
+        <table>
+          <tr><th><span data-fr="Adresse du contrat" data-en="Contract address">Adresse du contrat</span></th><td><code>0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55</code></td></tr>
+          <tr><th><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></th><td><code>0x310f31ecaca523f4f942e913e843b4d714896f78d2aa5a6a4c516d5daeecebb8</code></td></tr>
+          <tr><th><span data-fr="Réseau" data-en="Network">Réseau</span></th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+          <tr><th>KK</th><td><code>90</code></td></tr>
+          <tr><th><span data-fr="Compilateur" data-en="Compiler">Compilateur</span></th><td><code>Solidity v0.8.26</code></td></tr>
+          <tr><th><span data-fr="Optimiseur" data-en="Optimizer">Optimiseur</span></th><td><span data-fr="Activé · 200 runs · viaIR désactivé" data-en="Enabled · 200 runs · viaIR disabled">Activé · 200 runs · viaIR désactivé</span></td></tr>
+          <tr><th><span data-fr="Version EVM" data-en="EVM version">Version EVM</span></th><td>Cancun</td></tr>
+          <tr><th><span data-fr="Statut de production" data-en="Production status">Statut de production</span></th><td><span data-fr="Brouillon — testnet uniquement · Pas de production Mainnet" data-en="Draft — testnet only · Not Mainnet production">Brouillon — testnet uniquement · Pas de production Mainnet</span></td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://sepolia.etherscan.io/address/0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55#code" target="_blank" rel="noopener"><span data-fr="Voir sur Etherscan Sepolia" data-en="View on Etherscan Sepolia">Voir sur Etherscan Sepolia</span></a>
+          <a class="btn" href="https://sepolia.etherscan.io/tx/0x310f31ecaca523f4f942e913e843b4d714896f78d2aa5a6a4c516d5daeecebb8" target="_blank" rel="noopener"><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></a>
+        </div>
+      </section>
+
+      <section class="card" id="escrow-evm">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">EVM — Collateral</div>
+            <h2>Escrow Smart Contract</h2>
+          </div>
+          <div class="status"><span data-fr="Brouillon" data-en="Draft">Brouillon</span></div>
+        </div>
+        <table>
+          <tr><th><span data-fr="Adresse du contrat" data-en="Contract address">Adresse du contrat</span></th><td><code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code></td></tr>
+          <tr><th><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></th><td><code>0x7817c87c2cbd67be3a680fce0b72c91223668904ba84c4cad309062c0e948365</code></td></tr>
+          <tr><th><span data-fr="Réseau" data-en="Network">Réseau</span></th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+          <tr><th><span data-fr="Compilateur" data-en="Compiler">Compilateur</span></th><td><code>Solidity v0.8.26</code></td></tr>
+          <tr><th><span data-fr="Optimiseur" data-en="Optimizer">Optimiseur</span></th><td><span data-fr="Activé · 200 runs · viaIR désactivé" data-en="Enabled · 200 runs · viaIR disabled">Activé · 200 runs · viaIR désactivé</span></td></tr>
+          <tr><th><span data-fr="Version EVM" data-en="EVM version">Version EVM</span></th><td>Cancun</td></tr>
+          <tr><th><span data-fr="Note" data-en="Note">Note</span></th><td class="note-cell"><span data-fr="Même adresse de contrat que l’Osnias SEI Registry sur Sei Testnet — déployé depuis le même wallet avec le même nonce sur une chaîne différente. Les deux contrats constituent des déploiements indépendants sur leurs réseaux respectifs." data-en="Same contract address as Osnias SEI Registry on Sei Testnet — deployed from the same wallet at the same nonce on a different chain. Both contracts are independent deployments on their respective networks.">Même adresse de contrat que l’Osnias SEI Registry sur Sei Testnet — déployé depuis le même wallet avec le même nonce sur une chaîne différente. Les deux contrats constituent des déploiements indépendants sur leurs réseaux respectifs.</span></td></tr>
+          <tr><th><span data-fr="Statut de production" data-en="Production status">Statut de production</span></th><td><span data-fr="Brouillon — testnet uniquement · Pas de production Mainnet" data-en="Draft — testnet only · Not Mainnet production">Brouillon — testnet uniquement · Pas de production Mainnet</span></td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://sepolia.etherscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE#code" target="_blank" rel="noopener"><span data-fr="Voir sur Etherscan Sepolia" data-en="View on Etherscan Sepolia">Voir sur Etherscan Sepolia</span></a>
+          <a class="btn" href="https://sepolia.etherscan.io/tx/0x7817c87c2cbd67be3a680fce0b72c91223668904ba84c4cad309062c0e948365" target="_blank" rel="noopener"><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></a>
+        </div>
+      </section>
+
+      <section class="card" id="evm-controller">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">EVM — Protocol control</div>
+            <h2>Osnias EVM Controller</h2>
+          </div>
+          <div class="status"><span data-fr="Brouillon" data-en="Draft">Brouillon</span></div>
+        </div>
+        <table>
+          <tr><th><span data-fr="Adresse du contrat" data-en="Contract address">Adresse du contrat</span></th><td><code>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</code></td></tr>
+          <tr><th><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></th><td><code>0x178851722296208bed425df0f581165430df32abe9fce5fabf7869eabc3020f7</code></td></tr>
+          <tr><th><span data-fr="Réseau" data-en="Network">Réseau</span></th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+          <tr><th><span data-fr="Compilateur" data-en="Compiler">Compilateur</span></th><td><code>Solidity v0.8.26</code></td></tr>
+          <tr><th><span data-fr="Optimiseur" data-en="Optimizer">Optimiseur</span></th><td><span data-fr="Activé · 200 runs · viaIR désactivé" data-en="Enabled · 200 runs · viaIR disabled">Activé · 200 runs · viaIR désactivé</span></td></tr>
+          <tr><th><span data-fr="Version EVM" data-en="EVM version">Version EVM</span></th><td>Cancun</td></tr>
+          <tr><th><span data-fr="Statut de production" data-en="Production status">Statut de production</span></th><td><span data-fr="Brouillon — testnet uniquement · Pas de production Mainnet" data-en="Draft — testnet only · Not Mainnet production">Brouillon — testnet uniquement · Pas de production Mainnet</span></td></tr>
+        </table>
+        <div class="actions">
+          <a class="btn primary" href="https://sepolia.etherscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d#code" target="_blank" rel="noopener"><span data-fr="Voir sur Etherscan Sepolia" data-en="View on Etherscan Sepolia">Voir sur Etherscan Sepolia</span></a>
+          <a class="btn" href="https://sepolia.etherscan.io/tx/0x178851722296208bed425df0f581165430df32abe9fce5fabf7869eabc3020f7" target="_blank" rel="noopener"><span data-fr="Transaction de création" data-en="Creation transaction">Transaction de création</span></a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span data-fr="Osnias Clearing · Déploiement officiel testnet · Référence technique publique · © 2026 Denis Bouzon" data-en="Osnias Clearing · Official Testnet Deployment · Public technical reference · © 2026 Denis Bouzon">Osnias Clearing · Déploiement officiel testnet · Référence technique publique · © 2026 Denis Bouzon</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const frBtn = document.getElementById('lang-fr');
+  const enBtn = document.getElementById('lang-en');
+
+  function setLanguage(lang) {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-fr][data-en]').forEach(function (el) {
+      el.textContent = el.getAttribute('data-' + lang);
+    });
+    frBtn.setAttribute('aria-pressed', lang === 'fr' ? 'true' : 'false');
+    enBtn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+    try { localStorage.setItem('osnias-lang', lang); } catch (e) {}
+  }
+
+  frBtn.addEventListener('click', function () { setLanguage('fr'); });
+  enBtn.addEventListener('click', function () { setLanguage('en'); });
+
+  let saved = null;
+  try { saved = localStorage.getItem('osnias-lang'); } catch (e) {}
+  setLanguage(saved === 'en' ? 'en' : 'fr');
+})();
+</script>
+
+<script
+  data-goatcounter="https://denis-osnias.goatcounter.com/count"
+  async
+  src="//gc.zgo.at/count.js">
+</script>
+</body>
+</html>
