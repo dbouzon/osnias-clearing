@@ -141,6 +141,20 @@
     notice.textContent =
       "UNDER DEVELOPMENT · NO TOKEN SALE";
 
+    const navInner =
+      document.querySelector(
+        ".site-nav-inner"
+      );
+
+    if(navInner){
+      navInner.style.position = "relative";
+      notice.style.position = "absolute";
+      notice.style.left = "50%";
+      notice.style.transform = "translateX(-50%)";
+      notice.style.marginRight = "0";
+      notice.style.whiteSpace = "nowrap";
+    }
+
     brand.insertAdjacentElement(
       "afterend",
       notice
@@ -227,24 +241,16 @@
           "Date read automatically from sitemap.xml"
         );
 
-        stamp.style.position = "absolute";
-        stamp.style.top = "-1.05rem";
-        stamp.style.right = "0";
         stamp.style.whiteSpace = "nowrap";
-        stamp.style.fontSize = "11px";
-        stamp.style.letterSpacing = ".06em";
+        stamp.style.fontSize = "14px";
+        stamp.style.letterSpacing = "1px";
         stamp.style.opacity = "1";
-        stamp.style.fontWeight = "400";
+        stamp.style.fontWeight = "700";
         stamp.style.color = "#ffffff";
+        stamp.style.textTransform = "uppercase";
+        stamp.style.marginLeft = "auto";
 
-        const notice = document.querySelector(".site-nav-notice");
-
-        if(notice){
-          notice.style.position = "relative";
-          notice.appendChild(stamp);
-        }else{
-          navInner.appendChild(stamp);
-        }
+        navInner.appendChild(stamp);
       })
       .catch(function(){
         /* Silent fallback: navigation remains fully functional. */
