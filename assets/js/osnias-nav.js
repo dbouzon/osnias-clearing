@@ -24,38 +24,16 @@
     const prefix = getPrefix();
 
     const items = [
-      {
-        label: "Architecture",
-        href: prefix + "/architecture/architecture.html"
-      },
-      {
-        label: "Official Deployment",
-        href: prefix + "/deployment/deployment.html"
-      },
-      {
-        label: "Security",
-        href: prefix + "/security/"
-      },
-      {
-        label: "Regulation",
-        href: prefix + "/regulation/regulation.html"
-      },
-      {
-        label: "Osnias-ID",
-        href: prefix + "/osniasid/osniasid.html"
-      },
-      {
-        label: "Rules",
-        href: prefix + "/rules/"
-      },
-      {
-        label: "Documentation",
-        href: prefix + "/documentation/documentation.html"
-      },
-      {
-        label: "Partnership",
-        href: prefix + "/partnership/"
-      }
+      { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
+      { label: "2-Architecture", href: prefix + "/architecture/" },
+      { label: "3-Rules", href: prefix + "/rules/" },
+      { label: "4-Cycles", href: prefix + "/cycles/" },
+      { label: "5-Security", href: prefix + "/security/" },
+      { label: "6-Onboarding", href: prefix + "/onboarding/" },
+      { label: "A-Regulation", href: prefix + "/regulation/" },
+      { label: "B-Official Deployment", href: prefix + "/deployment/" },
+      { label: "C-Documentation", href: prefix + "/documentation/" },
+      { label: "D-Partnership", href: prefix + "/partnership/" }
     ];
 
     nav.replaceChildren();
@@ -249,13 +227,24 @@
           "Date read automatically from sitemap.xml"
         );
 
-        stamp.style.marginLeft = "auto";
+        stamp.style.position = "absolute";
+        stamp.style.top = "-1.05rem";
+        stamp.style.right = "0";
         stamp.style.whiteSpace = "nowrap";
-        stamp.style.fontSize = ".72rem";
+        stamp.style.fontSize = "11px";
         stamp.style.letterSpacing = ".06em";
-        stamp.style.opacity = ".72";
+        stamp.style.opacity = "1";
+        stamp.style.fontWeight = "400";
+        stamp.style.color = "#ffffff";
 
-        navInner.appendChild(stamp);
+        const notice = document.querySelector(".site-nav-notice");
+
+        if(notice){
+          notice.style.position = "relative";
+          notice.appendChild(stamp);
+        }else{
+          navInner.appendChild(stamp);
+        }
       })
       .catch(function(){
         /* Silent fallback: navigation remains fully functional. */
