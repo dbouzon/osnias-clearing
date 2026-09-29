@@ -117,50 +117,88 @@
       });
   }
 
-  function addDevNotice(){
-
-    if(
-      document.querySelector(
-        ".site-nav-notice"
-      )
-    ) return;
-
-    const brand =
-      document.querySelector(
-        ".site-nav-brand"
-      );
-
-    if(!brand) return;
-
-    const notice =
-      document.createElement("span");
-
-    notice.className =
-      "site-nav-notice";
-
-    notice.textContent =
-      "UNDER DEVELOPMENT · NO TOKEN SALE";
+  function ensureHeaderTopline(){
 
     const navInner =
       document.querySelector(
         ".site-nav-inner"
       );
 
-    if(navInner){
-      navInner.style.position = "relative";
-      notice.style.position = "absolute";
-      notice.style.left = "50%";
-      notice.style.transform = "translateX(-50%)";
-      notice.style.marginRight = "0";
-      notice.style.whiteSpace = "nowrap";
+    const brand =
+      document.querySelector(
+        ".site-nav-brand"
+      );
+
+    const nav =
+      document.querySelector(
+        ".site-nav-buttons"
+      );
+
+    if(!navInner || !brand) return null;
+
+    let topLine =
+      navInner.querySelector(
+        ".site-nav-topline"
+      );
+
+    if(!topLine){
+      topLine = document.createElement("div");
+      topLine.className = "site-nav-topline";
+
+      topLine.style.display = "grid";
+      topLine.style.gridTemplateColumns = "1fr auto 1fr";
+      topLine.style.alignItems = "center";
+      topLine.style.columnGap = "16px";
+      topLine.style.width = "100%";
+
+      navInner.insertBefore(topLine, nav || navInner.firstChild);
+      topLine.appendChild(brand);
     }
 
-    brand.insertAdjacentElement(
-      "afterend",
-      notice
-    );
+    navInner.style.display = "flex";
+    navInner.style.flexDirection = "column";
+    navInner.style.alignItems = "stretch";
+    navInner.style.gap = "10px";
+
+    if(nav){
+      nav.style.width = "100%";
+      nav.style.marginLeft = "0";
+      nav.style.justifyContent = "flex-start";
+    }
+
+    brand.style.justifySelf = "start";
+
+    return topLine;
   }
 
+
+  function addDevNotice(){
+
+    const topLine = ensureHeaderTopline();
+
+    if(!topLine) return;
+
+    let notice =
+      document.querySelector(
+        ".site-nav-notice"
+      );
+
+    if(!notice){
+      notice = document.createElement("span");
+      notice.className = "site-nav-notice";
+      notice.textContent =
+        "UNDER DEVELOPMENT · NO TOKEN SALE";
+    }
+
+    notice.style.position = "static";
+    notice.style.transform = "none";
+    notice.style.margin = "0";
+    notice.style.whiteSpace = "nowrap";
+    notice.style.justifySelf = "center";
+    notice.style.textAlign = "center";
+
+    topLine.appendChild(notice);
+  }
 
   function addSitemapLastmod(){
 
@@ -170,12 +208,9 @@
       )
     ) return;
 
-    const navInner =
-      document.querySelector(
-        ".site-nav-inner"
-      );
+    const topLine = ensureHeaderTopline();
 
-    if(!navInner) return;
+    if(!topLine) return;
 
     const prefix = getPrefix();
     const sitemapUrl = prefix + "/sitemap.xml";
@@ -248,9 +283,11 @@
         stamp.style.fontWeight = "700";
         stamp.style.color = "#ffffff";
         stamp.style.textTransform = "uppercase";
-        stamp.style.marginLeft = "auto";
+        stamp.style.marginLeft = "0";
+        stamp.style.justifySelf = "end";
+        stamp.style.textAlign = "right";
 
-        navInner.appendChild(stamp);
+        topLine.appendChild(stamp);
       })
       .catch(function(){
         /* Silent fallback: navigation remains fully functional. */
