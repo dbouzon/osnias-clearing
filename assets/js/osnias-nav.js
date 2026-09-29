@@ -27,13 +27,13 @@
       { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
       { label: "2-Architecture", href: prefix + "/architecture/" },
       { label: "3-Rules", href: prefix + "/rules/" },
-      { label: "4-Cycles", href: prefix + "/cycle/" },
+      { label: "4-Cycles", href: prefix + "/cycles/" },
       { label: "5-Security", href: prefix + "/security/" },
       { label: "6-Onboarding", href: prefix + "/onboarding/" },
       { label: "A-Regulation", href: prefix + "/regulation/" },
       { label: "B-Official Deployment", href: prefix + "/deployment/" },
       { label: "C-Documentation", href: prefix + "/documentation/" },
-      { label: "D-Partnership", href: prefix + "/partnership/" }
+      { label: "D-Partnership", href: prefix + "/partnership/" },
       { label: "E-FAQ", href: prefix + "/faq/" }
     ];
 
