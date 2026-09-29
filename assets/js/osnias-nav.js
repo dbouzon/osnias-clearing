@@ -34,6 +34,7 @@
       { label: "B-Official Deployment", href: prefix + "/deployment/" },
       { label: "C-Documentation", href: prefix + "/documentation/" },
       { label: "D-Partnership", href: prefix + "/partnership/" }
+      { label: "E-FAQ", href: prefix + "/faq/" }
     ];
 
     nav.replaceChildren();
