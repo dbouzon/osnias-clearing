@@ -24,44 +24,36 @@
     const prefix = getPrefix();
 
     const items = [
-        {
-        label: "1-Osnias-ID",
-        href: prefix + "/osniasid/"
+      {
+        label: "Architecture",
+        href: prefix + "/architecture/architecture.html"
       },
       {
-        label: "2-Architecture",
-        href: prefix + "/architecture/"
+        label: "Official Deployment",
+        href: prefix + "/deployment/deployment.html"
       },
-       {
-        label: "3-Rules",
+      {
+        label: "Security",
+        href: prefix + "/security/"
+      },
+      {
+        label: "Regulation",
+        href: prefix + "/regulation/regulation.html"
+      },
+      {
+        label: "Osnias-ID",
+        href: prefix + "/osniasid/osniasid.html"
+      },
+      {
+        label: "Rules",
         href: prefix + "/rules/"
       },
       {
-        label: "4-Cycles",
-        href: prefix + "/cycle/"
-      },
-      {
-        label: "5-Security",
-        href: prefix + "/security/"
-      },
-         {
-        label: "6-Onboarding",
-        href: prefix + "/onboarding/"
-      },
-    {
-        label: "A-Regulation",
-        href: prefix + "/regulation/"
-      },
-      {
-        label: "B-Official Deployment",
-        href: prefix + "/deployment/deployment.html"
-      },
-  {
-        label: "C-Documentation",
+        label: "Documentation",
         href: prefix + "/documentation/documentation.html"
       },
       {
-        label: "D-Partnership",
+        label: "Partnership",
         href: prefix + "/partnership/"
       }
     ];
@@ -177,12 +169,106 @@
     );
   }
 
+
+  function addSitemapLastmod(){
+
+    if(
+      document.querySelector(
+        ".site-nav-lastmod"
+      )
+    ) return;
+
+    const navInner =
+      document.querySelector(
+        ".site-nav-inner"
+      );
+
+    if(!navInner) return;
+
+    const prefix = getPrefix();
+    const sitemapUrl = prefix + "/sitemap.xml";
+
+    fetch(sitemapUrl, { cache: "no-store" })
+      .then(function(response){
+        if(!response.ok){
+          throw new Error("Unable to load sitemap.xml");
+        }
+        return response.text();
+      })
+      .then(function(xmlText){
+        const xml = new DOMParser().parseFromString(
+          xmlText,
+          "application/xml"
+        );
+
+        if(xml.querySelector("parsererror")){
+          throw new Error("Invalid sitemap.xml");
+        }
+
+        const siteRoot =
+          window.location.origin + prefix + "/";
+
+        let lastmod = "";
+
+        xml.querySelectorAll("url").forEach(function(entry){
+          const loc = entry.querySelector("loc");
+          const mod = entry.querySelector("lastmod");
+
+          if(
+            !lastmod &&
+            loc &&
+            mod &&
+            loc.textContent.trim() === siteRoot
+          ){
+            lastmod = mod.textContent.trim();
+          }
+        });
+
+        if(!lastmod){
+          const dates = Array.from(
+            xml.querySelectorAll("lastmod")
+          )
+            .map(function(node){
+              return node.textContent.trim();
+            })
+            .filter(Boolean)
+            .sort();
+
+          lastmod = dates.length
+            ? dates[dates.length - 1]
+            : "";
+        }
+
+        if(!lastmod) return;
+
+        const stamp = document.createElement("span");
+        stamp.className = "site-nav-lastmod";
+        stamp.textContent = "LAST UPDATE · " + lastmod;
+        stamp.setAttribute(
+          "title",
+          "Date read automatically from sitemap.xml"
+        );
+
+        stamp.style.marginLeft = "auto";
+        stamp.style.whiteSpace = "nowrap";
+        stamp.style.fontSize = ".72rem";
+        stamp.style.letterSpacing = ".06em";
+        stamp.style.opacity = ".72";
+
+        navInner.appendChild(stamp);
+      })
+      .catch(function(){
+        /* Silent fallback: navigation remains fully functional. */
+      });
+  }
+
   function init(){
 
     buildMainNavigation();
     markActive();
     secureBlankLinks();
     addDevNotice();
+    addSitemapLastmod();
 
   }
 
