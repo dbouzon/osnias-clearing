@@ -16,7 +16,7 @@
 
   <meta name="DC.title" content="Osnias Clearing — Réseau de clearing multi-nœuds">
   <meta name="DC.creator" content="Denis Bouzon">
-  <meta name="DC.subject" content="Decentralized clearing infrastructure; multi-node clearing; multilateral netting; Sei Network; Ethereum escrow; ISO 20022">
+  <meta name="DC.subject" content="Decentralized Clearing Infrastructure; multi-node clearing; multilateral netting; Sei Network; Ethereum escrow; ISO 20022">
   <meta name="DC.description" content="Infrastructure de clearing par nœuds pour la compensation interne et inter-nœuds, avec registre commun des obligations sur Sei et actifs séquestrés séparément sur Ethereum.">
   <meta name="DC.publisher" content="Osnias Clearing">
   <meta name="DC.date" content="2026-09-29">
@@ -138,10 +138,21 @@
 
   
     .hero-heading .eyebrow{
+      display:block;
+      width:100%;
+      max-width:none;
       text-align:center;
       font-size:1.05rem;
       letter-spacing:.14em;
       margin-bottom:.9rem;
+    }
+
+  
+    .hero-heading h1,
+    .hero-heading .hero-role{
+      text-align:center;
+      margin-left:auto;
+      margin-right:auto;
     }
 
   </style>
@@ -170,7 +181,7 @@
         </div>
 
         <div class="hero-heading lang-en">
-          <div class="eyebrow">Decentralized clearing infrastructure</div>
+          <div class="eyebrow">Decentralized Clearing Infrastructure</div>
           <h1>Multi-Node Clearing Network</h1>
           <div class="hero-role">Internal and inter-node netting, with each node remaining under its own jurisdiction.</div>
         </div>
@@ -191,7 +202,7 @@
 
             <div class="lang-en">
               <p class="hero-lead" style="margin-left:auto;margin-right:auto;">
-                <strong>Osnias Clearing is a multi-node clearing network project designed to net obligations within each node and between nodes, while each node remains subject to its own jurisdiction.</strong>
+                <strong>Osnias Clearing is a multi-node clearing network designed to net obligations within each node and across nodes, while each node remains subject to its own jurisdiction.</strong>
               </p>
               <p class="hero-lead" style="margin-left:auto;margin-right:auto;">
                 The network is intended for <strong>middle-market economic actors and beyond</strong> that exchange recurrently within one area, across several areas or within the same vertical sector. Its purpose is to reduce gross settlements by leaving only the net positions resulting from economic cycles of <strong>1, 4 or 13 weeks</strong> to be settled.
@@ -238,7 +249,7 @@
 
       <div class="lang-en">
         <div class="section-label">01 · Project Overview</div>
-        <h2>A clearing infrastructure for real economic exchanges</h2>
+        <h2>A clearing infrastructure for real economic activity</h2>
         <p class="section-intro">
           Osnias Clearing is designed to organize the clearing of economic obligations between companies and institutions that trade with one another on a recurring basis. Its purpose is not to create a new means of payment, but to reduce gross settlement flows by determining, at regular intervals, the amounts actually due after netting.
         </p>
@@ -464,8 +475,8 @@
       const fr = document.querySelectorAll('.lang-fr');
       const en = document.querySelectorAll('.lang-en');
       const isFr = lang === 'fr';
-      fr.forEach(el => el.style.display = isFr ? '' : 'none');
-      en.forEach(el => el.style.display = isFr ? 'none' : '');
+      fr.forEach(el => el.style.display = isFr ? 'block' : 'none');
+      en.forEach(el => el.style.display = isFr ? 'none' : 'block');
       document.documentElement.lang = lang;
       document.getElementById('frBtn').classList.toggle('active', isFr);
       document.getElementById('enBtn').classList.toggle('active', !isFr);
