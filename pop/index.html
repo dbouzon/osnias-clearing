@@ -1,182 +1,100 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-  <title>O-POP Osnias — Livre VII / Book VII · 1.0</title>
-  <meta name="description" content="Osnias Clearing Book VII: O-POP Mainnet server and network architecture, private Sei RPC access, dedicated end-user network, separated administration LAN, netting compute, reconciliation, resilience and operational neutrality."/>
-  <meta name="robots" content="index, follow, max-image-preview:large"/>
-  <meta name="author" content="Denis Bouzon"/>
-  <meta name="theme-color" content="#050814"/>
-  <meta name="citation_doi" content="10.5281/zenodo.23055994"/>
-
-  <link rel="canonical" href="https://www.osnias-clearing.com/pop/"/>
-  <link rel="stylesheet" href="/assets/css/osnias.css"/>
-
-  <script src="/assets/js/osnias-seo.js" defer></script>
-  <script src="/assets/js/osnias-nav.js" defer></script>
-</head>
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>O-POP Osnias — Livre VII · Architecture Mainnet | Osnias Clearing</title>
+<meta content="Livre VII d’Osnias Clearing : architecture O-POP Mainnet, accès RPC privé à Sei, réseau utilisateurs dédié, LAN d’administration séparé, calcul du netting, réconciliation Ethereum, résilience et neutralité opérationnelle." name="description"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="#050814" name="theme-color"/>
+<meta content="10.5281/zenodo.23055994" name="citation_doi"/>
+<link href="https://www.osnias-clearing.com/pop/" rel="canonical"/><link href="https://www.osnias-clearing.com/pop/" hreflang="x-default" rel="alternate"/><link href="https://www.osnias-clearing.com/en/pop/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/pop/" hreflang="fr" rel="alternate"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+<meta content="Osnias Clearing, O-POP, Point of Presence, architecture Mainnet, RPC privé Sei, serveur RPC dédié, netting compute, réconciliation Ethereum, LAN administration, résilience, haute disponibilité, infrastructure de clearing" name="keywords"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="Denis Bouzon" name="citation_author"/><meta content="O-POP Osnias — Livre VII" name="citation_title"/><meta content="2026-09-30" name="citation_publication_date"/><meta content="O-POP Osnias — Livre VII" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-09-30" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/pop/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="O-POP Osnias — Livre VII · Architecture Mainnet | Osnias Clearing" name="twitter:title"/><meta content="Livre VII d’Osnias Clearing : architecture O-POP Mainnet, accès RPC privé à Sei, réseau utilisateurs dédié, LAN d’administration séparé, calcul du netting, réconciliation Ethereum, résilience et neutralité opérationnelle." name="twitter:description"/><meta content="https://www.osnias-clearing.com/pop/livre-7.jpg" name="twitter:image"/><meta content="O-POP Osnias — Livre VII · Architecture Mainnet | Osnias Clearing" property="og:title"/><meta content="Livre VII d’Osnias Clearing : architecture O-POP Mainnet, accès RPC privé à Sei, réseau utilisateurs dédié, LAN d’administration séparé, calcul du netting, réconciliation Ethereum, résilience et neutralité opérationnelle." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/pop/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/pop/livre-7.jpg" property="og:image"/><meta content="O-POP Osnias — architecture serveur et réseau Mainnet" property="og:image:alt"/><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "O-POP Osnias — Livre VII",
+  "name": "O-POP Osnias — Livre VII",
+  "description": "Livre VII d’Osnias Clearing : architecture O-POP Mainnet, accès RPC privé à Sei, réseau utilisateurs dédié, LAN d’administration séparé, calcul du netting, réconciliation Ethereum, résilience et neutralité opérationnelle.",
+  "url": "https://www.osnias-clearing.com/pop/",
+  "author": {
+    "@type": "Person",
+    "name": "Denis Bouzon"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Osnias Clearing"
+  },
+  "datePublished": "2026-09-30",
+  "dateModified": "2026-10-03",
+  "inLanguage": "fr",
+  "identifier": "https://doi.org/10.5281/zenodo.23055994"
+}
+</script></head>
 <body>
-  <div class="site-nav-fixed">
-    <div class="site-nav-inner">
-      <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
-      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="actions" aria-label="Sélecteur de langue / Language selector">
-      <a class="btn btn-primary" href="#" id="lang-fr-btn" aria-pressed="true">🇫🇷 FR</a>
-      <a class="btn" href="#" id="lang-en-btn" aria-pressed="false">🇬🇧 EN</a>
-    </div>
-  </div>
-
-  <div id="content-fr">
-    <div class="container">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Livre VII · O-POP Osnias · Mainnet · RPC privé · Résilience</div>
-            <h1>O-POP Osnias</h1>
-            <p class="hero-lead">
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Navigation principale du site" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<div class="container">
+<div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/pop/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/pop/" hreflang="en" lang="en">🇬🇧 English</a></div>
+</div>
+<div class="container">
+<section class="hero">
+<div class="hero-grid">
+<div>
+<div class="eyebrow">Livre VII · O-POP Osnias · Mainnet · RPC privé · Résilience</div>
+<h1>O-POP Osnias</h1>
+<p class="hero-lead">
               Le Livre VII présente l’architecture serveur et réseau cible d’un Point of Presence Osnias pour le Mainnet.
               Il décrit la séparation entre l’accès RPC privé au réseau Sei, le réseau dédié aux utilisateurs finaux,
               le LAN d’administration local, les serveurs Osnias-Core dédiés au calcul du netting, la réconciliation
               avec le séquestre Ethereum ainsi que les principes de sécurité, de neutralité opérationnelle et de redondance.
             </p>
-            <p class="section-intro"><strong>Livre VII · Release 1.0 · 30 septembre 2026</strong></p>
-            <div class="actions">
-              <a class="btn btn-primary" href="/pop/Livre_7_O-POP_mainnet_fr.pdf" target="_blank">PDF en français</a>
-              <a class="btn" href="/pop/Book_7_O-POP_Mainnet_EN.pdf" target="_blank">PDF en anglais</a>
-              <a class="btn" href="https://zenodo.org/records/23055994" target="_blank" rel="noopener">DOI Zenodo</a>
-            </div>
-          </div>
-          <figure class="hero-illustration">
-            <img src="/pop/livre-7.jpg"
-                 alt="Osnias Clearing — O-POP Mainnet, architecture serveur et réseau"
-                 loading="eager" decoding="async"
-                 onerror="this.closest('.hero-illustration')?.remove()" />
-          </figure>
-        </div>
-      </section>
-    </div>
-
-    <main class="container">
-      <section>
-        <div class="section-label">Architecture</div>
-        <h2>Un point de présence sécurisé, neutre et redondant</h2>
-        <div class="arch-note">
+<p class="section-intro"><strong>Livre VII · Release 1.0 · 30 septembre 2026</strong></p>
+<div class="actions">
+<a class="btn btn-primary" href="/pop/Livre_7_O-POP_mainnet_fr.pdf" target="_blank">PDF en français</a>
+<a class="btn" href="/pop/Book_7_O-POP_Mainnet_EN.pdf" target="_blank">PDF en anglais</a>
+<a class="btn" href="https://zenodo.org/records/23055994" rel="noopener" target="_blank">DOI Zenodo</a>
+</div><p class="section-intro">Le Livre VII décrit l’architecture cible d’un Point of Presence Osnias : accès RPC privé au registre canonique Sei, réseau dédié aux utilisateurs finaux, LAN d’administration isolé, serveurs Osnias-Core pour le calcul du netting, réconciliation avec le séquestre Ethereum, redondance A/B et principes de résilience et de neutralité opérationnelle.</p>
+</div>
+<figure class="hero-illustration">
+<img alt="Osnias Clearing — O-POP Mainnet, architecture serveur et réseau" decoding="async" loading="eager" onerror="this.closest('.hero-illustration')?.remove()" src="/pop/livre-7.jpg"/>
+</figure>
+</div>
+</section>
+</div>
+<main class="container">
+<section>
+<div class="section-label">Architecture</div>
+<h2>Un point de présence sécurisé, neutre et redondant</h2>
+<div class="arch-note">
           L’O-POP fournit un accès maîtrisé au registre canonique Sei sans créer de réseau blockchain privé.
           Le réseau RPC destiné aux utilisateurs finaux est dédié et séparé du LAN Administration local en 10.x.x.x.
           Les fonctions critiques sont redondées en A/B afin de limiter les points uniques de défaillance et de préserver
           la continuité de service pendant les phases de clearing, de freeze, de netting et de réconciliation.
         </div>
-      </section>
-
-      <section>
-        <div class="section-label">Séparation fonctionnelle</div>
-        <h2>RPC, calcul, administration et séquestre restent distincts</h2>
-        <div class="arch-note">
+</section>
+<section>
+<div class="section-label">Séparation fonctionnelle</div>
+<h2>RPC, calcul, administration et séquestre restent distincts</h2>
+<div class="arch-note">
           Les RPC Sei suivent et exposent l’état canonique du réseau ; Osnias-Core exécute le calcul du netting et les contrôles
           d’invariants ; le LAN Administration reste isolé des accès utilisateurs ; Ethereum porte la couche de séquestre et de collatéral.
           Cette séparation permet de dimensionner, sécuriser, auditer et superviser chaque fonction indépendamment.
         </div>
-      </section>
-    </main>
-  </div>
-
-  <div id="content-en" hidden>
-    <div class="container">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Book VII · O-POP Osnias · Mainnet · Private RPC · Resilience</div>
-            <h1>O-POP Osnias</h1>
-            <p class="hero-lead">
-              Book VII presents the target server and network architecture of an Osnias Point of Presence for Mainnet operations.
-              It describes the separation between private RPC access to the Sei network, the dedicated end-user network,
-              the local Administration LAN, Osnias-Core servers dedicated to netting computation, reconciliation with
-              Ethereum escrow, and the principles of security, operational neutrality and redundancy.
-            </p>
-            <p class="section-intro"><strong>Book VII · Release 1.0 · 30 September 2026</strong></p>
-            <div class="actions">
-              <a class="btn btn-primary" href="/pop/Book_7_O-POP_Mainnet_EN.pdf" target="_blank">English PDF</a>
-              <a class="btn" href="/pop/Livre_7_O-POP_mainnet_fr.pdf" target="_blank">French PDF</a>
-              <a class="btn" href="https://zenodo.org/records/23055994" target="_blank" rel="noopener">Zenodo DOI</a>
-            </div>
-          </div>
-          <figure class="hero-illustration">
-            <img src="/pop/livre-7.jpg"
-                 alt="Osnias Clearing — O-POP Mainnet server and network architecture"
-                 loading="eager" decoding="async"
-                 onerror="this.closest('.hero-illustration')?.remove()" />
-          </figure>
-        </div>
-      </section>
-    </div>
-
-    <main class="container">
-      <section>
-        <div class="section-label">Architecture</div>
-        <h2>A secure, neutral and redundant point of presence</h2>
-        <div class="arch-note">
-          The O-POP provides controlled access to the canonical Sei ledger without creating a private blockchain network.
-          The end-user RPC network is dedicated and separated from the local 10.x.x.x Administration LAN.
-          Critical functions are deployed with A/B redundancy to reduce single points of failure and preserve service continuity
-          during clearing, freeze, netting and reconciliation phases.
-        </div>
-      </section>
-
-      <section>
-        <div class="section-label">Functional separation</div>
-        <h2>RPC, computation, administration and escrow remain distinct</h2>
-        <div class="arch-note">
-          Sei RPC servers follow and expose the canonical network state; Osnias-Core performs netting computation and invariant checks;
-          the Administration LAN remains isolated from user access; Ethereum provides the escrow and collateral layer.
-          This separation allows each function to be sized, secured, audited and supervised independently.
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <footer>
-    <div class="container">© 2026 Osnias Clearing · Book VII · Public Technical Documentation</div>
-  </footer>
-
-  <script>
-    (function(){
-      const en = document.getElementById('content-en');
-      const fr = document.getElementById('content-fr');
-      const enBtn = document.getElementById('lang-en-btn');
-      const frBtn = document.getElementById('lang-fr-btn');
-
-      function setLanguage(lang){
-        const isFr = lang === 'fr';
-        en.hidden = isFr;
-        fr.hidden = !isFr;
-        enBtn.classList.toggle('btn-primary', !isFr);
-        frBtn.classList.toggle('btn-primary', isFr);
-        enBtn.setAttribute('aria-pressed', String(!isFr));
-        frBtn.setAttribute('aria-pressed', String(isFr));
-        document.documentElement.lang = isFr ? 'fr' : 'en';
-        try { localStorage.setItem('osnias-language', isFr ? 'fr' : 'en'); } catch(e) {}
-      }
-
-      enBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('en'); });
-      frBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('fr'); });
-
-      let preferred = 'fr';
-      const params = new URLSearchParams(window.location.search);
-      if(params.get('lang') === 'fr' || params.get('lang') === 'en') preferred = params.get('lang');
-      else {
-        try { preferred = localStorage.getItem('osnias-language') || (((navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en'); } catch(e) {}
-      }
-      setLanguage(preferred === 'en' ? 'en' : 'fr');
-    })();
-  </script>
-
-  <script data-goatcounter="https://denis-osnias.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</section>
+<section><div class="section-label">Sécurité d’accès</div><h2>VPN dédié, traçabilité et contrôle des accès</h2><div class="arch-note">L’accès opérationnel à l’O-POP peut être protégé par un VPN dédié reliant les composants autorisés et les équipes habilitées à l’infrastructure locale. Cette couche d’accès ajoute un niveau de sécurité distinct du réseau public : contrôle des points d’entrée, segmentation des flux, journalisation des connexions et conservation des traces utiles à l’audit et à l’analyse d’incident. Combinée à la séparation entre réseau utilisateurs, RPC privé et LAN d’administration, elle renforce la traçabilité des opérations et limite l’exposition directe des composants critiques.</div></section></main>
+<footer>
+<div class="container">© 2026 Osnias Clearing · Livre VII · Documentation technique publique</div>
+</footer>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
