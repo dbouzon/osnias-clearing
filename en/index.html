@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
 
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -151,7 +153,31 @@
       margin-right:auto;
     }
 
-  </style>
+  
+    .language-switch{
+      display:flex;
+      justify-content:flex-start;
+      gap:.65rem;
+      margin:0 0 1.5rem;
+      flex-wrap:wrap;
+    }
+    .language-switch a,
+    .language-switch .active-language{
+      display:inline-block;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:999px;
+      padding:.45rem .8rem;
+      color:inherit;
+      text-decoration:none;
+      font:inherit;
+    }
+    .language-switch .active-language{
+      background:rgba(255,255,255,.10);
+    }
+    .language-switch a:hover{
+      background:rgba(255,255,255,.07);
+    }
+    </style>
 </head>
 <body>
 <div class="site-nav-fixed">
@@ -162,9 +188,7 @@
 </div>
 <header>
 <div class="container">
-<section class="hero">
-
-
+<section class="hero"><div aria-label="Language selection" class="language-switch"><a href="/" hreflang="fr" lang="fr" title="Version française">🇫🇷 Français</a><span class="active-language">🇬🇧 English</span></div>
 <div class="hero-heading">
 <div class="eyebrow">Decentralized Clearing Infrastructure</div>
 <h1>Multi-Node Clearing Network</h1>
@@ -172,7 +196,6 @@
 </div>
 <div class="hero-split">
 <div class="hero-copy">
-
 <div>
 <p class="hero-lead" style="margin-left:auto;margin-right:auto;">
 <strong>Osnias Clearing is a multi-node clearing network designed to net obligations within each node and across nodes, while each node remains subject to its own jurisdiction.</strong>
@@ -196,7 +219,6 @@
 </header>
 <main class="container">
 <section id="presentation">
-
 <div>
 <div class="section-label">01 · Project Overview</div>
 <h2>A clearing infrastructure for real economic activity</h2>
@@ -218,7 +240,6 @@
 </div>
 </section>
 <section id="model">
-
 <div>
 <div class="section-label">02 · Clearing Model</div>
 <h2>One common register, multiple local nodes</h2>
@@ -228,33 +249,23 @@
 </div>
 <div class="grid-3">
 <article class="card">
-
 <div class="card-kicker">Local clearing</div>
-
 <h3>Within each node</h3>
-
 <p>Obligations between users of the same node are aggregated and cleared locally before inter-node exposure is calculated.</p>
 </article>
 <article class="card">
-
 <div class="card-kicker">Inter-node clearing</div>
-
 <h3>Between multiple nodes</h3>
-
 <p>After local clearing, residual positions are aggregated at network level and cleared between participating nodes.</p>
 </article>
 <article class="card">
-
 <div class="card-kicker">Cross-jurisdiction</div>
-
 <h3>One network, local frameworks</h3>
-
 <p>Each node remains a local entity subject to its own regulatory framework while using a common clearing and communication protocol.</p>
 </article>
 </div>
 </section>
 <section id="architecture">
-
 <div>
 <div class="section-label">03 · Functional Architecture</div>
 <h2>Clearing on Sei, segregated assets on Ethereum</h2>
@@ -265,29 +276,22 @@
 <div class="grid-3">
 <article class="card">
 <div class="card-kicker">SEI</div>
-
 <h3>Common obligations register</h3>
-
 <p>Sei hosts the canonical clearing register, participant positions, cycles and the states required for netting calculations.</p>
 </article>
 <article class="card">
 <div class="card-kicker">ETHEREUM</div>
-
 <h3>Escrow and settlement</h3>
-
 <p>Assets intended for settlement are held separately in escrow on Ethereum at node level. They are not held by the clearing register.</p>
 </article>
 <article class="card">
 <div class="card-kicker">OSNIAS</div>
-
 <h3>Separation by design</h3>
-
 <p>Osnias develops the clearing infrastructure on Sei. By design and by code, Osnias has no access to assets held or escrowed on Ethereum.</p>
 </article>
 </div>
 </section>
 <section id="cycles">
-
 <div>
 <div class="section-label">04 · Economic Cycles</div>
 <h2>1 week · 4 weeks · 13 weeks</h2>
@@ -295,11 +299,9 @@
           Clearing cycles correspond to real economic horizons. They allow reciprocal obligations to accumulate over time before the net amount to be settled is calculated.
         </p>
 </div>
-
 <div class="notice"><strong>Principle.</strong> The network seeks to reduce the number and volume of gross settlements by first offsetting reciprocal obligations within each node and then between nodes.</div>
 </section>
 <section id="references">
-
 <div>
 <div class="section-label">05 · Public References</div>
 <h2>Regulation, deployment and technical documentation</h2>
@@ -320,38 +322,32 @@
 </div>
 </section>
 <section id="status">
-
 <div>
 <div class="section-label">06 · Project Status</div>
 <h2>Infrastructure under development and qualification</h2>
 <p class="section-intro">Public documentation and several testnet components are available. The project continues its regulatory review, technical development and security qualification before any production deployment.</p>
 </div>
-
 <div class="notice"><strong>Technical information.</strong> This website describes a technological clearing infrastructure. It does not constitute an offer of securities, investment advice, a prospectus or a solicitation.</div>
 </section>
 <section id="contact">
 <div class="section-label">07 · Contact</div>
-
 <h2>Contact Osnias Clearing</h2>
 <div class="grid-3">
 <article class="card">
 <div class="card-kicker">Website</div>
 <h3>Osnias Clearing</h3>
-
 <p>Official website and public project documentation.</p>
 <div class="actions"><a class="btn btn-primary" href="/en/">www.osnias-clearing.com</a></div>
 </article>
 <article class="card">
 <div class="card-kicker">Email</div>
 <h3>Contact</h3>
-
 <p>Technical, institutional, regulatory or partnership enquiries.</p>
 <div class="actions"><a class="btn" href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a></div>
 </article>
 <article class="card">
 <div class="card-kicker">Public Repository</div>
 <h3>GitHub</h3>
-
 <p>Public pages, technical files and project documentation.</p>
 <div class="actions"><a class="btn" href="https://github.com/dbouzon/osnias-clearing" rel="noopener noreferrer" target="_blank">Open GitHub Repository ↗</a></div>
 </article>
@@ -372,11 +368,9 @@
           <a href="/en/regulation/">Regulation</a>
 </div>
 </div>
-
 <div class="footer-legal">Osnias Clearing provides public technical information for research, development, review and audit purposes. No production contract should be considered active unless identified in the official deployment registry.</div>
 </div>
 </footer>
-
 <script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
