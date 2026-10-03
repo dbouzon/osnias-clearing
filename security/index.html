@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
-<html lang="en">
-<head>
+<html lang="fr">
+<head><link href="https://www.osnias-clearing.com/security/" rel="canonical"/><link href="https://www.osnias-clearing.com/security/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/security/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/security/" hreflang="x-default" rel="alternate"/>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Book 5 — Security Topology &amp; Resilience Configuration — Release 2.0 | Osnias Clearing</title>
-<meta content="Security resilience topology and configuration of Osnias Clearing Release 2.0: EVM signing, Sei authorization, cold fund release, identity lifecycle, cross-chain verification and internal audit readiness." name="description"/>
+<title>Livre 5 — Topologie de sécurité &amp; configuration de résilience — Release 2.0 | Osnias Clearing</title>
+<meta content="Topologie de sécurité et configuration de résilience du clearing Osnias, Release 2.0 : signature EVM, autorisation Sei, libération vers une destination froide, cycle de vie des identités et préparation interne à l’audit." name="description"/>
 <meta content="Osnias Clearing security, end-user security, secure onboarding, cold release address, dual-domain authorization, Osnias-ID, EVM escrow security, Sei security, ECDSA key compromise, Shor risk, cryptographic hygiene, off-boarding, smart contract security" name="keywords"/>
 <meta content="#050814" name="theme-color"/>
 <meta content="index, follow, max-image-preview:large" name="robots"/>
@@ -15,14 +14,14 @@
 <meta content="2026/09/26" name="citation_publication_date"/>
 <meta content="10.5281/zenodo.22981575" name="citation_doi"/>
 <meta content="https://www.osnias-clearing.com/security/Book_5_Security_en_2_0.pdf" name="citation_pdf_url"/>
-<meta content="Book 5 — Security Topology and Resilience Configuration — Release 2.0" property="og:title"/>
-<meta content="Internal technical security assessment and audit-readiness review. Design assessed; implementation evidence, adversarial testing and independent review pending." property="og:description"/>
+<meta content="Livre 5 — Topologie de sécurité &amp; configuration de résilience — Release 2.0" property="og:title"/>
+<meta content="Topologie de sécurité et configuration de résilience du clearing Osnias, Release 2.0 : signature EVM, autorisation Sei, libération vers une destination froide, cycle de vie des identités et préparation interne à l’audit." property="og:description"/>
 <meta content="https://www.osnias-clearing.com/security/" property="og:url"/>
 <meta content="article" property="og:type"/>
 <meta content="Osnias Clearing" property="og:site_name"/>
 <meta content="https://www.osnias-clearing.com/security/osnias-dual-domain-authorization.png" property="og:image"/>
 <meta content="Osnias Clearing dual-domain authorization architecture" property="og:image:alt"/>
-<link href="https://www.osnias-clearing.com/security/" rel="canonical"/>
+
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script type="application/ld+json">
   {
@@ -47,7 +46,7 @@
       "https://zenodo.org/records/22981575"
     ],
     "dateModified": "2026-09-26",
-    "inLanguage": ["en", "fr"],
+    "inLanguage": "fr",
     "license": "https://creativecommons.org/licenses/by/4.0/"
   }
   </script>
@@ -265,44 +264,39 @@
 <body class="security-v4">
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
-<a class="site-nav-brand" href="/index.html">OSNIAS <span>CLEARING</span></a>
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
 <nav aria-label="Main site navigation" class="site-nav-buttons" id="mainNav">
-<a href="/architecture/architecture.html"><span class="i18n-text" data-en="Architecture" data-fr="Architecture">Architecture</span></a>
-<a href="/deployment/deployment.html"><span class="i18n-text" data-en="Official Deployment" data-fr="Déploiement officiel">Official Deployment</span></a>
-<a aria-current="page" href="/security/"><span class="i18n-text" data-en="Security" data-fr="Sécurité">Security</span></a>
-<a href="/regulation/regulation.html"><span class="i18n-text" data-en="Regulation" data-fr="Réglementation">Regulation</span></a>
-<a href="/documentation/documentation.html"><span class="i18n-text" data-en="Documentation" data-fr="Documentation">Documentation</span></a>
+<a href="/architecture/">Architecture</a>
+<a href="/deployment/">Déploiement officiel</a>
+<a aria-current="page" href="/security/">Sécurité</a>
+<a href="/regulation/">Réglementation</a>
+<a href="/documentation/">Documentation</a>
 </nav>
 </div>
-</div><div class="security-langbar"><div class="container"><div aria-label="Language / Langue" class="lang-switch" role="group"><button aria-pressed="true" class="lang-btn is-active" data-lang="en" title="English" type="button">🇬🇧 <span aria-hidden="false">EN</span></button><button aria-pressed="false" class="lang-btn" data-lang="fr" title="Français" type="button">🇫🇷 <span aria-hidden="false">FR</span></button></div></div></div>
+</div><div class="security-langbar"><div class="container"><div aria-label="Language / Langue" class="lang-switch" role="group"><a aria-current="page" class="lang-btn is-active" href="/security/" hreflang="fr" lang="fr">🇫🇷 FR</a><a aria-current="false" class="lang-btn" href="/en/security/" hreflang="en" lang="en">🇬🇧 EN</a></div></div></div>
 <header>
 <div class="container">
 <section class="hero">
 <div class="hero-grid security-hero-grid"><div class="security-hero-top"><div>
-<div class="eyebrow"><span class="i18n-text" data-en="Book 5 - Security Design · Internal Audit Readiness · Release 2.0" data-fr="Livre 5 - Conception de sécurité · Préparation interne à l’audit · Release 2.0">Book 5 - Security Design · Internal Audit Readiness · Release 2.0</span></div>
-<h1><span class="i18n-text" data-en="Security Topology &amp; Resilience Configuration" data-fr="Topologie de sécurité &amp; configuration de résilience">Security Topology &amp; Resilience Configuration</span></h1>
-<div class="hero-role"><span class="i18n-text" data-en="Design assessed. Implementation evidence, adversarial testing and independent review pending." data-fr="Conception évaluée. Preuves d’implémentation, tests adversariaux et revue indépendante en attente.">Design assessed. Implementation evidence, adversarial testing and independent review pending.</span></div>
+<div class="eyebrow">Livre 5 - Conception de sécurité · Préparation interne à l’audit · Release 2.0</div>
+<h1>Topologie de sécurité &amp; configuration de résilience</h1>
+<div class="hero-role">Conception évaluée. Preuves d’implémentation, tests adversariaux et revue indépendante en attente.</div>
 </div><div class="security-hero-visual"><img alt="Coffre-fort protégé par trois cadenas représentant les trois domaines de sécurité indépendants A, B et C" decoding="async" height="465" loading="eager" src="./coffre-fort.jpg" width="620"/></div></div>
 <section id="publication">
-<div class="section-label"><span class="i18n-text" data-en="Publication &amp; Research" data-fr="Publication &amp; recherche">Publication &amp; Research</span></div>
+<div class="section-label">Publication &amp; recherche</div>
 <div class="publication-card">
 <div>
-<div class="card-kicker"><span class="i18n-text" data-en="Technical Report · Audit Readiness" data-fr="Rapport technique · Préparation à l’audit">Technical Report · Audit Readiness</span></div>
-<h3><span class="i18n-text" data-en="Release 2.0 · Published Technical Assessment" data-fr="Release 2.0 · Évaluation technique publiée">Release 2.0 · Published Technical Assessment</span></h3>
+<div class="card-kicker">Rapport technique · Préparation à l’audit</div>
+<h3>Release 2.0 · Évaluation technique publiée</h3>
 <div class="publication-meta">
             Denis Bouzon · Osnias Clearing<br/>
-            ORCID 0009-0007-8894-8902<br/><span class="i18n-text" data-en="September 2026 · CC BY 4.0" data-fr="Septembre 2026 · CC BY 4.0">
-            September 2026 · CC BY 4.0</span><br/><span class="i18n-text" data-en="Onboarding · Secure Fund Release · Identity Renewal · Off-Boarding" data-fr="Onboarding · Release sécurisé des fonds · Renouvellement d’identité · Off-boarding">
-            Onboarding · Secure Fund Release · Identity Renewal · Off-Boarding
-          </span></div>
-<p><span class="i18n-text" data-en="The paper defines the security architecture and its assumptions. Implementation, hard-attack testing, remediation and retesting will be documented separately in a future" data-fr="Le rapport définit l’architecture de sécurité et ses hypothèses. L’implémentation, les tests d’attaque dure, la remédiation et les retests seront documentés séparément dans un futur">The paper defines the security architecture and its assumptions. Implementation, hard-attack testing, remediation and retesting will be documented separately in a future </span><strong><span class="i18n-text" data-en="Security Validation and Implementation Report" data-fr="Rapport de validation de sécurité et d’implémentation">Security Validation and Implementation Report</span></strong>.</p>
+            ORCID 0009-0007-8894-8902<br/>Septembre 2026 · CC BY 4.0<br/>Onboarding · Release sécurisé des fonds · Renouvellement d’identité · Off-boarding</div>
+<p>Le rapport définit l’architecture de sécurité et ses hypothèses. L’implémentation, les tests d’attaque dure, la remédiation et les retests seront documentés séparément dans un futur<strong>Rapport de validation de sécurité et d’implémentation</strong>.</p>
 </div>
 <div class="publication-actions">
-<a class="btn btn-primary" href="./Book_5_Security_en_2_0.pdf"><span class="i18n-text" data-en="PDF in English" data-fr="PDF en anglais">PDF in English</span></a>
-<a class="btn" href="./Livre_5_Securite_fr_2_0.pdf"><span class="i18n-text" data-en="PDF in French" data-fr="PDF en français">PDF in French</span></a>
+<a class="btn btn-primary" href="./Book_5_Security_en_2_0.pdf">PDF en anglais</a>
+<a class="btn" href="./Livre_5_Securite_fr_2_0.pdf">PDF en français</a>
 <a class="btn" href="https://zenodo.org/records/22981575" rel="noopener noreferrer" target="_blank">Zenodo — DOI 10.5281/zenodo.22981575</a>
-
-
 </div>
 </div>
 </section>
@@ -313,47 +307,17 @@
 <footer>
 <div class="container">
 <div class="footer-grid">
-<div><span class="i18n-text" data-en="© 2026 Osnias Clearing · Book 5 — Security Topology &amp; Resilience Configuration" data-fr="© 2026 Osnias Clearing · Livre 5 — Topologie de sécurité &amp; configuration de résilience">© 2026 Osnias Clearing · Book 5 — Security Topology &amp; Resilience Configuration</span></div>
+<div>© 2026 Osnias Clearing · Livre 5 — Topologie de sécurité &amp; configuration de résilience</div>
 <div>
-<a href="/architecture/architecture.html"><span class="i18n-text" data-en="Architecture" data-fr="Architecture">Architecture</span></a> · 
-          <a href="/deployment/deployment.html"><span class="i18n-text" data-en="Official Deployment" data-fr="Déploiement officiel">Official Deployment</span></a> · 
-          <a href="/documentation/documentation.html"><span class="i18n-text" data-en="Documentation" data-fr="Documentation">Documentation</span></a> · 
-          <a href="/regulation/regulation.html"><span class="i18n-text" data-en="Regulation" data-fr="Réglementation">Regulation</span></a>
+<a href="/architecture/">Architecture</a> · 
+          <a href="/deployment/">Déploiement officiel</a> · 
+          <a href="/documentation/">Documentation</a> · 
+          <a href="/regulation/">Réglementation</a>
 </div>
 </div>
-<div class="footer-legal"><span class="i18n-text" data-en="Public technical information for research, development, review and audit purposes. CC BY 4.0 where expressly stated." data-fr="Informations techniques publiques à des fins de recherche, développement, revue et audit. CC BY 4.0 lorsque cela est expressément indiqué.">Public technical information for research, development, review and audit purposes. CC BY 4.0 where expressly stated.</span></div>
+<div class="footer-legal">Informations techniques publiques à des fins de recherche, développement, revue et audit. CC BY 4.0 lorsque cela est expressément indiqué.</div>
 </div>
 </footer>
 <script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
-<script>
-(function(){
-  const KEY='osnias-security-language';
-  const html=document.documentElement;
-  const buttons=[...document.querySelectorAll('.lang-btn')];
-  const nodes=[...document.querySelectorAll('.i18n-text')];
-  const titles={
-    en:'Book 5 — Security Topology & Resilience Configuration — Release 2.0 | Osnias Clearing',
-    fr:'Livre 5 — Topologie de sécurité & configuration de résilience — Release 2.0 | Osnias Clearing'
-  };
-  const descriptions={
-    en:'Security resilience topology and configuration of Osnias Clearing Release 2.0: EVM signing, Sei authorization, cold fund release, identity lifecycle, cross-chain verification and internal audit readiness.',
-    fr:'Topologie de sécurité et configuration de résilience du clearing Osnias, Release 2.0 : signature EVM, autorisation Sei, libération vers une destination froide, cycle de vie des identités et préparation interne à l’audit.'
-  };
-  function setLang(lang){
-    if(lang!=='fr') lang='en';
-    html.lang=lang;
-    nodes.forEach(el=>{ el.textContent=el.dataset[lang] || el.dataset.en || el.textContent; });
-    buttons.forEach(btn=>{ const active=btn.dataset.lang===lang; btn.classList.toggle('is-active',active); btn.setAttribute('aria-pressed',active?'true':'false'); });
-    document.title=titles[lang];
-    const md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute('content',descriptions[lang]);
-    const ogt=document.querySelector('meta[property="og:title"]'); if(ogt) ogt.setAttribute('content',titles[lang].replace(' | Osnias Clearing',''));
-    const ogd=document.querySelector('meta[property="og:description"]'); if(ogd) ogd.setAttribute('content',descriptions[lang]);
-    try{localStorage.setItem(KEY,lang);}catch(e){}
-  }
-  buttons.forEach(btn=>btn.addEventListener('click',()=>setLang(btn.dataset.lang)));
-  let initial='en';
-  try{initial=localStorage.getItem(KEY)||'en';}catch(e){}
-  setLang(initial);
-})();
-</script></body>
+</body>
 </html>
