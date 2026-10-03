@@ -1,13 +1,27 @@
 <?xml version='1.0' encoding='utf-8'?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Page bilingue : Accueil / Home -->
   <url>
     <loc>https://www.osnias-clearing.com/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/" />
     <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/" />
+    <lastmod>2026-10-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Page bilingue : Architecture (Livre 2) -->
   <url>
     <loc>https://www.osnias-clearing.com/architecture/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/architecture/" />
@@ -17,6 +31,16 @@
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://www.osnias-clearing.com/en/architecture/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/architecture/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/architecture/" />
+    <lastmod>2026-10-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Page bilingue : Osnias-ID (Livre 1) -->
+  <url>
     <loc>https://www.osnias-clearing.com/osniasid/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/osniasid/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/osniasid/" />
@@ -24,6 +48,16 @@
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/en/osniasid/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/osniasid/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/osniasid/" />
+    <lastmod>2026-10-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Page bilingue : Règles de clearing (Livre 3) -->
   <url>
     <loc>https://www.osnias-clearing.com/rules/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/rules/" />
@@ -33,11 +67,35 @@
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.osnias-clearing.com/cycles/</loc>
-    <lastmod>2026-09-29</lastmod>
+    <loc>https://www.osnias-clearing.com/en/rules/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/rules/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/rules/" />
+    <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
+
+  <!-- Page bilingue : Cycles de clearing (Livre 4) -->
+  <url>
+    <loc>https://www.osnias-clearing.com/cycle/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/cycle/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/cycle/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/cycle/" />
+    <lastmod>2026-10-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/en/cycle/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/cycle/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/cycle/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/cycle/" />
+    <lastmod>2026-10-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Pages français uniquement (pas encore de version EN publiée) -->
   <url>
     <loc>https://www.osnias-clearing.com/security/</loc>
     <lastmod>2026-09-29</lastmod>
@@ -86,36 +144,5 @@
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/en/</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/" />
-    <lastmod>2026-10-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/en/architecture/</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/architecture/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/architecture/" />
-    <lastmod>2026-10-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/en/osniasid/</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/osniasid/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/osniasid/" />
-    <lastmod>2026-10-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/en/rules/</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/rules/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/rules/" />
-    <lastmod>2026-10-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
+
 </urlset>
