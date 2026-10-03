@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Osnias Clearing — AMF Memorandum v2.0 · Regulatory Analysis</title>
+<meta content="Osnias Clearing AMF Memorandum v2.0: functional perimeter, MiCA qualification, Sei clearing register, external escrow, node responsibilities and protocol invariants." name="description"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="Denis Bouzon" name="creator"/>
+<meta content="Osnias Clearing" name="publisher"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="#050814" name="theme-color"/>
+<link href="https://www.osnias-clearing.com/en/regulation/" rel="canonical"/><link href="https://www.osnias-clearing.com/regulation/" hreflang="x-default" rel="alternate"/><link href="https://www.osnias-clearing.com/en/regulation/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/regulation/" hreflang="fr" rel="alternate"/>
+<link href="https://orcid.org/0009-0007-8894-8902" rel="author"/>
+<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"/>
+<meta content="Osnias Clearing — AMF Memorandum v2.0 · Regulatory Analysis" property="og:title"/>
+<meta content="Osnias Clearing AMF Memorandum v2.0: functional perimeter, MiCA qualification, Sei clearing register, external escrow, node responsibilities and protocol invariants." property="og:description"/>
+<meta content="article" property="og:type"/>
+<meta content="https://www.osnias-clearing.com/en/regulation/" property="og:url"/>
+<meta content="Osnias Clearing" property="og:site_name"/>
+<meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/>
+<meta content="AMF Memorandum v2.0 — Regulatory Analysis" property="og:image:alt"/>
+<meta content="Denis Bouzon" name="citation_author"/>
+<meta content="AMF Memorandum v2.0 — Regulatory Analysis" name="citation_title"/>
+<meta content="2026-09-28" name="citation_publication_date"/>
+<meta content="https://www.osnias-clearing.com/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" name="citation_pdf_url"/>
+<meta content="10.5281/zenodo.23020714" name="citation_doi"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+<style>
+    
+    
+    
+    
+    
+
+    .hero-title-center{
+      text-align:center;
+      max-width:980px;
+      margin:0 auto 1.35rem auto;
+    }
+
+    .hero-title-center .hero-role{
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .dossier-label{
+      display:inline-block;
+      margin:0 0 .55rem 0;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+
+    .doi-callout{
+      margin:.85rem 0 1.1rem 0;
+      padding:.8rem 1rem;
+      border:1px solid rgba(43,185,230,.35);
+      border-radius:14px;
+      background:rgba(43,185,230,.06);
+    }
+
+    .doi-callout strong{
+      display:block;
+      margin-bottom:.2rem;
+    }
+
+    .doi-callout a{
+      font-weight:700;
+    }
+  </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.osnias-clearing.com/#denis-bouzon",
+      "name": "Denis Bouzon",
+      "sameAs": [
+        "https://orcid.org/0009-0007-8894-8902"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.osnias-clearing.com/#website",
+      "url": "https://www.osnias-clearing.com/",
+      "name": "Osnias Clearing"
+    },
+    {
+      "@type": "ScholarlyArticle",
+      "@id": "https://www.osnias-clearing.com/en/regulation/#article",
+      "headline": "AMF Memorandum v2.0 — Regulatory Analysis",
+      "description": "Osnias Clearing AMF Memorandum v2.0: functional perimeter, MiCA qualification, Sei clearing register, external escrow, node responsibilities and protocol invariants.",
+      "url": "https://www.osnias-clearing.com/en/regulation/",
+      "author": {
+        "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+      },
+      "datePublished": "2026-09-28",
+      "dateModified": "2026-10-03",
+      "sameAs": "https://doi.org/10.5281/zenodo.23020714",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://www.osnias-clearing.com/#website"
+      }
+    }
+  ]
+}
+</script>
+<meta content="AMF Memorandum v2.0 — Regulatory Analysis" name="DC.title"/><meta content="https://www.osnias-clearing.com/en/regulation/" name="DC.identifier"/><meta content="en" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Osnias Clearing — AMF Memorandum v2.0 · Regulatory Analysis" name="twitter:title"/><meta content="Osnias Clearing AMF Memorandum v2.0: functional perimeter, MiCA qualification, Sei clearing register, external escrow, node responsibilities and protocol invariants." name="twitter:description"/><meta content="https://www.osnias-clearing.com/index-picture.png" name="twitter:image"/></head>
+<body>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/en/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Main site navigation" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<header>
+<div class="container">
+<section class="hero">
+<div aria-label="Language selection" class="actions"><a class="btn" href="/regulation/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/regulation/" hreflang="en" lang="en">🇬🇧 English</a></div>
+<div class="hero-grid single">
+<div>
+<div class="eyebrow">Regulation · AMF Memorandum · Version 2.0 · Preliminary legal analysis</div>
+<div class="hero-title-center">
+<h1>Regulatory Analysis</h1>
+<div class="hero-role">Technical facts first. Legal qualification second.</div>
+</div>
+<p class="hero-lead">
+<span class="dossier-label">First dossier: France — AMF Fintech</span><br/>
+              This page presents the regulatory perimeter described in the <strong>AMF Memorandum v2.0</strong>, prepared in response to the email sent by AMF Innovation &amp; Finance Digitale on 22 September 2026. The memorandum supports a request for preliminary regulatory guidance before developing a testnet pilot with a partner established in France.
+            </p>
+<div class="doi-callout">
+<strong>Published reference — Zenodo</strong>
+              AMF Memorandum v2.0 · DOI:
+              <a href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23020714 ↗</a>
+              · <a href="https://zenodo.org/records/23020714" rel="noopener noreferrer" target="_blank">Zenodo record ↗</a>
+</div>
+<div class="tags">
+<span class="tag tag-accent">Sei clearing register</span>
+<span class="tag">External escrow</span>
+<span class="tag">1:1 chamber invariant</span>
+<span class="tag">Fail-closed controls</span>
+<span class="tag">No governance token</span>
+<span class="tag">No Osnias custody</span>
+</div>
+<div class="actions">
+<a class="btn btn-primary" href="/regulation/Osnias-Clearing-AMF-Memorandum-2_0-EN.pdf" rel="noopener noreferrer" target="_blank">Memorandum EN ↗</a>
+<a class="btn" href="/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" rel="noopener noreferrer" target="_blank">Mémorandum FR ↗</a>
+<a class="btn" href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">DOI ↗</a>
+</div><div class="document-summary-block"><h3>1. Technical and functional perimeter</h3><p class="section-intro">The AMF Memorandum v2.0 first sets out the technical facts and functional perimeter of Osnias Clearing. It describes a canonical clearing register on Sei, clearing tokens governed by strict invariants, a non-custodial operating model, and an explicit separation between the calculation of obligations, the custody of assets and their final settlement.</p></div><div class="document-summary-block"><h3>2. Architecture, escrow and responsibilities</h3><p class="section-intro">The document then details the external escrow architecture and the allocation of responsibilities between Osnias Clearing and node operators. It covers fail-closed controls, the 1:1 chamber-level invariant, the absence of a governance token, and the absence of asset custody by Osnias, in order to distinguish the clearing infrastructure from custody and settlement functions.</p></div><div class="document-summary-block"><h3>3. Regulatory qualification and AMF dialogue</h3><p class="section-intro">Finally, the memorandum sets out the main regulatory qualification questions to be examined with the AMF as part of a preliminary regulatory dialogue. Its purpose is to obtain legal guidance on the system under MiCA and the applicable framework before developing a testnet pilot with a partner established in France, without prejudging any final legal qualification.</p></div>
+</div>
+</div>
+</section>
+</div>
+</header>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div>© 2026 Osnias Clearing · Regulatory Analysis · Last update: 28 September 2026</div>
+<div><a href="/en/">Home</a></div>
+</div>
+<div class="footer-legal">Author: Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902" rel="noopener noreferrer" target="_blank">0009-0007-8894-8902</a> · <a href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a></div>
+</div>
+</footer>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js">
+</script>
+</body>
+</html>
