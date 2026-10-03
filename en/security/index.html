@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link href="https://www.osnias-clearing.com/en/security/" rel="canonical"/><link href="https://www.osnias-clearing.com/security/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/security/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/security/" hreflang="x-default" rel="alternate"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Book 5 — Security Topology &amp; Resilience Configuration — Release 2.0 | Osnias Clearing</title>
+<meta content="Security resilience topology and configuration of Osnias Clearing Release 2.0: EVM signing, Sei authorization, cold fund release, identity lifecycle, cross-chain verification and internal audit readiness." name="description"/>
+<meta content="Osnias Clearing security, end-user security, secure onboarding, cold release address, dual-domain authorization, Osnias-ID, EVM escrow security, Sei security, ECDSA key compromise, Shor risk, cryptographic hygiene, off-boarding, smart contract security" name="keywords"/>
+<meta content="#050814" name="theme-color"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="Book 5 — Security Topology &amp; Resilience Configuration" name="citation_title"/>
+<meta content="Denis Bouzon" name="citation_author"/>
+<meta content="2026/09/26" name="citation_publication_date"/>
+<meta content="10.5281/zenodo.22981575" name="citation_doi"/>
+<meta content="https://www.osnias-clearing.com/security/Book_5_Security_en_2_0.pdf" name="citation_pdf_url"/>
+<meta content="Book 5 — Security Topology &amp; Resilience Configuration — Release 2.0" property="og:title"/>
+<meta content="Security resilience topology and configuration of Osnias Clearing Release 2.0: EVM signing, Sei authorization, cold fund release, identity lifecycle, cross-chain verification and internal audit readiness." property="og:description"/>
+<meta content="https://www.osnias-clearing.com/en/security/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="Osnias Clearing" property="og:site_name"/>
+<meta content="https://www.osnias-clearing.com/security/osnias-dual-domain-authorization.png" property="og:image"/>
+<meta content="Osnias Clearing dual-domain authorization architecture" property="og:image:alt"/>
+
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Book 5 — Security Topology and Resilience Configuration",
+    "alternativeHeadline": "Release 2.0 — Internal Security Design Review and Pre-Audit Assessment",
+    "description": "Internal security audit-readiness and technical assessment of the Osnias Clearing security design. This document is not an independent third-party audit or certification.",
+    "author": {
+      "@type": "Person",
+      "name": "Denis Bouzon",
+      "sameAs": ["https://orcid.org/0009-0007-8894-8902"]
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Osnias Clearing",
+      "url": "https://www.osnias-clearing.com/"
+    },
+    "url": "https://www.osnias-clearing.com/en/security/",
+    "identifier": "https://doi.org/10.5281/zenodo.22981575",
+    "sameAs": [
+      "https://zenodo.org/records/22981575"
+    ],
+    "dateModified": "2026-09-26",
+    "inLanguage": "en",
+    "license": "https://creativecommons.org/licenses/by/4.0/"
+  }
+  </script>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+<style>
+    .security-v4 { --sv4-accent:#53d7c4; --sv4-blue:#84a9ff; --sv4-soft:#0d1425; --sv4-line:rgba(255,255,255,.10); }
+    .security-v4 .hero { padding-bottom: 2.5rem; }
+    .security-v4 .hero-role { max-width: 920px; font-size: clamp(1.05rem,2vw,1.32rem); }
+    .security-v4 .security-thesis { margin: 1.4rem 0 0; padding: 1rem 1.2rem; border:1px solid rgba(83,215,196,.32); border-radius:16px; background:linear-gradient(135deg,rgba(83,215,196,.08),rgba(132,169,255,.06)); font-weight:700; letter-spacing:.01em; }
+    .security-v4 .architecture-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin:1.5rem 0 0; }
+    .security-v4 .architecture-strip article { border:1px solid var(--sv4-line); background:rgba(255,255,255,.025); border-radius:16px; padding:1rem 1.05rem; }
+    .security-v4 .architecture-strip strong { display:block; margin:.25rem 0 .35rem; font-size:1.03rem; }
+    .security-v4 .architecture-strip small { opacity:.72; text-transform:uppercase; letter-spacing:.08em; }
+    .security-v4 .security-figure { margin:1.6rem 0 1rem; padding:1rem; border:1px solid var(--sv4-line); border-radius:18px; background:rgba(255,255,255,.02); }
+    .security-v4 .security-figure img { width:100%; height:auto; display:block; border-radius:12px; background:#fff; }
+    .security-v4 .security-figure figcaption { margin-top:.75rem; font-size:.92rem; opacity:.74; line-height:1.55; }
+    .security-v4 .claim-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+    .security-v4 .claim { border-left:3px solid var(--sv4-accent); padding:1rem 1.1rem; background:rgba(255,255,255,.025); border-radius:0 14px 14px 0; }
+    .security-v4 .claim strong { display:block; margin-bottom:.35rem; }
+    .security-v4 .invariant { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; padding:.95rem 1rem; border-radius:12px; background:#070c18; border:1px solid rgba(132,169,255,.28); overflow:auto; }
+    .security-v4 .publication-card { display:grid; grid-template-columns:1.4fr .9fr; gap:1.25rem; align-items:start; border:1px solid rgba(132,169,255,.25); background:linear-gradient(135deg,rgba(132,169,255,.08),rgba(83,215,196,.05)); border-radius:18px; padding:1.35rem; }
+    .security-v4 .publication-meta { font-size:.94rem; line-height:1.7; opacity:.86; }
+    .security-v4 .publication-actions { display:grid; gap:.7rem; }
+    .security-v4 .btn[aria-disabled="true"] { opacity:.46; pointer-events:none; cursor:not-allowed; }
+    .security-v4 .roadmap { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.65rem; margin:1.2rem 0; }
+    .security-v4 .roadmap div { text-align:center; padding:.85rem .5rem; border:1px solid var(--sv4-line); border-radius:12px; background:rgba(255,255,255,.025); font-size:.92rem; }
+    .security-v4 .roadmap div:not(:last-child)::after { content:"→"; float:right; margin-right:-.95rem; opacity:.5; }
+    .security-v4 .legacy-security { opacity:.96; }
+    .security-v4 .audit-banner { margin:1.35rem 0; padding:1.1rem 1.2rem; border:1px solid rgba(132,169,255,.38); border-radius:16px; background:linear-gradient(135deg,rgba(132,169,255,.10),rgba(83,215,196,.05)); }
+    .security-v4 .audit-banner strong { display:block; margin-bottom:.35rem; }
+    .security-v4 .audit-meta { width:100%; border-collapse:collapse; margin:1rem 0 1.5rem; font-size:.95rem; }
+    .security-v4 .audit-meta th,.security-v4 .audit-meta td { text-align:left; vertical-align:top; padding:.72rem .8rem; border-bottom:1px solid var(--sv4-line); }
+    .security-v4 .audit-meta th { width:28%; opacity:.72; font-weight:600; }
+    .security-v4 .audit-status { display:inline-block; padding:.25rem .55rem; border-radius:999px; border:1px solid rgba(255,255,255,.15); font-size:.76rem; font-weight:800; letter-spacing:.05em; white-space:nowrap; }
+    .security-v4 .status-design { border-color:rgba(132,169,255,.45); background:rgba(132,169,255,.10); }
+    .security-v4 .status-open { border-color:rgba(255,196,110,.45); background:rgba(255,196,110,.09); }
+    .security-v4 .status-pending { border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.04); }
+    .security-v4 .audit-table-wrap { overflow-x:auto; margin:1rem 0 1.4rem; }
+    .security-v4 .audit-table { width:100%; min-width:780px; border-collapse:collapse; font-size:.91rem; }
+    .security-v4 .audit-table th,.security-v4 .audit-table td { text-align:left; vertical-align:top; padding:.75rem .72rem; border-bottom:1px solid var(--sv4-line); }
+    .security-v4 .audit-table th { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; opacity:.72; }
+    .security-v4 .references-list { line-height:1.7; }
+    .security-v4 .references-list a { text-decoration:underline; text-underline-offset:2px; }
+    @media (max-width:850px){
+      .security-v4 .architecture-strip,.security-v4 .claim-grid,.security-v4 .publication-card,.security-v4 .roadmap{grid-template-columns:1fr;}
+      .security-v4 .roadmap div:not(:last-child)::after{content:"↓"; float:none; display:block; margin:.5rem 0 -.4rem;}
+    }
+  
+    
+    
+    
+    
+    
+    
+
+
+    .security-v4 .security-langbar{
+      border-top:1px solid rgba(255,255,255,.04);
+      background:#050814;
+    }
+    .security-v4 .security-langbar .container{
+      padding-top:1.2rem;
+      padding-bottom:1.2rem;
+    }
+    .security-v4 .lang-switch{
+      display:flex;
+      gap:.65rem;
+      align-items:center;
+      justify-content:flex-start;
+    }
+    .security-v4 .lang-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:.42rem;
+      min-width:76px;
+      justify-content:center;
+      padding:.72rem 1rem;
+      border:1px solid rgba(132,169,255,.22);
+      border-radius:999px;
+      background:#091022;
+      color:#fff;
+      font:inherit;
+      font-size:.92rem;
+      font-weight:800;
+      letter-spacing:.03em;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .security-v4 .lang-btn:hover{
+      border-color:rgba(83,215,196,.65);
+      background:rgba(83,215,196,.10);
+    }
+    .security-v4 .lang-btn.is-active{
+      color:#03111a;
+      border-color:#2bbce7;
+      background:#2bbce7;
+      box-shadow:none;
+    }
+    .security-v4 .lang-btn:focus-visible{
+      outline:2px solid var(--sv4-accent);
+      outline-offset:3px;
+    }
+    @media(max-width:700px){
+      .security-v4 .security-langbar .container{
+        padding-top:.85rem;
+        padding-bottom:.85rem;
+      }
+      .security-v4 .lang-btn{
+        min-width:70px;
+        padding:.62rem .85rem;
+        font-size:.86rem;
+      }
+    }
+
+
+    .security-v4 .security-hero-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);
+      gap:2.4rem;
+      align-items:start;
+    }
+    .security-v4 .security-hero-visual{
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding-top:0;
+    }
+    .security-v4 .security-hero-visual img{
+      display:block;
+      width:100%;
+      height:auto;
+      max-width:560px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 18px 50px rgba(0,0,0,.28);
+      object-fit:cover;
+    }
+    @media(max-width:980px){
+      .security-v4 .security-hero-grid{
+        grid-template-columns:1fr;
+        gap:1.4rem;
+      }
+      .security-v4 .security-hero-visual{
+        justify-content:flex-start;
+      }
+      .security-v4 .security-hero-visual img{
+        max-width:680px;
+      }
+    }
+
+
+    /* Security hero layout refinement */
+    .security-v4 .security-hero-grid{
+      display:block;
+    }
+    .security-v4 .security-hero-top{
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr);
+      gap:2.6rem;
+      align-items:start;
+    }
+    .security-v4 .security-hero-visual{
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-end;
+      padding-top:0;
+      align-self:start;
+    }
+    .security-v4 .security-hero-visual img{
+      width:100%;
+      max-width:560px;
+      height:auto;
+      margin-top:0;
+    }
+    .security-v4 .security-hero-grid > .architecture-strip{
+      width:100%;
+      margin-top:1.6rem;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+    @media(max-width:980px){
+      .security-v4 .security-hero-top{
+        grid-template-columns:1fr;
+        gap:1.4rem;
+      }
+      .security-v4 .security-hero-visual{
+        justify-content:flex-start;
+      }
+      .security-v4 .security-hero-visual img{
+        max-width:680px;
+      }
+      .security-v4 .security-hero-grid > .architecture-strip{
+        grid-template-columns:1fr;
+      }
+    }
+
+
+    /* Full-width introductory block below title + hero image */
+    .security-v4 .security-hero-below{
+      width:100%;
+      margin-top:1.35rem;
+      max-width:none;
+    }
+    .security-v4 .security-hero-below .hero-lead{
+      max-width:none;
+      width:100%;
+      margin:0 0 1rem;
+    }
+    .security-v4 .security-hero-below .tags{
+      width:100%;
+      margin-top:.8rem;
+    }
+</style>
+</head>
+<body class="security-v4">
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/en/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Main site navigation" class="site-nav-buttons" id="mainNav">
+<a href="/en/architecture/">Architecture</a>
+<a href="/en/deployment/">Official Deployment</a>
+<a aria-current="page" href="/en/security/">Security</a>
+<a href="/en/regulation/">Regulation</a>
+<a href="/en/documentation/">Documentation</a>
+</nav>
+</div>
+</div><div class="security-langbar"><div class="container"><div aria-label="Language / Langue" class="lang-switch" role="group"><a aria-current="false" class="lang-btn" href="/security/" hreflang="fr" lang="fr">🇫🇷 FR</a><a aria-current="page" class="lang-btn is-active" href="/en/security/" hreflang="en" lang="en">🇬🇧 EN</a></div></div></div>
+<header>
+<div class="container">
+<section class="hero">
+<div class="hero-grid security-hero-grid"><div class="security-hero-top"><div>
+<div class="eyebrow">Book 5 - Security Design · Internal Audit Readiness · Release 2.0</div>
+<h1>Security Topology &amp; Resilience Configuration</h1>
+<div class="hero-role">Design assessed. Implementation evidence, adversarial testing and independent review pending.</div>
+</div><div class="security-hero-visual"><img alt="Coffre-fort protégé par trois cadenas représentant les trois domaines de sécurité indépendants A, B et C" decoding="async" height="465" loading="eager" src="./coffre-fort.jpg" width="620"/></div></div>
+<section id="publication">
+<div class="section-label">Publication &amp; Research</div>
+<div class="publication-card">
+<div>
+<div class="card-kicker">Technical Report · Audit Readiness</div>
+<h3>Release 2.0 · Published Technical Assessment</h3>
+<div class="publication-meta">
+            Denis Bouzon · Osnias Clearing<br/>
+            ORCID 0009-0007-8894-8902<br/>September 2026 · CC BY 4.0<br/>Onboarding · Secure Fund Release · Identity Renewal · Off-Boarding</div>
+<p>The paper defines the security architecture and its assumptions. Implementation, hard-attack testing, remediation and retesting will be documented separately in a future<strong>Security Validation and Implementation Report</strong>.</p>
+</div>
+<div class="publication-actions">
+<a class="btn btn-primary" href="./Book_5_Security_en_2_0.pdf">PDF in English</a>
+<a class="btn" href="./Livre_5_Securite_fr_2_0.pdf">PDF in French</a>
+<a class="btn" href="https://zenodo.org/records/22981575" rel="noopener noreferrer" target="_blank">Zenodo — DOI 10.5281/zenodo.22981575</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+</div>
+</header>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div>© 2026 Osnias Clearing · Book 5 — Security Topology &amp; Resilience Configuration</div>
+<div>
+<a href="/en/architecture/">Architecture</a> · 
+          <a href="/en/deployment/">Official Deployment</a> · 
+          <a href="/en/documentation/">Documentation</a> · 
+          <a href="/en/regulation/">Regulation</a>
+</div>
+</div>
+<div class="footer-legal">Public technical information for research, development, review and audit purposes. CC BY 4.0 where expressly stated.</div>
+</div>
+</footer>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
