@@ -2,10 +2,10 @@
   "use strict";
 
   const defaults = {
-    title: "Osnias Clearing — Blockchain Clearing & Multilateral Netting Infrastructure",
+    title: "Osnias Clearing — Multilateral Netting & Multi-Node Clearing Infrastructure",
 
     description:
-      "Osnias Clearing is a non-custodial blockchain clearing and multilateral netting infrastructure for enterprise payments, with functional separation between clearing and settlement, ISO 20022 messaging and public testnet deployments.",
+      "Osnias Clearing is a non-custodial multi-node clearing infrastructure for multilateral netting of recurring enterprise obligations, with functional separation between clearing, settlement and custody.",
 
     keywords: [
       "Osnias Clearing",
@@ -83,7 +83,7 @@
     orcid: "https://orcid.org/0009-0007-8894-8902",
     zenodo: "https://zenodo.org/",
     ogImage: "https://www.osnias-clearing.com/index-picture.png",
-    ogImageAlt: "Osnias Clearing — Blockchain Clearing and Multilateral Netting Infrastructure",
+    ogImageAlt: "Osnias Clearing — Multilateral Netting and Multi-Node Clearing Infrastructure",
     locale: "en_US",
     twitterCard: "summary_large_image"
   };
@@ -227,11 +227,12 @@
           "caption": data.imageAlt
         },
         "about": (page.about || [
-          "Blockchain clearing",
           "Multilateral netting",
-          "Clearing and settlement",
-          "Enterprise payments",
-          "Financial infrastructure",
+          "Multi-node clearing infrastructure",
+          "Net settlement positions",
+          "Liquidity savings",
+          "Cross-jurisdiction clearing",
+          "Enterprise clearing",
           "ISO 20022",
           "Distributed ledger technology"
         ]).map(function(name){
@@ -322,17 +323,21 @@
     upsertMeta("twitter:image", image);
     upsertMeta("twitter:image:alt", imageAlt);
 
-    upsertJsonLd(
-      "osnias-seo-jsonld",
-      buildStructuredData(page, {
-        title: title,
-        description: description,
-        url: url,
-        image: image,
-        imageAlt: imageAlt,
-        lang: lang
-      })
-    );
+    // Page-specific HTML now carries the authoritative structured data.
+    // Add the generic graph only when no JSON-LD is already present.
+    if(!document.querySelector('script[type="application/ld+json"]')){
+      upsertJsonLd(
+        "osnias-seo-jsonld",
+        buildStructuredData(page, {
+          title: title,
+          description: description,
+          url: url,
+          image: image,
+          imageAlt: imageAlt,
+          lang: lang
+        })
+      );
+    }
   }
 
   if(document.readyState === "loading"){

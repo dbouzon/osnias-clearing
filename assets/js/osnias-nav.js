@@ -16,6 +16,20 @@
       : "";
   }
 
+
+  function getLocalPath(){
+    const prefix = getPrefix();
+    const path = window.location.pathname || "/";
+    return prefix && path.startsWith(prefix)
+      ? (path.slice(prefix.length) || "/")
+      : path;
+  }
+
+  function isEnglishPage(){
+    const path = getLocalPath();
+    return path === "/en" || path.startsWith("/en/");
+  }
+
   function buildMainNavigation(){
     const nav = document.querySelector(".site-nav-buttons");
 
@@ -23,17 +37,31 @@
 
     const prefix = getPrefix();
 
-    const items = [
+    const isEn = isEnglishPage();
+
+    const items = isEn ? [
+      { label: "1-Osnias-ID", href: prefix + "/en/osniasid/" },
+      { label: "2-Architecture", href: prefix + "/en/architecture/" },
+      { label: "3-Rules", href: prefix + "/en/rules/" },
+      { label: "4-Cycles", href: prefix + "/en/cycle/" },
+      { label: "5-Security", href: prefix + "/en/security/" },
+      { label: "6-Onboarding", href: prefix + "/en/onboarding/" },
+      { label: "7-POP Osnias", href: prefix + "/en/pop/" },
+      { label: "A-Regulation", href: prefix + "/en/regulation/" },
+      { label: "B-Official Deployment", href: prefix + "/en/deployment/" },
+      { label: "D-Partnership", href: prefix + "/en/partnership/" },
+      { label: "E-FAQ", href: prefix + "/en/faq/" }
+    ] : [
       { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
       { label: "2-Architecture", href: prefix + "/architecture/" },
-      { label: "3-Rules", href: prefix + "/rules/" },
-      { label: "4-Cycles", href: prefix + "/cycle/" },
-      { label: "5-Security", href: prefix + "/security/" },
+      { label: "3-Règles", href: prefix + "/rules/" },
+      { label: "4-Cycles", href: prefix + "/cycles/" },
+      { label: "5-Sécurité", href: prefix + "/security/" },
       { label: "6-Onboarding", href: prefix + "/onboarding/" },
       { label: "7-POP Osnias", href: prefix + "/pop/" },
-      { label: "A-Regulation", href: prefix + "/regulation/" },
-      { label: "B-Official Deployment", href: prefix + "/deployment/" },
-      { label: "D-Partnership", href: prefix + "/partnership/" },
+      { label: "A-Régulation", href: prefix + "/regulation/" },
+      { label: "B-Déploiement", href: prefix + "/deployment/" },
+      { label: "D-Partenariat", href: prefix + "/partnership/" },
       { label: "E-FAQ", href: prefix + "/faq/" }
     ];
 
@@ -187,8 +215,9 @@
     if(!notice){
       notice = document.createElement("span");
       notice.className = "site-nav-notice";
-      notice.textContent =
-        "UNDER DEVELOPMENT · NO TOKEN SALE";
+      notice.textContent = isEnglishPage()
+        ? "UNDER DEVELOPMENT · NO TOKEN SALE"
+        : "EN DÉVELOPPEMENT · AUCUNE VENTE DE TOKEN";
     }
 
     notice.style.position = "static";
@@ -271,10 +300,12 @@
 
         const stamp = document.createElement("span");
         stamp.className = "site-nav-lastmod";
-        stamp.textContent = "LAST UPDATE · " + lastmod;
+        stamp.textContent = (isEnglishPage() ? "LAST UPDATE · " : "DERNIÈRE MISE À JOUR · ") + lastmod;
         stamp.setAttribute(
           "title",
-          "Date read automatically from sitemap.xml"
+          isEnglishPage()
+            ? "Date read automatically from sitemap.xml"
+            : "Date lue automatiquement depuis sitemap.xml"
         );
 
         stamp.style.whiteSpace = "nowrap";
