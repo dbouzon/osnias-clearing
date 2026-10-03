@@ -1,176 +1,102 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-  <title>Osnias-ID — Livre I / Book I · 3.0</title>
-  <meta name="description" content="Osnias-ID : identifiant interne de compte de clearing. Livre I, version 3.0, disponible en français et en anglais."/>
-  <meta name="robots" content="index, follow, max-image-preview:large"/>
-  <meta name="author" content="Denis Bouzon"/>
-  <meta name="theme-color" content="#050814"/>
-  <meta name="citation_doi" content="10.5281/zenodo.22978105"/>
-
-  <link rel="canonical" href="https://www.osnias-clearing.com/osniasid/"/>
-  <link rel="stylesheet" href="/assets/css/osnias.css"/>
-
-  <script src="/assets/js/osnias-seo.js" defer></script>
-  <script src="/assets/js/osnias-nav.js" defer></script>
-</head>
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Osnias-ID — Livre I · Release 3.0 | Osnias Clearing</title>
+<meta content="Osnias-ID est l’identifiant interne d’un compte de clearing au sein du réseau Osnias Clearing. Livre I, Release 3.0 : format à 19 chiffres, registre de participants, devise et durée de cycle." name="description"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="#050814" name="theme-color"/>
+<meta content="10.5281/zenodo.22978105" name="citation_doi"/>
+<link href="https://www.osnias-clearing.com/osniasid/" rel="canonical"/><link href="https://www.osnias-clearing.com/osniasid/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/osniasid/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/osniasid/" hreflang="x-default" rel="alternate"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+<meta content="Osnias-ID, identifiant de clearing, compte de clearing, Osnias Clearing, registre de participants, registre de clearing, interopérabilité, identifiant 19 chiffres, cycle de clearing, Sei Network" name="keywords"/><meta content="Osnias-ID — Livre I · Release 3.0" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Identifiant de clearing; registre de participants; interopérabilité; compte de clearing; Osnias Clearing" name="DC.subject"/><meta content="Osnias-ID est l’identifiant interne d’un compte de clearing au sein du réseau Osnias Clearing, utilisant un format à 19 chiffres associant le compte à une devise, une durée de cycle et un registre de participants." name="DC.description"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-03" name="DC.date"/><meta content="Documentation technique" name="DC.type"/><meta content="https://www.osnias-clearing.com/osniasid/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="Osnias-ID — Livre I · Release 3.0 | Osnias Clearing" property="og:title"/><meta content="Identifiant interne de compte de clearing : format à 19 chiffres, registre de participants, devise et durée de cycle." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/osniasid/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/osniasid/osniasid.jpg" property="og:image"/><meta content="Osnias-ID — identifiant transversal des comptes de clearing" property="og:image:alt"/><meta content="summary_large_image" name="twitter:card"/><meta content="Osnias-ID — Livre I · Release 3.0" name="twitter:title"/><meta content="Identifiant interne des comptes de clearing du réseau Osnias Clearing." name="twitter:description"/><meta content="https://www.osnias-clearing.com/osniasid/osniasid.jpg" name="twitter:image"/><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Osnias-ID — Livre I · Release 3.0",
+  "name": "Osnias-ID",
+  "description": "Identifiant interne de compte de clearing au sein du réseau Osnias Clearing.",
+  "url": "https://www.osnias-clearing.com/osniasid/",
+  "author": {
+    "@type": "Person",
+    "name": "Denis Bouzon"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Osnias Clearing"
+  },
+  "dateModified": "2026-10-03",
+  "inLanguage": "fr",
+  "identifier": "https://doi.org/10.5281/zenodo.22978105"
+}
+</script></head>
 <body>
-  <div class="site-nav-fixed">
-    <div class="site-nav-inner">
-      <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
-      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
-    </div>
-  </div>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Navigation principale du site" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<div class="container">
+<div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/osniasid/" hreflang="fr" lang="fr">🇫🇷 FR</a><a class="btn" href="/en/osniasid/" hreflang="en" lang="en">🇬🇧 EN</a></div>
+</div>
 
-  <div class="container">
-    <div class="actions" aria-label="Sélecteur de langue / Language selector">
-      <a class="btn btn-primary" href="#" id="lang-fr-btn" aria-pressed="true">🇫🇷 FR</a>
-      <a class="btn" href="#" id="lang-en-btn" aria-pressed="false">🇬🇧 EN</a>
-    </div>
-  </div>
-
-  <div id="content-fr">
-    <div class="container">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Livre I · Identifiant de clearing · Registre · Interopérabilité</div>
-            <h1>Osnias-ID</h1>
-            <p class="hero-lead">
+<div class="container">
+<section class="hero">
+<div class="hero-grid">
+<div>
+<div class="eyebrow">Livre I · Identifiant de clearing · Registre · Interopérabilité</div>
+<h1>Osnias-ID</h1>
+<p class="hero-lead">
               Osnias-ID est l’identifiant interne d’un compte de clearing au sein du réseau Osnias Clearing.
               Son format à 19 chiffres associe ce compte à une devise, à une durée de cycle et à un registre
               de participants, indépendamment de l’adresse technique d’un portefeuille. Il ne constitue
               ni une identité juridique ni une autorisation réglementaire.
             </p>
-            <p class="section-intro"><strong>Livre I · Release 3.0 · 26 septembre 2026</strong></p>
-            <div class="actions">
-              <a class="btn btn-primary" href="/osniasid/Livre_I-Osnias-ID-3.0-FR-2026-09-26.pdf" target="_blank">PDF en français</a>
-              <a class="btn" href="/osniasid/Book_I-Osnias-ID-3.0-2026-09-26.pdf" target="_blank">PDF en anglais</a>
-              <a class="btn" href="https://doi.org/10.5281/zenodo.22978105" target="_blank" rel="noopener">DOI Zenodo</a>
-            </div>
-          </div>
-          <figure class="hero-illustration">
-            <img src="/osniasid/osniasid.jpg"
-                 alt="Osnias-ID — identifiant transversal des comptes de clearing"
-                 loading="eager" decoding="async"
-                 onerror="this.closest('.hero-illustration')?.remove()" />
-          </figure>
+<p class="section-intro"><strong>Livre I · Release 3.0 · 26 septembre 2026</strong></p>
+<div class="actions">
+<a class="btn btn-primary" href="/osniasid/Livre_I-Osnias-ID-3.0-FR-2026-09-26.pdf" target="_blank">PDF en français</a>
+<a class="btn" href="/osniasid/Book_I-Osnias-ID-3.0-2026-09-26.pdf" target="_blank">PDF en anglais</a>
+<a class="btn" href="https://doi.org/10.5281/zenodo.22978105" rel="noopener" target="_blank">DOI Zenodo</a>
+</div>
+</div>
+<figure class="hero-illustration">
+<img alt="Osnias-ID — identifiant transversal des comptes de clearing" decoding="async" loading="eager" onerror="this.closest('.hero-illustration')?.remove()" src="/osniasid/osniasid.jpg"/>
+</figure>
+</div>
+</section>
+</div>
+<main class="container">
+<section id="history-fr">
+<div class="section-label">Versions antérieures</div>
+<h2>Historique du Livre I</h2>
+<div class="arch-links">
+<a class="arch-link" href="https://doi.org/10.5281/zenodo.22704626" rel="noopener" target="_blank">
+<strong>Release 2.0 · 11 septembre 2026 →</strong>
+<span>Version archivée sur Zenodo.</span>
+</a>
+<a class="arch-link" href="https://hal.science/hal-05746489" rel="noopener" target="_blank">
+<strong>Release 2.0 · HAL →</strong>
+<span>Archive ouverte HAL de la version antérieure.</span>
+</a>
+</div>
+<div class="arch-note">
+<strong>Release 1.0 :</strong> format initial à 16 chiffres, documenté dans l’historique du Livre I.
         </div>
-      </section>
-    </div>
+</section>
+</main>
 
-    <main class="container">
-      <section id="history-fr">
-        <div class="section-label">Versions antérieures</div>
-        <h2>Historique du Livre I</h2>
-        <div class="arch-links">
-          <a class="arch-link" href="https://doi.org/10.5281/zenodo.22704626" target="_blank" rel="noopener">
-            <strong>Release 2.0 · 11 septembre 2026 →</strong>
-            <span>Version archivée sur Zenodo.</span>
-          </a>
-          <a class="arch-link" href="https://hal.science/hal-05746489" target="_blank" rel="noopener">
-            <strong>Release 2.0 · HAL →</strong>
-            <span>Archive ouverte HAL de la version antérieure.</span>
-          </a>
-        </div>
-        <div class="arch-note">
-          <strong>Release 1.0 :</strong> format initial à 16 chiffres, documenté dans l’historique du Livre I.
-        </div>
-      </section>
-    </main>
-  </div>
 
-  <div id="content-en" hidden>
-    <div class="container">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Book I · Clearing identifier · Registry · Interoperability</div>
-            <h1>Osnias-ID</h1>
-            <p class="hero-lead">
-              Osnias-ID is an internal clearing account identifier within the Osnias Clearing network.
-              Its 19-digit format binds the account to a currency, a clearing cycle and a participant
-              registry, independently of a wallet’s technical address. It is neither a legal identity
-              nor a regulatory authorization.
-            </p>
-            <p class="section-intro"><strong>Book I · Release 3.0 · 26 September 2026</strong></p>
-            <div class="actions">
-              <a class="btn btn-primary" href="/osniasid/Book_I-Osnias-ID-3.0-2026-09-26.pdf" target="_blank">English PDF</a>
-              <a class="btn" href="/osniasid/Livre_I-Osnias-ID-3.0-FR-2026-09-26.pdf" target="_blank">French PDF</a>
-              <a class="btn" href="https://doi.org/10.5281/zenodo.22978105" target="_blank" rel="noopener">Zenodo DOI</a>
-            </div>
-          </div>
-          <figure class="hero-illustration">
-            <img src="/osniasid/osniasid.jpg"
-                 alt="Osnias-ID — transversal clearing-account identifier"
-                 loading="eager" decoding="async"
-                 onerror="this.closest('.hero-illustration')?.remove()" />
-          </figure>
-        </div>
-      </section>
-    </div>
+<footer>
+<div class="container">© 2026 Osnias Clearing · Osnias-ID · Livre I · Release 3.0 · Documentation technique publique</div>
+</footer>
 
-    <main class="container">
-      <section id="history-en">
-        <div class="section-label">Earlier versions</div>
-        <h2>Book I revision history</h2>
-        <div class="arch-links">
-          <a class="arch-link" href="https://doi.org/10.5281/zenodo.22704626" target="_blank" rel="noopener">
-            <strong>Release 2.0 · 11 September 2026 →</strong>
-            <span>Archived version on Zenodo.</span>
-          </a>
-          <a class="arch-link" href="https://hal.science/hal-05746489" target="_blank" rel="noopener">
-            <strong>Release 2.0 · HAL →</strong>
-            <span>Earlier release archived on HAL.</span>
-          </a>
-        </div>
-        <div class="arch-note">
-          <strong>Release 1.0:</strong> initial 16-digit format, documented in Book I’s revision history.
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <footer>
-    <div class="container">© 2026 Osnias Clearing · Osnias-ID · Public Technical Documentation</div>
-  </footer>
-
-  <script>
-    (function(){
-      const en = document.getElementById('content-en');
-      const fr = document.getElementById('content-fr');
-      const enBtn = document.getElementById('lang-en-btn');
-      const frBtn = document.getElementById('lang-fr-btn');
-
-      function setLanguage(lang){
-        const isFr = lang === 'fr';
-        en.hidden = isFr;
-        fr.hidden = !isFr;
-        enBtn.classList.toggle('btn-primary', !isFr);
-        frBtn.classList.toggle('btn-primary', isFr);
-        enBtn.setAttribute('aria-pressed', String(!isFr));
-        frBtn.setAttribute('aria-pressed', String(isFr));
-        document.documentElement.lang = isFr ? 'fr' : 'en';
-        try { localStorage.setItem('osnias-language', isFr ? 'fr' : 'en'); } catch(e) {}
-      }
-
-      enBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('en'); });
-      frBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('fr'); });
-
-      let preferred = 'fr';
-      const params = new URLSearchParams(window.location.search);
-      if(params.get('lang') === 'fr' || params.get('lang') === 'en') preferred = params.get('lang');
-      else {
-        try { preferred = localStorage.getItem('osnias-language') || (((navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en'); } catch(e) {}
-      }
-      setLanguage(preferred === 'en' ? 'en' : 'fr');
-    })();
-  </script>
-
-  <script data-goatcounter="https://denis-osnias.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
