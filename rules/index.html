@@ -1,15 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050814">
-  <meta name="description" content="Osnias Clearing — Livre 3 : Règles de compensation / Book 3: Netting Rules. Release 1.1 : PDF français et anglais, publication Zenodo et notice HAL.">
-  <title>Livre 3 — Règles de compensation / Book 3 — Netting Rules · Osnias Clearing</title>
-  <link rel="stylesheet" href="/assets/css/osnias.css">
-  <script src="/assets/js/osnias-nav.js" defer></script>
-  <script src="/assets/js/osnias-seo.js" defer></script>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#050814" name="theme-color"/>
+<meta content="Osnias Clearing — Livre 3 : règles de compensation multilatérale, calcul et agrégation des positions, soldes résiduels, contrôles, contestation, finalisation et règlement par les nœuds NNN. Release 1.1." name="description"/>
+<title>Livre 3 — Règles de compensation · Osnias Clearing</title>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<style>
     .hero-split { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 3rem; align-items: start; }
     .hero-media { margin: 0; justify-self: end; width: 100%; max-width: 480px; }
     .hero-media img { display: block; width: 100%; height: auto; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35); }
@@ -18,136 +20,109 @@
       .hero-media { justify-self: start; max-width: 100%; }
     }
   </style>
-</head>
+<meta content="Osnias Clearing, règles de compensation, netting multilatéral, compensation multilatérale, nœuds NNN, soldes résiduels, règlement inter-nœuds, contrôle, contestation, finalisation, CPMI-IOSCO, FSB" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="index, follow, max-image-preview:large" name="robots"/><meta content="Denis Bouzon" name="citation_author"/><meta content="Livre 3 — Règles de compensation" name="citation_title"/><meta content="2026-09-23" name="citation_publication_date"/><meta content="10.5281/zenodo.22922199" name="citation_doi"/><meta content="Livre 3 — Règles de compensation" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-09-23" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/rules/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Livre 3 — Règles de compensation · Osnias Clearing" name="twitter:title"/><meta content="Osnias Clearing — Livre 3 : règles de compensation multilatérale, calcul et agrégation des positions, soldes résiduels, contrôles, contestation, finalisation et règlement par les nœuds NNN. Release 1.1." name="twitter:description"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" name="twitter:image"/><meta content="Livre 3 — Règles de compensation · Osnias Clearing" property="og:title"/><meta content="Osnias Clearing — Livre 3 : règles de compensation multilatérale, calcul et agrégation des positions, soldes résiduels, contrôles, contestation, finalisation et règlement par les nœuds NNN. Release 1.1." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/rules/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="fr_FR" property="og:locale"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" property="og:image"/><meta content="Livre 3 — Règles de compensation Osnias Clearing" property="og:image:alt"/><link href="https://www.osnias-clearing.com/rules/" rel="canonical"/><link href="https://www.osnias-clearing.com/rules/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/rules/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/rules/" hreflang="x-default" rel="alternate"/><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Livre 3 — Règles de compensation",
+  "name": "Livre 3 — Règles de compensation",
+  "description": "Osnias Clearing — Livre 3 : règles de compensation multilatérale, calcul et agrégation des positions, soldes résiduels, contrôles, contestation, finalisation et règlement par les nœuds NNN. Release 1.1.",
+  "url": "https://www.osnias-clearing.com/rules/",
+  "author": {
+    "@type": "Person",
+    "name": "Denis Bouzon"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Osnias Clearing"
+  },
+  "datePublished": "2026-09-23",
+  "dateModified": "2026-09-23",
+  "inLanguage": "fr",
+  "identifier": "https://doi.org/10.5281/zenodo.22922199"
+}
+</script></head>
 <body>
-  <nav class="site-nav-fixed" aria-label="Navigation principale">
-    <div class="site-nav-inner">
-      <a class="site-nav-brand" href="/" aria-label="Osnias Clearing — accueil">OSNIAS <span>CLEARING</span></a>
-      <span class="site-nav-notice">UNDER DEVELOPMENT · NO TOKEN SALE</span>
-      <div class="site-nav-buttons">
-        <a href="/architecture/architecture.html">Architecture</a>
-        <a href="/deployment/deployment.html">Official Deployment</a>
-        <a href="/security/">Security</a>
-        <a href="/regulation/regulation.html">Regulation</a>
-        <a href="/osniasid/osniasid.html">Osnias-ID</a>
-        <a href="/rules/" aria-current="page">Rules</a>
-        <a href="/documentation/documentation.html">Documentation</a>
-        <a href="/partnership/">Partnership</a>
-      </div>
-    </div>
-  </nav>
-  <div class="site-nav-inner">
-    <div class="badges" role="group" aria-label="Language / Langue">
-      <button class="btn" type="button" data-language="en" lang="en" aria-label="Read in English" aria-pressed="false"><span aria-hidden="true">🇬🇧&nbsp;</span> EN</button>
-      <button class="btn btn-primary" type="button" data-language="fr" lang="fr" aria-label="Lire en français" aria-pressed="true"><span aria-hidden="true">🇫🇷&nbsp;</span> FR</button>
-    </div>
-  </div>
-  <header>
-    <div class="container hero hero-split">
-      <div class="hero-text">
-      <p class="eyebrow" data-fr="Livre 3 · Release 1.1" data-en="Book 3 · Release 1.1">Livre 3 · Release 1.1</p>
-      <h1 data-fr="Règles de compensation" data-en="Netting Rules">Règles de compensation</h1>
-      <p class="hero-role" data-fr="Netting multilatéral · Contrôles · Règlement" data-en="Multilateral netting · Controls · Settlement">Netting multilatéral · Contrôles · Règlement</p>
-      
-      <p class="hero-lead" data-fr="Le Livre 3 définit les règles de compensation multilatérale d’Osnias : calcul et agrégation des positions, traitement des soldes résiduels, contrôles, contestation, finalisation et articulation avec le règlement exécuté par les nœuds NNN." data-en="Book 3 defines the Osnias multilateral netting rules: position calculation and aggregation, residual-balance processing, controls, dispute handling, finalisation and interaction with settlement executed by NNN nodes.">Le Livre 3 définit les règles de compensation multilatérale d’Osnias : calcul et agrégation des positions, traitement des soldes résiduels, contrôles, contestation, finalisation et articulation avec le règlement exécuté par les nœuds NNN.</p>
-      <p><strong>Denis Bouzon</strong> · <time datetime="2026-09-23" data-fr="23 septembre 2026" data-en="23 September 2026">23 septembre 2026</time> · <span data-fr="Français &amp; anglais" data-en="French &amp; English">Français &amp; anglais</span></p>
-      </div>
-      <figure class="hero-media">
-        <img src="./rules.jpg" width="480" height="480" alt="Plans, règle et recueil de règles de construction sur une table à dessin — illustration des règles de clearing / Drawings, ruler and building rules on a drafting table — illustrating the clearing rules">
-      </figure>
-    </div>
-  </header>
-  <main class="container">
-    <section aria-labelledby="access-title">
-      <h2 id="access-title" data-fr="Consulter le document" data-en="Read the document">Consulter le document</h2>
-      <p class="section-intro" data-fr="Ouvrez la version française ou anglaise en PDF, ou consultez les références de publication sur Zenodo et HAL." data-en="Open the French or English PDF, or consult the publication records on Zenodo and HAL.">Ouvrez la version française ou anglaise en PDF, ou consultez les références de publication sur Zenodo et HAL.</p>
-      <div class="actions">
-        <a class="btn btn-primary" href="./Livre-3-regle-1-1-fr.pdf" type="application/pdf" hreflang="fr" data-fr="PDF en français" data-en="French PDF">PDF en français</a>
-        <a class="btn btn-primary" href="./Book 3-netting-rules_1_1_en.pdf" type="application/pdf" hreflang="en" data-fr="PDF en anglais" data-en="English PDF">PDF en anglais</a>
-        <a class="btn" href="https://zenodo.org/records/22922199" data-fr="DOI Zenodo" data-en="Zenodo DOI">DOI Zenodo</a>
-        <a class="btn" href="https://hal.science/hal-05760527" data-fr="HAL" data-en="HAL">HAL</a>
-      </div>
-    </section>
-    <section aria-labelledby="scope-title">
-      <h2 id="scope-title" data-fr="Un cadre documenté et auditable" data-en="A documented and auditable framework">Un cadre documenté et auditable</h2>
-      <div class="grid-2">
-        <article class="card">
-          <h3 data-fr="Calcul et compensation" data-en="Calculation and netting">Calcul et compensation</h3>
-          <p data-fr="Calcul des positions end-user et par nœud, agrégation, compensation multilatérale, fenêtre de contestation et finalisation des obligations." data-en="End-user and node-level position calculations, aggregation, multilateral netting, the dispute window and finalisation of obligations.">Calcul des positions end-user et par nœud, agrégation, compensation multilatérale, fenêtre de contestation et finalisation des obligations.</p>
-        </article>
-        <article class="card">
-          <h3 data-fr="Règlement et contrôles" data-en="Settlement and controls">Règlement et contrôles</h3>
-          <p data-fr="Disponibilité de l’escrow de règlement, règlement inter-nœuds, états de finalité, traitement des exceptions et éléments de preuve pour l’audit." data-en="Settlement escrow availability, inter-node settlement, finality states, exception handling and audit evidence.">Disponibilité de l’escrow de règlement, règlement inter-nœuds, états de finalité, traitement des exceptions et éléments de preuve pour l’audit.</p>
-        </article>
-      </div>
-      <p class="notice" data-fr="Les référentiels internationaux, notamment CPMI-IOSCO et FSB, sont présentés comme des sources d’analyse et de conception. Leur mention ne préjuge pas de la qualification réglementaire d’Osnias et ne constitue pas une déclaration de conformité." data-en="International reference frameworks, including CPMI-IOSCO and FSB publications, are used as sources for analysis and design. Their inclusion does not prejudge the regulatory classification of Osnias or constitute a declaration of compliance.">Les référentiels internationaux, notamment CPMI-IOSCO et FSB, sont présentés comme des sources d’analyse et de conception. Leur mention ne préjuge pas de la qualification réglementaire d’Osnias et ne constitue pas une déclaration de conformité.</p>
-    </section>
-    <section aria-labelledby="reference-title">
-      <h2 id="reference-title" data-fr="Référence de publication" data-en="Publication reference">Référence de publication</h2>
-      <div class="card">
-        <p><strong>Bouzon, Denis (2026).</strong> <cite lang="fr">Livre 3 — Règles de compensation.</cite> Version 1.1. Zenodo.</p>
-        <ul class="list">
-          <li>DOI : <a href="https://doi.org/10.5281/zenodo.22922199">10.5281/zenodo.22922199</a></li>
-          <li data-fr="Identifiant HAL : hal-05760527" data-en="HAL identifier: hal-05760527">Identifiant HAL : hal-05760527</li>
-          <li data-fr="Langues : français et anglais" data-en="Languages: French and English">Langues : français et anglais</li>
-          <li data-fr="Licence du document : Creative Commons Attribution 4.0 International (CC BY 4.0)" data-en="Document licence: Creative Commons Attribution 4.0 International (CC BY 4.0)">Licence du document : Creative Commons Attribution 4.0 International (CC BY 4.0)</li>
-        </ul>
-        <p><span data-fr="Version précédente (Release 1.0) :" data-en="Previous version (Release 1.0):">Version précédente (Release 1.0) :</span>
-          <a href="https://doi.org/10.5281/zenodo.22914086">Zenodo · DOI 10.5281/zenodo.22914086</a></p>
-      </div>
-      <p class="notice" data-fr="Document de recommandation technique et fonctionnelle. Il ne constitue pas un avis juridique, réglementaire, comptable ou d’audit." data-en="Technical and functional recommendation document. It does not constitute legal, regulatory, accounting or audit advice.">Document de recommandation technique et fonctionnelle. Il ne constitue pas un avis juridique, réglementaire, comptable ou d’audit.</p>
-    </section>
-  </main>
-  <footer>
-    <div class="container footer-grid">
-      <span>Osnias Clearing · Denis Bouzon</span>
-      <span data-fr="Livre 3 · Règles de compensation · Release 1.1 · 23 septembre 2026" data-en="Book 3 · Netting Rules · Release 1.1 · 23 September 2026">Livre 3 · Règles de compensation · Release 1.1 · 23 septembre 2026</span>
-    </div>
-  </footer>
-  <script>
-    (() => {
-      const controls = document.querySelectorAll('[data-language]');
-      const descriptions = {
-        fr: 'Osnias Clearing — Livre 3 : Règles de compensation. Release 1.1 : PDF français et anglais, publication Zenodo et notice HAL.',
-        en: 'Osnias Clearing — Book 3: Netting Rules. Release 1.1: French and English PDFs, Zenodo publication and HAL record.'
-      };
-      function setLanguage(language) {
-        if (language !== 'en' && language !== 'fr') return;
-        document.documentElement.lang = language;
-        document.querySelectorAll('[data-fr][data-en]').forEach(element => {
-          element.textContent = element.dataset[language];
-        });
-        controls.forEach(button => {
-          const active = button.dataset.language === language;
-          button.classList.toggle('btn-primary', active);
-          button.setAttribute('aria-pressed', String(active));
-        });
-        document.title = (language === 'en' ? 'Book 3 — Netting Rules' : 'Livre 3 — Règles de compensation') + ' · Osnias Clearing';
-        document.querySelector('meta[name="description"]').content = descriptions[language];
-        const socialMetadata = {
-          'og:title': document.title,
-          'og:description': descriptions[language],
-          'og:locale': language === 'en' ? 'en_US' : 'fr_FR'
-        };
-        Object.entries(socialMetadata).forEach(([property, content]) => {
-          const meta = document.querySelector('meta[property="' + property + '"]');
-          if (meta) meta.setAttribute('content', content);
-        });
-        document.querySelector('nav').setAttribute('aria-label', language === 'en' ? 'Main navigation' : 'Navigation principale');
-        document.querySelector('.site-nav-brand').setAttribute('aria-label', language === 'en' ? 'Osnias Clearing — home' : 'Osnias Clearing — accueil');
-        try { localStorage.setItem('osnias-rules-language', language); } catch (_) {}
-      }
-      controls.forEach(button => button.addEventListener('click', () => setLanguage(button.dataset.language)));
-      let initial = 'fr';
-      try {
-        const saved = localStorage.getItem('osnias-rules-language');
-        if (saved === 'en' || saved === 'fr') initial = saved;
-      } catch (_) {}
-      const requested = new URLSearchParams(window.location.search).get('lang');
-      if (requested === 'en' || requested === 'fr') initial = requested;
-      setLanguage(initial);
-      document.addEventListener('DOMContentLoaded', () => setLanguage(document.documentElement.lang));
-    })();
-  </script>
+<nav aria-label="Navigation principale" class="site-nav-fixed">
+<div class="site-nav-inner">
+<a aria-label="Osnias Clearing — accueil" class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+<span class="site-nav-notice">UNDER DEVELOPMENT · NO TOKEN SALE</span>
+<div class="site-nav-buttons">
+<a href="/architecture/">Architecture</a>
+<a href="/deployment/">Official Deployment</a>
+<a href="/security/">Security</a>
+<a href="/regulation/">Regulation</a>
+<a href="/osniasid/">Osnias-ID</a>
+<a aria-current="page" href="/rules/">Rules</a>
+<a href="/documentation/">Documentation</a>
+<a href="/partnership/">Partnership</a>
+</div>
+</div>
+</nav>
+<div class="site-nav-inner">
+<div aria-label="Sélection de langue" class="actions" role="group"><a aria-current="page" class="btn btn-primary" href="/rules/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/rules/" hreflang="en" lang="en">🇬🇧 English</a></div>
+</div>
+<header>
+<div class="container hero hero-split">
+<div class="hero-text">
+<p class="eyebrow">Livre 3 · Release 1.1</p>
+<h1>Règles de compensation</h1>
+<p class="hero-role">Netting multilatéral · Contrôles · Règlement</p>
+<p class="hero-lead">Le Livre 3 définit les règles de compensation multilatérale d’Osnias : calcul et agrégation des positions, traitement des soldes résiduels, contrôles, contestation, finalisation et articulation avec le règlement exécuté par les nœuds NNN.</p>
+<p><strong>Denis Bouzon</strong> · <time datetime="2026-09-23">23 septembre 2026</time> · <span>Français &amp; anglais</span></p>
+</div>
+<figure class="hero-media">
+<img alt="Plans, règle et recueil de règles de construction sur une table à dessin — illustration des règles de clearing" height="480" src="/rules/rules.jpg" width="480"/>
+</figure>
+</div>
+</header>
+<main class="container">
+<section aria-labelledby="access-title">
+<h2 id="access-title">Consulter le document</h2>
+<p class="section-intro">Ouvrez la version française ou anglaise en PDF, ou consultez les références de publication sur Zenodo et HAL.</p>
+<div class="actions">
+<a class="btn btn-primary" href="/rules/Livre-3-regle-1-1-fr.pdf" hreflang="fr" type="application/pdf">PDF en français</a>
+<a class="btn" href="/rules/Book 3-netting-rules_1_1_en.pdf" hreflang="en" type="application/pdf">PDF en anglais</a>
+<a class="btn" href="https://zenodo.org/records/22922199">DOI Zenodo</a>
+<a class="btn" href="https://hal.science/hal-05760527">HAL</a>
+</div>
+</section>
+<section aria-labelledby="scope-title">
+<h2 id="scope-title">Un cadre documenté et auditable</h2>
+<div class="grid-2">
+<article class="card">
+<h3>Calcul et compensation</h3>
+<p>Calcul des positions end-user et par nœud, agrégation, compensation multilatérale, fenêtre de contestation et finalisation des obligations.</p>
+</article>
+<article class="card">
+<h3>Règlement et contrôles</h3>
+<p>Disponibilité de l’escrow de règlement, règlement inter-nœuds, états de finalité, traitement des exceptions et éléments de preuve pour l’audit.</p>
+</article>
+</div>
+<p class="notice">Les référentiels internationaux, notamment CPMI-IOSCO et FSB, sont présentés comme des sources d’analyse et de conception. Leur mention ne préjuge pas de la qualification réglementaire d’Osnias et ne constitue pas une déclaration de conformité.</p>
+</section>
+<section aria-labelledby="reference-title">
+<h2 id="reference-title">Référence de publication</h2>
+<div class="card">
+<p><strong>Bouzon, Denis (2026).</strong> <cite lang="fr">Livre 3 — Règles de compensation.</cite> Version 1.1. Zenodo.</p>
+<ul class="list">
+<li>DOI : <a href="https://doi.org/10.5281/zenodo.22922199">10.5281/zenodo.22922199</a></li>
+<li>Identifiant HAL : hal-05760527</li>
+<li>Langues : français et anglais</li>
+<li>Licence du document : Creative Commons Attribution 4.0 International (CC BY 4.0)</li>
+</ul>
+<p><span>Version précédente (Release 1.0) :</span>
+<a href="https://doi.org/10.5281/zenodo.22914086">Zenodo · DOI 10.5281/zenodo.22914086</a></p>
+</div>
+<p class="notice">Document de recommandation technique et fonctionnelle. Il ne constitue pas un avis juridique, réglementaire, comptable ou d’audit.</p>
+</section>
+</main>
+<footer>
+<div class="container footer-grid">
+<span>Osnias Clearing · Denis Bouzon</span>
+<span>Livre 3 · Règles de compensation · Release 1.1 · 23 septembre 2026</span>
+</div>
+</footer>
+
 </body>
 </html>
