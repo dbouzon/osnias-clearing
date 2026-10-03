@@ -1,25 +1,44 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Livre 4 — Cycles de clearing / Book 4 — Clearing Cycles · Osnias Clearing</title>
-<meta name="description" content="Osnias Clearing — Livre 4 / Book 4 : cycles de clearing 1W, 4W et 13W, calendrier UTC, fenêtres BURN, tableur et publication Zenodo.">
-<link rel="canonical" href="https://www.osnias-clearing.com/cycle/">
-<link rel="stylesheet" href="/assets/css/osnias.css"><script src="/assets/js/osnias-seo.js" defer></script><script src="/assets/js/osnias-nav.js" defer></script>
-<meta name="citation_author" content="Denis Bouzon"><meta name="citation_doi" content="10.5281/zenodo.22979580"><meta name="citation_publication_date" content="2026-09-26">
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Livre 4 — Cycles de clearing · Osnias Clearing</title>
+<meta content="Osnias Clearing — Livre 4 : cycles de clearing 1W, 4W et 13W, calendrier UTC, fenêtres BURN, positions nettes et documentation de calcul." name="description"/>
+<link href="https://www.osnias-clearing.com/cycles/" rel="canonical"/><link href="https://www.osnias-clearing.com/cycles/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/cycles/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/cycles/" hreflang="x-default" rel="alternate"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/><script defer="" src="/assets/js/osnias-seo.js"></script><script defer="" src="/assets/js/osnias-nav.js"></script>
+<meta content="Denis Bouzon" name="citation_author"/><meta content="10.5281/zenodo.22979580" name="citation_doi"/><meta content="2026-09-26" name="citation_publication_date"/>
 <style>
 .cycle-figure img{width:min(100%,350px);display:block;margin:auto}.cycle-figure figcaption{color:var(--muted);text-align:center;font-size:.9rem}[hidden]{display:none!important}
 </style>
-</head>
+<meta content="Osnias Clearing, cycles de clearing, cycles de compensation, 1W 4W 13W, calendrier UTC, fenêtre BURN, compensation multilatérale, positions nettes, règlement net, clearing cycle, liquidity savings, Sei Network" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="index, follow, max-image-preview:large" name="robots"/><meta content="Livre 4 — Cycles de clearing" name="citation_title"/><meta content="Livre 4 — Cycles de clearing" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-09-26" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/cycles/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Livre 4 — Cycles de clearing · Osnias Clearing" name="twitter:title"/><meta content="Cycles de clearing 1W, 4W et 13W, calendrier UTC et fenêtres BURN." name="twitter:description"/><meta content="https://www.osnias-clearing.com/cycle/cycle.jpg" name="twitter:image"/><meta content="Livre 4 — Cycles de clearing · Osnias Clearing" property="og:title"/><meta content="Cycles de clearing 1W, 4W et 13W, calendrier UTC et fenêtres BURN." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/cycles/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/cycle/cycle.jpg" property="og:image"/><meta content="Cycles de clearing Osnias Clearing — profils 1W, 4W et 13W" property="og:image:alt"/><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Livre 4 — Cycles de clearing",
+  "name": "Livre 4 — Cycles de clearing",
+  "description": "Osnias Clearing — Livre 4 : cycles de clearing 1W, 4W et 13W, calendrier UTC, fenêtres BURN, positions nettes et documentation de calcul.",
+  "url": "https://www.osnias-clearing.com/cycles/",
+  "author": {
+    "@type": "Person",
+    "name": "Denis Bouzon"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Osnias Clearing"
+  },
+  "datePublished": "2026-09-26",
+  "dateModified": "2026-10-03",
+  "inLanguage": "fr",
+  "identifier": "https://doi.org/10.5281/zenodo.22979580"
+}
+</script></head>
 <body>
-<div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a><nav id="mainNav" class="site-nav-buttons" aria-label="Main navigation"></nav></div></div>
-<div class="container"><div class="actions" aria-label="Language selector"><a class="btn btn-primary" href="?lang=en" id="lang-en-btn">🇬🇧 EN</a><a class="btn" href="?lang=fr" id="lang-fr-btn">🇫🇷 FR</a></div></div>
-<div id="content-en">
-<header><div class="container"><section class="hero"><div class="hero-grid"><div><div class="eyebrow">Book 4 · Clearing calendar · UTC</div><h1>Clearing cycles</h1><p class="hero-lead">Three cycle profiles share one weekly UTC calendar: 1W, 4W and 13W. Each clearing closes on a Monday, followed by a defined BURN window. Book 4 and its calculation workbook document the schedule.</p><div class="actions"><a class="btn btn-primary" href="/cycle/Book-4-cycle-en.pdf" target="_blank">English PDF</a><a class="btn" href="/cycle/Livre-4-cycle-FR.pdf" target="_blank">French PDF</a><a class="btn" href="https://zenodo.org/records/22979580" target="_blank" rel="noopener noreferrer">Zenodo DOI</a><a class="btn" href="/cycle/Livre-4-cycles.xlsx">XLSX Workbook</a></div></div><figure class="hero-illustration cycle-figure"><a href="/cycle/cycle.png" target="_blank" rel="noopener noreferrer"><img src="/cycle/cycle.jpg" alt="Four 13-week periods of a regular 52-week year"></a><figcaption>Illustration of the 13W profile in a regular year.</figcaption></figure></div></section></div></header>
-</div>
-<div id="content-fr" hidden>
-<header><div class="container"><section class="hero"><div class="hero-grid"><div><div class="eyebrow">Livre 4 · Calendrier de compensation · UTC</div><h1>Cycles de compensation</h1><p class="hero-lead">Trois profils de cycle partagent un calendrier hebdomadaire en UTC : 1W, 4W et 13W. Chaque compensation se clôture un lundi, puis s’ouvre une fenêtre BURN définie. Le Livre 4 et son tableur documentent le calendrier.</p><div class="actions"><a class="btn btn-primary" href="/cycle/Livre-4-cycle-FR.pdf" target="_blank">PDF en français</a><a class="btn" href="/cycle/Book-4-cycle-en.pdf" target="_blank">PDF en anglais</a><a class="btn" href="https://zenodo.org/records/22979580" target="_blank" rel="noopener noreferrer">DOI Zenodo</a><a class="btn" href="/cycle/Livre-4-cycles.xlsx">Tableur XLSX</a></div></div><figure class="hero-illustration cycle-figure"><a href="/cycle/cycle.png" target="_blank" rel="noopener noreferrer"><img src="/cycle/cycle.jpg" alt="Quatre périodes de 13 semaines dans une année ordinaire de 52 semaines"></a><figcaption>Illustration du profil 13W dans une année ordinaire.</figcaption></figure></div></section></div></header>
-</div>
+<div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a><nav aria-label="Navigation principale" class="site-nav-buttons" id="mainNav"></nav></div></div>
+<div class="container"><div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/cycles/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/cycles/" hreflang="en" lang="en">🇬🇧 English</a></div></div>
+
+
+<header><div class="container"><section class="hero"><div class="hero-grid"><div><div class="eyebrow">Livre 4 · Calendrier de compensation · UTC</div><h1>Cycles de compensation</h1><p class="hero-lead">Trois profils de cycle partagent un calendrier hebdomadaire en UTC : 1W, 4W et 13W. Chaque compensation se clôture un lundi, puis s’ouvre une fenêtre BURN définie. Le Livre 4 et son tableur documentent le calendrier.</p><div class="actions"><a class="btn btn-primary" href="/cycle/Livre-4-cycle-FR.pdf" target="_blank">PDF en français</a><a class="btn" href="/cycle/Book-4-cycle-en.pdf" target="_blank">PDF en anglais</a><a class="btn" href="https://zenodo.org/records/22979580" rel="noopener noreferrer" target="_blank">DOI Zenodo</a><a class="btn" href="/cycle/Livre-4-cycles.xlsx">Tableur XLSX</a></div></div><figure class="hero-illustration cycle-figure"><a href="/cycle/cycle.png" rel="noopener noreferrer" target="_blank"><img alt="Quatre périodes de 13 semaines dans une année ordinaire de 52 semaines" src="/cycle/cycle.jpg"/></a><figcaption>Illustration du profil 13W dans une année ordinaire.</figcaption></figure></div></section></div></header>
+
 <footer><div class="container">© 2026 Osnias Clearing · Livre 4 · <a href="https://zenodo.org/records/22979580">10.5281/zenodo.22979580</a></div></footer>
-<script>(function(){const en=document.getElementById('content-en'),fr=document.getElementById('content-fr'),eb=document.getElementById('lang-en-btn'),fb=document.getElementById('lang-fr-btn');function setLang(lang){let f=lang==='fr';en.hidden=f;fr.hidden=!f;eb.classList.toggle('btn-primary',!f);fb.classList.toggle('btn-primary',f);eb.setAttribute('aria-pressed',String(!f));fb.setAttribute('aria-pressed',String(f));document.documentElement.lang=f?'fr':'en';try{localStorage.setItem('osnias-language',f?'fr':'en')}catch(e){}}eb.onclick=e=>{e.preventDefault();setLang('en')};fb.onclick=e=>{e.preventDefault();setLang('fr')};const q=new URLSearchParams(location.search).get('lang');let pref=q==='fr'||q==='en'?q:null;if(!pref)try{pref=localStorage.getItem('osnias-language')}catch(e){}setLang(pref==='fr'||(!pref&&navigator.language.toLowerCase().startsWith('fr'))?'fr':'en')})();</script>
+
 </body></html>
