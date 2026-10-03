@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Osnias Clearing FAQ — Blockchain Clearing, Netting &amp; Settlement</title>
+<meta content="Osnias Clearing FAQ: blockchain clearing, multilateral netting, clearing vs settlement, DLT infrastructure, enterprise netting, Osnias-ID, clearing cycles, security and regulation." name="description"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="#050814" name="theme-color"/>
+<link href="https://www.osnias-clearing.com/en/faq/" rel="canonical"/><link href="https://www.osnias-clearing.com/faq/" hreflang="x-default" rel="alternate"/><link href="https://www.osnias-clearing.com/en/faq/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/faq/" hreflang="fr" rel="alternate"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+
+
+<style>
+    .faq-wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 22px 70px;
+    }
+
+    
+
+    
+
+    
+
+    .faq-hero{
+      text-align:center;
+      max-width:850px;
+      margin:0 auto 48px;
+    }
+
+    .faq-hero h1{
+      margin-bottom:14px;
+    }
+
+    .faq-hero p{
+      line-height:1.65;
+      opacity:.86;
+    }
+
+    .faq-grid{
+      display:grid;
+      gap:18px;
+    }
+
+    .faq-item{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:14px;
+      padding:22px 24px;
+      background:rgba(255,255,255,.025);
+    }
+
+    .faq-item h2{
+      margin:0 0 10px;
+      font-size:1.15rem;
+      line-height:1.35;
+    }
+
+    .faq-item p{
+      margin:0 0 10px;
+      line-height:1.7;
+    }
+
+    .faq-item p:last-child{
+      margin-bottom:0;
+    }
+
+    .faq-link{
+      display:inline-block;
+      margin-top:5px;
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    .faq-note{
+      margin-top:40px;
+      text-align:center;
+      opacity:.78;
+      line-height:1.6;
+    }
+
+    
+    
+
+    @media (max-width:700px){
+      .faq-wrap{padding:22px 16px 50px;}
+      .faq-item{padding:18px;}
+    }
+  </style>
+<meta content="Osnias Clearing FAQ, blockchain clearing, multilateral netting, net settlement, clearing vs settlement, DLT clearing infrastructure, enterprise payment netting, non-custodial clearing, Sei clearing, Osnias-ID, clearing cycles" name="keywords"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="Osnias Clearing FAQ — Blockchain Clearing, Netting &amp; Settlement" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="FAQPage" name="DC.type"/><meta content="https://www.osnias-clearing.com/en/faq/" name="DC.identifier"/><meta content="en" name="DC.language"/><meta content="summary" name="twitter:card"/><meta content="Osnias Clearing FAQ — Blockchain Clearing, Netting &amp; Settlement" name="twitter:title"/><meta content="Osnias Clearing FAQ: blockchain clearing, multilateral netting, clearing vs settlement, DLT infrastructure, enterprise netting, Osnias-ID, clearing cycles, security and regulation." name="twitter:description"/><meta content="Osnias Clearing FAQ — Blockchain Clearing, Netting &amp; Settlement" property="og:title"/><meta content="Osnias Clearing FAQ: blockchain clearing, multilateral netting, clearing vs settlement, DLT infrastructure, enterprise netting, Osnias-ID, clearing cycles, security and regulation." property="og:description"/><meta content="website" property="og:type"/><meta content="https://www.osnias-clearing.com/en/faq/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/><meta content="Osnias Clearing FAQ — clearing, netting and settlement" property="og:image:alt"/><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "name": "Osnias Clearing FAQ — Blockchain Clearing, Netting & Settlement",
+  "description": "Osnias Clearing FAQ: blockchain clearing, multilateral netting, clearing vs settlement, DLT infrastructure, enterprise netting, Osnias-ID, clearing cycles, security and regulation.",
+  "url": "https://www.osnias-clearing.com/en/faq/",
+  "inLanguage": "en",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is blockchain clearing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Blockchain clearing is the use of distributed ledger technology to record, calculate and reconcile\n          payment obligations between participants. Clearing determines who owes what to whom before settlement takes place.\n          It should therefore be distinguished from settlement itself, which is the actual execution of the resulting payment obligations. Osnias Clearing uses blockchain infrastructure as a shared clearing register while maintaining\n          a strict functional separation between clearing, settlement and custody."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is multilateral netting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Multilateral netting is a process in which multiple payment obligations between several participants\n          are combined so that only the resulting net positions need to be settled. Instead of settling every individual transaction separately, the clearing system calculates\n          the final amount payable or receivable by each participant."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between clearing and settlement?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Clearing calculates and reconciles obligations. Settlement executes the resulting transfer of value. Osnias Clearing is designed around this separation: the clearing layer calculates positions and net obligations,\n          while settlement remains performed through the relevant settlement or collateral infrastructure."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is DLT clearing infrastructure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "DLT clearing infrastructure uses distributed ledger technology as part of the technical framework\n          for recording and reconciling clearing positions. Osnias Clearing uses Sei as the canonical clearing register while keeping clearing,\n          settlement and custody as separate functional layers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is enterprise payment netting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Enterprise payment netting consists of offsetting reciprocal payment obligations between businesses\n          before final settlement. Osnias Clearing is designed for business-to-business clearing and targets corporate payment flows\n          rather than retail trading."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does blockchain clearing and settlement work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A blockchain clearing architecture can record payment obligations, calculate positions and establish\n          the resulting amounts to be settled. The settlement layer then executes those obligations using the relevant monetary or collateral infrastructure.\n          In Osnias Clearing, the clearing register does not itself become the custody layer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Osnias Clearing custodial?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The Osnias architecture is designed as non-custodial .\n          Clearing, custody and settlement are separate functions. Osnias Clearing calculates and records clearing obligations but is not designed to hold participant funds."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Osnias Clearing a DEX, AMM or crypto exchange?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Osnias Clearing is not designed as a decentralized exchange, automated market maker or centralized exchange. The protocol does not rely on trading pools or market-making mechanisms.\n          Its purpose is the calculation and reconciliation of payment obligations between identified participants."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is Osnias-ID?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Osnias-ID is the internal identifier used within the Osnias Clearing architecture to associate participants,\n          networks, currencies, servers and clearing-cycle parameters. It is a technical identifier and does not itself constitute a regulatory identity credential."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are Osnias Clearing cycles?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Osnias Clearing supports predefined clearing-cycle profiles, including 1-week, 4-week and 13-week cycles.\n          The 13-week profile corresponds to a 91-day clearing period. The cycle architecture defines when obligations can be recorded, frozen, reconciled and prepared for settlement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What role does Sei play in Osnias Clearing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sei provides the canonical blockchain layer used for the Osnias clearing register.\n          It records clearing positions and protocol states while remaining distinct from the settlement and collateral layers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is Osnias Clearing secured?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Security is based on architectural separation, deterministic protocol rules, restricted execution paths,\n          smart-contract controls and reconciliation mechanisms. Security testing, implementation verification and independent review remain separate stages from architectural design."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Osnias Clearing already a commercial financial service?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The current Osnias Clearing infrastructure is developed and documented as a technical protocol and testnet architecture. Production deployment and any regulated commercial implementation depend on the legal and regulatory framework\n          applicable to each participating node and jurisdiction."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where can I find the technical documentation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Osnias Clearing documentation is organized into dedicated technical and regulatory Books covering\n          Architecture, Osnias-ID, Clearing Cycles, Clearing Rules, Security and Onboarding."
+      }
+    }
+  ]
+}
+</script></head>
+<body>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/en/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Main site navigation" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<div class="container">
+<div aria-label="Language selection" class="actions"><a class="btn" href="/faq/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/faq/" hreflang="en" lang="en">🇬🇧 English</a></div>
+</div>
+<main class="faq-wrap">
+<section class="faq-hero">
+
+<h1>Frequently Asked Questions</h1>
+<p>
+        Blockchain clearing, multilateral netting, settlement and Osnias Clearing infrastructure.
+        Concise answers to common questions about the protocol and its architecture.
+      </p>
+
+
+</section>
+<section class="faq-grid">
+<article class="faq-item">
+
+<h2>What is blockchain clearing?</h2>
+<p>
+          Blockchain clearing is the use of distributed ledger technology to record, calculate and reconcile
+          payment obligations between participants.
+        </p>
+<p>
+          Clearing determines <strong>who owes what to whom</strong> before settlement takes place.
+          It should therefore be distinguished from settlement itself, which is the actual execution of the resulting payment obligations.
+        </p>
+<p>
+          Osnias Clearing uses blockchain infrastructure as a shared clearing register while maintaining
+          a strict functional separation between clearing, settlement and custody.
+        </p>
+<a class="faq-link" href="/en/architecture/">Learn more → Architecture</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>What is multilateral netting?</h2>
+<p>
+          Multilateral netting is a process in which multiple payment obligations between several participants
+          are combined so that only the resulting net positions need to be settled.
+        </p>
+<p>
+          Instead of settling every individual transaction separately, the clearing system calculates
+          the final amount payable or receivable by each participant.
+        </p>
+<a class="faq-link" href="/en/rules/">Learn more → Clearing Rules</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>What is the difference between clearing and settlement?</h2>
+<p><strong>Clearing</strong> calculates and reconciles obligations.</p>
+<p><strong>Settlement</strong> executes the resulting transfer of value.</p>
+<p>
+          Osnias Clearing is designed around this separation: the clearing layer calculates positions and net obligations,
+          while settlement remains performed through the relevant settlement or collateral infrastructure.
+        </p>
+<a class="faq-link" href="/en/architecture/">Learn more → Architecture</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>What is DLT clearing infrastructure?</h2>
+<p>
+          DLT clearing infrastructure uses distributed ledger technology as part of the technical framework
+          for recording and reconciling clearing positions.
+        </p>
+<p>
+          Osnias Clearing uses Sei as the canonical clearing register while keeping clearing,
+          settlement and custody as separate functional layers.
+        </p>
+<a class="faq-link" href="/en/architecture/">Learn more → Architecture</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>What is enterprise payment netting?</h2>
+<p>
+          Enterprise payment netting consists of offsetting reciprocal payment obligations between businesses
+          before final settlement.
+        </p>
+<p>
+          Osnias Clearing is designed for business-to-business clearing and targets corporate payment flows
+          rather than retail trading.
+        </p>
+<a class="faq-link" href="/en/rules/">Learn more → Clearing Rules</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>How does blockchain clearing and settlement work?</h2>
+<p>
+          A blockchain clearing architecture can record payment obligations, calculate positions and establish
+          the resulting amounts to be settled.
+        </p>
+<p>
+          The settlement layer then executes those obligations using the relevant monetary or collateral infrastructure.
+          In Osnias Clearing, the clearing register does not itself become the custody layer.
+        </p>
+<a class="faq-link" href="/en/architecture/">Learn more → Architecture</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>Is Osnias Clearing custodial?</h2>
+<p>
+          No. The Osnias architecture is designed as <strong>non-custodial</strong>.
+          Clearing, custody and settlement are separate functions.
+        </p>
+<p>
+          Osnias Clearing calculates and records clearing obligations but is not designed to hold participant funds.
+        </p>
+<a class="faq-link" href="/security/">Learn more → Security</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>Is Osnias Clearing a DEX, AMM or crypto exchange?</h2>
+<p>
+          No. Osnias Clearing is not designed as a decentralized exchange, automated market maker or centralized exchange.
+        </p>
+<p>
+          The protocol does not rely on trading pools or market-making mechanisms.
+          Its purpose is the calculation and reconciliation of payment obligations between identified participants.
+        </p>
+<a class="faq-link" href="/en/architecture/">Learn more → Architecture</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>What is Osnias-ID?</h2>
+<p>
+          Osnias-ID is the internal identifier used within the Osnias Clearing architecture to associate participants,
+          networks, currencies, servers and clearing-cycle parameters.
+        </p>
+<p>
+          It is a technical identifier and does not itself constitute a regulatory identity credential.
+        </p>
+<a class="faq-link" href="/en/osniasid/">Learn more → Osnias-ID</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>What are Osnias Clearing cycles?</h2>
+<p>
+          Osnias Clearing supports predefined clearing-cycle profiles, including 1-week, 4-week and 13-week cycles.
+          The 13-week profile corresponds to a 91-day clearing period.
+        </p>
+<p>
+          The cycle architecture defines when obligations can be recorded, frozen, reconciled and prepared for settlement.
+        </p>
+<a class="faq-link" href="/en/cycle/">Learn more → Cycles</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>What role does Sei play in Osnias Clearing?</h2>
+<p>
+          Sei provides the canonical blockchain layer used for the Osnias clearing register.
+          It records clearing positions and protocol states while remaining distinct from the settlement and collateral layers.
+        </p>
+<a class="faq-link" href="/en/architecture/">Learn more → Architecture</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>How is Osnias Clearing secured?</h2>
+<p>
+          Security is based on architectural separation, deterministic protocol rules, restricted execution paths,
+          smart-contract controls and reconciliation mechanisms.
+        </p>
+<p>
+          Security testing, implementation verification and independent review remain separate stages from architectural design.
+        </p>
+<a class="faq-link" href="/security/">Learn more → Security</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>Is Osnias Clearing already a commercial financial service?</h2>
+<p>
+          No. The current Osnias Clearing infrastructure is developed and documented as a technical protocol and testnet architecture.
+        </p>
+<p>
+          Production deployment and any regulated commercial implementation depend on the legal and regulatory framework
+          applicable to each participating node and jurisdiction.
+        </p>
+<a class="faq-link" href="/en/regulation/">Learn more → Regulation</a>
+
+
+</article>
+<article class="faq-item">
+
+<h2>Where can I find the technical documentation?</h2>
+<p>
+          The Osnias Clearing documentation is organized into dedicated technical and regulatory Books covering
+          Architecture, Osnias-ID, Clearing Cycles, Clearing Rules, Security and Onboarding.
+        </p>
+<a class="faq-link" href="/en/">Explore → Osnias Clearing</a>
+
+
+</article>
+</section>
+</main>
+<footer>
+<div class="container">© 2026 Osnias Clearing · FAQ · Public Technical Documentation</div>
+</footer>
+
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
