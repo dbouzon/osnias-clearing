@@ -1,158 +1,93 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-  <title>Architecture — Livre 2 / Book 2 · Osnias Clearing</title>
-  <meta name="description" content="Osnias Clearing — Livre 2 / Book 2 : architecture du protocole, compensation, temps et séparation fonctionnelle."/>
-  <meta name="robots" content="index, follow, max-image-preview:large"/>
-  <meta name="author" content="Denis Bouzon"/>
-  <meta name="theme-color" content="#050814"/>
-  <meta name="citation_doi" content="10.5281/zenodo.23012840"/>
-
-  <link rel="canonical" href="https://www.osnias-clearing.com/architecture/"/>
-  <link rel="stylesheet" href="/assets/css/osnias.css"/>
-
-  <script src="/assets/js/osnias-seo.js" defer></script>
-  <script src="/assets/js/osnias-nav.js" defer></script>
-</head>
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Architecture — Livre 2 · Osnias Clearing</title>
+<meta content="Osnias Clearing — Livre 2 : architecture fonctionnelle du protocole, registre canonique de compensation sur Sei, séparation clearing/règlement, oracle temporel et infrastructures EVM des nœuds NNN." name="description"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="#050814" name="theme-color"/>
+<meta content="10.5281/zenodo.23012840" name="citation_doi"/>
+<link href="https://www.osnias-clearing.com/architecture/" rel="canonical"/><link href="https://www.osnias-clearing.com/architecture/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/architecture/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/architecture/" hreflang="x-default" rel="alternate"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+<meta content="Osnias Clearing, architecture de clearing, registre canonique, Sei Network, règlement, séquestre Ethereum, oracle temporel, nœuds NNN, compensation multilatérale, infrastructure EVM" name="keywords"/><meta content="Architecture — Livre 2" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-03" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/architecture/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="Architecture — Livre 2" name="citation_title"/><meta content="2026-10-03" name="citation_publication_date"/><meta content="summary_large_image" name="twitter:card"/><meta content="Architecture — Livre 2 · Osnias Clearing" name="twitter:title"/><meta content="Architecture fonctionnelle d’Osnias Clearing : clearing sur Sei, règlement séparé et nœuds NNN." name="twitter:description"/><meta content="https://www.osnias-clearing.com/architecture/architecture.jpg" name="twitter:image"/><meta content="Architecture — Livre 2 · Osnias Clearing" property="og:title"/><meta content="Osnias Clearing — Livre 2 : architecture fonctionnelle du protocole, registre canonique de compensation sur Sei, séparation clearing/règlement, oracle temporel et infrastructures EVM des nœuds NNN." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/architecture/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/architecture/architecture.jpg" property="og:image"/><meta content="Architecture Osnias Clearing — clearing sur Sei et règlement séparé" property="og:image:alt"/><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Architecture — Livre 2",
+  "name": "Architecture",
+  "description": "Osnias Clearing — Livre 2 : architecture fonctionnelle du protocole, registre canonique de compensation sur Sei, séparation clearing/règlement, oracle temporel et infrastructures EVM des nœuds NNN.",
+  "url": "https://www.osnias-clearing.com/architecture/",
+  "author": {
+    "@type": "Person",
+    "name": "Denis Bouzon"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Osnias Clearing"
+  },
+  "dateModified": "2026-10-03",
+  "inLanguage": "fr",
+  "identifier": "https://doi.org/10.5281/zenodo.23012840"
+}
+</script></head>
 <body>
-  <div class="site-nav-fixed">
-    <div class="site-nav-inner">
-      <a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
-      <nav id="mainNav" class="site-nav-buttons" aria-label="Main site navigation"></nav>
-    </div>
-  </div>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Navigation principale du site" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<div class="container">
+<div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/architecture/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/architecture/" hreflang="en" lang="en">🇬🇧 English</a></div>
+</div>
 
-  <div class="container">
-    <div class="actions" aria-label="Sélecteur de langue / Language selector">
-      <a class="btn btn-primary" href="#" id="lang-fr-btn" aria-pressed="true">🇫🇷 FR</a>
-      <a class="btn" href="#" id="lang-en-btn" aria-pressed="false">🇬🇧 EN</a>
-    </div>
-  </div>
-
-  <div id="content-fr">
-    <div class="container">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Livre 2 - Architecture du protocole · Compensation · Temps · Séparation fonctionnelle</div>
-            <h1>Architecture</h1>
-            <p class="hero-lead">
+<div class="container">
+<section class="hero">
+<div class="hero-grid">
+<div>
+<div class="eyebrow">Livre 2 - Architecture du protocole · Compensation · Temps · Séparation fonctionnelle</div>
+<h1>Architecture</h1>
+<p class="hero-lead">
               Le Livre 2 présente l’architecture fonctionnelle d’Osnias Clearing : registre canonique de compensation sur Sei,
               séparation entre clearing et règlement, coordination temporelle par oracle et articulation avec les infrastructures
               EVM de séquestre et de règlement exploitées par les nœuds NNN.
             </p>
-            <div class="actions">
-              <a class="btn btn-primary" href="/architecture/Livre_II_Architecture_fr_2_0.pdf" target="_blank">PDF en français</a>
-              <a class="btn" href="/architecture/Book2_architecture-2_0_en.pdf" target="_blank">PDF en anglais</a>
-              <a class="btn" href="https://zenodo.org/records/23012840" target="_blank" rel="noopener">DOI Zenodo</a>
-              <a class="btn" href="https://hal.science/hal-05752756" target="_blank" rel="noopener">HAL / ArXiv</a>
-            </div>
-          </div>
-          <figure class="hero-illustration">
-            <img src="/architecture/architecture.jpg"
-                 alt="Architecture Osnias Clearing"
-                 loading="eager" decoding="async"
-                 onerror="this.closest('.hero-illustration')?.remove()" />
-          </figure>
-        </div>
-      </section>
-    </div>
-
-    <main class="container">
-      <section>
-        <div class="section-label">Architecture fonctionnelle</div>
-        <h2>Une séparation stricte entre registre de compensation et règlement final</h2>
-        <p class="section-intro">
+<div class="actions">
+<a class="btn btn-primary" href="/architecture/Livre_II_Architecture_fr_2_0.pdf" target="_blank">PDF en français</a>
+<a class="btn" href="/architecture/Book2_architecture-2_0_en.pdf" target="_blank">PDF en anglais</a>
+<a class="btn" href="https://zenodo.org/records/23012840" rel="noopener" target="_blank">DOI Zenodo</a>
+<a class="btn" href="https://hal.science/hal-05752756" rel="noopener" target="_blank">HAL / ArXiv</a>
+</div>
+</div>
+<figure class="hero-illustration">
+<img alt="Architecture Osnias Clearing" decoding="async" loading="eager" onerror="this.closest('.hero-illustration')?.remove()" src="/architecture/architecture.jpg"/>
+</figure>
+</div>
+</section>
+</div>
+<main class="container">
+<section>
+<div class="section-label">Architecture fonctionnelle</div>
+<h2>Une séparation stricte entre registre de compensation et règlement final</h2>
+<p class="section-intro">
           Sei constitue la couche canonique du registre de compensation. Les obligations acceptées y sont enregistrées et compensées ;
           les positions nettes qui en résultent en fin de cycle sont réglées par les opérateurs de nœuds NNN dans leur propre
           infrastructure et sous leur cadre juridique applicable. Osnias Clearing ne conserve ni ne déplace les fonds des participants.
         </p>
-      </section>
-    </main>
-  </div>
+</section>
+</main>
 
-  <div id="content-en" hidden>
-    <div class="container">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Book 2 - Protocol architecture · Clearing · Time · Functional separation</div>
-            <h1>Architecture</h1>
-            <p class="hero-lead">
-              Book 2 presents the functional architecture of Osnias Clearing: the canonical clearing register on Sei,
-              the separation between clearing and settlement, oracle-based time coordination, and the interaction with
-              EVM escrow and settlement infrastructure operated by NNN nodes.
-            </p>
-            <div class="actions">
-              <a class="btn btn-primary" href="/architecture/Book2_architecture-2_0_en.pdf" target="_blank">English PDF</a>
-              <a class="btn" href="/architecture/Livre_II_Architecture_fr_2_0.pdf" target="_blank">French PDF</a>
-              <a class="btn" href="https://zenodo.org/records/23012840" target="_blank" rel="noopener">Zenodo DOI</a>
-              <a class="btn" href="https://hal.science/hal-05752756" target="_blank" rel="noopener">HAL / ArXiv</a>
-            </div>
-          </div>
-          <figure class="hero-illustration">
-            <img src="/architecture/architecture.jpg"
-                 alt="Osnias Clearing architecture"
-                 loading="eager" decoding="async"
-                 onerror="this.closest('.hero-illustration')?.remove()" />
-          </figure>
-        </div>
-      </section>
-    </div>
 
-    <main class="container">
-      <section>
-        <div class="section-label">Functional architecture</div>
-        <h2>A strict separation between the clearing register and final settlement</h2>
-        <p class="section-intro">
-          Sei constitutes the canonical layer of the clearing register. Accepted obligations are recorded and netted there;
-          the net positions resulting at the end of the cycle are settled by NNN-node operators through their own infrastructure
-          and under their applicable legal framework. Osnias Clearing does not custody or move participant funds.
-        </p>
-      </section>
-    </main>
-  </div>
+<footer>
+<div class="container">© 2026 Osnias Clearing · Architecture · Livre 2 · Documentation technique publique</div>
+</footer>
 
-  <footer>
-    <div class="container">© 2026 Osnias Clearing · Architecture · Public Technical Documentation</div>
-  </footer>
-
-  <script>
-    (function(){
-      const en = document.getElementById('content-en');
-      const fr = document.getElementById('content-fr');
-      const enBtn = document.getElementById('lang-en-btn');
-      const frBtn = document.getElementById('lang-fr-btn');
-
-      function setLanguage(lang){
-        const isFr = lang === 'fr';
-        en.hidden = isFr;
-        fr.hidden = !isFr;
-        enBtn.classList.toggle('btn-primary', !isFr);
-        frBtn.classList.toggle('btn-primary', isFr);
-        enBtn.setAttribute('aria-pressed', String(!isFr));
-        frBtn.setAttribute('aria-pressed', String(isFr));
-        document.documentElement.lang = isFr ? 'fr' : 'en';
-        try { localStorage.setItem('osnias-language', isFr ? 'fr' : 'en'); } catch(e) {}
-      }
-
-      enBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('en'); });
-      frBtn.addEventListener('click', function(e){ e.preventDefault(); setLanguage('fr'); });
-
-      let preferred = 'fr';
-      const params = new URLSearchParams(window.location.search);
-      if(params.get('lang') === 'fr' || params.get('lang') === 'en') preferred = params.get('lang');
-      else {
-        try { preferred = localStorage.getItem('osnias-language') || (((navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en'); } catch(e) {}
-      }
-      setLanguage(preferred === 'en' ? 'en' : 'fr');
-    })();
-  </script>
-
-  <script data-goatcounter="https://denis-osnias.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
