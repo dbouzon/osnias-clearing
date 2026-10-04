@@ -55,7 +55,7 @@
       { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
       { label: "2-Architecture", href: prefix + "/architecture/" },
       { label: "3-Règles", href: prefix + "/rules/" },
-      { label: "4-Cycles", href: prefix + "/cycles/" },
+      { label: "4-Cycles", href: prefix + "/cycle/" },
       { label: "5-Sécurité", href: prefix + "/security/" },
       { label: "6-Onboarding", href: prefix + "/onboarding/" },
       { label: "7-POP Osnias", href: prefix + "/pop/" },
