@@ -4,25 +4,36 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Osnias Clearing — AMF Memorandum v2.0 · Regulatory Analysis</title>
-<meta content="Osnias Clearing AMF Memorandum v2.0: functional perimeter, MiCA qualification, Sei clearing register, external escrow, node responsibilities and protocol invariants." name="description"/>
+<title>Osnias Clearing — MiCA, Multilateral Clearing & Digital Asset Settlement Infrastructure</title>
+<meta content="Regulatory analysis of Osnias Clearing: MiCA, multilateral clearing, digital asset clearing infrastructure, multilateral netting, non-custodial clearing, external escrow and separation of clearing, custody and settlement." name="description"/>
+<meta content="Osnias Clearing, MiCA clearing, MiCA settlement, multilateral clearing, digital asset clearing infrastructure, blockchain clearing infrastructure, multilateral netting blockchain, on-chain clearing, non-custodial clearing, clearing custody settlement separation, external escrow clearing, digital asset settlement, institutional blockchain settlement, financial market infrastructure, FMI, liquidity efficient settlement, net settlement, Sei clearing, AMF Fintech, crypto asset settlement Europe" name="keywords"/>
 <meta content="Denis Bouzon" name="author"/>
 <meta content="Denis Bouzon" name="creator"/>
 <meta content="Osnias Clearing" name="publisher"/>
 <meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="This page presents the preliminary French regulatory analysis of Osnias Clearing: technical facts, functional separation between clearing, custody and settlement, a non-custodial architecture, MiCA qualification questions and an AMF Fintech dialogue ahead of a testnet pilot." name="abstract"/>
+<meta content="MiCA; AMF Fintech; regulatory analysis; digital clearing; financial market infrastructure; non-custodial clearing; clearing register; external escrow; custody; settlement; testnet; legal qualification" name="subject"/>
+<meta content="MiCA Regulation & AMF Fintech — Osnias Clearing Regulatory Analysis" name="DC.title"/>
+<meta content="Denis Bouzon" name="DC.creator"/>
+<meta content="Osnias Clearing" name="DC.publisher"/>
+<meta content="2026-09-28" name="DC.date"/>
+<meta content="Regulatory Analysis" name="DC.type"/>
+<meta content="MiCA; AMF Fintech; regulatory analysis; digital clearing; financial market infrastructure; non-custodial clearing; clearing register; external escrow; custody; settlement; testnet; legal qualification" name="DC.subject"/>
+<meta content="https://www.osnias-clearing.com/en/regulation/" name="DC.identifier"/>
+<meta content="en" name="DC.language"/>
 <meta content="#050814" name="theme-color"/>
 <link href="https://www.osnias-clearing.com/en/regulation/" rel="canonical"/><link href="https://www.osnias-clearing.com/regulation/" hreflang="x-default" rel="alternate"/><link href="https://www.osnias-clearing.com/en/regulation/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/regulation/" hreflang="fr" rel="alternate"/>
 <link href="https://orcid.org/0009-0007-8894-8902" rel="author"/>
 <link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"/>
-<meta content="Osnias Clearing — AMF Memorandum v2.0 · Regulatory Analysis" property="og:title"/>
-<meta content="Osnias Clearing AMF Memorandum v2.0: functional perimeter, MiCA qualification, Sei clearing register, external escrow, node responsibilities and protocol invariants." property="og:description"/>
+<meta content="Osnias Clearing — MiCA Regulation & AMF Fintech · Digital Clearing Regulatory Analysis" property="og:title"/>
+<meta content="Regulatory analysis of Osnias Clearing: MiCA, AMF Fintech, non-custodial digital clearing, external escrow, clearing/custody/settlement separation and a testnet pilot." property="og:description"/>
 <meta content="article" property="og:type"/>
 <meta content="https://www.osnias-clearing.com/en/regulation/" property="og:url"/>
 <meta content="Osnias Clearing" property="og:site_name"/>
 <meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/>
 <meta content="AMF Memorandum v2.0 — Regulatory Analysis" property="og:image:alt"/>
 <meta content="Denis Bouzon" name="citation_author"/>
-<meta content="AMF Memorandum v2.0 — Regulatory Analysis" name="citation_title"/>
+<meta content="AMF Memorandum v2.0 — MiCA Regulation & Regulatory Analysis" name="citation_title"/>
 <meta content="2026-09-28" name="citation_publication_date"/>
 <meta content="https://www.osnias-clearing.com/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" name="citation_pdf_url"/>
 <meta content="10.5281/zenodo.23020714" name="citation_doi"/>
@@ -84,32 +95,100 @@
       ]
     },
     {
+      "@type": "Organization",
+      "@id": "https://www.osnias-clearing.com/#organization",
+      "name": "Osnias Clearing",
+      "url": "https://www.osnias-clearing.com/"
+    },
+    {
       "@type": "WebSite",
       "@id": "https://www.osnias-clearing.com/#website",
       "url": "https://www.osnias-clearing.com/",
-      "name": "Osnias Clearing"
+      "name": "Osnias Clearing",
+      "publisher": {
+        "@id": "https://www.osnias-clearing.com/#organization"
+      }
     },
     {
-      "@type": "ScholarlyArticle",
+      "@type": [
+        "ScholarlyArticle",
+        "TechArticle"
+      ],
       "@id": "https://www.osnias-clearing.com/en/regulation/#article",
-      "headline": "AMF Memorandum v2.0 — Regulatory Analysis",
-      "description": "Osnias Clearing AMF Memorandum v2.0: functional perimeter, MiCA qualification, Sei clearing register, external escrow, node responsibilities and protocol invariants.",
+      "headline": "MiCA Regulation & AMF Fintech — Osnias Clearing Regulatory Analysis",
+      "alternativeHeadline": "AMF Memorandum v2.0 — Preliminary qualification of a digital clearing infrastructure",
+      "description": "Regulatory analysis of Osnias Clearing: AMF Fintech dialogue, MiCA qualification, Sei clearing register, external escrow, non-custodial model, separation of clearing, custody and settlement, node responsibilities and a testnet pilot.",
       "url": "https://www.osnias-clearing.com/en/regulation/",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.osnias-clearing.com/en/regulation/"
+      },
       "author": {
         "@id": "https://www.osnias-clearing.com/#denis-bouzon"
       },
+      "publisher": {
+        "@id": "https://www.osnias-clearing.com/#organization"
+      },
       "datePublished": "2026-09-28",
-      "dateModified": "2026-10-03",
-      "sameAs": "https://doi.org/10.5281/zenodo.23020714",
+      "dateModified": "2026-10-04",
+      "identifier": "https://doi.org/10.5281/zenodo.23020714",
+      "sameAs": [
+        "https://doi.org/10.5281/zenodo.23020714",
+        "https://zenodo.org/records/23020714"
+      ],
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://www.osnias-clearing.com/#website"
-      }
+      },
+      "keywords": [
+        "MiCA clearing",
+        "multilateral clearing",
+        "multilateral netting blockchain",
+        "digital asset clearing infrastructure",
+        "blockchain clearing infrastructure",
+        "on-chain clearing",
+        "non-custodial clearing",
+        "clearing custody settlement separation",
+        "external escrow clearing",
+        "digital asset settlement",
+        "institutional blockchain settlement",
+        "financial market infrastructure",
+        "liquidity efficient settlement",
+        "net settlement",
+        "Sei clearing",
+        "AMF Fintech"
+      ],
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "Multilateral clearing"
+        },
+        {
+          "@type": "Thing",
+          "name": "Digital asset clearing infrastructure"
+        },
+        {
+          "@type": "Thing",
+          "name": "Non-custodial clearing"
+        },
+        {
+          "@type": "Thing",
+          "name": "MiCA"
+        },
+        {
+          "@type": "Thing",
+          "name": "Financial market infrastructure"
+        },
+        {
+          "@type": "Thing",
+          "name": "Digital asset settlement"
+        }
+      ]
     }
   ]
 }
 </script>
-<meta content="AMF Memorandum v2.0 — Regulatory Analysis" name="DC.title"/><meta content="https://www.osnias-clearing.com/en/regulation/" name="DC.identifier"/><meta content="en" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Osnias Clearing — AMF Memorandum v2.0 · Regulatory Analysis" name="twitter:title"/><meta content="Osnias Clearing AMF Memorandum v2.0: functional perimeter, MiCA qualification, Sei clearing register, external escrow, node responsibilities and protocol invariants." name="twitter:description"/><meta content="https://www.osnias-clearing.com/index-picture.png" name="twitter:image"/></head>
+<meta content="summary_large_image" name="twitter:card"/><meta content="Osnias Clearing — MiCA Regulation & AMF Fintech · Digital Clearing Regulatory Analysis" name="twitter:title"/><meta content="Regulatory analysis of Osnias Clearing: MiCA, AMF Fintech, non-custodial digital clearing, external escrow, clearing/custody/settlement separation and a testnet pilot." name="twitter:description"/><meta content="https://www.osnias-clearing.com/index-picture.png" name="twitter:image"/></head>
 <body>
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
@@ -151,6 +230,22 @@
 <a class="btn" href="/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" rel="noopener noreferrer" target="_blank">Mémorandum FR ↗</a>
 <a class="btn" href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">DOI ↗</a>
 </div><div class="document-summary-block"><h3>1. Technical and functional perimeter</h3><p class="section-intro">The AMF Memorandum v2.0 first sets out the technical facts and functional perimeter of Osnias Clearing. It describes a canonical clearing register on Sei, clearing tokens governed by strict invariants, a non-custodial operating model, and an explicit separation between the calculation of obligations, the custody of assets and their final settlement.</p></div><div class="document-summary-block"><h3>2. Architecture, escrow and responsibilities</h3><p class="section-intro">The document then details the external escrow architecture and the allocation of responsibilities between Osnias Clearing and node operators. It covers fail-closed controls, the 1:1 chamber-level invariant, the absence of a governance token, and the absence of asset custody by Osnias, in order to distinguish the clearing infrastructure from custody and settlement functions.</p></div><div class="document-summary-block"><h3>3. Regulatory qualification and AMF dialogue</h3><p class="section-intro">Finally, the memorandum sets out the main regulatory qualification questions to be examined with the AMF as part of a preliminary regulatory dialogue. Its purpose is to obtain legal guidance on the system under MiCA and the applicable framework before developing a testnet pilot with a partner established in France, without prejudging any final legal qualification.</p></div>
+
+<section class="document-summary-block" aria-label="Regulatory context and positioning">
+<h2>Digital clearing, MiCA and regulatory dialogue</h2>
+<p class="section-intro"><strong>Osnias Clearing is presented as an infrastructure for calculating and clearing obligations, distinct from custody and monetary settlement functions.</strong> This functional separation is central to the regulatory analysis: the clearing register on Sei records and consolidates positions, while settlement assets and escrow mechanisms remain external to the clearing core. The memorandum therefore describes a non-custodial architecture in which Osnias does not directly receive or hold participant funds.</p>
+<p class="section-intro">The dialogue with <strong>AMF Innovation &amp; Finance Digitale</strong> is intended to examine the system’s qualification under <strong>MiCA and the French and European framework applicable to digital-asset infrastructure</strong>. The approach is deliberately preliminary: it seeks to confront the technical facts, node-operator responsibilities, protocol invariants and the role of external escrow with the relevant legal analysis before any production deployment.</p>
+<p class="section-intro"><strong>The phase described remains a testnet pilot and does not prejudge any final regulatory qualification.</strong> The public documentation, Zenodo DOI and French and English versions of the memorandum provide a stable working basis for regulators, technical partners, financial institutions, lawyers and auditors reviewing the clearing model, its operational boundaries and its relationship with custody and settlement functions.</p>
+</section>
+
+
+<section class="document-summary-block" aria-label="Clearing infrastructure positioning">
+<h2>Digital asset clearing infrastructure and multilateral netting</h2>
+<p class="section-intro">Osnias Clearing is positioned in the field of <strong>digital asset clearing infrastructure</strong> and <strong>multilateral clearing</strong>, rather than as a crypto-asset trading venue. Its architecture is designed to calculate, aggregate and net obligations before settlement, using a canonical clearing register on Sei and an explicit separation between <strong>clearing, custody and settlement</strong>. This places the project closer to financial market infrastructure and net-settlement concepts than to exchange or token-market infrastructure.</p>
+<p class="section-intro">The model can also be described as <strong>non-custodial clearing</strong> and <strong>on-chain clearing</strong>: Osnias does not directly custody settlement assets, and escrow remains external to the clearing core. Multilateral netting, fail-closed controls and chamber-level invariants are intended to reduce gross settlement flows and support <strong>liquidity-efficient settlement</strong>, while keeping the protocol’s role distinct from that of node operators, custodians and settlement providers.</p>
+<p class="section-intro">From a regulatory perspective, the dossier explores the intersection of <strong>MiCA, digital asset settlement, crypto-asset infrastructure and financial market infrastructure</strong>. The AMF Fintech dialogue focuses on the qualification of this hybrid architecture: a digital clearing register, external escrow, local node responsibilities and settlement outside the Osnias core. That distinction is central to avoiding the classification of the protocol as an exchange, custodian or stablecoin issuer solely because blockchain infrastructure is used.</p>
+</section>
+
 </div>
 </div>
 </section>
