@@ -49,8 +49,8 @@
       { label: "7-POP Osnias", href: prefix + "/en/pop/" },
       { label: "A-Regulation", href: prefix + "/en/regulation/" },
       { label: "B-Official Deployment", href: prefix + "/en/deployment/" },
-      { label: "D-Partnership", href: prefix + "/en/partnership/" },
-      { label: "E-FAQ", href: prefix + "/en/faq/" }
+      { label: "C-Partnership", href: prefix + "/en/partnership/" },
+      { label: "D-FAQ", href: prefix + "/en/faq/" }
     ] : [
       { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
       { label: "2-Architecture", href: prefix + "/architecture/" },
@@ -61,8 +61,8 @@
       { label: "7-POP Osnias", href: prefix + "/pop/" },
       { label: "A-Régulation", href: prefix + "/regulation/" },
       { label: "B-Déploiement", href: prefix + "/deployment/" },
-      { label: "D-Partenariat", href: prefix + "/partnership/" },
-      { label: "E-FAQ", href: prefix + "/faq/" }
+      { label: "C-Partenariat", href: prefix + "/partnership/" },
+      { label: "D-FAQ", href: prefix + "/faq/" }
     ];
 
     nav.replaceChildren();
