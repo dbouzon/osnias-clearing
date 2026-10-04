@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Déploiement officiel Testnet — Osnias Clearing</title>
-<meta content="Registre public des déploiements testnet officiels Osnias Clearing sur Sei Atlantic-2 et Ethereum Sepolia : oracle temporel, registres, contrôleurs, ORUSD, escrow et interface end-user." name="description"/>
+<title>Osnias Clearing — Déploiement Testnet, smart contracts vérifiés & infrastructure Sei/Ethereum</title>
+<meta content="Registre public des déploiements testnet Osnias Clearing sur Sei Atlantic-2 et Ethereum Sepolia : smart contracts vérifiés, oracle temporel, registres, contrôleurs, ORUSD, escrow EVM, Node Registrar et interface end-user de clearing." name="description"/>
 <meta content="index, follow, max-image-preview:large" name="robots"/>
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script defer="" src="/assets/js/osnias-seo.js"></script>
@@ -37,25 +37,50 @@
     .app-actions{display:flex;gap:.65rem;flex-wrap:wrap}
     @media (max-width:860px){.app-grid{grid-template-columns:1fr}}
   </style>
-<meta content="Osnias Clearing, déploiement testnet, Sei Atlantic-2, Ethereum Sepolia, smart contracts vérifiés, oracle temporel, ORUSD, escrow, registre Sei, registre EVM, contrôleur Sei, contrôleur EVM, clearing infrastructure" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="Déploiement officiel Testnet — Osnias Clearing" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/deployment/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Déploiement officiel Testnet — Osnias Clearing" name="twitter:title"/><meta content="Registre public des déploiements testnet officiels Osnias Clearing sur Sei Atlantic-2 et Ethereum Sepolia : oracle temporel, registres, contrôleurs, ORUSD, escrow et interface end-user." name="twitter:description"/><meta content="https://www.osnias-clearing.com/deployment/end-user.jpg" name="twitter:image"/><meta content="Déploiement officiel Testnet — Osnias Clearing" property="og:title"/><meta content="Registre public des déploiements testnet officiels Osnias Clearing sur Sei Atlantic-2 et Ethereum Sepolia : oracle temporel, registres, contrôleurs, ORUSD, escrow et interface end-user." property="og:description"/><meta content="website" property="og:type"/><meta content="https://www.osnias-clearing.com/deployment/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/deployment/end-user.jpg" property="og:image"/><meta content="Osnias Clearing — déploiements testnet officiels sur Sei et Ethereum Sepolia" property="og:image:alt"/><link href="https://www.osnias-clearing.com/deployment/" rel="canonical"/><link href="https://www.osnias-clearing.com/deployment/" hreflang="x-default" rel="alternate"/><link href="https://www.osnias-clearing.com/en/deployment/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/deployment/" hreflang="fr" rel="alternate"/><script type="application/ld+json">
+<meta content="Osnias Clearing deployment, déploiement testnet blockchain, smart contracts vérifiés, verified smart contracts, Sei Atlantic-2, Ethereum Sepolia, Sei clearing infrastructure, Ethereum escrow infrastructure, public smart contract registry, blockchain deployment registry, clearing smart contracts, temporal oracle, Sei registry, EVM registry, clearing controller, escrow smart contract, Node Registrar, ORUSD testnet, on-chain clearing infrastructure, digital asset infrastructure deployment, testnet clearing infrastructure, smart contract verification, Etherscan Sepolia, SeiScan, public blockchain deployment" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/>
+<meta content="Cette page constitue le registre public des déploiements testnet Osnias Clearing. Elle documente les smart contracts déployés et vérifiables sur Sei Atlantic-2 et Ethereum Sepolia, les contrôleurs, registres, oracle temporel, escrow EVM et composants de nœud utilisés pour tester l’architecture de clearing." name="abstract"/>
+<meta content="déploiement testnet; smart contracts vérifiés; registre public on-chain; Sei Atlantic-2; Ethereum Sepolia; clearing infrastructure; temporal oracle; registre Sei; registre EVM; escrow EVM; Node Registrar; ORUSD; blockchain deployment registry; smart contract verification" name="subject"/>
+<meta content="Déploiements Testnet Osnias Clearing — Registre public des smart contracts" name="citation_title"/>
+<meta content="Denis Bouzon" name="citation_author"/>
+<meta content="2026-10-04" name="citation_publication_date"/>
+<meta content="Déploiements Testnet Osnias Clearing — Registre public des smart contracts" name="DC.title"/>
+<meta content="Denis Bouzon" name="DC.creator"/>
+<meta content="Osnias Clearing" name="DC.publisher"/>
+<meta content="2026-10-04" name="DC.date"/>
+<meta content="Technical Documentation" name="DC.type"/>
+<meta content="déploiement testnet; smart contracts vérifiés; registre public on-chain; Sei Atlantic-2; Ethereum Sepolia; clearing infrastructure; temporal oracle; registre Sei; registre EVM; escrow EVM; Node Registrar; ORUSD; blockchain deployment registry; smart contract verification" name="DC.subject"/>
+<meta content="https://www.osnias-clearing.com/deployment/" name="DC.identifier"/>
+<meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Osnias Clearing — Déploiement Testnet, smart contracts vérifiés & infrastructure Sei/Ethereum" name="twitter:title"/><meta content="Registre public des déploiements testnet Osnias Clearing : smart contracts vérifiés sur Sei Atlantic-2 et Ethereum Sepolia, oracle temporel, registres, contrôleurs, ORUSD, escrow EVM et Node Registrar." name="twitter:description"/><meta content="https://www.osnias-clearing.com/deployment/end-user.jpg" name="twitter:image"/><meta content="Osnias Clearing — Déploiement Testnet, smart contracts vérifiés & infrastructure Sei/Ethereum" property="og:title"/><meta content="Registre public des déploiements testnet Osnias Clearing : smart contracts vérifiés sur Sei Atlantic-2 et Ethereum Sepolia, oracle temporel, registres, contrôleurs, ORUSD, escrow EVM et Node Registrar." property="og:description"/><meta content="website" property="og:type"/><meta content="https://www.osnias-clearing.com/deployment/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/deployment/end-user.jpg" property="og:image"/><meta content="Osnias Clearing — déploiements testnet officiels sur Sei et Ethereum Sepolia" property="og:image:alt"/><link href="https://www.osnias-clearing.com/deployment/" rel="canonical"/><link href="https://www.osnias-clearing.com/deployment/" hreflang="x-default" rel="alternate"/><link href="https://www.osnias-clearing.com/en/deployment/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/deployment/" hreflang="fr" rel="alternate"/><script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "Déploiement officiel Testnet — Osnias Clearing",
-  "headline": "Déploiement officiel Testnet — Osnias Clearing",
-  "description": "Registre public des déploiements testnet officiels Osnias Clearing sur Sei Atlantic-2 et Ethereum Sepolia : oracle temporel, registres, contrôleurs, ORUSD, escrow et interface end-user.",
+  "@type": [
+    "WebPage",
+    "TechArticle"
+  ],
+  "name": "Déploiements Testnet Osnias Clearing — Registre public des smart contracts",
+  "headline": "Déploiements Testnet Osnias Clearing — Registre public des smart contracts",
+  "description": "Registre public des déploiements testnet Osnias Clearing sur Sei Atlantic-2 et Ethereum Sepolia : smart contracts vérifiés, oracle temporel, registres, contrôleurs, ORUSD, escrow EVM, Node Registrar et interface end-user de clearing.",
   "url": "https://www.osnias-clearing.com/deployment/",
   "inLanguage": "fr",
-  "dateModified": "2026-10-03",
+  "dateModified": "2026-10-04",
   "author": {
     "@type": "Person",
     "name": "Denis Bouzon"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Osnias Clearing"
+    "name": "Osnias Clearing",
+    "url": "https://www.osnias-clearing.com/"
   },
   "about": [
+    {
+      "@type": "Thing",
+      "name": "Blockchain deployment registry"
+    },
+    {
+      "@type": "Thing",
+      "name": "Verified smart contracts"
+    },
     {
       "@type": "Thing",
       "name": "Sei Atlantic-2 Testnet"
@@ -66,8 +91,32 @@
     },
     {
       "@type": "Thing",
-      "name": "Osnias Clearing testnet deployments"
+      "name": "On-chain clearing infrastructure"
+    },
+    {
+      "@type": "Thing",
+      "name": "Smart contract verification"
     }
+  ],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.osnias-clearing.com/deployment/"
+  },
+  "keywords": [
+    "déploiement testnet",
+    "smart contracts vérifiés",
+    "registre public on-chain",
+    "Sei Atlantic-2",
+    "Ethereum Sepolia",
+    "clearing infrastructure",
+    "temporal oracle",
+    "registre Sei",
+    "registre EVM",
+    "escrow EVM",
+    "Node Registrar",
+    "ORUSD",
+    "blockchain deployment registry",
+    "smart contract verification"
   ]
 }
 </script></head>
@@ -100,6 +149,14 @@
 <span>Déployeur pour l’ensemble des contrats :</span>
 <code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
 </div><section class="deployment-description"><h2>1. Registre public des déploiements testnet</h2><p class="section-intro">Cette page constitue la référence publique des smart contracts Osnias Clearing actuellement déployés sur des réseaux testnet. Elle recense les adresses, transactions de création, compilateurs, paramètres de vérification et statuts de chaque composant afin de rendre l’état expérimental de l’infrastructure vérifiable directement sur les explorateurs de chaînes.</p></section><section class="deployment-description"><h2>2. Couche Sei — registre canonique et contrôle du clearing</h2><p class="section-intro">La couche Sei Testnet Atlantic-2 regroupe l’oracle temporel, le registre d’identité, le contrôleur du protocole et le registre ORUSD. Ces composants représentent le côté clearing de l’architecture : état canonique, contrôle des cycles, identité et positions de clearing, sans constituer un environnement Mainnet de production.</p></section><section class="deployment-description"><h2>3. Couche EVM — nœuds, registre et séquestre</h2><p class="section-intro">La couche Ethereum Sepolia regroupe les composants EVM associés aux opérateurs de nœuds : Node Registrar, registre EVM, contrat de séquestre et contrôleur EVM. Cette séparation permet de tester publiquement l’articulation entre le registre de clearing sur Sei et la couche externe de séquestre et de contrôle EVM avant tout déploiement de production.</p></section>
+
+<section class="deployment-description" aria-label="Résumé du registre de déploiement">
+<h2>4. Infrastructure testnet vérifiable et registre public des smart contracts</h2>
+<p class="section-intro"><strong>La page Deployment est la référence publique des smart contracts Osnias Clearing déployés sur des réseaux testnet accessibles.</strong> Elle centralise les adresses de contrats, transactions de création, versions de compilateur, paramètres d’optimisation et statuts de vérification afin de fournir un <strong>public smart contract registry</strong> exploitable par les développeurs, auditeurs et partenaires techniques.</p>
+<p class="section-intro">L’architecture testnet est répartie entre <strong>Sei Atlantic-2</strong>, qui porte le registre canonique de clearing, l’oracle temporel et les contrôleurs de protocole, et <strong>Ethereum Sepolia</strong>, qui héberge les composants EVM associés aux nœuds, au registre local et à l’escrow. Cette séparation permet de tester publiquement une <strong>on-chain clearing infrastructure</strong> sans confondre la couche de clearing avec les fonctions de collateral, custody ou settlement.</p>
+<p class="section-intro"><strong>Les déploiements présentés sont expérimentaux et ne constituent pas une infrastructure Mainnet de production.</strong> Leur rôle est de fournir des références vérifiables sur SeiScan et Etherscan, de permettre la validation des smart contracts et des interfaces inter-domaines, et de documenter l’état technique du protocole avant toute migration vers une infrastructure de production auditable.</p>
+</section>
+
 <!-- LIVE END-USER TESTNET -->
 <section class="app-showcase" id="end-user-testnet">
 <div class="section-title">Application end-user — Testnet en ligne</div>
