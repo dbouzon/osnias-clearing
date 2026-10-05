@@ -65,7 +65,7 @@
     "https://zenodo.org/records/22981575"
   ],
   "datePublished": "2026-09-26",
-  "dateModified": "2026-10-04",
+  "dateModified": "2026-10-05",
   "inLanguage": "en",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "isPartOf": {
@@ -330,7 +330,7 @@
 </nav>
 </div>
 </div><div class="security-langbar"><div class="container"><div aria-label="Language / Langue" class="lang-switch" role="group"><a aria-current="false" class="lang-btn" href="/security/" hreflang="fr" lang="fr">🇫🇷 FR</a><a aria-current="page" class="lang-btn is-active" href="/en/security/" hreflang="en" lang="en">🇬🇧 EN</a></div></div></div>
-<header>
+<main>
 <div class="container">
 <section class="hero">
 <div class="hero-grid security-hero-grid"><div class="security-hero-top"><div>
@@ -358,6 +358,7 @@
 </section>
 
 <section class="security-hero-below" aria-label="Security architecture summary">
+<h2>Multi-Domain Security Architecture and Resilience</h2>
 <p class="hero-lead"><strong>Osnias Clearing uses a deliberately separated security topology rather than a single trust domain.</strong> The design distinguishes transaction signing on the EVM side, authorization and registry controls on Sei, and the release of funds toward a pre-defined cold destination. This separation is intended to reduce correlated failure, limit the consequences of a compromised credential and preserve a clear boundary between clearing logic, asset custody and settlement execution.</p>
 <p class="hero-lead">The security model covers the full participant lifecycle: <strong>secure onboarding, Osnias-ID binding, key use, identity renewal, off-boarding and controlled fund release</strong>. Cross-domain checks are designed so that access to the clearing network depends on consistent identity and authorization state rather than on a single private key or application layer. The architecture therefore treats credential compromise, operational error and cryptographic obsolescence as distinct failure modes that must be contained independently.</p>
 <p class="hero-lead"><strong>Book 5 is an architecture and audit-readiness document, not an independent security certification.</strong> It defines the security assumptions, control boundaries and resilience objectives that implementation evidence, adversarial testing, remediation and third-party review will later have to validate. The published PDF and DOI provide a stable technical reference for developers, auditors, infrastructure partners and regulators assessing the Osnias Clearing security model.</p>
@@ -366,7 +367,7 @@
 </div>
 </section>
 </div>
-</header>
+</main>
 <footer>
 <div class="container">
 <div class="footer-grid">
