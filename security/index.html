@@ -65,7 +65,7 @@
     "https://zenodo.org/records/22981575"
   ],
   "datePublished": "2026-09-26",
-  "dateModified": "2026-10-04",
+  "dateModified": "2026-10-05",
   "inLanguage": "fr",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "isPartOf": {
@@ -330,7 +330,7 @@
 </nav>
 </div>
 </div><div class="security-langbar"><div class="container"><div aria-label="Language / Langue" class="lang-switch" role="group"><a aria-current="page" class="lang-btn is-active" href="/security/" hreflang="fr" lang="fr">🇫🇷 FR</a><a aria-current="false" class="lang-btn" href="/en/security/" hreflang="en" lang="en">🇬🇧 EN</a></div></div></div>
-<header>
+<main>
 <div class="container">
 <section class="hero">
 <div class="hero-grid security-hero-grid"><div class="security-hero-top"><div>
@@ -358,6 +358,7 @@
 </section>
 
 <section class="security-hero-below" aria-label="Résumé de l’architecture de sécurité">
+<h2>Architecture de sécurité multi-domaine et résilience</h2>
 <p class="hero-lead"><strong>Osnias Clearing repose sur une topologie de sécurité volontairement séparée plutôt que sur un domaine de confiance unique.</strong> La conception distingue la signature des transactions côté EVM, les contrôles d’autorisation et de registre sur Sei, ainsi que la libération des fonds vers une destination froide prédéfinie. Cette séparation vise à réduire les défaillances corrélées, à limiter les conséquences d’un identifiant ou d’une clé compromise et à maintenir une frontière claire entre logique de clearing, conservation des actifs et exécution du settlement.</p>
 <p class="hero-lead">Le modèle couvre l’ensemble du cycle de vie du participant : <strong>onboarding sécurisé, liaison Osnias-ID, utilisation et renouvellement des clés, off-boarding et libération contrôlée des fonds</strong>. Les vérifications inter-domaines sont conçues pour que l’accès au réseau de clearing dépende d’un état d’identité et d’autorisation cohérent, et non d’une seule clé privée ou d’une seule couche applicative. La compromission d’identifiants, l’erreur opérationnelle et l’obsolescence cryptographique sont ainsi traitées comme des risques distincts à contenir séparément.</p>
 <p class="hero-lead"><strong>Le Livre 5 est un document d’architecture et de préparation à l’audit, et non une certification de sécurité indépendante.</strong> Il définit les hypothèses de sécurité, les frontières de contrôle et les objectifs de résilience que devront ensuite valider les preuves d’implémentation, les tests adversariaux, la remédiation et la revue par un tiers. Le PDF publié et son DOI constituent une référence technique stable pour les développeurs, auditeurs, partenaires d’infrastructure et régulateurs examinant le modèle de sécurité Osnias Clearing.</p>
@@ -366,7 +367,7 @@
 </div>
 </section>
 </div>
-</header>
+</main>
 <footer>
 <div class="container">
 <div class="footer-grid">
