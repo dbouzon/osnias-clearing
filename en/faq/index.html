@@ -100,8 +100,21 @@
       .faq-wrap{padding:22px 16px 50px;}
       .faq-item{padding:18px;}
     }
+
+    .pitch-downloads{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin:18px 0 8px;
+      justify-content:center;
+    }
+    .pitch-downloads .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
   </style>
-<meta content="Osnias Clearing FAQ, multilateral clearing, multilateral netting, blockchain clearing, digital asset clearing infrastructure, enterprise payment netting, B2B clearing, net settlement, clearing vs settlement, DLT clearing infrastructure, non-custodial clearing, on-chain clearing, financial market infrastructure, FMI, Sei clearing, Osnias-ID, clearing cycles, institutional blockchain infrastructure, corporate payment netting, residual settlement, clearing node, digital asset settlement" name="keywords"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="summary" name="twitter:card"/><meta content="Osnias Clearing FAQ — Multilateral Clearing, Netting, Settlement & Digital Asset Infrastructure" name="twitter:title"/><meta content="FAQ on multilateral clearing, blockchain netting, net settlement, non-custodial infrastructure, Sei, Osnias-ID, clearing cycles, security and regulatory boundaries." name="twitter:description"/><meta content="Osnias Clearing FAQ — Multilateral Clearing, Netting, Settlement & Digital Asset Infrastructure" property="og:title"/><meta content="FAQ on multilateral clearing, blockchain netting, net settlement, non-custodial infrastructure, Sei, Osnias-ID, clearing cycles, security and regulatory boundaries." property="og:description"/><meta content="website" property="og:type"/><meta content="https://www.osnias-clearing.com/en/faq/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/><meta content="Osnias Clearing FAQ — clearing, netting and settlement" property="og:image:alt"/><script type="application/ld+json">
+<meta content="Osnias Clearing FAQ, multilateral clearing, multilateral netting, enterprise payment netting, blockchain clearing, digital asset clearing infrastructure, post-trade infrastructure, liquidity optimisation, working capital optimisation, collateral efficiency, gross-to-net settlement, net settlement, clearing vs settlement, DLT clearing infrastructure, non-custodial clearing, on-chain clearing, financial market infrastructure, FMI, PFMI CPMI-IOSCO, Sei clearing, Ethereum escrow, Osnias-ID, clearing cycles, ISO 20022 clearing, corporate treasury netting, B2B payment obligations, cross-border netting, residual settlement, clearing node, digital asset settlement" name="keywords"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="summary" name="twitter:card"/><meta content="Osnias Clearing FAQ — Multilateral Clearing, Netting, Settlement & Digital Asset Infrastructure" name="twitter:title"/><meta content="FAQ on multilateral clearing, blockchain netting, net settlement, non-custodial infrastructure, Sei, Osnias-ID, clearing cycles, security and regulatory boundaries." name="twitter:description"/><meta content="Osnias Clearing FAQ — Multilateral Clearing, Netting, Settlement & Digital Asset Infrastructure" property="og:title"/><meta content="FAQ on multilateral clearing, blockchain netting, net settlement, non-custodial infrastructure, Sei, Osnias-ID, clearing cycles, security and regulatory boundaries." property="og:description"/><meta content="website" property="og:type"/><meta content="https://www.osnias-clearing.com/en/faq/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/><meta content="Osnias Clearing FAQ — clearing, netting and settlement" property="og:image:alt"/><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -221,6 +234,190 @@
         "@type": "Answer",
         "text": "The Osnias Clearing documentation is organized into dedicated technical and regulatory Books covering\n          Architecture, Osnias-ID, Clearing Cycles, Clearing Rules, Security and Onboarding."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Osnias Clearing a central counterparty (CCP)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Osnias Clearing is not designed around the functional model of a CCP that interposes itself between each seller and buyer. It organises distributed multilateral netting between participants and does not perform central novation of obligations. The final regulatory qualification remains subject to scoping with the competent authorities."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why use the term “clearing”?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The term describes the function performed: recording obligations, calculating positions, multilateral netting and determining net balances. If an authority requires different terminology, the preferred wording is “distributed multilateral netting infrastructure” rather than “clearing house”, which carries a more specific legal meaning."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Osnias claim PFMI compliance or certification?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Osnias does not claim certification, authorisation or formally assessed PFMI compliance. The architecture is designed with reference to relevant CPMI-IOSCO PFMI principles covering risk management, collateral, liquidity, default rules, governance and transparency."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the project’s current regulatory status?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The project is in development, testnet and preliminary regulatory scoping. No production deployment is presented as licensed, certified or authorised. The scoping process is intended to clarify roles, the network, node operators, responsibilities for client funds and accounts, escrow and settlement before production."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who holds user funds?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Users control their Sei 0x key and their 0x receiving account. Depending on the operating model, the node operator may hold the access credentials required for the escrow account. Osnias Clearing has the access required to administer the network, but has no access to the Ethereum keys used to receive funds and does not hold user funds. Collateral remains individually segregated and escrowed separately on Ethereum."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Osnias hold users’ private keys or seed phrases?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Osnias does not hold any of the three seed phrases associated with the three distinct functions: the 0x clearing address on Sei EVM, the 0x escrow address on Ethereum and the 0x receiving address for released funds."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Osnias act directly on a user’s clearing account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Any clearing-side action requires authorised access to the private network through the VPN to the O-POP, together with the key of the 0x account linked to the Osnias-ID. Osnias does not hold that seed phrase and cannot sign on behalf of the user."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Osnias act directly on the Ethereum escrow?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Any escrow-side action requires the key of the 0x account linked to the Osnias-ID on Ethereum. Osnias holds neither that seed phrase nor the seed phrase of the address receiving released funds. It therefore cannot initiate a movement of funds on behalf of the participant."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who decides on onboarding, blocking or exit of a participant?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The node operator. Osnias provides the infrastructure, common rules and calculation functions, but does not decide whether a user is admitted, retained, blocked or removed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if an obligation would exceed available collateral?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The operation fails. The control is enforced by the network’s Solidity code: an obligation whose registration would cause the permitted net debit exposure to exceed available collateral is rejected. The rule “instantaneous net debit exposure ≤ collateral” is therefore an execution invariant."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does collateral limit the gross volume of obligations?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It limits only the instantaneous net debit exposure during the clearing cycle. A participant may issue and receive gross volumes far above its collateral, provided that its instantaneous net exposure remains less than or equal to the available collateral."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Osnias allow credit, overdrafts or leverage?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The protocol does not permit overdrafts, internal credit or leverage. There is no mechanism allowing Osnias to grant discretionary exposure above the available collateral."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are funds or losses mutualised?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Collateral is individualised at participant level. There is no common guarantee fund designed to absorb losses of other participants. Risk is deliberately brought down to the end-user level."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the forced exit of a blocked participant work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A participant placed in blocked status by the node operator can no longer create new exposures. Its existing recorded obligations remain included until cycle close and final netting. After settlement, the releasable balance can be withdrawn during the next BURN window. The operator may then move the participant from “blocked”, which is reversible, to “revoked”, the highest sanction status."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is the clearing cycle organised?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The four-week cycle is organised as follows: D1 settlement of the previous cycle’s netting; D2 BURN; D3 to D26 MINT + P2P and live clearing; D27 to D28 FREEZE and final netting calculation. There is no D29: D1 of the next cycle begins immediately after D28. The same mechanism is available for 1-week and 13-week profiles."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How are obligations issued and traced?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Obligations are issued by users through ISO 20022 messaging integrated into the Osnias network. Validated messages and obligations are recorded on Sei, the canonical clearing register, providing a timestamped, verifiable and immutable trail. Osnias O-POPs, VPN connectivity, dedicated servers and the private Sei network support operational fluidity, traceability and historical records."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why separate Sei and Ethereum?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sei carries the canonical clearing register and positions and is used for its speed and low cost. Ethereum carries the collateral escrow. Operations on that layer are less frequent and relate only to escrow. This technical and operational separation keeps the escrow chain distinct from the operational clearing chain."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does cross-jurisdiction netting work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Obligations are distributed by users according to their commercial relationships. A participant in one jurisdiction may receive an obligation from a supplier on another node and issue an obligation to a customer on a third node. Once those obligations are valid and recorded, they enter the netting process; each participant then settles its own net balance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which law applies to cross-jurisdiction obligations?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Opening the Osnias network in a jurisdiction requires appropriate local regulatory scoping. Each node operator remains responsible for its users and local obligations. The network then processes valid obligations under its common rules, without discretionary requalification of each obligation solely because it originates from another KK jurisdiction code."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can a node operator refuse an already validated foreign obligation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under the protocol’s functional logic, an obligation recorded and validated by the parties enters the netting process under the common network rules. Access compliance is handled upstream through jurisdictional scoping and participant onboarding, rather than by discretionary requalification of each obligation during the cycle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is the clearing token a speculative blockchain innovation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It is an internal technical representation of clearing positions in the Osnias register. Internal representations of rights, obligations and balances have long existed in clearing and settlement infrastructures. Blockchain is used here primarily to provide a shared, traceable and immutable register."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the exact role of Osnias Clearing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Osnias provides the distributed netting infrastructure, common network rules, position calculation, the canonical register and traceability. Osnias operates O-POPs, VPN access servers and data retention under the defined architecture; it does not hold funds, hold user keys, provide credit or decide participant onboarding or exit. It adapts node-module configurations to jurisdictions, assigns KK identifiers and node numbers, and implements network-management decisions taken by the association of node operators."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why request preliminary regulatory scoping before production?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The project is sufficiently advanced to demonstrate its architecture and controls on testnet while remaining pre-production. Preliminary scoping is intended to support a testnet configured close to mainnet conditions, followed by security stress testing and audit before any formal regulatory filing. This is the planned path before mainnet."
+      }
     }
   ],
   "author": {
@@ -234,17 +431,35 @@
   },
   "dateModified": "2026-10-04",
   "keywords": [
+    "Osnias Clearing FAQ",
     "multilateral clearing",
     "multilateral netting",
+    "enterprise payment netting",
     "blockchain clearing",
     "digital asset clearing infrastructure",
-    "enterprise payment netting",
+    "post-trade infrastructure",
+    "liquidity optimisation",
+    "working capital optimisation",
+    "collateral efficiency",
+    "gross-to-net settlement",
     "net settlement",
+    "clearing vs settlement",
+    "DLT clearing infrastructure",
     "non-custodial clearing",
+    "on-chain clearing",
     "financial market infrastructure",
+    "FMI",
+    "PFMI CPMI-IOSCO",
     "Sei clearing",
+    "Ethereum escrow",
     "Osnias-ID",
     "clearing cycles",
+    "ISO 20022 clearing",
+    "corporate treasury netting",
+    "B2B payment obligations",
+    "cross-border netting",
+    "residual settlement",
+    "clearing node",
     "digital asset settlement"
   ],
   "about": [
@@ -306,6 +521,17 @@
 <p><strong>Osnias Clearing is designed as a multilateral clearing infrastructure for business obligations, not as a trading venue or custody platform.</strong> The protocol records and reconciles obligations, calculates net positions and prepares the residual amounts that must later be settled through the relevant node or settlement infrastructure.</p>
 <p>The FAQ therefore focuses on the distinction between <strong>clearing, netting and settlement</strong>, the role of a canonical clearing register on Sei, the use of Osnias-ID, predefined clearing cycles and the separation of custody from the clearing function. This terminology places the project within the broader fields of digital asset clearing infrastructure, enterprise payment netting and financial market infrastructure.</p>
 <p><strong>The answers below are intended as a technical and operational reference.</strong> They explain how Osnias approaches non-custodial clearing, multilateral netting and residual settlement while keeping regulatory qualification, custody, settlement execution and node-level responsibilities distinct from the clearing calculation itself.</p>
+<p><strong>Use cases:</strong> liquidity and working-capital optimisation, collateral efficiency, gross-to-net settlement, enterprise payment netting, B2B payment obligations and DLT post-trade infrastructure. Osnias maintains a strict separation between clearing, custody, collateral and settlement.</p>
+</section>
+
+<section class="faq-item" aria-label="Osnias Clearing visual pitch">
+<h2>Osnias Clearing at a glance</h2>
+<p>A one-page view of the protocol: multilateral netting, decentralised network architecture, liquidity benefits, security, no mutualisation of funds and settlement of net balances only.</p>
+<figure style="margin:18px 0 0"><img src="/faq/pitchEN.png" alt="Osnias Clearing diagram — multilateral netting, decentralised network, security and liquidity reduction" loading="lazy" style="width:100%;height:auto;border-radius:14px;border:1px solid rgba(255,255,255,.14)"/><figcaption style="margin-top:10px;opacity:.72;line-height:1.5">Executive pitch — Osnias Clearing architecture and operating model.</figcaption></figure>
+<div class="pitch-downloads" aria-label="Download Osnias Clearing Executive Pitch PDFs">
+  <a class="btn btn-primary" href="/faq/Osnias_Clearing_pitch-EN.pdf" download>📄 Download English PDF</a>
+  <a class="btn" href="/faq/Osnias_Clearing_fr.pdf" download lang="fr">📄 Télécharger le PDF français</a>
+</div>
 </section>
 
 <section class="faq-grid">
@@ -508,6 +734,33 @@
 
 </article>
 </section>
+<section class="faq-item" aria-label="Detailed regulatory and architecture FAQ"><h2>Extended FAQ — architecture, risk, collateral and regulatory perimeter</h2><p>Questions from the Executive Pitch covering the clearing model, 1:1 collateralisation, Sei/Ethereum separation, node governance, cross-jurisdiction obligations and preliminary regulatory scoping.</p></section>
+<section class="faq-grid faq-grid-extended">
+<article class="faq-item"><h2>Is Osnias Clearing a central counterparty (CCP)?</h2><p>Osnias Clearing is not designed around the functional model of a CCP that interposes itself between each seller and buyer. It organises distributed multilateral netting between participants and does not perform central novation of obligations. The final regulatory qualification remains subject to scoping with the competent authorities.</p></article>
+<article class="faq-item"><h2>Why use the term “clearing”?</h2><p>The term describes the function performed: recording obligations, calculating positions, multilateral netting and determining net balances. If an authority requires different terminology, the preferred wording is “distributed multilateral netting infrastructure” rather than “clearing house”, which carries a more specific legal meaning.</p></article>
+<article class="faq-item"><h2>Does Osnias claim PFMI compliance or certification?</h2><p>No. Osnias does not claim certification, authorisation or formally assessed PFMI compliance. The architecture is designed with reference to relevant CPMI-IOSCO PFMI principles covering risk management, collateral, liquidity, default rules, governance and transparency.</p></article>
+<article class="faq-item"><h2>What is the project’s current regulatory status?</h2><p>The project is in development, testnet and preliminary regulatory scoping. No production deployment is presented as licensed, certified or authorised. The scoping process is intended to clarify roles, the network, node operators, responsibilities for client funds and accounts, escrow and settlement before production.</p></article>
+<article class="faq-item"><h2>Who holds user funds?</h2><p>Users control their Sei 0x key and their 0x receiving account. Depending on the operating model, the node operator may hold the access credentials required for the escrow account. Osnias Clearing has the access required to administer the network, but has no access to the Ethereum keys used to receive funds and does not hold user funds. Collateral remains individually segregated and escrowed separately on Ethereum.</p></article>
+<article class="faq-item"><h2>Does Osnias hold users’ private keys or seed phrases?</h2><p>No. Osnias does not hold any of the three seed phrases associated with the three distinct functions: the 0x clearing address on Sei EVM, the 0x escrow address on Ethereum and the 0x receiving address for released funds.</p></article>
+<article class="faq-item"><h2>Can Osnias act directly on a user’s clearing account?</h2><p>No. Any clearing-side action requires authorised access to the private network through the VPN to the O-POP, together with the key of the 0x account linked to the Osnias-ID. Osnias does not hold that seed phrase and cannot sign on behalf of the user.</p></article>
+<article class="faq-item"><h2>Can Osnias act directly on the Ethereum escrow?</h2><p>No. Any escrow-side action requires the key of the 0x account linked to the Osnias-ID on Ethereum. Osnias holds neither that seed phrase nor the seed phrase of the address receiving released funds. It therefore cannot initiate a movement of funds on behalf of the participant.</p></article>
+<article class="faq-item"><h2>Who decides on onboarding, blocking or exit of a participant?</h2><p>The node operator. Osnias provides the infrastructure, common rules and calculation functions, but does not decide whether a user is admitted, retained, blocked or removed.</p></article>
+<article class="faq-item"><h2>What happens if an obligation would exceed available collateral?</h2><p>The operation fails. The control is enforced by the network’s Solidity code: an obligation whose registration would cause the permitted net debit exposure to exceed available collateral is rejected. The rule “instantaneous net debit exposure ≤ collateral” is therefore an execution invariant.</p></article>
+<article class="faq-item"><h2>Does collateral limit the gross volume of obligations?</h2><p>No. It limits only the instantaneous net debit exposure during the clearing cycle. A participant may issue and receive gross volumes far above its collateral, provided that its instantaneous net exposure remains less than or equal to the available collateral.</p></article>
+<article class="faq-item"><h2>Does Osnias allow credit, overdrafts or leverage?</h2><p>No. The protocol does not permit overdrafts, internal credit or leverage. There is no mechanism allowing Osnias to grant discretionary exposure above the available collateral.</p></article>
+<article class="faq-item"><h2>Are funds or losses mutualised?</h2><p>No. Collateral is individualised at participant level. There is no common guarantee fund designed to absorb losses of other participants. Risk is deliberately brought down to the end-user level.</p></article>
+<article class="faq-item"><h2>How does the forced exit of a blocked participant work?</h2><p>A participant placed in blocked status by the node operator can no longer create new exposures. Its existing recorded obligations remain included until cycle close and final netting. After settlement, the releasable balance can be withdrawn during the next BURN window. The operator may then move the participant from “blocked”, which is reversible, to “revoked”, the highest sanction status.</p></article>
+<article class="faq-item"><h2>How is the clearing cycle organised?</h2><p>The four-week cycle is organised as follows: D1 settlement of the previous cycle’s netting; D2 BURN; D3 to D26 MINT + P2P and live clearing; D27 to D28 FREEZE and final netting calculation. There is no D29: D1 of the next cycle begins immediately after D28. The same mechanism is available for 1-week and 13-week profiles.</p></article>
+<article class="faq-item"><h2>How are obligations issued and traced?</h2><p>Obligations are issued by users through ISO 20022 messaging integrated into the Osnias network. Validated messages and obligations are recorded on Sei, the canonical clearing register, providing a timestamped, verifiable and immutable trail. Osnias O-POPs, VPN connectivity, dedicated servers and the private Sei network support operational fluidity, traceability and historical records.</p></article>
+<article class="faq-item"><h2>Why separate Sei and Ethereum?</h2><p>Sei carries the canonical clearing register and positions and is used for its speed and low cost. Ethereum carries the collateral escrow. Operations on that layer are less frequent and relate only to escrow. This technical and operational separation keeps the escrow chain distinct from the operational clearing chain.</p></article>
+<article class="faq-item"><h2>How does cross-jurisdiction netting work?</h2><p>Obligations are distributed by users according to their commercial relationships. A participant in one jurisdiction may receive an obligation from a supplier on another node and issue an obligation to a customer on a third node. Once those obligations are valid and recorded, they enter the netting process; each participant then settles its own net balance.</p></article>
+<article class="faq-item"><h2>Which law applies to cross-jurisdiction obligations?</h2><p>Opening the Osnias network in a jurisdiction requires appropriate local regulatory scoping. Each node operator remains responsible for its users and local obligations. The network then processes valid obligations under its common rules, without discretionary requalification of each obligation solely because it originates from another KK jurisdiction code.</p></article>
+<article class="faq-item"><h2>Can a node operator refuse an already validated foreign obligation?</h2><p>Under the protocol’s functional logic, an obligation recorded and validated by the parties enters the netting process under the common network rules. Access compliance is handled upstream through jurisdictional scoping and participant onboarding, rather than by discretionary requalification of each obligation during the cycle.</p></article>
+<article class="faq-item"><h2>Is the clearing token a speculative blockchain innovation?</h2><p>No. It is an internal technical representation of clearing positions in the Osnias register. Internal representations of rights, obligations and balances have long existed in clearing and settlement infrastructures. Blockchain is used here primarily to provide a shared, traceable and immutable register.</p></article>
+<article class="faq-item"><h2>What is the exact role of Osnias Clearing?</h2><p>Osnias provides the distributed netting infrastructure, common network rules, position calculation, the canonical register and traceability. Osnias operates O-POPs, VPN access servers and data retention under the defined architecture; it does not hold funds, hold user keys, provide credit or decide participant onboarding or exit. It adapts node-module configurations to jurisdictions, assigns KK identifiers and node numbers, and implements network-management decisions taken by the association of node operators.</p></article>
+<article class="faq-item"><h2>Why request preliminary regulatory scoping before production?</h2><p>The project is sufficiently advanced to demonstrate its architecture and controls on testnet while remaining pre-production. Preliminary scoping is intended to support a testnet configured close to mainnet conditions, followed by security stress testing and audit before any formal regulatory filing. This is the planned path before mainnet.</p></article>
+</section>
+
 </main>
 <footer>
 <div class="container">© 2026 Osnias Clearing · FAQ · Public Technical Documentation</div>
