@@ -100,8 +100,21 @@
       .faq-wrap{padding:22px 16px 50px;}
       .faq-item{padding:18px;}
     }
+
+    .pitch-downloads{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin:18px 0 8px;
+      justify-content:center;
+    }
+    .pitch-downloads .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
   </style>
-<meta content="FAQ Osnias Clearing, clearing multilatéral, compensation multilatérale, clearing blockchain, infrastructure clearing actifs numériques, netting interentreprises, clearing B2B, règlement net, clearing vs règlement, infrastructure DLT clearing, clearing non custodial, on-chain clearing, infrastructure de marché financier, FMI, Sei clearing, Osnias-ID, cycles de clearing, infrastructure blockchain institutionnelle, compensation paiements entreprise, règlement résiduel, nœud de clearing, règlement actifs numériques" name="keywords"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="summary" name="twitter:card"/><meta content="FAQ Osnias Clearing — Clearing multilatéral, netting, règlement & infrastructure d’actifs numériques" name="twitter:title"/><meta content="FAQ sur le clearing multilatéral, le netting blockchain, le règlement net, l’architecture non-custodiale, Sei, Osnias-ID, les cycles, la sécurité et les frontières réglementaires." name="twitter:description"/><meta content="FAQ Osnias Clearing — Clearing multilatéral, netting, règlement & infrastructure d’actifs numériques" property="og:title"/><meta content="FAQ sur le clearing multilatéral, le netting blockchain, le règlement net, l’architecture non-custodiale, Sei, Osnias-ID, les cycles, la sécurité et les frontières réglementaires." property="og:description"/><meta content="website" property="og:type"/><meta content="https://www.osnias-clearing.com/faq/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/><meta content="FAQ Osnias Clearing — clearing, netting et règlement" property="og:image:alt"/><script type="application/ld+json">
+<meta content="FAQ Osnias Clearing, clearing multilatéral, compensation multilatérale, netting interentreprises, netting multilatéral, blockchain clearing, infrastructure clearing actifs numériques, infrastructure post-trade, optimisation de liquidité, optimisation BFR, efficacité du collatéral, collateral efficiency, gross-to-net settlement, règlement net, clearing vs règlement, DLT clearing infrastructure, clearing non-custodial, on-chain clearing, infrastructure de marché financier, FMI, PFMI CPMI-IOSCO, Sei clearing, Ethereum escrow, Osnias-ID, cycles de clearing, ISO 20022 clearing, corporate treasury netting, compensation paiements entreprise, obligations de paiement B2B, cross-border netting, règlement résiduel, nœud de clearing, digital asset settlement" name="keywords"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="summary" name="twitter:card"/><meta content="FAQ Osnias Clearing — Clearing multilatéral, netting, règlement & infrastructure d’actifs numériques" name="twitter:title"/><meta content="FAQ sur le clearing multilatéral, le netting blockchain, le règlement net, l’architecture non-custodiale, Sei, Osnias-ID, les cycles, la sécurité et les frontières réglementaires." name="twitter:description"/><meta content="FAQ Osnias Clearing — Clearing multilatéral, netting, règlement & infrastructure d’actifs numériques" property="og:title"/><meta content="FAQ sur le clearing multilatéral, le netting blockchain, le règlement net, l’architecture non-custodiale, Sei, Osnias-ID, les cycles, la sécurité et les frontières réglementaires." property="og:description"/><meta content="website" property="og:type"/><meta content="https://www.osnias-clearing.com/faq/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/><meta content="FAQ Osnias Clearing — clearing, netting et règlement" property="og:image:alt"/><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -221,6 +234,190 @@
         "@type": "Answer",
         "text": "La documentation Osnias Clearing est organisée en Livres techniques et réglementaires dédiés couvrant\n          l’Architecture, Osnias-ID, les Cycles de clearing, les Règles de clearing, la Sécurité et l’Onboarding."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Osnias Clearing est-il une chambre de compensation centrale (CCP) ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Osnias Clearing n’est pas conçu selon le modèle fonctionnel d’une CCP qui s’interpose entre chaque vendeur et chaque acheteur. Il organise une compensation multilatérale distribuée entre participants et n’opère pas de novation centrale des obligations. La qualification réglementaire définitive relève du cadrage avec les autorités compétentes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi employer le terme « clearing » ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le terme décrit la fonction réalisée : enregistrement des obligations, calcul des positions, compensation multilatérale et détermination des soldes nets. Si une terminologie différente est demandée par une autorité, la formulation privilégiée est « infrastructure distribuée de compensation multilatérale » plutôt que « chambre de compensation »."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Osnias revendique-t-il une conformité ou une certification PFMI ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Osnias ne revendique ni certification, ni agrément, ni conformité PFMI formellement évaluée. L’architecture est conçue en référence aux principes PFMI CPMI-IOSCO pertinents en matière de gestion des risques, collatéral, liquidité, règles de défaut, gouvernance et transparence."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quel est le statut réglementaire actuel du projet ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le projet est en phase de développement, de testnet et de précadrage réglementaire. Aucun déploiement de production n’est présenté comme agréé, certifié ou autorisé. Le précadrage vise notamment à qualifier les rôles, le réseau, les gestionnaires de nœuds, les responsabilités liées aux fonds et comptes clients, le séquestre et le settlement avant production."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qui détient les fonds des utilisateurs ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Les utilisateurs disposent de leur clé 0x Sei et de leur compte 0x de réception des fonds. Le gestionnaire de nœud peut disposer des éléments d’accès nécessaires au compte séquestre selon le dispositif retenu. Osnias Clearing dispose des accès nécessaires à la gestion du réseau, mais n’a pas accès aux clés Ethereum de réception des fonds et ne détient pas les fonds des utilisateurs. Le collatéral reste individualisé et séquestré séparément sur Ethereum."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Osnias détient-il les clés privées ou les seed phrases des utilisateurs ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Osnias ne détient aucune des trois seed phrases associées aux trois fonctions distinctes : adresse 0x de clearing sur Sei EVM, adresse 0x du séquestre sur Ethereum et adresse 0x de réception des fonds libérés."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Osnias peut-il agir directement sur le compte de clearing d’un utilisateur ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Toute action côté clearing nécessite un accès autorisé au réseau privé via le VPN vers l’O-POP ainsi que la clé du compte 0x rattaché à l’Osnias-ID. Osnias ne détient pas cette seed phrase et ne peut pas signer à la place de l’utilisateur."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Osnias peut-il agir directement sur le séquestre Ethereum ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Toute action côté séquestre nécessite la clé du compte 0x lié à l’Osnias-ID sur Ethereum. Osnias ne détient ni cette seed phrase, ni celle de l’adresse de réception des fonds libérés. Il ne peut donc pas initier un mouvement de fonds à la place du participant."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qui décide de l’onboarding, du blocage ou de la sortie d’un participant ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le gestionnaire de nœud. Osnias fournit l’infrastructure, les règles communes et les fonctions de calcul, mais ne décide ni de l’admission, ni du maintien, ni du blocage, ni de la sortie d’un utilisateur."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Que se passe-t-il si une obligation ferait dépasser le collatéral disponible ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "L’opération échoue. Le contrôle est imposé par le code Solidity du réseau : un engagement dont l’enregistrement ferait dépasser l’exposition nette débitrice autorisée par rapport au collatéral disponible est rejeté. La règle « exposition nette instantanée ≤ collatéral » est donc un invariant d’exécution."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le collatéral limite-t-il le volume brut des obligations ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Il limite uniquement l’exposition nette débitrice instantanée pendant le cycle de clearing. Un participant peut émettre et recevoir un volume brut très supérieur à son collatéral, sous réserve que son exposition nette instantanée reste inférieure ou égale au collatéral disponible."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Osnias autorise-t-il le crédit, le découvert ou le levier ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Le protocole n’autorise ni découvert, ni crédit interne, ni levier. Il n’existe pas de mécanisme permettant à Osnias d’accorder discrétionnairement une exposition supérieure au collatéral disponible."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Les fonds ou les pertes sont-ils mutualisés ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Le collatéral est individualisé au niveau de chaque participant. Il n’existe pas de fonds commun de garantie destiné à absorber les pertes des autres participants. Le risque est volontairement ramené au niveau de l’utilisateur final."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment fonctionne la sortie forcée d’un participant bloqué ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Un participant placé en statut bloqué par le gestionnaire ne peut plus créer de nouvelles expositions. Ses obligations déjà enregistrées restent prises en compte jusqu’à la clôture du cycle et au netting final. Après settlement, le solde libérable peut être retiré lors de la fenêtre BURN suivante. Le gestionnaire peut ensuite passer du statut « bloqué », réversible, au statut « révoqué », qui constitue la sanction la plus élevée."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment le cycle de clearing est-il organisé ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le cycle de quatre semaines est organisé ainsi : J1 settlement du netting du cycle précédent ; J2 BURN ; J3 à J26 MINT + P2P et clearing live ; J27 à J28 FREEZE et calcul du netting de clôture. Il n’existe pas de J29 : après J28 commence directement J1 du cycle suivant. Le même mécanisme existe pour les profils 1 semaine et 13 semaines."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment sont émises et tracées les obligations ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Les obligations sont émises par les utilisateurs au moyen d’une messagerie ISO 20022 intégrée au réseau Osnias. Les messages et obligations validées sont enregistrés sur Sei, registre canonique du clearing, afin d’assurer une trace horodatée, vérifiable et immuable. Les O-POP Osnias, le VPN, les serveurs dédiés et le réseau Sei privé assurent la fluidité, la traçabilité et l’historisation du dispositif."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi séparer Sei et Ethereum ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sei porte le registre canonique du clearing et les positions ; il est utilisé pour sa rapidité et son faible coût. Ethereum porte le séquestre du collatéral. Les opérations sur cette couche sont moins nombreuses et concernent uniquement le séquestre. Cette séparation technique et opérationnelle maintient une étanchéité entre la chaîne de séquestre et la chaîne opérationnelle de clearing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment fonctionne la compensation entre juridictions ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Les obligations sont distribuées par les utilisateurs selon leurs relations commerciales. Un participant d’une juridiction peut recevoir une obligation d’un fournisseur situé sur un autre nœud et émettre une obligation envers un client situé sur un troisième nœud. Dès lors que ces obligations sont valides et enregistrées, elles entrent dans le netting ; chaque participant règle ensuite son propre solde net."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelle loi s’applique aux obligations inter-juridictionnelles ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "L’ouverture du réseau Osnias dans une juridiction suppose un cadrage réglementaire local approprié. Chaque gestionnaire de nœud reste responsable de ses utilisateurs et de ses obligations locales. Le réseau traite ensuite les obligations valides selon ses règles communes, sans requalification discrétionnaire de chaque obligation du seul fait de son code juridictionnel KK."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le gestionnaire de nœud peut-il refuser une obligation étrangère déjà validée ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dans la logique fonctionnelle du protocole, une obligation enregistrée et validée par les parties entre dans le netting selon les règles communes du réseau. La conformité d’accès est traitée en amont par le cadrage de la juridiction et l’onboarding des participants, et non par une requalification discrétionnaire de chaque obligation pendant le cycle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le token de clearing est-il une innovation spéculative liée à la blockchain ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Il constitue une représentation technique interne des positions de clearing dans le registre Osnias. La représentation interne de droits, obligations et soldes existe depuis longtemps dans les infrastructures de clearing et de settlement. La blockchain apporte ici principalement un registre partagé, traçable et immuable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quel est le rôle exact d’Osnias Clearing ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Osnias fournit l’infrastructure distribuée de compensation, les règles communes du réseau, le calcul des positions, le registre canonique et la traçabilité. Osnias exploite les O-POP, les serveurs d’accès VPN et la conservation des données selon le dispositif prévu ; il ne détient pas les fonds, ne détient pas les clés des utilisateurs, ne fournit pas de crédit et ne décide pas de l’onboarding ou de la sortie des participants. Il adapte la configuration des modules aux juridictions, attribue les identifiants KK et les numéros de nœud, et met en œuvre les décisions de l’association des gestionnaires de nœuds pour la gestion du réseau."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi demander un précadrage réglementaire avant production ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le projet est suffisamment avancé pour démontrer son architecture et ses contrôles en testnet tout en restant avant le déploiement réel. Le précadrage doit permettre de développer un testnet en configuration proche du mainnet, puis de le soumettre à des stress tests de sécurité et à un audit avant le dépôt d’un dossier officiel. Cette séquence constitue le chemin prévu avant un mainnet."
+      }
     }
   ],
   "author": {
@@ -234,18 +431,39 @@
   },
   "dateModified": "2026-10-04",
   "keywords": [
+    "FAQ Osnias Clearing",
     "clearing multilatéral",
     "compensation multilatérale",
-    "clearing blockchain",
-    "infrastructure clearing actifs numériques",
     "netting interentreprises",
+    "netting multilatéral",
+    "blockchain clearing",
+    "infrastructure clearing actifs numériques",
+    "infrastructure post-trade",
+    "optimisation de liquidité",
+    "optimisation BFR",
+    "efficacité du collatéral",
+    "collateral efficiency",
+    "gross-to-net settlement",
     "règlement net",
-    "clearing non custodial",
+    "clearing vs règlement",
+    "DLT clearing infrastructure",
+    "clearing non-custodial",
+    "on-chain clearing",
     "infrastructure de marché financier",
+    "FMI",
+    "PFMI CPMI-IOSCO",
     "Sei clearing",
+    "Ethereum escrow",
     "Osnias-ID",
     "cycles de clearing",
-    "règlement actifs numériques"
+    "ISO 20022 clearing",
+    "corporate treasury netting",
+    "compensation paiements entreprise",
+    "obligations de paiement B2B",
+    "cross-border netting",
+    "règlement résiduel",
+    "nœud de clearing",
+    "digital asset settlement"
   ],
   "about": [
     {
@@ -306,6 +524,17 @@
 <p><strong>Osnias Clearing est conçu comme une infrastructure de clearing multilatéral pour les obligations entre entreprises, et non comme une plateforme de trading ou de conservation.</strong> Le protocole enregistre et rapproche les obligations, calcule les positions nettes et prépare les montants résiduels qui doivent ensuite être réglés au moyen de l’infrastructure de settlement ou du nœud concerné.</p>
 <p>La FAQ met donc l’accent sur la distinction entre <strong>clearing, netting et règlement</strong>, le rôle du registre canonique de clearing sur Sei, l’utilisation d’Osnias-ID, les cycles prédéfinis et la séparation entre conservation et fonction de clearing. Ce vocabulaire rattache le projet aux champs de l’infrastructure de clearing d’actifs numériques, du netting interentreprises et des infrastructures de marché financier.</p>
 <p><strong>Les réponses ci-dessous constituent une référence technique et opérationnelle.</strong> Elles expliquent l’approche Osnias du clearing non-custodial, de la compensation multilatérale et du règlement résiduel, tout en maintenant distinctes la qualification réglementaire, la custody, l’exécution du settlement et les responsabilités propres aux opérateurs de nœuds.</p>
+<p><strong>Cas d’usage :</strong> optimisation de liquidité et du besoin en fonds de roulement, efficacité du collatéral, compensation gross-to-net, netting interentreprises, obligations de paiement B2B et infrastructure post-trade DLT. Osnias sépare strictement clearing, custody, collatéral et settlement.</p>
+</section>
+
+<section class="faq-item" aria-label="Pitch visuel Osnias Clearing">
+<h2>Osnias Clearing en une page</h2>
+<p>Vue synthétique du protocole : compensation multilatérale, réseau décentralisé, bénéfice de liquidité, sécurité, absence de mutualisation des fonds et règlement du seul solde net.</p>
+<figure style="margin:18px 0 0"><img src="/faq/pitchFR.png" alt="Schéma Osnias Clearing — compensation multilatérale, réseau décentralisé, sécurité et réduction du besoin de liquidité" loading="lazy" style="width:100%;height:auto;border-radius:14px;border:1px solid rgba(255,255,255,.14)"/><figcaption style="margin-top:10px;opacity:.72;line-height:1.5">Executive pitch — architecture et fonctionnement d’Osnias Clearing.</figcaption></figure>
+<div class="pitch-downloads" aria-label="Téléchargement des Executive Pitches Osnias Clearing">
+  <a class="btn btn-primary" href="/faq/Osnias_Clearing_fr.pdf" download>📄 Télécharger le PDF français</a>
+  <a class="btn" href="/faq/Osnias_Clearing_pitch-EN.pdf" download lang="en">📄 Download English PDF</a>
+</div>
 </section>
 
 <section class="faq-grid">
@@ -511,6 +740,33 @@
 
 </article>
 </section>
+<section class="faq-item" aria-label="FAQ réglementaire et architecture détaillée"><h2>FAQ approfondie — architecture, risque, collatéral et cadre réglementaire</h2><p>Questions issues du document Executive Pitch : modèle de clearing, collatéralisation 1:1, séparation Sei/Ethereum, gouvernance des nœuds, obligations inter-juridictionnelles et précadrage réglementaire.</p></section>
+<section class="faq-grid faq-grid-extended">
+<article class="faq-item"><h2>Osnias Clearing est-il une chambre de compensation centrale (CCP) ?</h2><p>Osnias Clearing n’est pas conçu selon le modèle fonctionnel d’une CCP qui s’interpose entre chaque vendeur et chaque acheteur. Il organise une compensation multilatérale distribuée entre participants et n’opère pas de novation centrale des obligations. La qualification réglementaire définitive relève du cadrage avec les autorités compétentes.</p></article>
+<article class="faq-item"><h2>Pourquoi employer le terme « clearing » ?</h2><p>Le terme décrit la fonction réalisée : enregistrement des obligations, calcul des positions, compensation multilatérale et détermination des soldes nets. Si une terminologie différente est demandée par une autorité, la formulation privilégiée est « infrastructure distribuée de compensation multilatérale » plutôt que « chambre de compensation ».</p></article>
+<article class="faq-item"><h2>Osnias revendique-t-il une conformité ou une certification PFMI ?</h2><p>Non. Osnias ne revendique ni certification, ni agrément, ni conformité PFMI formellement évaluée. L’architecture est conçue en référence aux principes PFMI CPMI-IOSCO pertinents en matière de gestion des risques, collatéral, liquidité, règles de défaut, gouvernance et transparence.</p></article>
+<article class="faq-item"><h2>Quel est le statut réglementaire actuel du projet ?</h2><p>Le projet est en phase de développement, de testnet et de précadrage réglementaire. Aucun déploiement de production n’est présenté comme agréé, certifié ou autorisé. Le précadrage vise notamment à qualifier les rôles, le réseau, les gestionnaires de nœuds, les responsabilités liées aux fonds et comptes clients, le séquestre et le settlement avant production.</p></article>
+<article class="faq-item"><h2>Qui détient les fonds des utilisateurs ?</h2><p>Les utilisateurs disposent de leur clé 0x Sei et de leur compte 0x de réception des fonds. Le gestionnaire de nœud peut disposer des éléments d’accès nécessaires au compte séquestre selon le dispositif retenu. Osnias Clearing dispose des accès nécessaires à la gestion du réseau, mais n’a pas accès aux clés Ethereum de réception des fonds et ne détient pas les fonds des utilisateurs. Le collatéral reste individualisé et séquestré séparément sur Ethereum.</p></article>
+<article class="faq-item"><h2>Osnias détient-il les clés privées ou les seed phrases des utilisateurs ?</h2><p>Non. Osnias ne détient aucune des trois seed phrases associées aux trois fonctions distinctes : adresse 0x de clearing sur Sei EVM, adresse 0x du séquestre sur Ethereum et adresse 0x de réception des fonds libérés.</p></article>
+<article class="faq-item"><h2>Osnias peut-il agir directement sur le compte de clearing d’un utilisateur ?</h2><p>Non. Toute action côté clearing nécessite un accès autorisé au réseau privé via le VPN vers l’O-POP ainsi que la clé du compte 0x rattaché à l’Osnias-ID. Osnias ne détient pas cette seed phrase et ne peut pas signer à la place de l’utilisateur.</p></article>
+<article class="faq-item"><h2>Osnias peut-il agir directement sur le séquestre Ethereum ?</h2><p>Non. Toute action côté séquestre nécessite la clé du compte 0x lié à l’Osnias-ID sur Ethereum. Osnias ne détient ni cette seed phrase, ni celle de l’adresse de réception des fonds libérés. Il ne peut donc pas initier un mouvement de fonds à la place du participant.</p></article>
+<article class="faq-item"><h2>Qui décide de l’onboarding, du blocage ou de la sortie d’un participant ?</h2><p>Le gestionnaire de nœud. Osnias fournit l’infrastructure, les règles communes et les fonctions de calcul, mais ne décide ni de l’admission, ni du maintien, ni du blocage, ni de la sortie d’un utilisateur.</p></article>
+<article class="faq-item"><h2>Que se passe-t-il si une obligation ferait dépasser le collatéral disponible ?</h2><p>L’opération échoue. Le contrôle est imposé par le code Solidity du réseau : un engagement dont l’enregistrement ferait dépasser l’exposition nette débitrice autorisée par rapport au collatéral disponible est rejeté. La règle « exposition nette instantanée ≤ collatéral » est donc un invariant d’exécution.</p></article>
+<article class="faq-item"><h2>Le collatéral limite-t-il le volume brut des obligations ?</h2><p>Non. Il limite uniquement l’exposition nette débitrice instantanée pendant le cycle de clearing. Un participant peut émettre et recevoir un volume brut très supérieur à son collatéral, sous réserve que son exposition nette instantanée reste inférieure ou égale au collatéral disponible.</p></article>
+<article class="faq-item"><h2>Osnias autorise-t-il le crédit, le découvert ou le levier ?</h2><p>Non. Le protocole n’autorise ni découvert, ni crédit interne, ni levier. Il n’existe pas de mécanisme permettant à Osnias d’accorder discrétionnairement une exposition supérieure au collatéral disponible.</p></article>
+<article class="faq-item"><h2>Les fonds ou les pertes sont-ils mutualisés ?</h2><p>Non. Le collatéral est individualisé au niveau de chaque participant. Il n’existe pas de fonds commun de garantie destiné à absorber les pertes des autres participants. Le risque est volontairement ramené au niveau de l’utilisateur final.</p></article>
+<article class="faq-item"><h2>Comment fonctionne la sortie forcée d’un participant bloqué ?</h2><p>Un participant placé en statut bloqué par le gestionnaire ne peut plus créer de nouvelles expositions. Ses obligations déjà enregistrées restent prises en compte jusqu’à la clôture du cycle et au netting final. Après settlement, le solde libérable peut être retiré lors de la fenêtre BURN suivante. Le gestionnaire peut ensuite passer du statut « bloqué », réversible, au statut « révoqué », qui constitue la sanction la plus élevée.</p></article>
+<article class="faq-item"><h2>Comment le cycle de clearing est-il organisé ?</h2><p>Le cycle de quatre semaines est organisé ainsi : J1 settlement du netting du cycle précédent ; J2 BURN ; J3 à J26 MINT + P2P et clearing live ; J27 à J28 FREEZE et calcul du netting de clôture. Il n’existe pas de J29 : après J28 commence directement J1 du cycle suivant. Le même mécanisme existe pour les profils 1 semaine et 13 semaines.</p></article>
+<article class="faq-item"><h2>Comment sont émises et tracées les obligations ?</h2><p>Les obligations sont émises par les utilisateurs au moyen d’une messagerie ISO 20022 intégrée au réseau Osnias. Les messages et obligations validées sont enregistrés sur Sei, registre canonique du clearing, afin d’assurer une trace horodatée, vérifiable et immuable. Les O-POP Osnias, le VPN, les serveurs dédiés et le réseau Sei privé assurent la fluidité, la traçabilité et l’historisation du dispositif.</p></article>
+<article class="faq-item"><h2>Pourquoi séparer Sei et Ethereum ?</h2><p>Sei porte le registre canonique du clearing et les positions ; il est utilisé pour sa rapidité et son faible coût. Ethereum porte le séquestre du collatéral. Les opérations sur cette couche sont moins nombreuses et concernent uniquement le séquestre. Cette séparation technique et opérationnelle maintient une étanchéité entre la chaîne de séquestre et la chaîne opérationnelle de clearing.</p></article>
+<article class="faq-item"><h2>Comment fonctionne la compensation entre juridictions ?</h2><p>Les obligations sont distribuées par les utilisateurs selon leurs relations commerciales. Un participant d’une juridiction peut recevoir une obligation d’un fournisseur situé sur un autre nœud et émettre une obligation envers un client situé sur un troisième nœud. Dès lors que ces obligations sont valides et enregistrées, elles entrent dans le netting ; chaque participant règle ensuite son propre solde net.</p></article>
+<article class="faq-item"><h2>Quelle loi s’applique aux obligations inter-juridictionnelles ?</h2><p>L’ouverture du réseau Osnias dans une juridiction suppose un cadrage réglementaire local approprié. Chaque gestionnaire de nœud reste responsable de ses utilisateurs et de ses obligations locales. Le réseau traite ensuite les obligations valides selon ses règles communes, sans requalification discrétionnaire de chaque obligation du seul fait de son code juridictionnel KK.</p></article>
+<article class="faq-item"><h2>Le gestionnaire de nœud peut-il refuser une obligation étrangère déjà validée ?</h2><p>Dans la logique fonctionnelle du protocole, une obligation enregistrée et validée par les parties entre dans le netting selon les règles communes du réseau. La conformité d’accès est traitée en amont par le cadrage de la juridiction et l’onboarding des participants, et non par une requalification discrétionnaire de chaque obligation pendant le cycle.</p></article>
+<article class="faq-item"><h2>Le token de clearing est-il une innovation spéculative liée à la blockchain ?</h2><p>Non. Il constitue une représentation technique interne des positions de clearing dans le registre Osnias. La représentation interne de droits, obligations et soldes existe depuis longtemps dans les infrastructures de clearing et de settlement. La blockchain apporte ici principalement un registre partagé, traçable et immuable.</p></article>
+<article class="faq-item"><h2>Quel est le rôle exact d’Osnias Clearing ?</h2><p>Osnias fournit l’infrastructure distribuée de compensation, les règles communes du réseau, le calcul des positions, le registre canonique et la traçabilité. Osnias exploite les O-POP, les serveurs d’accès VPN et la conservation des données selon le dispositif prévu ; il ne détient pas les fonds, ne détient pas les clés des utilisateurs, ne fournit pas de crédit et ne décide pas de l’onboarding ou de la sortie des participants. Il adapte la configuration des modules aux juridictions, attribue les identifiants KK et les numéros de nœud, et met en œuvre les décisions de l’association des gestionnaires de nœuds pour la gestion du réseau.</p></article>
+<article class="faq-item"><h2>Pourquoi demander un précadrage réglementaire avant production ?</h2><p>Le projet est suffisamment avancé pour démontrer son architecture et ses contrôles en testnet tout en restant avant le déploiement réel. Le précadrage doit permettre de développer un testnet en configuration proche du mainnet, puis de le soumettre à des stress tests de sécurité et à un audit avant le dépôt d’un dossier officiel. Cette séquence constitue le chemin prévu avant un mainnet.</p></article>
+</section>
+
 </main>
 <footer>
 <div class="container">© 2026 Osnias Clearing · FAQ · Documentation technique publique</div>
