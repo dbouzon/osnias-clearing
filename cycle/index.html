@@ -1,54 +1,173 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Livre 4 — Cycles de clearing · Osnias Clearing</title>
-<meta content="Osnias Clearing — Livre 4 : cycles de clearing multilatéral 1W, 4W et 13W, calendrier UTC, fenêtres BURN, calcul des positions nettes et documentation technique associée." name="description"/>
-<link href="https://www.osnias-clearing.com/cycle/" rel="canonical"/><link href="https://www.osnias-clearing.com/cycle/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/cycle/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/cycle/" hreflang="x-default" rel="alternate"/>
-<link href="/assets/css/osnias.css" rel="stylesheet"/><script defer="" src="/assets/js/osnias-seo.js"></script><script defer="" src="/assets/js/osnias-nav.js"></script>
-<meta content="Denis Bouzon" name="citation_author"/><meta content="10.5281/zenodo.22979580" name="citation_doi"/><meta content="2026-09-26" name="citation_publication_date"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Cycles de clearing 1W, 4W & 13W — Netting multilatéral, UTC & règlement net | Osnias Clearing</title>
+<meta name="description" content="Découvrez les cycles de clearing Osnias 1W, 4W et 13W : calendrier UTC, netting multilatéral, positions nettes, fenêtres BURN, règlement net et efficacité de liquidité dans une infrastructure non-custodial."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+<link rel="canonical" href="https://www.osnias-clearing.com/cycle/"/>
+<link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/cycle/"/>
+<link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/cycle/"/>
+<link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/cycle/"/>
+<link rel="stylesheet" href="/assets/css/osnias.css"/>
+<script defer src="/assets/js/osnias-seo.js"></script>
+<script defer src="/assets/js/osnias-nav.js"></script>
+
+<meta name="author" content="Denis Bouzon"/>
+<meta name="creator" content="Denis Bouzon"/>
+<meta name="publisher" content="Osnias Clearing"/>
+<meta name="citation_author" content="Denis Bouzon"/>
+<meta name="citation_title" content="Livre 4 — Cycles de clearing"/>
+<meta name="citation_doi" content="10.5281/zenodo.22979580"/>
+<meta name="citation_publication_date" content="2026-09-26"/>
+<meta name="abstract" content="Livre 4 d’Osnias Clearing : cycles de clearing multilatéral 1W, 4W et 13W, calendrier UTC, fenêtres BURN, netting, positions nettes, règlement net et documentation de calcul."/>
+<meta name="subject" content="clearing multilatéral; cycles de clearing; netting multilatéral; règlement net; calendrier UTC; infrastructure de marché financier; optimisation de liquidité; clearing non-custodial; blockchain clearing; Sei Network"/>
+<meta name="keywords" content="Osnias Clearing, cycle de clearing, cycles de compensation, clearing multilatéral, compensation multilatérale, netting multilatéral, multilateral netting, 1W clearing cycle, 4W clearing cycle, 13W clearing cycle, 91 day clearing cycle, calendrier UTC clearing, UTC clearing calendar, fenêtre BURN, BURN window, net settlement cycle, règlement net, positions nettes, obligations nettes, enterprise payment netting, corporate payment netting, gross-to-net settlement, liquidity efficiency, liquidity optimisation, working capital optimisation, BFR, obligation offset ratio, gross obligation reduction, netting efficiency, digital asset clearing infrastructure, DLT clearing infrastructure, blockchain clearing, non-custodial clearing, financial market infrastructure, FMI, settlement cycle, Sei Network"/>
+<meta name="DC.title" content="Livre 4 — Cycles de clearing"/>
+<meta name="DC.creator" content="Denis Bouzon"/>
+<meta name="DC.publisher" content="Osnias Clearing"/>
+<meta name="DC.date" content="2026-09-26"/>
+<meta name="DC.type" content="Technical Documentation"/>
+<meta name="DC.identifier" content="https://www.osnias-clearing.com/cycle/"/>
+<meta name="DC.language" content="fr"/>
+<meta name="DC.subject" content="Clearing multilatéral, cycles de clearing, netting multilatéral, règlement net, calendrier UTC, infrastructure de marché financier"/>
+
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="Osnias Clearing"/>
+<meta property="og:locale" content="fr_FR"/>
+<meta property="og:locale:alternate" content="en_GB"/>
+<meta property="og:url" content="https://www.osnias-clearing.com/cycle/"/>
+<meta property="og:title" content="Cycles de clearing 1W, 4W & 13W — Netting multilatéral | Osnias Clearing"/>
+<meta property="og:description" content="Calendrier UTC, netting multilatéral, fenêtres BURN, positions nettes et règlement net : le fonctionnement des cycles 1W, 4W et 13W d’Osnias Clearing."/>
+<meta property="og:image" content="https://www.osnias-clearing.com/cycle/cycle.jpg"/>
+<meta property="og:image:alt" content="Cycles de clearing Osnias Clearing — profils 1W, 4W et 13W"/>
+<meta property="article:published_time" content="2026-09-26"/>
+<meta property="article:modified_time" content="2026-10-07"/>
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Cycles de clearing 1W, 4W & 13W — Osnias Clearing"/>
+<meta name="twitter:description" content="Clearing multilatéral, calendrier UTC, netting, fenêtres BURN et règlement net dans les cycles 1W, 4W et 13W."/>
+<meta name="twitter:image" content="https://www.osnias-clearing.com/cycle/cycle.jpg"/>
+<meta name="twitter:image:alt" content="Cycles de clearing Osnias Clearing — 1W, 4W et 13W"/>
+
 <style>
-.cycle-figure img{width:min(100%,350px);display:block;margin:auto}.cycle-figure figcaption{color:var(--muted);text-align:center;font-size:.9rem}.cycle-summary{margin-top:1.5rem}.cycle-summary p{margin:.8rem 0;line-height:1.7}[hidden]{display:none!important}
+.cycle-figure img{width:min(100%,420px);display:block;margin:auto}.cycle-figure figcaption{color:var(--muted);text-align:center;font-size:.9rem}.cycle-pitch{margin-top:1.6rem}.cycle-pitch p,.cycle-content p,.cycle-faq p{line-height:1.72}.cycle-content{margin:2.2rem auto 0;max-width:1100px}.cycle-content h2{margin-top:2rem}.cycle-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:1.2rem 0 2rem}.cycle-card,.cycle-faq article{border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:20px;background:rgba(255,255,255,.025)}.cycle-card h3,.cycle-faq h3{margin-top:0}.cycle-faq{display:grid;gap:14px;margin-top:1rem}.seo-kicker{font-weight:700}.cycle-note{opacity:.82}[hidden]{display:none!important}@media(max-width:800px){.cycle-grid{grid-template-columns:1fr}}
 </style>
-<meta content="Osnias Clearing, clearing multilatéral, compensation multilatérale, cycles de clearing, cycles de compensation, 1W, 4W, 13W, 1 week clearing, 4 week clearing, 13 week clearing, calendrier UTC, fenêtre BURN, netting multilatéral, positions nettes, obligations nettes, règlement net, liquidity savings, clearing infrastructure, financial market infrastructure, FMI, blockchain clearing, Sei Network" name="keywords"/><meta content="Cycles de clearing multilatéral 1W, 4W et 13W d’Osnias Clearing, avec calendrier UTC, fenêtres BURN et calcul des positions nettes." name="abstract"/><meta content="Clearing multilatéral, netting, calendrier de compensation, infrastructure de marché" name="subject"/><meta content="global" name="distribution"/><meta content="general" name="rating"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="index, follow, max-image-preview:large" name="robots"/><meta content="Livre 4 — Cycles de clearing" name="citation_title"/><meta content="Livre 4 — Cycles de clearing" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-09-26" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/cycle/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Livre 4 — Cycles de clearing · Osnias Clearing" name="twitter:title"/><meta content="Cycles de clearing multilatéral 1W, 4W et 13W : calendrier UTC, fenêtres BURN, positions nettes et documentation technique." name="twitter:description"/><meta content="https://www.osnias-clearing.com/cycle/cycle.jpg" name="twitter:image"/><meta content="Livre 4 — Cycles de clearing · Osnias Clearing" property="og:title"/><meta content="Cycles de clearing multilatéral 1W, 4W et 13W : calendrier UTC, fenêtres BURN, positions nettes et documentation technique." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/cycle/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/cycle/cycle.jpg" property="og:image"/><meta content="Cycles de clearing Osnias Clearing — profils 1W, 4W et 13W" property="og:image:alt"/><script type="application/ld+json">
+
+<script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "Livre 4 — Cycles de clearing",
-  "name": "Livre 4 — Cycles de clearing",
-  "description": "Osnias Clearing — Livre 4 : cycles de clearing multilatéral 1W, 4W et 13W, calendrier UTC, fenêtres BURN, calcul des positions nettes et documentation technique associée.",
-  "keywords": ["multilateral clearing", "multilateral netting", "clearing cycle", "1W", "4W", "13W", "UTC clearing calendar", "BURN window", "net positions", "financial market infrastructure", "Sei Network"],
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://www.osnias-clearing.com/cycle/"
-  },
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "Osnias Clearing",
-    "url": "https://www.osnias-clearing.com/"
-  },
-  "url": "https://www.osnias-clearing.com/cycle/",
-  "author": {
-    "@type": "Person",
-    "name": "Denis Bouzon"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Osnias Clearing"
-  },
-  "datePublished": "2026-09-26",
-  "dateModified": "2026-10-05",
-  "inLanguage": "fr",
-  "identifier": "https://doi.org/10.5281/zenodo.22979580"
+  "@context":"https://schema.org",
+  "@graph":[
+    {
+      "@type":"TechArticle",
+      "@id":"https://www.osnias-clearing.com/cycle/#article",
+      "headline":"Livre 4 — Cycles de clearing 1W, 4W et 13W",
+      "name":"Cycles de clearing — Osnias Clearing",
+      "description":"Cycles de clearing multilatéral 1W, 4W et 13W, calendrier UTC, fenêtres BURN, netting, positions nettes et règlement net.",
+      "url":"https://www.osnias-clearing.com/cycle/",
+      "inLanguage":"fr",
+      "datePublished":"2026-09-26",
+      "dateModified":"2026-10-07",
+      "identifier":"https://doi.org/10.5281/zenodo.22979580",
+      "sameAs":"https://zenodo.org/records/22979580",
+      "author":{"@type":"Person","name":"Denis Bouzon"},
+      "publisher":{"@type":"Organization","name":"Osnias Clearing","url":"https://www.osnias-clearing.com/"},
+      "image":"https://www.osnias-clearing.com/cycle/cycle.jpg",
+      "mainEntityOfPage":{"@type":"WebPage","@id":"https://www.osnias-clearing.com/cycle/"},
+      "keywords":["cycle de clearing","clearing multilatéral","netting multilatéral","1W","4W","13W","91 day clearing cycle","UTC clearing calendar","BURN window","net settlement","liquidity efficiency","non-custodial clearing","financial market infrastructure","Sei Network"]
+    },
+    {
+      "@type":"FAQPage",
+      "@id":"https://www.osnias-clearing.com/cycle/#faq",
+      "mainEntity":[
+        {"@type":"Question","name":"Qu’est-ce qu’un cycle de clearing ?","acceptedAnswer":{"@type":"Answer","text":"Un cycle de clearing est une période déterminée pendant laquelle les obligations sont enregistrées et agrégées avant le calcul des positions nettes et la préparation du règlement. Osnias Clearing documente des profils 1W, 4W et 13W."}},
+        {"@type":"Question","name":"Pourquoi Osnias Clearing utilise-t-il des cycles 1W, 4W et 13W ?","acceptedAnswer":{"@type":"Answer","text":"Ces trois profils permettent d’adapter la fréquence du netting aux besoins opérationnels tout en conservant un calendrier commun et synchronisé en UTC."}},
+        {"@type":"Question","name":"Pourquoi le calendrier de clearing est-il exprimé en UTC ?","acceptedAnswer":{"@type":"Answer","text":"UTC fournit une référence temporelle commune aux participants, nœuds et clearing rooms, indépendamment des fuseaux horaires locaux."}},
+        {"@type":"Question","name":"Qu’est-ce qu’une fenêtre BURN ?","acceptedAnswer":{"@type":"Answer","text":"La fenêtre BURN est une phase définie du calendrier de cycle utilisée pour encadrer la sortie prévue par les règles du protocole après la clôture et le règlement du cycle concerné."}},
+        {"@type":"Question","name":"Comment le netting multilatéral réduit-il les flux de règlement ?","acceptedAnswer":{"@type":"Answer","text":"Le netting agrège les obligations afin de déterminer des positions nettes. Le règlement porte alors sur les soldes résultants plutôt que sur chaque flux brut pris isolément."}},
+        {"@type":"Question","name":"Le clearing et le settlement sont-ils la même chose ?","acceptedAnswer":{"@type":"Answer","text":"Non. Le clearing calcule et rapproche les obligations et positions nettes. Le settlement exécute ensuite le transfert de valeur correspondant au solde résultant."}}
+      ]
+    },
+    {
+      "@type":"BreadcrumbList",
+      "itemListElement":[
+        {"@type":"ListItem","position":1,"name":"Osnias Clearing","item":"https://www.osnias-clearing.com/"},
+        {"@type":"ListItem","position":2,"name":"Cycles de clearing","item":"https://www.osnias-clearing.com/cycle/"}
+      ]
+    }
+  ]
 }
-</script></head>
+</script>
+</head>
 <body>
 <div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a><nav aria-label="Navigation principale" class="site-nav-buttons" id="mainNav"></nav></div></div>
 <div class="container"><div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/cycle/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/cycle/" hreflang="en" lang="en">🇬🇧 English</a></div></div>
 
+<header><div class="container"><section class="hero"><div class="hero-grid"><div>
+<div class="eyebrow">Livre 4 · Calendrier de clearing · UTC</div>
+<h1>Cycles de clearing multilatéral</h1>
+<p class="hero-lead">Trois profils de cycle partagent un calendrier commun en UTC : 1W, 4W et 13W. Chaque profil structure l’enregistrement des obligations, le netting, les positions nettes, la préparation au settlement et les fenêtres BURN documentées dans le Livre 4.</p>
+<div class="actions"><a class="btn btn-primary" href="/cycle/Livre-4-cycle-FR.pdf" target="_blank">PDF en français</a><a class="btn" href="/cycle/Book-4-cycle-en.pdf" target="_blank">PDF en anglais</a><a class="btn" href="https://zenodo.org/records/22979580" rel="noopener noreferrer" target="_blank">DOI Zenodo</a><a class="btn" href="/cycle/Livre-4-cycles.xlsx">Tableur XLSX</a></div>
 
-<header><div class="container"><section class="hero"><div class="hero-grid"><div><div class="eyebrow">Livre 4 · Calendrier de compensation · UTC</div><h1>Cycles de compensation</h1><p class="hero-lead">Trois profils de cycle partagent un calendrier hebdomadaire en UTC : 1W, 4W et 13W. Chaque compensation se clôture un lundi, puis s’ouvre une fenêtre BURN définie. Le Livre 4 et son tableur documentent le calendrier.</p><div class="actions"><a class="btn btn-primary" href="/cycle/Livre-4-cycle-FR.pdf" target="_blank">PDF en français</a><a class="btn" href="/cycle/Book-4-cycle-en.pdf" target="_blank">PDF en anglais</a><a class="btn" href="https://zenodo.org/records/22979580" rel="noopener noreferrer" target="_blank">DOI Zenodo</a><a class="btn" href="/cycle/Livre-4-cycles.xlsx">Tableur XLSX</a></div><div class="cycle-summary" aria-label="Résumé des cycles de clearing"><h2>Cycles de clearing 1W, 4W et 13W</h2><p><strong>Osnias Clearing organise la compensation selon trois horizons normalisés — 1W, 4W et 13W —</strong> afin d’adapter la fréquence du netting aux besoins opérationnels des participants. Tous les profils reposent sur un calendrier commun en UTC, ce qui permet d’aligner les périodes de calcul, les clôtures et les fenêtres opérationnelles sans dépendre des fuseaux horaires locaux.</p><p><strong>À chaque échéance, les flux enregistrés pendant le cycle sont agrégés pour produire des positions nettes de compensation.</strong> Le mécanisme vise à réduire le nombre et le montant des règlements bruts nécessaires entre participants, tout en maintenant une séparation explicite entre le calcul des obligations de clearing et leur règlement. Les fenêtres BURN encadrent la phase de clôture et contribuent à rendre le calendrier prévisible, auditable et reproductible.</p><h2>Calendrier UTC, netting multilatéral et règlement net</h2><p><strong>Le Livre 4 constitue la référence documentaire de ces cycles.</strong> Il décrit les profils 1W, 4W et 13W, leurs dates de clôture, la logique calendaire et les paramètres de calcul. Le PDF, le DOI Zenodo et le tableur XLSX permettent de vérifier les échéances et d’utiliser les mêmes règles de cycle dans les implémentations techniques, les tests et les revues réglementaires.</p></div></div><figure class="hero-illustration cycle-figure"><a href="/cycle/cycle.png" rel="noopener noreferrer" target="_blank"><img alt="Quatre périodes de 13 semaines dans une année ordinaire de 52 semaines" src="/cycle/cycle.jpg"/></a><figcaption>Illustration du profil 13W dans une année ordinaire.</figcaption></figure></div></section></div></header>
+<section class="cycle-pitch" aria-label="Pitch des cycles de clearing Osnias">
+<p><strong>Osnias Clearing organise la compensation multilatérale selon trois horizons normalisés — 1 semaine, 4 semaines et 13 semaines — afin de rendre le calendrier de clearing prévisible, reproductible et auditable.</strong> Tous les participants et nœuds se réfèrent à la même horloge UTC. Les obligations sont enregistrées pendant la période active, puis agrégées afin de calculer les positions nettes avant le règlement.</p>
+<p><strong>Le principe économique est celui du gross-to-net settlement :</strong> plutôt que de régler séparément chaque obligation brute, le mécanisme de multilateral netting rapproche les flux réciproques et détermine le solde net à payer ou à recevoir. Cette organisation vise à réduire les besoins de liquidité mobilisés pour le règlement, à améliorer l’efficacité du fonds de roulement et à conserver une séparation stricte entre clearing, settlement et custody.</p>
+<p><strong>Le Livre 4 constitue la référence technique du calendrier.</strong> Il documente les profils 1W, 4W et 13W, les fenêtres BURN, les dates de clôture et la méthodologie de calcul. Le PDF publié, le DOI Zenodo et le workbook XLSX permettent aux développeurs, auditeurs, partenaires institutionnels et autorités de reproduire les mêmes règles temporelles et de vérifier le fonctionnement du cycle.</p>
+</section>
+</div>
+<figure class="hero-illustration cycle-figure"><a href="/cycle/cycle.png" rel="noopener noreferrer" target="_blank"><img alt="Illustration des cycles de clearing Osnias Clearing 1W, 4W et 13W" src="/cycle/cycle.jpg"/></a><figcaption>Illustration du profil 13W dans une année ordinaire.</figcaption></figure>
+</div></section></div></header>
+
+<main class="container cycle-content">
+<section aria-labelledby="profiles-title">
+<h2 id="profiles-title">1W, 4W et 13W : trois profils de cycle de clearing</h2>
+<p>Les trois profils reposent sur la même logique de <strong>clearing multilatéral, netting et règlement net</strong>. Ils diffèrent par leur horizon temporel et permettent d’utiliser une même architecture avec plusieurs rythmes opérationnels.</p>
+<div class="cycle-grid">
+<article class="cycle-card"><h3>Cycle 1W</h3><p>Profil court destiné à un netting fréquent. Il conserve le même principe de calendrier UTC, de clôture déterministe et de séparation entre clearing et settlement.</p></article>
+<article class="cycle-card"><h3>Cycle 4W</h3><p>Profil intermédiaire de quatre semaines permettant d’agréger davantage d’obligations avant le calcul des positions nettes et le règlement résiduel.</p></article>
+<article class="cycle-card"><h3>Cycle 13W — 91 jours</h3><p>Profil long de treize semaines, soit 91 jours, destiné à maximiser la période de compensation avant le netting de clôture selon les règles documentées du protocole.</p></article>
+</div>
+</section>
+
+<section aria-labelledby="offset-title">
+<h2 id="offset-title">Effet potentiel de la durée du cycle sur les obligations brutes</h2>
+<p>Pour une entreprise de taille intermédiaire ayant intégré au réseau une part significative de ses principaux clients et fournisseurs, l’allongement du cycle peut augmenter fortement la proportion d’obligations réciproques qui se compensent avant le règlement final.</p>
+<p><strong>Dans les scénarios de modélisation Osnias, le taux d’effacement potentiel des obligations brutes peut atteindre environ 25&nbsp;% sur un cycle 1W, 50&nbsp;% sur un cycle 4W et 85&nbsp;% sur un cycle 13W</strong>, sous réserve de la structure réelle des flux commerciaux et du degré de participation des contreparties. Ces valeurs constituent des hypothèses de modélisation et non des performances moyennes garanties.</p>
+<p>Plus le cycle est long et plus les principaux clients et fournisseurs participent au réseau, plus les obligations croisées ont de chances de se compenser. Cette dynamique peut améliorer la <strong>multilateral netting efficiency</strong>, réduire les <strong>gross settlement obligations</strong> et accroître l’efficacité de liquidité et du fonds de roulement avant le <strong>net settlement</strong>.</p>
+</section>
+
+<section aria-labelledby="netting-title">
+<h2 id="netting-title">Multilateral netting, règlement net et efficacité de liquidité</h2>
+<p><span class="seo-kicker">Le clearing ne consiste pas à déplacer les fonds à chaque obligation.</span> Le registre agrège les obligations validées et calcule les positions. Le settlement intervient ensuite sur le résultat net. Cette distinction entre <strong>gross obligations</strong> et <strong>net settlement obligations</strong> est au cœur de l’architecture Osnias Clearing.</p>
+<p>Pour une entreprise, le résultat recherché est une réduction des flux bruts à financer au moment du règlement. Le cycle de clearing devient ainsi un outil d’<strong>optimisation de liquidité et de besoin en fonds de roulement</strong>, sans transformer la couche de clearing en couche de crédit ou de conservation.</p>
+</section>
+
+<section aria-labelledby="utc-title">
+<h2 id="utc-title">Calendrier UTC, clôture déterministe et fenêtre BURN</h2>
+<p>Le recours à un <strong>UTC clearing calendar</strong> fournit un référentiel temporel unique au réseau. Participants, nœuds et clearing rooms appliquent les mêmes bornes de cycle, ce qui facilite la coordination inter-juridictions, les tests, l’audit et la reproduction des calculs.</p>
+<p>Les fenêtres opérationnelles, dont la <strong>BURN window</strong>, sont décrites dans la documentation du Livre 4. Le calendrier sépare explicitement les périodes d’activité, de clôture, de netting et de préparation au règlement afin de rendre les changements d’état prévisibles.</p>
+</section>
+
+<section aria-labelledby="docs-title">
+<h2 id="docs-title">Documentation vérifiable : PDF, DOI Zenodo et workbook XLSX</h2>
+<p>La documentation de cycle est publiée sous plusieurs formes complémentaires : le Livre 4 en français et en anglais, un dépôt DOI Zenodo et un tableur de calcul. Cette combinaison permet de relier la description conceptuelle du cycle à une base de calcul exploitable pour les implémentations techniques, les revues indépendantes et le cadrage réglementaire.</p>
+<p class="cycle-note">Cette page décrit l’architecture technique du projet et ne constitue pas une qualification réglementaire ni une offre de service financier.</p>
+</section>
+
+<section aria-labelledby="faq-title">
+<h2 id="faq-title">Questions fréquentes sur les cycles de clearing</h2>
+<div class="cycle-faq">
+<article><h3>Qu’est-ce qu’un cycle de clearing ?</h3><p>Une période déterminée pendant laquelle les obligations sont enregistrées et agrégées avant le calcul des positions nettes et la préparation du règlement.</p></article>
+<article><h3>Pourquoi proposer des cycles 1W, 4W et 13W ?</h3><p>Pour adapter la fréquence du netting aux besoins opérationnels tout en conservant un calendrier commun et des règles de calcul cohérentes.</p></article>
+<article><h3>Pourquoi utiliser UTC ?</h3><p>UTC fournit une référence temporelle commune à l’ensemble des nœuds et participants, sans dépendre des fuseaux horaires locaux.</p></article>
+<article><h3>Qu’est-ce qu’une fenêtre BURN ?</h3><p>Une phase définie du calendrier qui encadre la sortie prévue par les règles du protocole après la clôture et le règlement du cycle concerné.</p></article>
+<article><h3>Comment le multilateral netting réduit-il les flux de règlement ?</h3><p>Les obligations sont agrégées afin de déterminer des soldes nets. Le règlement porte alors sur les positions résultantes plutôt que sur chaque flux brut pris isolément.</p></article>
+<article><h3>Quelle différence entre clearing et settlement ?</h3><p>Le clearing calcule et rapproche les obligations ; le settlement exécute le transfert de valeur correspondant au solde net résultant.</p></article>
+</div>
+</section>
+</main>
 
 <footer><div class="container">© 2026 Osnias Clearing · Livre 4 · <a href="https://zenodo.org/records/22979580">10.5281/zenodo.22979580</a></div></footer>
-
-</body></html>
+</body>
+</html>
