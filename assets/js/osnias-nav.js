@@ -50,7 +50,8 @@
       { label: "A-Regulation", href: prefix + "/en/regulation/" },
       { label: "B-Official Deployment", href: prefix + "/en/deployment/" },
       { label: "C-Roadmap", href: prefix + "/en/roadmap/" },
-      { label: "D-FAQ", href: prefix + "/en/faq/" }
+      { label: "D-Partnership", href: prefix + "/en/partnership/" },
+      { label: "E-FAQ", href: prefix + "/en/faq/" }
     ] : [
       { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
       { label: "2-Architecture", href: prefix + "/architecture/" },
@@ -62,7 +63,8 @@
       { label: "A-Régulation", href: prefix + "/regulation/" },
       { label: "B-Déploiement", href: prefix + "/deployment/" },
       { label: "C-Roadmap", href: prefix + "/roadmap/" },
-      { label: "D-FAQ", href: prefix + "/faq/" }
+      { label: "D-Partenariat", href: prefix + "/partnership/" },
+      { label: "E-FAQ", href: prefix + "/faq/" }
     ];
 
     nav.replaceChildren();
@@ -226,8 +228,55 @@
     notice.style.whiteSpace = "nowrap";
     notice.style.justifySelf = "center";
     notice.style.textAlign = "center";
+    notice.style.gridColumn = "2";
 
     topLine.appendChild(notice);
+  }
+
+  /* ---------- Date de dernière mise à jour (lue dans sitemap.xml) ---------- */
+
+  function injectToplineStyles(){
+    if(document.getElementById("osnias-topline-style")) return;
+    const style = document.createElement("style");
+    style.id = "osnias-topline-style";
+    style.textContent =
+      "@media (max-width:900px){" +
+        ".site-nav-topline{display:flex !important;flex-wrap:wrap;justify-content:space-between;row-gap:6px}" +
+        ".site-nav-topline .site-nav-notice{order:3;flex-basis:100%;text-align:left !important;white-space:normal !important}" +
+        ".site-nav-topline .site-nav-lastmod{order:2}" +
+      "}";
+    document.head.appendChild(style);
+  }
+
+  function formatLastmod(raw, isEn){
+    /* Accepte "AAAA-MM-JJ" ou un horodatage ISO complet ("AAAA-MM-JJThh:mm:ss+00:00"). */
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(raw || "");
+    if(!m) return raw || "";
+    const date = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+    try{
+      return new Intl.DateTimeFormat(isEn ? "en-GB" : "fr-FR", {
+        day: "numeric", month: "long", year: "numeric", timeZone: "UTC"
+      }).format(date);
+    }catch(e){
+      return m[3] + "/" + m[2] + "/" + m[1];
+    }
+  }
+
+  function latestLastmod(xml){
+    /* Plus récente <lastmod> du sitemap (insensible aux espaces de noms). */
+    const nodes = xml.getElementsByTagNameNS
+      ? xml.getElementsByTagNameNS("*", "lastmod")
+      : xml.getElementsByTagName("lastmod");
+    let best = "", bestKey = "";
+    Array.prototype.forEach.call(nodes, function(node){
+      const value = (node.textContent || "").trim();
+      const key = value.slice(0, 10);
+      if(/^\d{4}-\d{2}-\d{2}$/.test(key) && key > bestKey){
+        bestKey = key;
+        best = value;
+      }
+    });
+    return best;
   }
 
   function addSitemapLastmod(){
@@ -242,8 +291,40 @@
 
     if(!topLine) return;
 
-    const prefix = getPrefix();
-    const sitemapUrl = prefix + "/sitemap.xml";
+    injectToplineStyles();
+
+    const isEn = isEnglishPage();
+
+    /* L'emplacement est créé tout de suite (colonne de droite), le texte arrive après lecture du sitemap. */
+    const stamp = document.createElement("span");
+    stamp.className = "site-nav-lastmod";
+    stamp.setAttribute(
+      "title",
+      isEn
+        ? "Date read automatically from sitemap.xml"
+        : "Date lue automatiquement depuis sitemap.xml"
+    );
+    stamp.style.gridColumn = "3";
+    stamp.style.justifySelf = "end";
+    stamp.style.textAlign = "right";
+    stamp.style.whiteSpace = "nowrap";
+    stamp.style.margin = "0";
+
+    /* Même typographie que le bandeau « En développement ». */
+    const notice = topLine.querySelector(".site-nav-notice");
+    if(notice && window.getComputedStyle){
+      const cs = window.getComputedStyle(notice);
+      stamp.style.fontSize = cs.fontSize;
+      stamp.style.fontWeight = cs.fontWeight;
+      stamp.style.letterSpacing = cs.letterSpacing;
+      stamp.style.color = cs.color;
+      stamp.style.textTransform = cs.textTransform;
+      stamp.style.fontFamily = cs.fontFamily;
+    }
+
+    topLine.appendChild(stamp);
+
+    const sitemapUrl = getPrefix() + "/sitemap.xml";
 
     fetch(sitemapUrl, { cache: "no-store" })
       .then(function(response){
@@ -258,71 +339,30 @@
           "application/xml"
         );
 
-        if(xml.querySelector("parsererror")){
+        if(xml.getElementsByTagName("parsererror").length){
           throw new Error("Invalid sitemap.xml");
         }
 
-        const siteRoot =
-          window.location.origin + prefix + "/";
+        const raw = latestLastmod(xml);
 
-        let lastmod = "";
-
-        xml.querySelectorAll("url").forEach(function(entry){
-          const loc = entry.querySelector("loc");
-          const mod = entry.querySelector("lastmod");
-
-          if(
-            !lastmod &&
-            loc &&
-            mod &&
-            loc.textContent.trim() === siteRoot
-          ){
-            lastmod = mod.textContent.trim();
-          }
-        });
-
-        if(!lastmod){
-          const dates = Array.from(
-            xml.querySelectorAll("lastmod")
-          )
-            .map(function(node){
-              return node.textContent.trim();
-            })
-            .filter(Boolean)
-            .sort();
-
-          lastmod = dates.length
-            ? dates[dates.length - 1]
-            : "";
+        if(!raw){
+          stamp.remove();
+          return;
         }
 
-        if(!lastmod) return;
+        const label = formatLastmod(raw, isEn);
+        stamp.textContent = isEn
+          ? "Last updated " + label
+          : "Dernière mise à jour le " + label;
 
-        const stamp = document.createElement("span");
-        stamp.className = "site-nav-lastmod";
-        stamp.textContent = (isEnglishPage() ? "LAST UPDATE · " : "DERNIÈRE MISE À JOUR · ") + lastmod;
-        stamp.setAttribute(
-          "title",
-          isEnglishPage()
-            ? "Date read automatically from sitemap.xml"
-            : "Date lue automatiquement depuis sitemap.xml"
-        );
-
-        stamp.style.whiteSpace = "nowrap";
-        stamp.style.fontSize = "14px";
-        stamp.style.letterSpacing = "1px";
-        stamp.style.opacity = "1";
-        stamp.style.fontWeight = "700";
-        stamp.style.color = "#ffffff";
-        stamp.style.textTransform = "uppercase";
-        stamp.style.marginLeft = "0";
-        stamp.style.justifySelf = "end";
-        stamp.style.textAlign = "right";
-
-        topLine.appendChild(stamp);
+        const time = document.createElement("time");
+        time.setAttribute("datetime", raw.slice(0, 10));
+        time.hidden = true;
+        stamp.appendChild(time);
       })
       .catch(function(){
-        /* Silent fallback: navigation remains fully functional. */
+        /* Repli silencieux : la navigation reste pleinement fonctionnelle. */
+        stamp.remove();
       });
   }
 
