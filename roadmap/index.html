@@ -1,1 +1,386 @@
-hello
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Feuille de route — Osnias Clearing</title>
+<meta content="Feuille de route technique d’Osnias Clearing : socle existant, briques B0 à B12, quatre lots jusqu’au démonstrateur multi-nœuds et à l’audit sécurité indépendant." name="description"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="Osnias Clearing" name="publisher"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="#050814" name="theme-color"/>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon_32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon_180x180.png">
+<meta content="Osnias Clearing, feuille de route, roadmap, clearing engine, registre DLT, Sei, Ethereum, settlement EVM, Osnias-ID, oracles, ISO 20022, O-POP, réconciliation, security hardening, démonstrateur multi-nœuds, audit sécurité" name="keywords"/>
+<meta content="Feuille de route — Osnias Clearing" name="DC.title"/>
+<meta content="Denis Bouzon" name="DC.creator"/>
+<meta content="2026-10-08" name="DC.date"/>
+<meta content="https://www.osnias-clearing.com/roadmap/" name="DC.identifier"/>
+<meta content="fr" name="DC.language"/>
+<meta content="CC BY-ND 4.0" name="DC.rights"/>
+<link href="https://www.osnias-clearing.com/roadmap/" rel="canonical"/><link href="https://www.osnias-clearing.com/roadmap/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/roadmap/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/roadmap/" hreflang="x-default" rel="alternate"/>
+<link href="https://orcid.org/0009-0007-8894-8902" rel="author"/>
+<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"/>
+<meta content="Feuille de route — Osnias Clearing" property="og:title"/>
+<meta content="Du socle existant au démonstrateur multi-nœuds et à l’audit sécurité indépendant : briques B0 à B12 regroupées en quatre lots." property="og:description"/>
+<meta content="website" property="og:type"/>
+<meta content="https://www.osnias-clearing.com/roadmap/" property="og:url"/>
+<meta content="Osnias Clearing" property="og:site_name"/>
+<meta content="fr_FR" property="og:locale"/>
+<meta content="en_GB" property="og:locale:alternate"/>
+<meta content="https://www.osnias-clearing.com/osnias-network.jpg" property="og:image"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Feuille de route — Osnias Clearing" name="twitter:title"/>
+<meta content="Briques B0 à B12, quatre lots jusqu’à l’audit sécurité indépendant." name="twitter:description"/>
+<meta content="https://www.osnias-clearing.com/osnias-network.jpg" name="twitter:image"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://www.osnias-clearing.com/roadmap/#webpage",
+  "url": "https://www.osnias-clearing.com/roadmap/",
+  "name": "Feuille de route — Osnias Clearing",
+  "description": "Feuille de route technique d’Osnias Clearing jusqu’au démonstrateur multi-nœuds et à l’audit sécurité indépendant.",
+  "isPartOf": {"@id": "https://www.osnias-clearing.com/#website"},
+  "about": {"@id": "https://www.osnias-clearing.com/#organization"},
+  "author": {"@id": "https://www.osnias-clearing.com/#denis-bouzon"},
+  "dateModified": "2026-10-08",
+  "inLanguage": "fr"
+}
+</script>
+<style>
+    .hero{padding-top:2.2rem;padding-bottom:2rem}
+    .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.05;margin:.35rem 0 .8rem;text-align:center}
+    .hero .eyebrow{display:block;text-align:center;font-size:1.05rem;letter-spacing:.14em;margin-bottom:.9rem}
+    .hero-role{font-size:clamp(1.05rem,2vw,1.4rem);line-height:1.3;margin-bottom:1.35rem;text-align:center}
+    .hero-lead{max-width:62rem;margin:0 auto 1rem;text-align:justify}
+    .language-switch{display:flex;justify-content:flex-start;gap:.65rem;margin:0 0 1.5rem;flex-wrap:wrap}
+    .language-switch a,.language-switch .active-language{display:inline-block;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:.45rem .8rem;color:inherit;text-decoration:none;font:inherit}
+    .language-switch .active-language{background:rgba(255,255,255,.10)}
+    .language-switch a:hover{background:rgba(255,255,255,.07)}
+
+    /* Statuts */
+    .st-done{--st:#4fd1a5}
+    .st-cons{--st:#6aa8ff}
+    .st-dev{--st:#f5b84a}
+    .st-audit{--st:#c08cff}
+    .pill{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.28rem .6rem;border-radius:999px;border:1px solid var(--st);color:var(--st);background:color-mix(in srgb,var(--st) 12%,transparent);white-space:nowrap}
+
+    .overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.25rem}
+    .ov-col{border:1px solid rgba(255,255,255,.12);border-top:3px solid var(--st);border-radius:14px;padding:1rem 1.1rem;background:rgba(255,255,255,.025)}
+    .ov-col h3{margin:.6rem 0 .6rem;font-size:1.05rem}
+    .ov-col ul{list-style:none;margin:0;padding:0}
+    .ov-col li{padding:.32rem 0;border-bottom:1px dashed rgba(255,255,255,.08);font-size:.95rem}
+    .ov-col li:last-child{border-bottom:0}
+    .ov-col li b{color:var(--st);font-variant-numeric:tabular-nums;margin-right:.35rem}
+
+    .assets{width:100%;border-collapse:collapse;margin-top:1.25rem;font-size:.97rem}
+    .assets th,.assets td{text-align:left;vertical-align:top;padding:.85rem .9rem;border-bottom:1px solid rgba(255,255,255,.1)}
+    .assets th{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+    .assets td:first-child{font-weight:600;white-space:nowrap}
+    .assets td:last-child{opacity:.85}
+
+    .lot-group{margin-top:2rem}
+    .lot-head{display:flex;align-items:baseline;gap:.9rem;flex-wrap:wrap;margin-bottom:.9rem}
+    .lot-head .lot-num{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+    .lot-head h3{margin:0;font-size:1.3rem}
+    .blocks{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+    .block{border:1px solid rgba(255,255,255,.12);border-left:3px solid var(--st);border-radius:14px;padding:1.1rem 1.2rem;background:rgba(255,255,255,.025)}
+    .block-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;margin-bottom:.4rem}
+    .block-id{font-size:.8rem;letter-spacing:.12em;opacity:.7}
+    .block h4{margin:.15rem 0 .5rem;font-size:1.08rem;line-height:1.25}
+    .block .sub{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin:.75rem 0 .3rem}
+    .block ul{margin:0;padding-left:1.1rem}
+    .block li{margin:.22rem 0;font-size:.94rem;line-height:1.45}
+
+    .sequence{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.25rem;counter-reset:lot}
+    .seq{position:relative;border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:1.1rem 1.15rem;background:rgba(255,255,255,.03)}
+    .seq:not(:last-child)::after{content:"→";position:absolute;right:-.85rem;top:50%;transform:translateY(-50%);opacity:.5;font-size:1.1rem}
+    .seq .lot-num{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+    .seq h3{margin:.35rem 0 .2rem;font-size:1.1rem}
+    .seq .range{font-size:.85rem;opacity:.7;margin-bottom:.55rem}
+    .seq p{margin:0;font-size:.94rem;line-height:1.45}
+
+    @media (max-width:900px){
+      .overview,.sequence{grid-template-columns:1fr 1fr}
+      .seq:not(:last-child)::after{display:none}
+    }
+    @media (max-width:600px){
+      .overview,.sequence,.blocks{grid-template-columns:1fr}
+      .assets thead{display:none}
+      .assets,.assets tbody,.assets tr,.assets td{display:block;width:100%}
+      .assets tr{border-bottom:1px solid rgba(255,255,255,.12);padding:.5rem 0}
+      .assets td{border:0;padding:.3rem 0;white-space:normal}
+    }
+</style>
+</head>
+<body>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Navigation principale du site" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<header>
+<div class="container">
+<section class="hero">
+<div aria-label="Sélection de langue" class="language-switch"><span class="active-language">🇫🇷 Français</span><a href="/en/roadmap/" hreflang="en" lang="en" title="English version">🇬🇧 English</a></div>
+<div class="eyebrow">Feuille de route technique · Octobre 2026</div>
+<h1>Du socle existant à l’audit sécurité</h1>
+<div class="hero-role">13 briques techniques · 4 lots · Démonstrateur multi-nœuds · Audit indépendant</div>
+<p class="hero-lead"><strong>Osnias Clearing ne part pas d’une page blanche.</strong> Architecture de référence, corpus technique L1–L7, déploiements testnet sur Sei et Ethereum Sepolia, travaux de précadrage réglementaire et premiers échanges avec l’écosystème constituent déjà le socle du projet.</p>
+<p class="hero-lead">La phase suivante porte sur l’intégration, les tests, l’industrialisation, un démonstrateur multi-nœuds, le durcissement sécurité et l’audit indépendant. Elle est découpée en briques <strong>B0 à B12</strong>, regroupées en <strong>quatre lots</strong> dont chacun produit un livrable démontrable et prépare le suivant.</p>
+</section>
+</div>
+</header>
+<main class="container">
+
+<section id="vue-ensemble">
+<div>
+<div class="section-label">01 · Vue d’ensemble</div>
+<h2>Maturité de chaque brique</h2>
+<p class="section-intro">La feuille de route ne traite pas le projet comme un bloc monolithique : chaque brique a son propre niveau de maturité, ses livrables et ses dépendances.</p>
+</div>
+<div class="overview">
+<div class="ov-col st-done"><span class="pill">Réalisé</span><h3>Socle disponible</h3><ul>
+<li><b>B0</b>Architecture de référence</li>
+<li>Documentation technique L1–L7</li>
+<li>Règles de clearing</li>
+<li>Déploiements testnet</li>
+<li>Précadrage réglementaire</li>
+<li>Contacts exploratoires écosystème</li>
+</ul></div>
+<div class="ov-col st-cons"><span class="pill">À consolider</span><h3>Briques existantes à intégrer et tester</h3><ul>
+<li><b>B1</b>Clearing engine</li>
+<li><b>B2</b>Registre DLT / adapter Sei</li>
+<li><b>B3</b>Settlement EVM</li>
+<li><b>B4</b>Osnias-ID</li>
+<li><b>B5</b>Oracles</li>
+<li><b>B8</b>Réconciliation</li>
+</ul></div>
+<div class="ov-col st-dev"><span class="pill">À développer</span><h3>Briques spécifiées ou planifiées</h3><ul>
+<li><b>B6</b>ISO 20022</li>
+<li><b>B7</b>O-POP juridictionnels / nœuds</li>
+<li><b>B9</b>Security hardening</li>
+<li><b>B10</b>Démonstrateur multi-nœuds</li>
+</ul></div>
+<div class="ov-col st-audit"><span class="pill">À auditer</span><h3>Préparation, audit, remédiation</h3><ul>
+<li><b>B11</b>Audit readiness</li>
+<li><b>B12</b>Audit indépendant</li>
+<li>Remédiations et re-test</li>
+</ul></div>
+</div>
+</section>
+
+<section id="socle">
+<div>
+<div class="section-label">02 · Socle constitué</div>
+<h2>Ce qui existe déjà</h2>
+<p class="section-intro">Ces actifs réduisent le risque de démarrage et servent de point d’appui pour qualifier chacune des briques suivantes.</p>
+</div>
+<table class="assets">
+<thead><tr><th>Volet</th><th>Éléments constitués</th><th>Statut / portée</th></tr></thead>
+<tbody>
+<tr><td>Documentation technique</td><td>Corpus structuré L1 à L7 : architecture, Osnias-ID, cycles de clearing, sécurité et règles, onboarding, architecture O-POP / RPC. Position papers et documentation publique associés.</td><td>Socle documentaire disponible, maintenu aligné sur la baseline technique.</td></tr>
+<tr><td>Développements testnet</td><td>Registre de clearing sur Sei Testnet, escrow et controller EVM sur Sepolia, oracle temporel, logique de solvabilité, règles de mint / burn, spécification Osnias-ID. Doctrine d’industrialisation : core EVM standard et chain-agnostic, avec adapter réseau dédié pour Sei.</td><td>Briques existantes à intégrer, tester et industrialiser avant audit.</td></tr>
+<tr><td>Précadrage réglementaire</td><td>France (AMF) : mémorandum et dossier de précadrage. Andorre (AFA) : dossier bilingue de précadrage déposé. Luxembourg (CSSF) : dossier bilingue de précadrage déposé.</td><td>Travaux préparatoires constitués sur trois juridictions.</td></tr>
+<tr><td>Écosystème</td><td>Prises de contact exploratoires avec des acteurs bancaires, fintech et d’infrastructures technologiques, ainsi qu’avec des interlocuteurs institutionnels.</td><td>Échanges exploratoires uniquement ; aucun partenariat n’est présenté comme engagé.</td></tr>
+<tr><td>Diffusion</td><td>Site public, FAQ, documentation FR / EN, schémas d’architecture et publications techniques.</td><td>Support d’évaluation rapide pour partenaires techniques et autorités.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="briques">
+<div>
+<div class="section-label">03 · Briques techniques</div>
+<h2>B0 à B12 : éléments disponibles et travaux à mener</h2>
+<p class="section-intro">Chaque brique est décrite par ce qui est déjà acquis et par ce qui reste à intégrer, tester ou développer.</p>
+</div>
+
+<div class="lot-group">
+<div class="lot-head"><span class="lot-num">Lot 1</span><h3>Core Protocol</h3></div>
+<div class="blocks">
+<article class="block st-done"><div class="block-top"><span class="block-id">B0</span><span class="pill">Réalisé</span></div>
+<h4>Architecture de référence</h4>
+<div class="sub">Disponible</div><ul>
+<li>Séparation des fonctions clearing / settlement / custody.</li>
+<li>Registre canonique de clearing et articulation avec la couche EVM.</li>
+<li>Cycles de compensation, règles opérationnelles et invariants principaux.</li>
+<li>Core sur primitives EVM standard, dépendances réseau confinées dans des adapters ; Sei reste le déploiement de référence, les O-POP locaux restent standardisés et réplicables.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Figer une baseline technique versionnée pour le développement intégré et le périmètre d’audit.</li></ul>
+</article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B1</span><span class="pill">À industrialiser</span></div>
+<h4>Core Clearing Engine</h4>
+<div class="sub">Disponible</div><ul>
+<li>Calcul des positions nettes et des cycles de compensation.</li>
+<li>États MINT / BURN / CLEAR, snapshots et règles de freeze.</li>
+<li>Invariant global de cohérence des positions.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Assembler un moteur de référence intégré et reproductible.</li>
+<li>Automatiser tests unitaires et simulations multi-participants.</li>
+<li>Documenter et tester les cas limites et scénarios d’erreur.</li></ul>
+</article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B2</span><span class="pill">Testnet</span></div>
+<h4>Registre DLT canonique — référence Sei</h4>
+<div class="sub">Disponible</div><ul>
+<li>Déploiements et expérimentations sur Sei Testnet.</li>
+<li>Oracle temporel et consolidation du passif / des positions.</li>
+<li>Registre des opérations de clearing.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Intégration complète avec le clearing engine.</li>
+<li>Tests de reprise, rejouabilité, panne, charge et cohérence des écritures.</li>
+<li>Formalisation des interfaces et événements contractuels.</li>
+<li>Isolation des dépendances Sei dans un adapter dédié, pour permettre migration ou multi-déploiement EVM sans réécriture du core.</li></ul>
+</article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B3</span><span class="pill">Testnet</span></div>
+<h4>Settlement &amp; collatéral EVM</h4>
+<div class="sub">Disponible</div><ul>
+<li>Escrow EVM et controller déployés sur Sepolia.</li>
+<li>Collatéral testnet, contrôles de solvabilité, mint / burn contrôlé.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Intégrer la couche EVM au registre canonique de clearing.</li>
+<li>Renforcer tests Foundry, fuzzing et invariants de solvabilité.</li>
+<li>Tester comportements adverses, erreurs et procédures de récupération.</li></ul>
+</article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B4</span><span class="pill">Prototypé</span></div>
+<h4>Osnias-ID</h4>
+<div class="sub">Disponible</div><ul>
+<li>Format Osnias-ID, identification réseau / nœud, checksum, règles anti-collision.</li>
+<li>Registre associé et comportement fail-closed.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Intégrer Osnias-ID à l’ensemble des composants et messages.</li>
+<li>Tester collisions, checksum, multi-réseaux et scénarios fail-closed.</li></ul>
+</article>
+</div>
+</div>
+
+<div class="lot-group">
+<div class="lot-head"><span class="lot-num">Lot 2</span><h3>Infrastructure &amp; Interoperability</h3></div>
+<div class="blocks">
+<article class="block st-cons"><div class="block-top"><span class="block-id">B5</span><span class="pill">Partiel</span></div>
+<h4>Oracles temps &amp; solvabilité</h4>
+<div class="sub">Disponible</div><ul>
+<li>Oracle temporel du cycle sur la couche de clearing.</li>
+<li>Oracle de solvabilité pour le contrôle du collatéral réseau.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Définir redondance, seuils et politique de défaillance.</li>
+<li>Tester indisponibilité, retard, valeurs aberrantes, freeze et reprise.</li></ul>
+</article>
+<article class="block st-dev"><div class="block-top"><span class="block-id">B6</span><span class="pill">À développer</span></div>
+<h4>Interopérabilité ISO 20022</h4>
+<div class="sub">Disponible</div><ul>
+<li>Architecture fonctionnelle et besoins d’interface avec nœuds et systèmes de règlement identifiés.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Mapping événements Osnias ↔ messages ISO 20022.</li>
+<li>Ordres, confirmations, statuts et gestion des erreurs.</li>
+<li>Scénarios de règlement simulé de bout en bout.</li></ul>
+</article>
+<article class="block st-dev"><div class="block-top"><span class="block-id">B7</span><span class="pill">À développer</span></div>
+<h4>O-POP juridictionnels &amp; nœuds</h4>
+<div class="sub">Disponible</div><ul>
+<li>Topologie O-POP par zone KK et nœuds KK-NNN.</li>
+<li>RPC privé, tunnels VPN, journalisation et supervision.</li>
+<li>O-POP réplicables reliés au même core, exploitables selon les exigences locales.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Déployer un premier O-POP pilote et un package reproductible : configuration, plan réseau, durcissement, supervision, documentation, recette.</li>
+<li>Tester sécurité réseau, perte de connexion, latence, reprise et continuité de service.</li></ul>
+</article>
+</div>
+</div>
+
+<div class="lot-group">
+<div class="lot-head"><span class="lot-num">Lot 3</span><h3>Integrated Demonstrator</h3></div>
+<div class="blocks">
+<article class="block st-cons"><div class="block-top"><span class="block-id">B8</span><span class="pill">À intégrer</span></div>
+<h4>Réconciliation inter-couches</h4>
+<div class="sub">Disponible</div><ul>
+<li>Principe de Post-Clearing Mirror Reconciliation documenté.</li>
+<li>Invariant de cohérence entre positions post-clearing et actifs / collatéral éligibles.</li></ul>
+<div class="sub">À réaliser</div><ul>
+<li>Automatiser détection des divergences, preuves, logs et procédures correctives.</li>
+<li>Tester désynchronisation et reprise contrôlée.</li></ul>
+</article>
+<article class="block st-dev"><div class="block-top"><span class="block-id">B9</span><span class="pill">À développer</span></div>
+<h4>Security hardening</h4>
+<div class="sub">À réaliser</div><ul>
+<li>Analyse statique et revue des dépendances.</li>
+<li>Foundry, fuzzing et tests d’invariants.</li>
+<li>Contrôles d’accès, scénarios adverses, attaques économiques et DoS.</li>
+<li>Revue du threat model et des procédures opérationnelles.</li>
+<li>Critère de sortie : aucune vulnérabilité critique connue avant transmission à l’auditeur.</li></ul>
+</article>
+<article class="block st-dev"><div class="block-top"><span class="block-id">B10</span><span class="pill">À développer</span></div>
+<h4>Démonstrateur testnet intégré</h4>
+<div class="sub">À réaliser</div><ul>
+<li>Démonstrateur complet : participants simulés, plusieurs nœuds, clearing multilatéral, registre DLT, collatéral, settlement, Osnias-ID, oracles et réconciliation.</li>
+<li>Plusieurs cycles complets, scénarios nominaux et de défaillance.</li>
+<li>Preuves, logs, métriques et documentation reproductible.</li></ul>
+</article>
+</div>
+</div>
+
+<div class="lot-group">
+<div class="lot-head"><span class="lot-num">Lot 4</span><h3>Security Audit</h3></div>
+<div class="blocks">
+<article class="block st-audit"><div class="block-top"><span class="block-id">B11</span><span class="pill">À auditer</span></div>
+<h4>Audit readiness</h4>
+<div class="sub">À réaliser</div><ul>
+<li>Code freeze et version de référence.</li>
+<li>Architecture finale, spécifications, threat model, liste des invariants.</li>
+<li>Dossier de tests, couverture, documentation des contrats et procédures opérationnelles.</li>
+<li>Définition précise du périmètre transmis à l’auditeur.</li></ul>
+</article>
+<article class="block st-audit"><div class="block-top"><span class="block-id">B12</span><span class="pill">À auditer</span></div>
+<h4>Audit sécurité indépendant</h4>
+<div class="sub">À réaliser</div><ul>
+<li>Audit indépendant des smart contracts et composants critiques.</li>
+<li>Revue des invariants et des surfaces d’attaque.</li>
+<li>Rapport d’audit, plan de remédiation, corrections et re-test.</li></ul>
+</article>
+</div>
+</div>
+</section>
+
+<section id="lots">
+<div>
+<div class="section-label">04 · Séquencement</div>
+<h2>Quatre lots, un livrable démontrable à chaque étape</h2>
+<p class="section-intro">Dépendance générale : Lot 1 → Lot 2 → Lot 3 → Lot 4. Certains travaux peuvent être menés en parallèle une fois les interfaces et invariants concernés stabilisés.</p>
+</div>
+<div class="sequence">
+<div class="seq"><div class="lot-num">Lot 1</div><h3>Core Protocol</h3><div class="range">B0 – B4</div><p>Baseline intégrée : clearing engine, core EVM portable, adapter Sei, settlement EVM et Osnias-ID.</p></div>
+<div class="seq"><div class="lot-num">Lot 2</div><h3>Infrastructure &amp; Interoperability</h3><div class="range">B5 – B7</div><p>Oracles, ISO 20022, O-POP juridictionnels et nœuds pilotes réplicables.</p></div>
+<div class="seq"><div class="lot-num">Lot 3</div><h3>Integrated Demonstrator</h3><div class="range">B8 – B10</div><p>Réconciliation, durcissement sécurité et démonstrateur multi-nœuds reproductible.</p></div>
+<div class="seq"><div class="lot-num">Lot 4</div><h3>Security Audit</h3><div class="range">B11 – B12</div><p>Préparation à l’audit, audit indépendant, remédiations et re-test.</p></div>
+</div>
+<div class="notice" style="margin-top:1.5rem"><strong>Après l’audit.</strong> Une fois l’audit indépendant et les remédiations achevés, la phase suivante visera un pilote institutionnel en environnement contrôlé, sous réserve du cadrage réglementaire et des partenaires retenus.</div>
+</section>
+
+<section id="avertissement">
+<div class="notice"><strong>Information technique.</strong> Cette feuille de route décrit des travaux de développement en cours et prévus. Niveaux de maturité, budgets et calendrier sont qualifiés lot par lot et peuvent évoluer. Elle ne constitue ni une offre de titres, ni un conseil en investissement, ni une sollicitation.</div>
+</section>
+</main>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div>© 2026 Osnias Clearing · Feuille de route · Dernière mise à jour : 8 octobre 2026</div>
+<div>
+<a href="/architecture/">Architecture</a> ·
+          <a href="/rules/">Rules</a> ·
+          <a href="/cycle/">Cycles</a> ·
+          <a href="/security/">Security</a> ·
+          <a href="/onboarding/">Onboarding</a> ·
+          <a href="/regulation/">Regulation</a>
+</div>
+</div>
+<div class="footer-legal">Osnias Clearing fournit des informations techniques publiques à des fins de recherche, de développement, de revue et d’audit. Aucun contrat de production ne doit être considéré comme actif s’il n’est pas identifié dans le registre officiel de déploiement.</div>
+</div>
+</footer>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
