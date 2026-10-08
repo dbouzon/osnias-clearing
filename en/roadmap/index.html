@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Roadmap — Osnias Clearing</title>
-<meta content="Osnias Clearing technical roadmap: existing foundation, building blocks B0 to B12, and four work packages leading to a multi-node demonstrator and an independent security audit." name="description"/>
+<meta content="Osnias Clearing technical roadmap: draft components on testnet, clean code rework, building blocks B0 to B12, four work packages up to a multi-node demonstrator and an independent security audit." name="description"/>
 <meta content="Denis Bouzon" name="author"/>
 <meta content="Osnias Clearing" name="publisher"/>
 <meta content="index, follow, max-image-preview:large" name="robots"/>
@@ -12,7 +12,6 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon_32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon_180x180.png">
-<meta content="Osnias Clearing, roadmap, clearing engine, DLT ledger, Sei, Ethereum, EVM settlement, Osnias-ID, oracles, ISO 20022, O-POP, reconciliation, security hardening, multi-node demonstrator, security audit" name="keywords"/>
 <meta content="Roadmap — Osnias Clearing" name="DC.title"/>
 <meta content="Denis Bouzon" name="DC.creator"/>
 <meta content="2026-10-08" name="DC.date"/>
@@ -23,17 +22,16 @@
 <link href="https://orcid.org/0009-0007-8894-8902" rel="author"/>
 <link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"/>
 <meta content="Roadmap — Osnias Clearing" property="og:title"/>
-<meta content="From the existing foundation to a multi-node demonstrator and an independent security audit: building blocks B0 to B12 grouped into four work packages." property="og:description"/>
+<meta content="Osnias Clearing technical roadmap: draft components on testnet, clean code rework, building blocks B0 to B12, four work packages up to a multi-node demonstrator and an independent security audit." property="og:description"/>
 <meta content="website" property="og:type"/>
 <meta content="https://www.osnias-clearing.com/en/roadmap/" property="og:url"/>
 <meta content="Osnias Clearing" property="og:site_name"/>
 <meta content="en_GB" property="og:locale"/>
 <meta content="fr_FR" property="og:locale:alternate"/>
-<meta content="https://www.osnias-clearing.com/osnias-network.jpg" property="og:image"/>
+<meta content="https://www.osnias-clearing.com/en/roadmap/img/trajectoire_en.png" property="og:image"/>
 <meta content="summary_large_image" name="twitter:card"/>
 <meta content="Roadmap — Osnias Clearing" name="twitter:title"/>
-<meta content="Building blocks B0 to B12, four work packages up to the independent security audit." name="twitter:description"/>
-<meta content="https://www.osnias-clearing.com/osnias-network.jpg" name="twitter:image"/>
+<meta content="https://www.osnias-clearing.com/en/roadmap/img/trajectoire_en.png" name="twitter:image"/>
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script defer="" src="/assets/js/osnias-seo.js"></script>
 <script defer="" src="/assets/js/osnias-nav.js"></script>
@@ -44,10 +42,16 @@
   "@id": "https://www.osnias-clearing.com/en/roadmap/#webpage",
   "url": "https://www.osnias-clearing.com/en/roadmap/",
   "name": "Roadmap — Osnias Clearing",
-  "description": "Osnias Clearing technical roadmap up to a multi-node demonstrator and an independent security audit.",
-  "isPartOf": {"@id": "https://www.osnias-clearing.com/#website"},
-  "about": {"@id": "https://www.osnias-clearing.com/#organization"},
-  "author": {"@id": "https://www.osnias-clearing.com/#denis-bouzon"},
+  "description": "Osnias Clearing technical roadmap: draft components on testnet, clean code rework, building blocks B0 to B12, four work packages up to a multi-node demonstrator and an independent security audit.",
+  "isPartOf": {
+    "@id": "https://www.osnias-clearing.com/#website"
+  },
+  "about": {
+    "@id": "https://www.osnias-clearing.com/#organization"
+  },
+  "author": {
+    "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+  },
   "dateModified": "2026-10-08",
   "inLanguage": "en"
 }
@@ -63,7 +67,7 @@
     .language-switch .active-language{background:rgba(255,255,255,.10)}
     .language-switch a:hover{background:rgba(255,255,255,.07)}
 
-    /* Status */
+    /* Statuts */
     .st-done{--st:#4fd1a5}
     .st-cons{--st:#6aa8ff}
     .st-dev{--st:#f5b84a}
@@ -97,7 +101,7 @@
     .block ul{margin:0;padding-left:1.1rem}
     .block li{margin:.22rem 0;font-size:.94rem;line-height:1.45}
 
-    .sequence{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.25rem}
+    .sequence{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.25rem;counter-reset:lot}
     .seq{position:relative;border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:1.1rem 1.15rem;background:rgba(255,255,255,.03)}
     .seq:not(:last-child)::after{content:"→";position:absolute;right:-.85rem;top:50%;transform:translateY(-50%);opacity:.5;font-size:1.1rem}
     .seq .lot-num{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
@@ -116,7 +120,17 @@
       .assets tr{border-bottom:1px solid rgba(255,255,255,.12);padding:.5rem 0}
       .assets td{border:0;padding:.3rem 0;white-space:normal}
     }
+
+    .figure{margin:1.5rem 0 0;text-align:center}
+    .figure img{width:100%;height:auto;border-radius:12px;background:#fff;display:block}
+    .figure figcaption{font-size:.85rem;opacity:.7;margin-top:.5rem}
+    .block .status{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--st);margin:-.2rem 0 .4rem}
+    .plain{max-width:62rem}
+    .chain{margin:.75rem 0 0;padding-left:1.2rem}
+    .chain li{margin:.3rem 0}
+    .assets a{color:inherit}
 </style>
+
 </head>
 <body>
 <div class="site-nav-fixed">
@@ -130,240 +144,132 @@
 <section class="hero">
 <div aria-label="Language selection" class="language-switch"><a href="/roadmap/" hreflang="fr" lang="fr" title="Version française">🇫🇷 Français</a><span class="active-language">🇬🇧 English</span></div>
 <div class="eyebrow">Technical roadmap · October 2026</div>
-<h1>From the existing foundation to the security audit</h1>
-<div class="hero-role">13 building blocks · 4 work packages · Multi-node demonstrator · Independent audit</div>
-<p class="hero-lead"><strong>Osnias Clearing is not starting from scratch.</strong> A reference architecture, the L1–L7 technical corpus, testnet deployments on Sei and Ethereum Sepolia, regulatory pre-assessment work and initial exchanges with the ecosystem already form the project’s foundation.</p>
-<p class="hero-lead">The next phase covers integration, testing, industrialisation, a multi-node demonstrator, security hardening and an independent audit. It is broken down into building blocks <strong>B0 to B12</strong>, grouped into <strong>four work packages</strong>, each of which delivers a demonstrable output and prepares the next.</p>
+<h1>From draft testnet to security audit</h1>
+<div class="hero-role">13 building blocks · 4 work packages · Clean code rework · Multi-node demonstrator · Independent audit</div>
+<p class="hero-lead"><strong>Osnias Clearing is in draft development on testnet.</strong> The main components are deployed on Sei Atlantic-2 and Ethereum Sepolia, and a clearing platform is online (<a href="/end-user/">/end-user/</a>).</p>
+<p class="hero-lead">Next steps: rework this code cleanly (Cursor AI → Foundry → Slither), integrate the building blocks, build a multi-node demonstrator, then go through security hardening and the independent audit. Building blocks <strong>B0 to B12</strong> are grouped into <strong>four work packages</strong>.</p>
 </section>
 </div>
 </header>
 <main class="container">
 
 <section id="overview">
-<div>
-<div class="section-label">01 · Overview</div>
-<h2>Maturity of each building block</h2>
-<p class="section-intro">The roadmap does not treat the project as a single monolithic block: each building block has its own maturity level, deliverables and dependencies.</p>
-</div>
+<div><div class="section-label">01 · Overview</div><h2>Maturity of each building block</h2></div>
 <div class="overview">
-<div class="ov-col st-done"><span class="pill">Completed</span><h3>Available foundation</h3><ul>
-<li><b>B0</b>Reference architecture</li>
-<li>L1–L7 technical documentation</li>
-<li>Clearing rules</li>
-<li>Testnet deployments</li>
-<li>Regulatory pre-assessment</li>
-<li>Exploratory ecosystem contacts</li>
-</ul></div>
-<div class="ov-col st-cons"><span class="pill">To consolidate</span><h3>Existing blocks to integrate and test</h3><ul>
-<li><b>B1</b>Clearing engine</li>
-<li><b>B2</b>DLT ledger / Sei adapter</li>
-<li><b>B3</b>EVM settlement</li>
-<li><b>B4</b>Osnias-ID</li>
-<li><b>B5</b>Oracles</li>
-<li><b>B8</b>Reconciliation</li>
-</ul></div>
-<div class="ov-col st-dev"><span class="pill">To develop</span><h3>Specified or planned blocks</h3><ul>
-<li><b>B6</b>ISO 20022</li>
-<li><b>B7</b>Jurisdictional O-POPs / nodes</li>
-<li><b>B9</b>Security hardening</li>
-<li><b>B10</b>Multi-node demonstrator</li>
-</ul></div>
-<div class="ov-col st-audit"><span class="pill">To audit</span><h3>Preparation, audit, remediation</h3><ul>
-<li><b>B11</b>Audit readiness</li>
-<li><b>B12</b>Independent audit</li>
-<li>Remediation and re-test</li>
-</ul></div>
+<div class="ov-col st-done"><span class="pill">Completed</span><ul><li><b>B0</b>Reference architecture</li><li>Technical corpus Books I–VII</li><li>Clearing rules</li><li>Regulatory pre-assessment</li><li>Exploratory ecosystem contacts</li></ul></div>
+<div class="ov-col st-cons"><span class="pill">Draft testnet — to rework</span><ul><li><b>B1</b>Clearing engine</li><li><b>B2</b>Sei ledger</li><li><b>B3</b>EVM escrow &amp; controller</li><li><b>B4</b>Osnias-ID / Node Registrar</li><li><b>B5</b>1W time oracle</li><li><b>B7</b>Node registry</li><li><b>B10</b>Clearing platform (single node)</li></ul></div>
+<div class="ov-col st-dev"><span class="pill">To develop</span><ul><li><b>B5</b>4W / 13W / solvency oracles</li><li><b>B6</b>ISO 20022</li><li><b>B7</b>Pilot O-POP</li><li><b>B8</b>Reconciliation</li><li><b>B9</b>Security hardening</li><li><b>B10</b>Multi-node demonstrator</li></ul></div>
+<div class="ov-col st-audit"><span class="pill">To audit</span><ul><li><b>B11</b>Audit readiness</li><li><b>B12</b>Independent audit</li><li>Remediation / Re-test</li></ul></div>
 </div>
+<p class="section-intro" style="margin-top:1rem;font-size:.9rem">COMPLETED: foundation available  |  DRAFT TESTNET: working on Sei / Sepolia, to be reworked into clean code (Cursor AI → Foundry → Slither)  |  TO DEVELOP: specified or planned block  |  TO AUDIT: preparation, audit, remediation.</p>
+</section>
+
+<section id="framework">
+<div><div class="section-label">02 · Founder, market and framework</div><h2>Founder, market and regulatory framework</h2></div>
+<h3>Project founder</h3><p class="plain">Osnias Clearing was conceived, designed, organised and documented by its founder, Denis Bouzon, with 100 % self-funding to date. The project has now reached the stage where it needs support to complement the founder’s skills for the next steps: clean code rework, security, the multi-node demonstrator and audit.</p>
+<h3>Market: a solution that does not yet exist</h3><p class="plain">Osnias offers companies a netting solution that does not exist today. Multilateral netting is a mechanism proven for decades, but reserved for interbank and market infrastructures: as an order of magnitude, CLS and Clearstream together process around EUR 4,300 billion of notional volume per day, i.e. more than EUR 1 million billion per year. Recurring commercial obligations between companies have no equivalent. The aim is therefore not to take a share of an existing market, but to open this mechanism to inter-company flows.</p>
+<h3>Regulatory framework and risks</h3><p class="plain">The main risk is regulatory: qualification of the infrastructure and of the clearing token. Pre-assessment is under discussion with the AMF; the files submitted to the CSSF (Luxembourg) and the AFA (Andorra) are awaiting discussion. The sector is waiting for this pre-assessment before any commitment: until then, exchanges with potential node operators remain exploratory.</p>
+<p class="plain">The following design principles limit risk by construction (details: <a href="/faq/">osnias-clearing.com/faq/</a>):</p>
+<table class="assets"><thead><tr><th>Principle</th><th>Scope</th></tr></thead><tbody><tr><td>Non-custodial</td><td>Osnias holds neither user funds nor private keys or seed phrases; collateral is escrowed separately on Ethereum.</td></tr><tr><td>No credit, overdraft or leverage</td><td>Execution invariant: instantaneous net exposure ≤ available collateral; any obligation exceeding it is rejected by the code.</td></tr><tr><td>Individualised collateral</td><td>No common guarantee fund: risk stays with each participant.</td></tr><tr><td>No central novation</td><td>Osnias is not designed as a CCP; distributed multilateral netting, final qualification to be determined with the authorities.</td></tr><tr><td>Node responsibilities</td><td>Admission, blocking and exit of participants are decided by the node manager, under its local framework.</td></tr><tr><td>No PFMI claim</td><td>No PFMI certification or compliance is claimed; the architecture refers to it for risk management.</td></tr></tbody></table>
+<div class="notice" style="margin-top:1.25rem">Frequently asked questions: <a href="/faq/">osnias-clearing.com/faq/</a></div>
 </section>
 
 <section id="foundation">
-<div>
-<div class="section-label">02 · Existing foundation</div>
-<h2>What already exists</h2>
-<p class="section-intro">These assets reduce start-up risk and provide the basis for qualifying each of the building blocks that follow.</p>
-</div>
-<table class="assets">
-<thead><tr><th>Area</th><th>Existing elements</th><th>Status / scope</th></tr></thead>
-<tbody>
-<tr><td>Technical documentation</td><td>Structured L1 to L7 corpus: architecture, Osnias-ID, clearing cycles, security and rules, onboarding, O-POP / RPC architecture. Related position papers and public documentation.</td><td>Documentation baseline available, kept aligned with the technical baseline.</td></tr>
-<tr><td>Testnet development</td><td>Clearing ledger on Sei Testnet, EVM escrow and controller on Sepolia, time oracle, solvency logic, mint / burn rules, Osnias-ID specification. Industrialisation doctrine: standard, chain-agnostic EVM core with a dedicated network adapter for Sei.</td><td>Existing blocks to be integrated, tested and industrialised before audit.</td></tr>
-<tr><td>Regulatory pre-assessment</td><td>France (AMF): memorandum and pre-assessment file. Andorra (AFA): bilingual pre-assessment file submitted. Luxembourg (CSSF): bilingual pre-assessment file submitted.</td><td>Preparatory work completed across three jurisdictions.</td></tr>
-<tr><td>Ecosystem</td><td>Exploratory contacts with banking, fintech and technology infrastructure players, as well as institutional stakeholders.</td><td>Exploratory exchanges only; no partnership is presented as committed.</td></tr>
-<tr><td>Outreach</td><td>Public website, FAQ, FR / EN documentation, architecture diagrams and technical publications.</td><td>Enables quick assessment by technical partners and authorities.</td></tr>
-</tbody>
-</table>
+<div><div class="section-label">03 · Existing foundation</div><h2>What already exists</h2><p class="section-intro">The work already completed forms the foundation from which building blocks B0 to B12 are qualified and sequenced.</p></div>
+<table class="assets"><thead><tr><th>Area</th><th>Elements already in place</th><th>Status / scope</th></tr></thead><tbody><tr><td>Technical documentation</td><td>Structured Books I–VII technical corpus covering the architecture, Osnias-ID, clearing cycles, security and rules, onboarding and the O-POP / RPC architecture. Related position papers and public documentation.</td><td>Documentation baseline available; to be kept aligned with the technical baseline.</td></tr><tr><td>Draft testnet development</td><td>Eight working draft components: 1W time oracle, Sei registry (identity), Sei controller and ORUSD ledger on Sei Atlantic-2 (Sei contracts verified); Node Registrar, EVM registry, EVM escrow and controller on Ethereum Sepolia; ORUSD Clearing Desk platform online. Details: <a href="/deployment/">osnias-clearing.com/deployment/</a> and <a href="/end-user/">/end-user/</a>.</td><td>Draft development on testnet; code to be reworked (Cursor AI → Foundry → Slither) before audit.</td></tr><tr><td>Regulatory pre-assessment</td><td>France — AMF: memorandum and regulatory pre-assessment file. Andorra — AFA: bilingual pre-assessment file submitted. Luxembourg — CSSF: bilingual pre-assessment file submitted.</td><td>Preparatory regulatory work already completed across three jurisdictions.</td></tr><tr><td>Ecosystem &amp; third parties</td><td>Exploratory contacts with banking, fintech and infrastructure / technology players, as well as other institutional stakeholders.</td><td>Exploratory contacts and exchanges only; no partnership or consortium is presented as committed.</td></tr><tr><td>Outreach &amp; traceability</td><td>Public website, summary FAQ, FR / EN documentation, architecture diagrams and technical publications enabling a third party to assess the project quickly before accessing detailed documents.</td><td>Qualification material for technical partners and authorities.</td></tr></tbody></table>
+</section>
+
+<section id="draft">
+<div><div class="section-label">04 · Draft testnet</div><h2>Components already developed in draft (testnet)</h2><p class="section-intro">The components below are deployed on testnet in draft development: they will be reworked through a clean development chain before the baseline is frozen and audited.</p></div>
+<table class="assets"><thead><tr><th>Component</th><th>Network</th><th>Status</th><th>What works</th></tr></thead><tbody><tr><td>1W time oracle</td><td>Sei Atlantic-2</td><td>Deployed, verified</td><td>Weekly cycle, MINT / BURN / CLEARING / P2P windows, cycle number and start block.</td></tr><tr><td>Sei registry (identity)</td><td>Sei Atlantic-2</td><td>Deployed, verified</td><td>Identity of participants and nodes on the clearing side.</td></tr><tr><td>Sei controller</td><td>Sei Atlantic-2</td><td>Deployed, verified</td><td>Links oracle, registry, clearing token and the Sepolia EVM chain.</td></tr><tr><td>ORUSD clearing ledger</td><td>Sei Atlantic-2</td><td>Deployed</td><td>USD ledger positions; MINT, BURN, P2P and transfer instructions.</td></tr><tr><td>Node Registrar</td><td>Ethereum Sepolia</td><td>Deployed</td><td>Registration of KK-NNN nodes (first node: 90-017).</td></tr><tr><td>EVM registry</td><td>Ethereum Sepolia</td><td>Deployed</td><td>KK zone registry on the EVM side.</td></tr><tr><td>EVM escrow &amp; controller</td><td>Ethereum Sepolia</td><td>Deployed</td><td>Collateral escrow and control on the EVM side.</td></tr><tr><td>Clearing platform (Clearing Desk)</td><td>Sei Atlantic-2</td><td>Online, draft</td><td>Wallet connection, ledger position, oracle state, function availability by window, registry.</td></tr></tbody></table>
+<p class="section-intro" style="font-size:.9rem;margin-top:.75rem">Addresses, creation transactions and verification parameters: <a href="/deployment/">osnias-clearing.com/deployment/</a> · platform: <a href="/end-user/">osnias-clearing.com/end-user/</a></p>
+<h3>Clean rework chain for the draft code</h3>
+<p class="plain">The tool matters less than the framing: each component is reworked in strict conformity with the technical specifications of Books I to VII.</p>
+<ol class="chain"><li>Cursor AI — assisted rewrite of the draft code from frozen specifications, consistent conventions, NatSpec documentation.</li><li>Foundry — unit tests, fuzzing, invariant tests and multi-participant simulations.</li><li>Slither — static analysis, detector review and remediation, dependency review.</li><li>Verified testnet redeployment, then freeze of the baseline handed over to security hardening and audit.</li></ol>
+<figure class="figure"><a href="/en/roadmap/img/chain_en.png" target="_blank" rel="noopener noreferrer"><img src="/en/roadmap/img/chain_en.png" alt="Figure 1 — Rework chain: from draft testnet to an auditable baseline" loading="lazy" decoding="async"/></a><figcaption>Figure 1 — Rework chain: from draft testnet to an auditable baseline</figcaption></figure>
+</section>
+
+<section id="corpus">
+<div><div class="section-label">05 · Documentation corpus</div><h2>Documentation corpus — Books I to VII</h2><p class="section-intro">The technical corpus is published as seven books, each available in French and English on the public website and archived on Zenodo with a permanent DOI.</p></div>
+<table class="assets"><thead><tr><th>Book</th><th>Title</th><th>Release</th><th>Public page</th><th>Zenodo DOI</th></tr></thead><tbody><tr><td>I</td><td><strong>Osnias-ID</strong></td><td>3.0</td><td><a href="/osniasid/">/osniasid/</a></td><td><a href="https://doi.org/10.5281/zenodo.22978105" target="_blank" rel="noopener noreferrer">10.5281/zenodo.22978105</a></td></tr><tr><td>II</td><td><strong>Architecture</strong></td><td>2.0</td><td><a href="/architecture/">/architecture/</a></td><td><a href="https://doi.org/10.5281/zenodo.23012840" target="_blank" rel="noopener noreferrer">10.5281/zenodo.23012840</a></td></tr><tr><td>III</td><td><strong>Clearing rules</strong></td><td>1.1</td><td><a href="/rules/">/rules/</a></td><td><a href="https://doi.org/10.5281/zenodo.22922199" target="_blank" rel="noopener noreferrer">10.5281/zenodo.22922199</a></td></tr><tr><td>IV</td><td><strong>Clearing cycles 1W / 4W / 13W</strong></td><td>—</td><td><a href="/cycle/">/cycle/</a></td><td><a href="https://doi.org/10.5281/zenodo.22979580" target="_blank" rel="noopener noreferrer">10.5281/zenodo.22979580</a></td></tr><tr><td>V</td><td><strong>Security topology &amp; resilience</strong></td><td>2.0</td><td><a href="/security/">/security/</a></td><td><a href="https://doi.org/10.5281/zenodo.22981575" target="_blank" rel="noopener noreferrer">10.5281/zenodo.22981575</a></td></tr><tr><td>VI</td><td><strong>Onboarding via a node</strong></td><td>1.0</td><td><a href="/onboarding/">/onboarding/</a></td><td><a href="https://doi.org/10.5281/zenodo.23010805" target="_blank" rel="noopener noreferrer">10.5281/zenodo.23010805</a></td></tr><tr><td>VII</td><td><strong>O-POP Osnias — mainnet architecture</strong></td><td>1.0</td><td><a href="/pop/">/pop/</a></td><td><a href="https://doi.org/10.5281/zenodo.23055994" target="_blank" rel="noopener noreferrer">10.5281/zenodo.23055994</a></td></tr></tbody></table>
 </section>
 
 <section id="blocks">
-<div>
-<div class="section-label">03 · Building blocks</div>
-<h2>B0 to B12: what is available and what remains</h2>
-<p class="section-intro">Each block is described by what has already been achieved and by what remains to be integrated, tested or developed.</p>
-</div>
+<div><div class="section-label">06 · Building blocks</div><h2>B0 to B12: what is available and what remains</h2></div>
+<figure class="figure"><a href="/en/roadmap/img/architecture_en.png" target="_blank" rel="noopener noreferrer"><img src="/en/roadmap/img/architecture_en.png" alt="Figure 2 — Target architecture: clearing layer, settlement &amp; custody layer and cross-layer reconciliation" loading="lazy" decoding="async"/></a><figcaption>Figure 2 — Target architecture: clearing layer, settlement &amp; custody layer and cross-layer reconciliation</figcaption></figure>
+<div class="lot-group"><div class="lot-head"><span class="lot-num">Package 1</span><h3>Core Protocol</h3></div>
+<div class="blocks"><article class="block st-done"><div class="block-top"><span class="block-id">B0</span></div>
+<h4>Reference architecture</h4><div class="status">COMPLETED</div>
+<div class="sub">Available</div><ul><li>Separation of clearing / settlement / custody functions.</li><li>Architecture of the canonical clearing ledger and its interface with the EVM layer.</li><li>Netting cycles, operating rules and main invariants.</li><li>Existing documentation corpus: Books I–VII technical documentation, position papers, operating rules, functional documentation and regulatory work.</li><li>Architecture doctrine: Osnias core built on standard EVM primitives, network dependencies confined to adapters; Sei remains the current reference deployment, and local O-POPs remain standardised and replicable.</li></ul>
+<div class="sub">To do</div><ul><li>Freeze a versioned technical baseline for integrated development and the future audit scope.</li></ul></article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B1</span></div>
+<h4>Core Clearing Engine</h4><div class="status">DRAFT TESTNET — TO REWORK</div>
+<div class="sub">Available</div><ul><li>On-chain logic working in draft on Sei: controller, ORUSD ledger, MINT / BURN / CLEARING / P2P windows.</li><li>MINT / BURN / CLEAR states, snapshots at each cycle transition and freeze rules.</li><li>Global position-consistency invariant specified.</li></ul>
+<div class="sub">To do</div><ul><li>Rework the draft code through the Cursor AI → Foundry → Slither chain.</li><li>Assemble an integrated, reproducible reference multilateral netting engine.</li><li>Automate unit tests, fuzzing and multi-participant simulations; document edge cases.</li></ul></article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B2</span></div>
+<h4>Canonical DLT ledger — Sei reference deployment</h4><div class="status">DRAFT TESTNET — DEPLOYED AND VERIFIED</div>
+<div class="sub">Available</div><ul><li>Sei registry (identity), Sei controller and ORUSD ledger deployed on Sei Atlantic-2; Sei contracts verified (exact match).</li><li>Time oracle and position consolidation.</li><li>Ledger of clearing operations, viewable through the clearing platform.</li></ul>
+<div class="sub">To do</div><ul><li>Clean rework of the code (Cursor AI → Foundry → Slither) and verified redeployment.</li><li>Test recovery, replayability, failure, load and write consistency.</li><li>Formalise interfaces and events; isolate Sei dependencies in a dedicated adapter so that future EVM migration or multi-deployment remains possible without rewriting the core.</li></ul></article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B3</span></div>
+<h4>EVM Settlement &amp; Collateral</h4><div class="status">DRAFT TESTNET — DEPLOYED</div>
+<div class="sub">Available</div><ul><li>EVM escrow and controller deployed on Ethereum Sepolia.</li><li>EVM zone registry; solvency checks and controlled mint / burn.</li></ul>
+<div class="sub">To do</div><ul><li>Clean rework (Cursor AI → Foundry → Slither) and contract verification on the explorer.</li><li>Integrate the EVM layer with the canonical ledger; strengthen fuzzing and solvency invariants.</li><li>Test adversarial behaviour, errors and recovery procedures.</li></ul></article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B4</span></div>
+<h4>Osnias-ID</h4><div class="status">DRAFT TESTNET — DEPLOYED</div>
+<div class="sub">Available</div><ul><li>Osnias-ID format (network / node, checksum, anti-collision) — Book I, Release 3.0.</li><li>Identity layer on Sei; Node Registrar and EVM registry on Sepolia; first node registered (90-017).</li><li>Fail-closed behaviour specified.</li></ul>
+<div class="sub">To do</div><ul><li>Clean rework of the code; integrate Osnias-ID across all components and messages.</li><li>Test collisions, checksum, multi-network and fail-closed scenarios.</li></ul></article></div></div>
+<div class="lot-group"><div class="lot-head"><span class="lot-num">Package 2</span><h3>Infrastructure &amp; Interoperability</h3></div>
+<div class="blocks"><article class="block st-cons"><div class="block-top"><span class="block-id">B5</span></div>
+<h4>Time &amp; solvency oracles</h4><div class="status">PARTIAL — 1W ORACLE IN DRAFT</div>
+<div class="sub">Available</div><ul><li>1W time oracle deployed and verified on Sei, read live by the clearing platform (cycle, window, start block).</li><li>Solvency oracle specified for network collateral control.</li></ul>
+<div class="sub">To do</div><ul><li>Develop the 4W and 13W oracles and the solvency oracle.</li><li>Define redundancy, thresholds and failure policy; test unavailability, delay, outlier values, freeze and recovery.</li></ul></article>
+<article class="block st-dev"><div class="block-top"><span class="block-id">B6</span></div>
+<h4>ISO 20022 interoperability</h4><div class="status">SPECIFIED — TO DEVELOP</div>
+<div class="sub">Available</div><ul><li>Functional architecture and interface requirements with nodes and settlement systems identified.</li></ul>
+<div class="sub">To do</div><ul><li>Define the mapping of Osnias events ↔ ISO 20022 messages.</li><li>Develop orders, confirmations, statuses and error handling.</li><li>Build end-to-end simulated settlement scenarios.</li></ul></article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B7</span></div>
+<h4>Jurisdictional O-POPs &amp; Nodes</h4><div class="status">PARTIAL — NODE REGISTRY IN DRAFT</div>
+<div class="sub">Available</div><ul><li>O-POP topology by KK zone and KK-NNN nodes; on-chain node registration working in draft (Node Registrar).</li><li>Private RPC, VPN tunnels, logging and monitoring principles.</li><li>Replicable jurisdictional O-POPs, connected to the same Osnias core and operable according to local requirements.</li></ul>
+<div class="sub">To do</div><ul><li>Deploy a first pilot O-POP and produce a reproducible package: configuration, network plan, hardening, monitoring, documentation and acceptance testing.</li><li>Test network security, connection loss, latency, recovery and service continuity.</li></ul></article></div><figure class="figure"><a href="/en/roadmap/img/opop_en.png" target="_blank" rel="noopener noreferrer"><img src="/en/roadmap/img/opop_en.png" alt="Figure 3 — Jurisdictional O-POP and node topology (illustrative zones and codes)" loading="lazy" decoding="async"/></a><figcaption>Figure 3 — Jurisdictional O-POP and node topology (illustrative zones and codes)</figcaption></figure></div>
+<div class="lot-group"><div class="lot-head"><span class="lot-num">Package 3</span><h3>Integrated Demonstrator</h3></div>
+<div class="blocks"><article class="block st-dev"><div class="block-top"><span class="block-id">B8</span></div>
+<h4>Cross-layer reconciliation</h4><div class="status">SPECIFIED — TO DEVELOP</div>
+<div class="sub">Available</div><ul><li>Post-Clearing Mirror Reconciliation principle documented.</li><li>Consistency invariant between post-clearing positions and eligible assets / collateral.</li></ul>
+<div class="sub">To do</div><ul><li>Automate divergence detection, proofs, logs and corrective procedures.</li><li>Test desynchronisation scenarios and controlled recovery.</li></ul></article>
+<article class="block st-dev"><div class="block-top"><span class="block-id">B9</span></div>
+<h4>Security Hardening</h4><div class="status">TO BE FUNDED</div>
 
-<div class="lot-group">
-<div class="lot-head"><span class="lot-num">Package 1</span><h3>Core Protocol</h3></div>
-<div class="blocks">
-<article class="block st-done"><div class="block-top"><span class="block-id">B0</span><span class="pill">Completed</span></div>
-<h4>Reference architecture</h4>
-<div class="sub">Available</div><ul>
-<li>Separation of clearing / settlement / custody functions.</li>
-<li>Canonical clearing ledger and its interface with the EVM layer.</li>
-<li>Netting cycles, operating rules and main invariants.</li>
-<li>Core built on standard EVM primitives, network dependencies confined to adapters; Sei remains the reference deployment, local O-POPs remain standardised and replicable.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Freeze a versioned technical baseline for integrated development and the audit scope.</li></ul>
-</article>
-<article class="block st-cons"><div class="block-top"><span class="block-id">B1</span><span class="pill">To industrialise</span></div>
-<h4>Core Clearing Engine</h4>
-<div class="sub">Available</div><ul>
-<li>Calculation of net positions and netting cycles.</li>
-<li>MINT / BURN / CLEAR states, snapshots and freeze rules.</li>
-<li>Global position-consistency invariant.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Assemble an integrated, reproducible reference engine.</li>
-<li>Automate unit tests and multi-participant simulations.</li>
-<li>Document and test edge cases and error scenarios.</li></ul>
-</article>
-<article class="block st-cons"><div class="block-top"><span class="block-id">B2</span><span class="pill">Testnet</span></div>
-<h4>Canonical DLT ledger — Sei reference</h4>
-<div class="sub">Available</div><ul>
-<li>Deployments and experiments on Sei Testnet.</li>
-<li>Time oracle and consolidation of liabilities / positions.</li>
-<li>Ledger of clearing operations.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Full integration with the clearing engine.</li>
-<li>Recovery, replayability, failure, load and write-consistency testing.</li>
-<li>Formalise contract interfaces and events.</li>
-<li>Isolate Sei dependencies in a dedicated adapter, enabling future EVM migration or multi-deployment without rewriting the core.</li></ul>
-</article>
-<article class="block st-cons"><div class="block-top"><span class="block-id">B3</span><span class="pill">Testnet</span></div>
-<h4>EVM settlement &amp; collateral</h4>
-<div class="sub">Available</div><ul>
-<li>EVM escrow and controller deployed on Sepolia.</li>
-<li>Testnet collateral, solvency checks, controlled mint / burn.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Integrate the EVM layer with the canonical clearing ledger.</li>
-<li>Strengthen Foundry tests, fuzzing and solvency invariants.</li>
-<li>Test adversarial behaviour, errors and recovery procedures.</li></ul>
-</article>
-<article class="block st-cons"><div class="block-top"><span class="block-id">B4</span><span class="pill">Prototyped</span></div>
-<h4>Osnias-ID</h4>
-<div class="sub">Available</div><ul>
-<li>Osnias-ID format, network / node identification, checksum, anti-collision rules.</li>
-<li>Associated registry and fail-closed behaviour.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Integrate Osnias-ID across all components and messages.</li>
-<li>Test collisions, checksum, multi-network and fail-closed scenarios.</li></ul>
-</article>
-</div>
-</div>
+<div class="sub">To do</div><ul><li>Static analysis and dependency review.</li><li>Foundry, fuzzing and invariant testing.</li><li>Access controls, adversarial scenarios, economic attacks and DoS.</li><li>Review of the threat model and operating procedures.</li><li>Exit criterion: no known critical vulnerability before handover to the auditor.</li></ul></article>
+<article class="block st-cons"><div class="block-top"><span class="block-id">B10</span></div>
+<h4>Integrated Testnet Demonstrator</h4><div class="status">PARTIAL — SINGLE-NODE PLATFORM IN DRAFT</div>
+<div class="sub">Available</div><ul><li>ORUSD Clearing Desk platform online on Sei testnet: ledger position, oracle state, MINT / BURN / P2P / instruction windows and functions, registry.</li></ul>
+<div class="sub">To do</div><ul><li>Extend to a multi-node demonstrator: simulated participants, several nodes, multilateral clearing, collateral, settlement, Osnias-ID, oracles and reconciliation.</li><li>Run several complete cycles, nominal and failure scenarios.</li><li>Produce evidence, logs, metrics and reproducible documentation.</li><li>Measure the netting rate (share of gross settlements eliminated) on simulated flow datasets.</li></ul></article></div></div>
+<div class="lot-group"><div class="lot-head"><span class="lot-num">Package 4</span><h3>Security Audit</h3></div>
+<div class="blocks"><article class="block st-audit"><div class="block-top"><span class="block-id">B11</span></div>
+<h4>Audit Readiness</h4><div class="status">TO BE FUNDED</div>
 
-<div class="lot-group">
-<div class="lot-head"><span class="lot-num">Package 2</span><h3>Infrastructure &amp; Interoperability</h3></div>
-<div class="blocks">
-<article class="block st-cons"><div class="block-top"><span class="block-id">B5</span><span class="pill">Partial</span></div>
-<h4>Time &amp; solvency oracles</h4>
-<div class="sub">Available</div><ul>
-<li>Cycle time oracle on the clearing layer.</li>
-<li>Solvency oracle for network collateral control.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Define redundancy, thresholds and failure policy.</li>
-<li>Test unavailability, delay, outlier values, freeze and recovery.</li></ul>
-</article>
-<article class="block st-dev"><div class="block-top"><span class="block-id">B6</span><span class="pill">To develop</span></div>
-<h4>ISO 20022 interoperability</h4>
-<div class="sub">Available</div><ul>
-<li>Functional architecture and interface requirements with nodes and settlement systems identified.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Mapping of Osnias events ↔ ISO 20022 messages.</li>
-<li>Orders, confirmations, statuses and error handling.</li>
-<li>End-to-end simulated settlement scenarios.</li></ul>
-</article>
-<article class="block st-dev"><div class="block-top"><span class="block-id">B7</span><span class="pill">To develop</span></div>
-<h4>Jurisdictional O-POPs &amp; nodes</h4>
-<div class="sub">Available</div><ul>
-<li>O-POP topology by KK zone and KK-NNN nodes.</li>
-<li>Private RPC, VPN tunnels, logging and monitoring.</li>
-<li>Replicable O-POPs connected to the same core, operable according to local requirements.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Deploy a first pilot O-POP and a reproducible package: configuration, network plan, hardening, monitoring, documentation, acceptance testing.</li>
-<li>Test network security, connection loss, latency, recovery and service continuity.</li></ul>
-</article>
-</div>
-</div>
+<div class="sub">To do</div><ul><li>Code freeze and reference version.</li><li>Final architecture, specifications, threat model and list of invariants.</li><li>Test dossier, coverage, contract documentation and operating procedures.</li><li>Precise definition of the scope handed to the auditor.</li></ul></article>
+<article class="block st-audit"><div class="block-top"><span class="block-id">B12</span></div>
+<h4>Independent security audit</h4><div class="status">TO BE FUNDED</div>
 
-<div class="lot-group">
-<div class="lot-head"><span class="lot-num">Package 3</span><h3>Integrated Demonstrator</h3></div>
-<div class="blocks">
-<article class="block st-cons"><div class="block-top"><span class="block-id">B8</span><span class="pill">To integrate</span></div>
-<h4>Cross-layer reconciliation</h4>
-<div class="sub">Available</div><ul>
-<li>Post-Clearing Mirror Reconciliation principle documented.</li>
-<li>Consistency invariant between post-clearing positions and eligible assets / collateral.</li></ul>
-<div class="sub">To do</div><ul>
-<li>Automate divergence detection, proofs, logs and corrective procedures.</li>
-<li>Test desynchronisation and controlled recovery.</li></ul>
-</article>
-<article class="block st-dev"><div class="block-top"><span class="block-id">B9</span><span class="pill">To develop</span></div>
-<h4>Security hardening</h4>
-<div class="sub">To do</div><ul>
-<li>Static analysis and dependency review.</li>
-<li>Foundry, fuzzing and invariant testing.</li>
-<li>Access controls, adversarial scenarios, economic attacks and DoS.</li>
-<li>Review of the threat model and operating procedures.</li>
-<li>Exit criterion: no known critical vulnerability before handover to the auditor.</li></ul>
-</article>
-<article class="block st-dev"><div class="block-top"><span class="block-id">B10</span><span class="pill">To develop</span></div>
-<h4>Integrated testnet demonstrator</h4>
-<div class="sub">To do</div><ul>
-<li>Full demonstrator: simulated participants, several nodes, multilateral clearing, DLT ledger, collateral, settlement, Osnias-ID, oracles and reconciliation.</li>
-<li>Several complete cycles, nominal and failure scenarios.</li>
-<li>Evidence, logs, metrics and reproducible documentation.</li></ul>
-</article>
-</div>
-</div>
-
-<div class="lot-group">
-<div class="lot-head"><span class="lot-num">Package 4</span><h3>Security Audit</h3></div>
-<div class="blocks">
-<article class="block st-audit"><div class="block-top"><span class="block-id">B11</span><span class="pill">To audit</span></div>
-<h4>Audit readiness</h4>
-<div class="sub">To do</div><ul>
-<li>Code freeze and reference version.</li>
-<li>Final architecture, specifications, threat model, list of invariants.</li>
-<li>Test dossier, coverage, contract documentation and operating procedures.</li>
-<li>Precise definition of the scope handed to the auditor.</li></ul>
-</article>
-<article class="block st-audit"><div class="block-top"><span class="block-id">B12</span><span class="pill">To audit</span></div>
-<h4>Independent security audit</h4>
-<div class="sub">To do</div><ul>
-<li>Independent audit of smart contracts and critical components.</li>
-<li>Review of invariants and attack surfaces.</li>
-<li>Audit report, remediation plan, fixes and re-test.</li></ul>
-</article>
-</div>
-</div>
+<div class="sub">To do</div><ul><li>Independent audit of smart contracts and critical components.</li><li>Review of invariants and attack surfaces.</li><li>Audit report, remediation plan, fixes and re-test.</li></ul></article></div></div>
 </section>
 
-<section id="packages">
-<div>
-<div class="section-label">04 · Sequencing</div>
-<h2>Four work packages, a demonstrable output at each stage</h2>
-<p class="section-intro">Overall dependency: Package 1 → Package 2 → Package 3 → Package 4. Some work can run in parallel once the relevant interfaces and invariants have been stabilised.</p>
-</div>
+<section id="sequencing">
+<div><div class="section-label">07 · Sequencing</div><h2>Four work packages, a verifiable output at each stage</h2><p class="section-intro">Package 1 → Package 2 → Package 3 → Package 4. Some work can be carried out in parallel once the relevant interfaces and invariants have been stabilised.</p></div>
 <div class="sequence">
-<div class="seq"><div class="lot-num">Package 1</div><h3>Core Protocol</h3><div class="range">B0 – B4</div><p>Integrated baseline: clearing engine, portable EVM core, Sei adapter, EVM settlement and Osnias-ID.</p></div>
-<div class="seq"><div class="lot-num">Package 2</div><h3>Infrastructure &amp; Interoperability</h3><div class="range">B5 – B7</div><p>Oracles, ISO 20022, jurisdictional O-POPs and replicable pilot nodes.</p></div>
-<div class="seq"><div class="lot-num">Package 3</div><h3>Integrated Demonstrator</h3><div class="range">B8 – B10</div><p>Reconciliation, security hardening and a reproducible multi-node demonstrator.</p></div>
-<div class="seq"><div class="lot-num">Package 4</div><h3>Security Audit</h3><div class="range">B11 – B12</div><p>Audit readiness, independent audit, remediation and re-test.</p></div>
+<div class="seq"><div class="lot-num">Package 1</div><h3>Core Protocol</h3><div class="range">B0 to B4</div><p>Clean rework of the draft (Cursor AI → Foundry → Slither): clearing engine, chain-agnostic EVM core, Sei adapter, EVM settlement and Osnias-ID.</p></div>
+<div class="seq"><div class="lot-num">Package 2</div><h3>Infrastructure &amp; Interoperability</h3><div class="range">B5 to B7</div><p>Oracles, ISO 20022, jurisdictional O-POPs and nodes.</p></div>
+<div class="seq"><div class="lot-num">Package 3</div><h3>Integrated Demonstrator</h3><div class="range">B8 to B10</div><p>Reconciliation, security hardening and multi-node demonstrator.</p></div>
+<div class="seq"><div class="lot-num">Package 4</div><h3>Security Audit</h3><div class="range">B11 to B12</div><p>Audit readiness, independent audit, remediation and re-test.</p></div>
 </div>
-<div class="notice" style="margin-top:1.5rem"><strong>After the audit.</strong> Once the independent audit and remediation are complete, the next phase will target an institutional pilot in a controlled environment, subject to the regulatory framework and the partners selected.</div>
+<h3 style="margin-top:2rem">Proposed exit criteria per work package</h3>
+<table class="assets"><thead><tr><th>Package</th><th>Exit criteria (proposed, to be validated)</th></tr></thead><tbody><tr><td>PACKAGE 1</td><td>Code reworked and compliant with the specifications; Foundry tests (unit, fuzzing, invariants) passing; no unresolved high-severity Slither detector; contracts redeployed and verified.</td></tr><tr><td>PACKAGE 2</td><td>1W / 4W / 13W and solvency oracles operational; ISO 20022 messages sent and acknowledged; one pilot O-POP accepted.</td></tr><tr><td>PACKAGE 3</td><td>Several complete cycles on at least three nodes; netting rate measured on simulated flows; no known critical vulnerability.</td></tr><tr><td>PACKAGE 4</td><td>Independent audit report; remediation completed and re-tested; baseline frozen for the pilot.</td></tr></tbody></table>
+<figure class="figure"><a href="/en/roadmap/img/trajectoire_en.png" target="_blank" rel="noopener noreferrer"><img src="/en/roadmap/img/trajectoire_en.png" alt="Figure 4 — Work-package pathway, from the existing foundation to the institutional pilot" loading="lazy" decoding="async"/></a><figcaption>Figure 4 — Work-package pathway, from the existing foundation to the institutional pilot</figcaption></figure>
+<div class="notice" style="margin-top:1.5rem"><strong>After the audit.</strong> After the independent audit and remediation, the next phase will target an institutional pilot in a controlled environment, subject to the regulatory framework and the partners selected.</div>
 </section>
 
-<section id="disclaimer">
-<div class="notice"><strong>Technical information.</strong> This roadmap describes ongoing and planned development work. Maturity levels, budgets and timelines are assessed package by package and may change. It does not constitute an offer of securities, investment advice or a solicitation.</div>
-</section>
+<section id="disclaimer"><div class="notice"><strong>Technical information.</strong> This roadmap describes ongoing and planned development work; maturity levels and timelines are assessed package by package and may change. It does not constitute an offer of securities, investment advice or a solicitation.</div></section>
 </main>
 <footer>
 <div class="container">
