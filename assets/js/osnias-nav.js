@@ -49,7 +49,7 @@
       { label: "7-POP Osnias", href: prefix + "/en/pop/" },
       { label: "A-Regulation", href: prefix + "/en/regulation/" },
       { label: "B-Official Deployment", href: prefix + "/en/deployment/" },
-      { label: "C-Partnership", href: prefix + "/en/partnership/" },
+      { label: "C-Roadmap", href: prefix + "/en/roadmap/" },
       { label: "D-FAQ", href: prefix + "/en/faq/" }
     ] : [
       { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
@@ -61,7 +61,7 @@
       { label: "7-POP Osnias", href: prefix + "/pop/" },
       { label: "A-Régulation", href: prefix + "/regulation/" },
       { label: "B-Déploiement", href: prefix + "/deployment/" },
-      { label: "C-Partenariat", href: prefix + "/partnership/" },
+      { label: "C-Roadmap", href: prefix + "/roadmap/" },
       { label: "D-FAQ", href: prefix + "/faq/" }
     ];
 
