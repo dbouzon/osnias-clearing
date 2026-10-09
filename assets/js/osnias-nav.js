@@ -50,7 +50,6 @@
       { label: "A-Regulation", href: prefix + "/en/regulation/" },
       { label: "B-Official Deployment", href: prefix + "/en/deployment/" },
       { label: "C-Roadmap", href: prefix + "/en/roadmap/" },
-      { label: "D-Partnership", href: prefix + "/en/partnership/" },
       { label: "E-FAQ", href: prefix + "/en/faq/" }
     ] : [
       { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
@@ -63,7 +62,6 @@
       { label: "A-Régulation", href: prefix + "/regulation/" },
       { label: "B-Déploiement", href: prefix + "/deployment/" },
       { label: "C-Roadmap", href: prefix + "/roadmap/" },
-      { label: "D-Partenariat", href: prefix + "/partnership/" },
       { label: "E-FAQ", href: prefix + "/faq/" }
     ];
 
