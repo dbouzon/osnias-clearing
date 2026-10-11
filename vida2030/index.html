@@ -1,1 +1,172 @@
-hello
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ViDA 2030, TVA et compensation B2B — architecture Osnias Clearing</title>
+<meta name="description" content="Note technique Osnias Clearing sur l’intégration de ViDA 2030 : compensation multilatérale B2B hors taxes, facturation électronique, déclaration numérique de la TVA, CLEAR 9W et proposition d’autoliquidation entre assujettis certifiés."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+<link rel="canonical" href="https://www.osnias-clearing.com/vida2030/"/>
+<link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/vida2030/"/>
+<link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/vida2030/"/>
+<link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/"/>
+<link rel="stylesheet" href="/assets/css/osnias.css"/>
+<script defer src="/assets/js/osnias-seo.js"></script>
+<script defer src="/assets/js/osnias-nav.js"></script>
+
+<meta name="author" content="Denis Bouzon"/>
+<meta name="creator" content="Denis Bouzon"/>
+<meta name="publisher" content="Osnias Clearing"/>
+<meta name="citation_author" content="Denis Bouzon"/>
+<meta name="citation_title" content="Osnias Clearing — Intégration de ViDA 2030 : classification fonctionnelle et cadre européen"/>
+<meta name="citation_doi" content="10.5281/zenodo.23296472"/>
+<meta name="citation_publication_date" content="2026-10-11"/>
+<meta name="abstract" content="Architecture TVA d’Osnias Clearing : compensation multilatérale des obligations commerciales B2B hors taxes, calcul de la TVA ligne par ligne dans l’ERP et la facturation électronique, règlement par des nœuds autorisés, CLEAR 9W et proposition d’autoliquidation entre assujettis certifiés."/>
+<meta name="subject" content="ViDA 2030 ; TVA ; facturation électronique ; déclaration numérique ; B2B ; compensation multilatérale ; netting ; CLEAR 9W ; directive 2006/112/CE ; directive 2011/7/UE ; EN 16931 ; ISO 20022 ; fraude carrousel"/>
+<meta name="keywords" content="Osnias Clearing, ViDA 2030, TVA à l’ère numérique, TVA, facturation électronique, déclaration numérique, DRR, compensation B2B, compensation multilatérale, hors taxes, CLEAR 9W, 59 jours, directive 2006/112/CE, directive 2011/7/UE, directive (UE) 2025/516, EN 16931, autoliquidation, assujettis, fraude carrousel, MTIC, ISO 20022, Sei, Osnias-ID"/>
+<meta name="DC.title" content="Osnias Clearing — ViDA 2030"/>
+<meta name="DC.creator" content="Denis Bouzon"/>
+<meta name="DC.publisher" content="Osnias Clearing"/>
+<meta name="DC.date" content="2026-10-11"/>
+<meta name="DC.type" content="Note technique"/>
+<meta name="DC.identifier" content="https://www.osnias-clearing.com/vida2030/"/>
+<meta name="DC.language" content="fr"/>
+
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="Osnias Clearing"/>
+<meta property="og:locale" content="fr_FR"/>
+<meta property="og:locale:alternate" content="en_GB"/>
+<meta property="og:url" content="https://www.osnias-clearing.com/vida2030/"/>
+<meta property="og:title" content="ViDA 2030, TVA et compensation B2B — Osnias Clearing"/>
+<meta property="og:description" content="Compensation B2B hors taxes, facturation électronique, déclaration numérique, CLEAR 9W et proposition d’autoliquidation entre assujettis certifiés."/>
+<meta property="article:published_time" content="2026-10-11"/>
+<meta property="article:modified_time" content="2026-10-11"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ViDA 2030, TVA et compensation B2B — Osnias Clearing"/>
+<meta name="twitter:description" content="Architecture fonctionnelle Osnias pour ViDA 2030 : compensation hors taxes, facturation électronique, DRR, CLEAR 9W et proposition d’autoliquidation."/>
+
+<style>
+.vida-content{max-width:1100px;margin:2.2rem auto 0}.vida-content p,.vida-faq p{line-height:1.72}.vida-content h2{margin-top:2.2rem}.vida-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:1.25rem 0 2rem}.vida-card,.vida-callout,.vida-faq article{border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:20px;background:rgba(255,255,255,.025)}.vida-card h3,.vida-faq h3{margin-top:0}.vida-callout{margin:1.5rem 0}.vida-callout strong{display:block;margin-bottom:.35rem}.vida-faq{display:grid;gap:14px;margin-top:1rem}.vida-note{opacity:.82}.vida-kicker{font-weight:700}.vida-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:1.2rem 0}.vida-step{padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02)}.vida-step b{display:block;margin-bottom:.35rem}.vida-eu-flag{display:inline-flex;align-items:center;font-size:1.6rem;line-height:1;margin-left:.35rem;user-select:none}@media(max-width:900px){.vida-grid,.vida-steps{grid-template-columns:1fr}}
+</style>
+
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@graph":[
+ {
+ "@type":"TechArticle",
+ "@id":"https://www.osnias-clearing.com/vida2030/#article",
+ "headline":"Osnias Clearing — Intégration de ViDA 2030 : classification fonctionnelle et cadre européen",
+ "name":"ViDA 2030, TVA et compensation B2B — Osnias Clearing",
+ "description":"Note technique sur l’architecture TVA d’Osnias Clearing, la facturation électronique, la déclaration numérique, CLEAR 9W et une proposition d’autoliquidation entre assujettis certifiés.",
+ "url":"https://www.osnias-clearing.com/vida2030/",
+ "inLanguage":"fr",
+ "datePublished":"2026-10-11",
+ "dateModified":"2026-10-11",
+ "identifier":"https://doi.org/10.5281/zenodo.23296472",
+ "sameAs":"https://zenodo.org/records/23296472",
+ "author":{"@type":"Person","name":"Denis Bouzon","sameAs":"https://orcid.org/0009-0007-8894-8902"},
+ "publisher":{"@type":"Organization","name":"Osnias Clearing","url":"https://www.osnias-clearing.com/"},
+ "mainEntityOfPage":{"@type":"WebPage","@id":"https://www.osnias-clearing.com/vida2030/"},
+ "keywords":["ViDA 2030","TVA","facturation électronique","déclaration numérique","compensation B2B","compensation multilatérale","CLEAR 9W","EN 16931","autoliquidation","fraude carrousel","ISO 20022"]
+ },
+ {
+ "@type":"FAQPage",
+ "@id":"https://www.osnias-clearing.com/vida2030/#faq",
+ "mainEntity":[
+ {"@type":"Question","name":"Osnias Clearing collecte-t-il la TVA ?","acceptedAnswer":{"@type":"Answer","text":"L’architecture documentée maintient la TVA hors de la couche de compensation. La TVA reste calculée et déclarée par les systèmes de l’entreprise ; Osnias compense l’obligation commerciale hors taxes."}},
+ {"@type":"Question","name":"Quel cycle s’applique aux factures commerciales B2B ?","acceptedAnswer":{"@type":"Answer","text":"CLEAR 9W est la modalité de paiement dédiée aux obligations commerciales B2B éligibles. L’enveloppe protocolaire de neuf semaines comprend une fenêtre opérationnelle conçue pour aboutir au règlement en 59 jours au plus."}},
+ {"@type":"Question","name":"La proposition d’autoliquidation d’Osnias fait-elle déjà partie de ViDA ?","acceptedAnswer":{"@type":"Answer","text":"Il s’agit d’une proposition d’Osnias Clearing visant à prolonger le cadre européen existant ; elle doit être distinguée des règles ViDA déjà adoptées."}},
+ {"@type":"Question","name":"Quel est le rôle du registre Sei ?","acceptedAnswer":{"@type":"Answer","text":"Le protocole utilise l’Osnias-ID comme identifiant interne. L’identité juridique et les informations de conformité restent hors chaîne, auprès du nœud autorisé."}}
+ ]
+ },
+ {
+ "@type":"BreadcrumbList",
+ "itemListElement":[
+ {"@type":"ListItem","position":1,"name":"Osnias Clearing","item":"https://www.osnias-clearing.com/"},
+ {"@type":"ListItem","position":2,"name":"ViDA 2030","item":"https://www.osnias-clearing.com/vida2030/"}
+ ]
+ }
+ ]
+}
+</script>
+</head>
+<body>
+<div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a><nav aria-label="Navigation principale" class="site-nav-buttons" id="mainNav"></nav></div></div>
+<div class="container"><div aria-label="Choix de la langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/vida2030/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/vida2030/" hreflang="en" lang="en">🇬🇧 English</a><span aria-hidden="true" class="vida-eu-flag" title="">🇪🇺</span></div></div>
+
+<header><div class="container"><section class="hero"><div class="hero-grid"><div>
+<div class="eyebrow">Note technique · ViDA 2030 · TVA · B2B</div>
+<h1>ViDA 2030 : TVA, facturation électronique et compensation B2B</h1>
+<p class="hero-lead">Osnias Clearing sépare la compensation multilatérale des obligations commerciales B2B hors taxes du calcul de la TVA et du règlement monétaire. Cette note expose cette classification fonctionnelle dans le cadre européen de ViDA 2030 et présente une évolution réglementaire proposée pour les opérations entre assujettis certifiés.</p>
+<div class="actions"><a class="btn btn-primary" href="/vida2030/Osnias_ViDA2030_fr-1-0.pdf" target="_blank">PDF français</a><a class="btn" href="/vida2030/Osnias_ViDA2030_en-1-0.pdf" target="_blank">English PDF</a><a class="btn" href="https://zenodo.org/records/23296472" rel="noopener noreferrer" target="_blank">DOI Zenodo</a></div>
+</div>
+<div class="vida-callout"><strong>Principe fonctionnel</strong>Osnias Clearing traite les obligations commerciales hors taxes. Le protocole compense des montants HT ; les données de TVA restent dans les systèmes de facturation et de déclaration légale.</div>
+</div></section></div></header>
+
+<main class="container vida-content">
+<section aria-labelledby="architecture-title">
+<h2 id="architecture-title">Séparation fonctionnelle entre compensation, TVA et règlement</h2>
+<p>La note technique publiée sur Zenodo définit une architecture en trois couches. <strong>Osnias réalise une seule fonction : la compensation multilatérale des obligations commerciales B2B hors taxes.</strong> La TVA est calculée ligne par ligne dans l’ERP de chaque entreprise et transmise par son prestataire de facturation électronique. Le règlement monétaire du solde net est ensuite assuré par des nœuds autorisés.</p>
+<div class="vida-grid">
+<article class="vida-card"><h3>1. ERP et facturation électronique</h3><p>La facture, la base imposable, le taux applicable et le montant de TVA restent déterminés au niveau de l’entreprise et dans le cadre de la facturation électronique.</p></article>
+<article class="vida-card"><h3>2. Osnias Clearing</h3><p>Le registre reçoit l’obligation commerciale HT éligible, l’identifie par l’Osnias-ID et l’intègre au processus de compensation multilatérale.</p></article>
+<article class="vida-card"><h3>3. Règlement</h3><p>Une fois les positions nettes calculées, le règlement est exécuté par l’infrastructure ou le nœud autorisé, séparément de la couche de compensation.</p></article>
+</div>
+</section>
+
+<section aria-labelledby="vida-title">
+<h2 id="vida-title">ViDA 2030 : facturation électronique et obligations de déclaration numérique</h2>
+<p>Le paquet européen <strong>« TVA à l’ère numérique » (ViDA)</strong>, adopté en 2025, prévoit l’introduction progressive de nouvelles obligations de facturation électronique et de déclaration numérique. Les <strong>obligations de déclaration numérique (DRR)</strong> pour les opérations B2B transfrontières s’appliqueront à compter du 1er juillet 2030. Le cadre de l’Union s’appuie sur des données transactionnelles structurées et sur la facture électronique comme référence documentaire.</p>
+<p>Osnias est conçu comme une couche complémentaire. Il ne remplace ni la facture électronique, ni le calcul de la TVA, ni la déclaration légale. Il intervient après la qualification de l’obligation commerciale, pour agréger les montants HT et calculer les positions nettes.</p>
+<div class="vida-steps">
+<div class="vida-step"><b>Facture</b>Données de l’opération et de TVA dans l’ERP.</div>
+<div class="vida-step"><b>Facturation électronique / DRR</b>Transmission réglementaire selon le cadre applicable.</div>
+<div class="vida-step"><b>CLEAR 9W</b>Compensation des obligations commerciales B2B HT éligibles.</div>
+<div class="vida-step"><b>Règlement</b>Règlement du solde net par le nœud autorisé.</div>
+</div>
+</section>
+
+<section aria-labelledby="clear9w-title">
+<h2 id="clear9w-title">CLEAR 9W pour les obligations commerciales B2B</h2>
+<p>Les factures commerciales admises au protocole peuvent porter la mention <strong>« Modalité de paiement : CLEAR 9W »</strong>. Le cycle est une enveloppe protocolaire de neuf semaines, dont la fenêtre opérationnelle est organisée pour qu’une obligation admise soit réglée en <strong>59 jours au plus</strong>, conformément à la doctrine du Livre 4 et au cadre européen des délais de paiement dans les transactions commerciales.</p>
+<p>Lorsque la TVA est exigible à l’encaissement, la note prévoit que la date de règlement du cycle vaut date d’encaissement, attestée par un justificatif par facture. La documentation de facturation et de TVA reste ainsi distincte de la position nette calculée par la couche de compensation.</p>
+</section>
+
+<section aria-labelledby="identity-title">
+<h2 id="identity-title">Osnias-ID, confidentialité et registre canonique</h2>
+<p>Le registre canonique de compensation, tenu sur Sei, désigne les participants par leur <strong>Osnias-ID</strong>. L’identité juridique, les données KYC et les informations de conformité sont conservées hors chaîne par le nœud compétent.</p>
+<p>Cette séparation limite l’exposition des données des entreprises dans le registre, tout en préservant la possibilité, dans les systèmes habilités, de rattacher une obligation à son émetteur, à son destinataire et à sa documentation fiscale.</p>
+</section>
+
+<section aria-labelledby="proposal-title">
+<h2 id="proposal-title">Évolution proposée : autoliquidation entre assujettis certifiés</h2>
+<div class="vida-callout"><strong>Proposition — une évolution réglementaire proposée.</strong>La note propose, en prolongement du cadre ViDA, un mécanisme d’autoliquidation entre assujettis certifiés. Elle ne le présente pas comme une règle applicable en l’état du droit de l’Union.</div>
+<p>Le modèle proposé supprimerait les flux de TVA intermédiaires entre entreprises certifiées, tout en maintenant le calcul et la déclaration de la TVA opération par opération. Chaque entreprise comptabiliserait sa TVA collectée et déductible selon les règles applicables, et Osnias continuerait de compenser les montants HT.</p>
+<p>La proposition vise notamment à réduire l’exposition aux mécanismes de <strong>fraude carrousel (MTIC)</strong>. La note comprend une esquisse de dispositif de l’Union destinée à nourrir la discussion réglementaire.</p>
+</section>
+
+<section aria-labelledby="eu-title">
+<h2 id="eu-title">Cadre juridique européen</h2>
+<p>La note s’inscrit dans le cadre de la <strong>directive 2006/112/CE relative au système commun de TVA</strong>, modifiée par la <strong>directive (UE) 2025/516 du Conseil</strong> au titre de ViDA, ainsi que du règlement (UE) 2025/517 et du règlement d’exécution (UE) 2025/518. Pour les délais de paiement dans les transactions commerciales, l’architecture CLEAR 9W tient également compte de la directive 2011/7/UE.</p>
+<p>Cette page décrit l’architecture technique d’Osnias Clearing et la proposition publiée. La qualification juridique relève des autorités compétentes, et toute évolution du cadre de l’Union suit le processus institutionnel applicable.</p>
+<div class="actions"><a class="btn" href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-digital-age-vida_fr" rel="noopener noreferrer" target="_blank">Commission européenne — ViDA</a><a class="btn" href="https://eur-lex.europa.eu/eli/dir/2025/516/oj/fra" rel="noopener noreferrer" target="_blank">Directive (UE) 2025/516</a><a class="btn" href="https://doi.org/10.5281/zenodo.23296472" rel="noopener noreferrer" target="_blank">DOI 10.5281/zenodo.23296472</a></div>
+</section>
+
+<section aria-labelledby="faq-title">
+<h2 id="faq-title">Questions fréquentes</h2>
+<div class="vida-faq">
+<article><h3>Osnias Clearing collecte-t-il la TVA ?</h3><p>L’architecture documentée maintient la TVA hors de la couche de compensation. La TVA reste calculée et déclarée par les systèmes de l’entreprise ; Osnias compense l’obligation commerciale hors taxes.</p></article>
+<article><h3>Quel cycle s’applique aux factures commerciales B2B ?</h3><p>CLEAR 9W est la modalité de paiement dédiée aux obligations commerciales B2B éligibles. L’enveloppe protocolaire de neuf semaines comprend une fenêtre opérationnelle conçue pour aboutir au règlement en 59 jours au plus.</p></article>
+<article><h3>La proposition d’autoliquidation d’Osnias fait-elle déjà partie de ViDA ?</h3><p>Il s’agit d’une proposition d’Osnias Clearing visant à prolonger le cadre européen existant ; elle doit être distinguée des règles ViDA déjà adoptées.</p></article>
+<article><h3>Quel est le rôle du registre Sei ?</h3><p>Le protocole utilise l’Osnias-ID comme identifiant interne. L’identité juridique et les informations de conformité restent hors chaîne, auprès du nœud autorisé.</p></article>
+</div>
+</section>
+
+<p class="vida-note"><strong>Statut du projet :</strong> Osnias Clearing est en phase testnet. Les règles décrites (vérification d’identité et autorisation des nœuds, règles du protocole) s’appliquent à la mise en production.</p>
+<p class="vida-note">Version web : 11 octobre 2026 · Source documentaire : Osnias Clearing, « Intégration de ViDA 2030 — Classification fonctionnelle et cadre européen », version 1.0, Zenodo.</p>
+</main>
+
+<footer><div class="container">© 2026 Osnias Clearing · ViDA 2030 · <a href="https://doi.org/10.5281/zenodo.23296472">10.5281/zenodo.23296472</a></div></footer>
+</body>
+</html>
