@@ -1,1 +1,172 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ViDA 2030, VAT & B2B clearing — Osnias Clearing architecture</title>
+<meta name="description" content="Osnias Clearing technical note on ViDA 2030 integration: net-of-VAT B2B multilateral netting, e-invoicing, digital VAT reporting, CLEAR 9W and a proposed reverse-charge extension for certified taxable persons."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+<link rel="canonical" href="https://www.osnias-clearing.com/en/vida2030/"/>
+<link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/vida2030/"/>
+<link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/vida2030/"/>
+<link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/"/>
+<link rel="stylesheet" href="/assets/css/osnias.css"/>
+<script defer src="/assets/js/osnias-seo.js"></script>
+<script defer src="/assets/js/osnias-nav.js"></script>
+
+<meta name="author" content="Denis Bouzon"/>
+<meta name="creator" content="Denis Bouzon"/>
+<meta name="publisher" content="Osnias Clearing"/>
+<meta name="citation_author" content="Denis Bouzon"/>
+<meta name="citation_title" content="Osnias Clearing — ViDA 2030 integration: Functional classification and European framework"/>
+<meta name="citation_doi" content="10.5281/zenodo.23296472"/>
+<meta name="citation_publication_date" content="2026-10-11"/>
+<meta name="abstract" content="VAT architecture of Osnias Clearing: multilateral netting of B2B trade obligations net of VAT, line-by-line VAT calculation in the ERP and e-invoicing layer, settlement by authorised nodes, CLEAR 9W and a proposed reverse-charge extension between certified taxable persons."/>
+<meta name="subject" content="ViDA 2030; VAT; e-invoicing; digital reporting requirements; B2B; multilateral clearing; netting; CLEAR 9W; Directive 2006/112/EC; Directive 2011/7/EU; EN 16931; ISO 20022; MTIC fraud"/>
+<meta name="keywords" content="Osnias Clearing, ViDA 2030, VAT in the Digital Age, VAT, e-invoicing, digital reporting requirements, DRR, B2B clearing, multilateral netting, net of VAT, CLEAR 9W, 59 days, Directive 2006/112/EC, Directive 2011/7/EU, Directive EU 2025/516, EN 16931, reverse charge, taxable persons, MTIC fraud, carousel fraud, ISO 20022, Sei, Osnias-ID"/>
+<meta name="DC.title" content="Osnias Clearing — ViDA 2030"/>
+<meta name="DC.creator" content="Denis Bouzon"/>
+<meta name="DC.publisher" content="Osnias Clearing"/>
+<meta name="DC.date" content="2026-10-11"/>
+<meta name="DC.type" content="Technical Note"/>
+<meta name="DC.identifier" content="https://www.osnias-clearing.com/en/vida2030/"/>
+<meta name="DC.language" content="en"/>
+
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="Osnias Clearing"/>
+<meta property="og:locale" content="en_GB"/>
+<meta property="og:locale:alternate" content="fr_FR"/>
+<meta property="og:url" content="https://www.osnias-clearing.com/en/vida2030/"/>
+<meta property="og:title" content="ViDA 2030, VAT & B2B clearing — Osnias Clearing"/>
+<meta property="og:description" content="Net-of-VAT B2B clearing, e-invoicing, digital reporting requirements, CLEAR 9W and a proposed reverse-charge extension for certified taxable persons."/>
+<meta property="article:published_time" content="2026-10-11"/>
+<meta property="article:modified_time" content="2026-10-11"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ViDA 2030, VAT & B2B clearing — Osnias Clearing"/>
+<meta name="twitter:description" content="Osnias functional architecture for ViDA 2030: net-of-VAT clearing, e-invoicing, DRR, CLEAR 9W and a proposed reverse-charge extension."/>
+
+<style>
+.vida-content{max-width:1100px;margin:2.2rem auto 0}.vida-content p,.vida-faq p{line-height:1.72}.vida-content h2{margin-top:2.2rem}.vida-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:1.25rem 0 2rem}.vida-card,.vida-callout,.vida-faq article{border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:20px;background:rgba(255,255,255,.025)}.vida-card h3,.vida-faq h3{margin-top:0}.vida-callout{margin:1.5rem 0}.vida-callout strong{display:block;margin-bottom:.35rem}.vida-faq{display:grid;gap:14px;margin-top:1rem}.vida-note{opacity:.82}.vida-kicker{font-weight:700}.vida-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:1.2rem 0}.vida-step{padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02)}.vida-step b{display:block;margin-bottom:.35rem}.vida-eu-flag{display:inline-flex;align-items:center;font-size:1.6rem;line-height:1;margin-left:.35rem;user-select:none}@media(max-width:900px){.vida-grid,.vida-steps{grid-template-columns:1fr}}
+</style>
+
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@graph":[
+ {
+ "@type":"TechArticle",
+ "@id":"https://www.osnias-clearing.com/en/vida2030/#article",
+ "headline":"Osnias Clearing — ViDA 2030 integration: Functional classification and European framework",
+ "name":"ViDA 2030, VAT and B2B clearing — Osnias Clearing",
+ "description":"Technical note on the VAT architecture of Osnias Clearing, e-invoicing, Digital Reporting Requirements, CLEAR 9W and a proposed reverse-charge extension between certified taxable persons.",
+ "url":"https://www.osnias-clearing.com/en/vida2030/",
+ "inLanguage":"en",
+ "datePublished":"2026-10-11",
+ "dateModified":"2026-10-11",
+ "identifier":"https://doi.org/10.5281/zenodo.23296472",
+ "sameAs":"https://zenodo.org/records/23296472",
+ "author":{"@type":"Person","name":"Denis Bouzon","sameAs":"https://orcid.org/0009-0007-8894-8902"},
+ "publisher":{"@type":"Organization","name":"Osnias Clearing","url":"https://www.osnias-clearing.com/"},
+ "mainEntityOfPage":{"@type":"WebPage","@id":"https://www.osnias-clearing.com/en/vida2030/"},
+ "keywords":["ViDA 2030","VAT","e-invoicing","digital reporting requirements","B2B clearing","multilateral netting","CLEAR 9W","EN 16931","reverse charge","MTIC fraud","ISO 20022"]
+ },
+ {
+ "@type":"FAQPage",
+ "@id":"https://www.osnias-clearing.com/en/vida2030/#faq",
+ "mainEntity":[
+ {"@type":"Question","name":"Does Osnias Clearing collect VAT?","acceptedAnswer":{"@type":"Answer","text":"The documented architecture keeps VAT outside the clearing layer. VAT remains calculated and reported by the company’s systems; Osnias clears the net-of-VAT trade obligation."}},
+ {"@type":"Question","name":"Which cycle applies to B2B commercial invoices?","acceptedAnswer":{"@type":"Answer","text":"CLEAR 9W is the payment method dedicated to eligible B2B commercial obligations. The nine-week protocol envelope contains an operational window designed to lead to settlement within no more than 59 days."}},
+ {"@type":"Question","name":"Is the Osnias reverse-charge proposal already part of ViDA?","acceptedAnswer":{"@type":"Answer","text":"It is an Osnias Clearing proposal for an extension to the existing EU framework and must be distinguished from the ViDA rules already enacted."}},
+ {"@type":"Question","name":"What is the role of the Sei register?","acceptedAnswer":{"@type":"Answer","text":"The protocol uses Osnias-ID as its internal identifier. Legal identity and compliance information remain off-chain with the authorised node."}}
+ ]
+ },
+ {
+ "@type":"BreadcrumbList",
+ "itemListElement":[
+ {"@type":"ListItem","position":1,"name":"Osnias Clearing","item":"https://www.osnias-clearing.com/en/"},
+ {"@type":"ListItem","position":2,"name":"ViDA 2030","item":"https://www.osnias-clearing.com/en/vida2030/"}
+ ]
+ }
+ ]
+}
+</script>
+</head>
+<body>
+<div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/en/">OSNIAS <span>CLEARING</span></a><nav aria-label="Main navigation" class="site-nav-buttons" id="mainNav"></nav></div></div>
+<div class="container"><div aria-label="Language selection" class="actions"><a class="btn" href="/vida2030/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/vida2030/" hreflang="en" lang="en">🇬🇧 English</a><span aria-hidden="true" class="vida-eu-flag" title="">🇪🇺</span></div></div>
+
+<header><div class="container"><section class="hero"><div class="hero-grid"><div>
+<div class="eyebrow">Technical note · ViDA 2030 · VAT · B2B</div>
+<h1>ViDA 2030: VAT, e-invoicing and B2B clearing</h1>
+<p class="hero-lead">Osnias Clearing separates the multilateral netting of B2B trade obligations net of VAT from VAT calculation and monetary settlement. This note sets out that functional classification within the European ViDA 2030 framework and presents a regulatory extension proposed for transactions between certified taxable persons.</p>
+<div class="actions"><a class="btn btn-primary" href="/vida2030/Osnias_ViDA2030_en-1-0.pdf" target="_blank">English PDF</a><a class="btn" href="/vida2030/Osnias_ViDA2030_fr-1-0.pdf" target="_blank">PDF français</a><a class="btn" href="https://zenodo.org/records/23296472" rel="noopener noreferrer" target="_blank">Zenodo DOI</a></div>
+</div>
+<div class="vida-callout"><strong>Functional principle</strong>Osnias Clearing processes commercial obligations net of VAT. The protocol clears net-of-VAT amounts; VAT data remain within the invoicing and statutory reporting systems.</div>
+</div></section></div></header>
+
+<main class="container vida-content">
+<section aria-labelledby="architecture-title">
+<h2 id="architecture-title">Functional separation between clearing, VAT and settlement</h2>
+<p>The technical note published on Zenodo defines a three-layer architecture. <strong>Osnias performs one function: multilateral netting of B2B trade obligations net of VAT.</strong> VAT is calculated line by line in each company’s ERP and transmitted through its e-invoicing provider. Monetary settlement of the resulting net balance is then carried out by authorised nodes.</p>
+<div class="vida-grid">
+<article class="vida-card"><h3>1. ERP & e-invoicing</h3><p>The invoice, taxable amount, applicable rate and VAT amount remain determined at company level and within the electronic invoicing framework.</p></article>
+<article class="vida-card"><h3>2. Osnias Clearing</h3><p>The register receives the eligible net-of-VAT trade obligation, identifies it through Osnias-ID and includes it in the multilateral netting process.</p></article>
+<article class="vida-card"><h3>3. Settlement</h3><p>Once net positions have been calculated, settlement is executed by the authorised infrastructure or node, separately from the clearing layer.</p></article>
+</div>
+</section>
+
+<section aria-labelledby="vida-title">
+<h2 id="vida-title">ViDA 2030: e-invoicing and Digital Reporting Requirements</h2>
+<p>The EU <strong>VAT in the Digital Age (ViDA)</strong> package, adopted in 2025, provides for the progressive introduction of new electronic invoicing and digital reporting requirements. <strong>Digital Reporting Requirements (DRR)</strong> for cross-border B2B transactions are due to apply from 1 July 2030. The Union framework relies on structured transaction data and e-invoicing as the reference documentation layer.</p>
+<p>Osnias is designed as a complementary layer. It does not replace the electronic invoice, VAT calculation or statutory reporting. It operates after qualification of the trade obligation in order to aggregate net-of-VAT amounts and calculate net positions.</p>
+<div class="vida-steps">
+<div class="vida-step"><b>Invoice</b>Transaction and VAT data in the ERP.</div>
+<div class="vida-step"><b>E-invoicing / DRR</b>Regulatory transmission under the applicable framework.</div>
+<div class="vida-step"><b>CLEAR 9W</b>Netting of eligible B2B trade obligations net of VAT.</div>
+<div class="vida-step"><b>Settlement</b>Settlement of the net balance by the authorised node.</div>
+</div>
+</section>
+
+<section aria-labelledby="clear9w-title">
+<h2 id="clear9w-title">CLEAR 9W for B2B commercial obligations</h2>
+<p>Commercial invoices admitted to the protocol may state <strong>“Payment method: CLEAR 9W”</strong>. The cycle is a nine-week protocol envelope, while its operational window is structured so that an admitted obligation reaches settlement within <strong>no more than 59 days</strong>, consistently with the operating doctrine set out in Book 4 and the EU framework on payment periods in commercial transactions.</p>
+<p>Where VAT becomes chargeable upon receipt of payment, the note provides that the cycle settlement date constitutes the date of receipt, supported by a per-invoice statement. Invoice and VAT documentation therefore remain distinct from the net position calculated by the clearing layer.</p>
+</section>
+
+<section aria-labelledby="identity-title">
+<h2 id="identity-title">Osnias-ID, confidentiality and the canonical register</h2>
+<p>The canonical clearing register on Sei references participants through their <strong>Osnias-ID</strong>. Legal identity, KYC data and compliance information are maintained off-chain by the competent node.</p>
+<p>This separation limits the exposure of company data in the clearing register while preserving the ability, within authorised systems, to link an obligation to its issuer, recipient and underlying tax documentation.</p>
+</section>
+
+<section aria-labelledby="proposal-title">
+<h2 id="proposal-title">Proposed extension: reverse charge between certified taxable persons</h2>
+<div class="vida-callout"><strong>Proposal — a proposed regulatory evolution.</strong>The note proposes, as an extension to the ViDA framework, a reverse-charge mechanism between certified taxable persons. It is not presented as a rule currently applicable under EU law.</div>
+<p>The proposed model would remove intermediate VAT cash flows between certified businesses while maintaining transaction-by-transaction VAT calculation and reporting. Each business would account for output and deductible VAT in accordance with the applicable rules, while Osnias would continue to clear net-of-VAT amounts.</p>
+<p>The proposal is intended in particular to reduce exposure to <strong>missing-trader / MTIC</strong> and carousel-fraud mechanisms. The note includes an outline Union provision intended to support regulatory discussion.</p>
+</section>
+
+<section aria-labelledby="eu-title">
+<h2 id="eu-title">European legal framework</h2>
+<p>The note sits in the context of <strong>Directive 2006/112/EC on the common system of VAT</strong>, as amended by <strong>Council Directive (EU) 2025/516</strong> under ViDA, together with Regulation (EU) 2025/517 and Implementing Regulation (EU) 2025/518. For payment periods in commercial transactions, the CLEAR 9W architecture also takes account of Directive 2011/7/EU.</p>
+<p>This web page describes the Osnias Clearing technical architecture and published proposal. Legal qualification falls within the remit of the competent authorities, and any evolution of the Union framework follows the applicable institutional process.</p>
+<div class="actions"><a class="btn" href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-digital-age-vida_en" rel="noopener noreferrer" target="_blank">European Commission — ViDA</a><a class="btn" href="https://eur-lex.europa.eu/eli/dir/2025/516/oj/eng" rel="noopener noreferrer" target="_blank">Directive (EU) 2025/516</a><a class="btn" href="https://doi.org/10.5281/zenodo.23296472" rel="noopener noreferrer" target="_blank">DOI 10.5281/zenodo.23296472</a></div>
+</section>
+
+<section aria-labelledby="faq-title">
+<h2 id="faq-title">Frequently asked questions</h2>
+<div class="vida-faq">
+<article><h3>Does Osnias Clearing collect VAT?</h3><p>The documented architecture keeps VAT outside the clearing layer. VAT remains calculated and reported by the company’s systems; Osnias clears the net-of-VAT trade obligation.</p></article>
+<article><h3>Which cycle applies to B2B commercial invoices?</h3><p>CLEAR 9W is the payment method dedicated to eligible B2B commercial obligations. The nine-week protocol envelope contains an operational window designed to lead to settlement within no more than 59 days.</p></article>
+<article><h3>Is the Osnias reverse-charge proposal already part of ViDA?</h3><p>It is an Osnias Clearing proposal for an extension to the existing EU framework and must be distinguished from the ViDA rules already enacted.</p></article>
+<article><h3>What is the role of the Sei register?</h3><p>The protocol uses Osnias-ID as its internal identifier. Legal identity and compliance information remain off-chain with the authorised node.</p></article>
+</div>
+</section>
+
+<p class="vida-note"><strong>Project status:</strong> Osnias Clearing is at testnet stage. The rules described (identity verification and authorisation of nodes, protocol rules) apply to production deployment.</p>
+<p class="vida-note">Web version: 11 October 2026 · Documentary source: Osnias Clearing, “ViDA 2030 integration — Functional classification and European framework”, version 1.0, Zenodo.</p>
+</main>
+
+<footer><div class="container">© 2026 Osnias Clearing · ViDA 2030 · <a href="https://doi.org/10.5281/zenodo.23296472">10.5281/zenodo.23296472</a></div></footer>
+</body>
+</html>
