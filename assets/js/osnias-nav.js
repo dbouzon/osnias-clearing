@@ -280,6 +280,28 @@
     return best;
   }
 
+  function pageLastmod(xml){
+    /* <lastmod> de la page courante (correspondance sur le chemin de <loc>). */
+    const here = norm(getLocalPath());
+    const urls = xml.getElementsByTagNameNS
+      ? xml.getElementsByTagNameNS("*", "url")
+      : xml.getElementsByTagName("url");
+    let found = "";
+    Array.prototype.forEach.call(urls, function(u){
+      if(found) return;
+      const locNode = (u.getElementsByTagNameNS ? u.getElementsByTagNameNS("*", "loc") : u.getElementsByTagName("loc"))[0];
+      const modNode = (u.getElementsByTagNameNS ? u.getElementsByTagNameNS("*", "lastmod") : u.getElementsByTagName("lastmod"))[0];
+      if(!locNode || !modNode) return;
+      let path = "/";
+      try{ path = new URL((locNode.textContent || "").trim()).pathname; }catch(e){ return; }
+      if(norm(path) === here){
+        const value = (modNode.textContent || "").trim();
+        if(/^\d{4}-\d{2}-\d{2}/.test(value)) found = value;
+      }
+    });
+    return found;
+  }
+
   function addSitemapLastmod(){
 
     if(
@@ -302,8 +324,8 @@
     stamp.setAttribute(
       "title",
       isEn
-        ? "Date read automatically from sitemap.xml"
-        : "Date lue automatiquement depuis sitemap.xml"
+        ? "Last update of this page, read from sitemap.xml"
+        : "Dernière mise à jour de cette page, lue dans sitemap.xml"
     );
     stamp.style.gridColumn = "3";
     stamp.style.justifySelf = "end";
@@ -344,7 +366,7 @@
           throw new Error("Invalid sitemap.xml");
         }
 
-        const raw = latestLastmod(xml);
+        const raw = pageLastmod(xml) || latestLastmod(xml);
 
         if(!raw){
           stamp.remove();
