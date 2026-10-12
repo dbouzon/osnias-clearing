@@ -24,9 +24,15 @@
       : path;
   }
 
-  function isEnglishPage(){
+  function isSpanishPage(){
     const path = getLocalPath();
-    return path === "/en" || path.startsWith("/en/");
+    return path === "/es" || path.startsWith("/es/");
+  }
+
+  function isEnglishPage(){
+    /* Les pages espagnoles utilisent le menu anglais : la documentation détaillée existe en anglais et en français. */
+    const path = getLocalPath();
+    return path === "/en" || path.startsWith("/en/") || isSpanishPage();
   }
 
   function buildMainNavigation(){
@@ -218,7 +224,9 @@
     if(!notice){
       notice = document.createElement("span");
       notice.className = "site-nav-notice";
-      notice.textContent = isEnglishPage()
+      notice.textContent = isSpanishPage()
+        ? "EN DESARROLLO · SIN VENTA DE TOKENS"
+        : isEnglishPage()
         ? "UNDER DEVELOPMENT · NO TOKEN SALE"
         : "EN DÉVELOPPEMENT · AUCUNE VENTE DE TOKEN";
     }
@@ -255,7 +263,7 @@
     if(!m) return raw || "";
     const date = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
     try{
-      return new Intl.DateTimeFormat(isEn ? "en-GB" : "fr-FR", {
+      return new Intl.DateTimeFormat(isSpanishPage() ? "es-ES" : (isEn ? "en-GB" : "fr-FR"), {
         day: "numeric", month: "long", year: "numeric", timeZone: "UTC"
       }).format(date);
     }catch(e){
@@ -323,7 +331,9 @@
     stamp.className = "site-nav-lastmod";
     stamp.setAttribute(
       "title",
-      isEn
+      isSpanishPage()
+        ? "Última actualización de esta página, según sitemap.xml"
+        : isEn
         ? "Last update of this page, read from sitemap.xml"
         : "Dernière mise à jour de cette page, lue dans sitemap.xml"
     );
@@ -374,7 +384,9 @@
         }
 
         const label = formatLastmod(raw, isEn);
-        stamp.textContent = isEn
+        stamp.textContent = isSpanishPage()
+          ? "Última actualización: " + label
+          : isEn
           ? "Last updated " + label
           : "Dernière mise à jour le " + label;
 
