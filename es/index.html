@@ -1,1 +1,374 @@
-hello
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Osnias Clearing — Red de compensación multinodo</title>
+<meta content="Osnias Clearing es una red multinodo de compensación multilateral, concebida para reducir las liquidaciones brutas y la liquidez necesaria entre jurisdicciones." name="description"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="Denis Bouzon" name="creator"/>
+<meta content="Osnias Clearing" name="publisher"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="#050814" name="theme-color"/>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon_16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon_32x32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon_64x64.png">
+<link rel="icon" type="image/png" sizes="128x128" href="/favicon_128x128.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon_180x180.png">
+<meta content="Osnias Clearing, compensación multilateral, multilateral netting, infraestructura de compensación, red de compensación multinodo, liquidación neta, posiciones netas, ahorro de liquidez, reducción de liquidaciones brutas, compensación interjurisdiccional, compensación transfronteriza, Sei Network, Ethereum escrow, ISO 20022, empresas medianas, Osnias-ID" name="keywords"/>
+<meta content="Osnias Clearing — Red de compensación multinodo" name="DC.title"/>
+<meta content="Denis Bouzon" name="DC.creator"/>
+<meta content="Osnias Clearing; compensación multilateral; infraestructura de compensación; red de compensación multinodo; liquidación neta; posiciones netas; ahorro de liquidez; reducción de liquidaciones brutas; compensación interjurisdiccional; compensación transfronteriza; Sei Network; Ethereum escrow; ISO 20022; Osnias-ID" name="DC.subject"/>
+<meta content="Infraestructura de compensación multinodo para la compensación multilateral, el cálculo de posiciones netas, la liquidación neta, el ahorro de liquidez y la compensación interjurisdiccional." name="DC.description"/>
+<meta content="Osnias Clearing" name="DC.publisher"/>
+<meta content="2026-10-12" name="DC.date"/>
+<meta content="Software" name="DC.type"/>
+<meta content="https://www.osnias-clearing.com/es/" name="DC.identifier"/>
+<meta content="es" name="DC.language"/>
+<meta content="CC BY-ND 4.0" name="DC.rights"/>
+<link href="https://www.osnias-clearing.com/es/" rel="canonical"/><link href="https://www.osnias-clearing.com/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/es/" hreflang="es" rel="alternate"/><link href="https://www.osnias-clearing.com/" hreflang="x-default" rel="alternate"/>
+<link href="https://orcid.org/0009-0007-8894-8902" rel="author"/>
+<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"/>
+<meta content="Osnias Clearing — Red de compensación multinodo" property="og:title"/>
+<meta content="Infraestructura de compensación multinodo para la compensación multilateral, el cálculo de posiciones netas, la liquidación neta, el ahorro de liquidez y la compensación interjurisdiccional." property="og:description"/>
+<meta content="website" property="og:type"/>
+<meta content="https://www.osnias-clearing.com/es/" property="og:url"/>
+<meta content="Osnias Clearing" property="og:site_name"/>
+<meta content="es_ES" property="og:locale"/>
+<meta content="fr_FR" property="og:locale:alternate"/>
+<meta content="en_GB" property="og:locale:alternate"/>
+<meta content="https://www.osnias-clearing.com/osnias-network.jpg" property="og:image"/>
+<meta content="Osnias Clearing — red multinodo sujeta a las jurisdicciones locales" property="og:image:alt"/>
+<meta content="Denis Bouzon" name="citation_author"/>
+<meta content="Osnias Clearing — Red de compensación multinodo" name="citation_title"/>
+<meta content="2026-10-12" name="citation_publication_date"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Osnias Clearing — Red de compensación multinodo" name="twitter:title"/>
+<meta content="Compensación multilateral, liquidación neta y ahorro de liquidez en una red de compensación multinodo." name="twitter:description"/>
+<meta content="https://www.osnias-clearing.com/osnias-network.jpg" name="twitter:image"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.osnias-clearing.com/#denis-bouzon",
+      "name": "Denis Bouzon",
+      "url": "https://www.osnias-clearing.com/",
+      "sameAs": [
+        "https://orcid.org/0009-0007-8894-8902",
+        "https://www.linkedin.com/in/denis-bouzon-3b766a437/"
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://www.osnias-clearing.com/#organization",
+      "name": "Osnias Clearing",
+      "url": "https://www.osnias-clearing.com/",
+      "email": "contact@osnias-clearing.com",
+      "description": "Infraestructura de compensación multinodo para la compensación multilateral de obligaciones económicas, el cálculo de posiciones netas y la reducción de las liquidaciones brutas, con un registro canónico en Sei y activos de liquidación separados en Ethereum.",
+      "founder": {
+        "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+      },
+      "sameAs": [
+        "https://github.com/dbouzon/osnias-clearing",
+        "https://www.linkedin.com/in/denis-bouzon-3b766a437/"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.osnias-clearing.com/#website",
+      "url": "https://www.osnias-clearing.com/",
+      "name": "Osnias Clearing",
+      "publisher": {
+        "@id": "https://www.osnias-clearing.com/#organization"
+      },
+      "inLanguage": ["fr", "en", "es"]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.osnias-clearing.com/es/#webpage",
+      "url": "https://www.osnias-clearing.com/es/",
+      "name": "Osnias Clearing — Red de compensación multinodo",
+      "description": "Red de compensación multinodo para la compensación multilateral, la liquidación neta, el ahorro de liquidez y la compensación interjurisdiccional.",
+      "isPartOf": {
+        "@id": "https://www.osnias-clearing.com/#website"
+      },
+      "about": {
+        "@id": "https://www.osnias-clearing.com/#organization"
+      },
+      "author": {
+        "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+      },
+      "dateModified": "2026-10-12",
+      "inLanguage": "es"
+    }
+  ]
+}
+</script>
+<style>
+    .hero{padding-top:2.2rem;padding-bottom:2.5rem}
+    .hero h1{font-size:clamp(2.4rem,5vw,4rem);line-height:1.05;margin:.35rem 0 .8rem}
+    .hero-role{font-size:clamp(1.1rem,2vw,1.55rem);line-height:1.25;margin-bottom:1.35rem}
+    .hero-lead{max-width:62rem}
+    .hero-heading{text-align:left;margin-bottom:1.15rem}.hero-heading h1{max-width:none}.hero-heading .hero-role{max-width:none}.hero-split{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);gap:2.25rem;align-items:start}
+    .hero-copy{text-align:left}
+    .hero-copy .hero-lead{max-width:none;margin-left:0 !important;margin-right:0 !important}
+    .hero-copy .hero-role{max-width:54rem}
+    .hero-illustration{margin:0 !important;text-align:center}
+    .hero-illustration img{width:100%;max-width:100%;height:auto;display:block;margin:0 auto;border-radius:16px}
+    .language-switch{display:flex;justify-content:flex-start;gap:.5rem;margin:0 0 1.5rem;flex-wrap:wrap}
+    
+    
+    
+    
+    .hero-copy p{text-align:justify;text-justify:inter-word;}
+    @media (max-width:900px){
+      .hero{padding-top:1.5rem}
+      .hero h1{font-size:clamp(2.1rem,10vw,3.2rem)}
+      .hero-split{grid-template-columns:1fr;gap:1.5rem}
+      .hero-heading{text-align:center}.hero-copy{text-align:center}
+      .hero-copy .hero-role{max-width:none}
+      .hero-copy .hero-lead{margin-left:auto !important;margin-right:auto !important}
+      .hero-illustration{margin-top:.25rem !important}
+    }
+  
+    .language-switch,
+    .lang-switch{
+      justify-content:flex-start !important;
+      text-align:left !important;
+      margin-left:0 !important;
+      margin-right:auto !important;
+    }
+
+  
+    .hero-heading .eyebrow{
+      display:block;
+      width:100%;
+      max-width:none;
+      text-align:center;
+      font-size:1.05rem;
+      letter-spacing:.14em;
+      margin-bottom:.9rem;
+    }
+
+  
+    .hero-heading h1,
+    .hero-heading .hero-role{
+      text-align:center;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+  
+    .language-switch{display:flex;justify-content:flex-start;gap:.65rem;margin:0 0 1.5rem;flex-wrap:wrap}
+    .language-switch a,.language-switch .active-language{
+      display:inline-block;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:999px;
+      padding:.45rem .8rem;
+      color:inherit;
+      text-decoration:none;
+      font:inherit;
+    }
+    .language-switch .active-language{background:rgba(255,255,255,.10)}
+    .language-switch a:hover{background:rgba(255,255,255,.07)}
+    </style>
+</head>
+<body>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/es/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Navegación principal del sitio" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<header>
+<div class="container">
+<section class="hero">
+<div aria-label="Selección de idioma" class="language-switch"><a href="/" hreflang="fr" lang="fr" title="Version française">🇫🇷 Français</a><a href="/en/" hreflang="en" lang="en" title="English version">🇬🇧 English</a><span class="active-language">🇪🇸 Español</span></div>
+<div class="hero-heading">
+<div class="eyebrow">Infraestructura de compensación descentralizada</div>
+<h1>Red de compensación multinodo</h1>
+<div class="hero-role">Compensación multilateral · Liquidación neta · Compensación interjurisdiccional</div>
+</div>
+<div class="hero-split">
+<div class="hero-copy">
+<div>
+<p class="hero-lead" style="margin-left:auto;margin-right:auto;">
+<strong>Osnias Clearing es un proyecto de red de compensación multinodo destinada a compensar las obligaciones internas de cada nodo, así como las obligaciones entre nodos, permaneciendo cada nodo sujeto a su propia jurisdicción.</strong>
+</p>
+<p class="hero-lead" style="margin-left:auto;margin-right:auto;">
+                La red se dirige a <strong>empresas medianas y de mayor tamaño</strong> que mantienen intercambios recurrentes dentro de una misma zona, entre varias zonas o dentro de una misma cadena de valor. Su objeto es reducir las liquidaciones brutas, de modo que solo deban liquidarse las posiciones netas resultantes de ciclos económicos de <strong>1, 9 o 13 semanas</strong>.
+              </p>
+<p class="hero-lead" style="margin-left:auto;margin-right:auto;">
+                Los activos permanecen bajo el control de los clientes y bajo la supervisión de los gestores de nodo, de conformidad con la jurisdicción aplicable. Por diseño, la capa de <strong>compensación</strong> opera sobre su propia infraestructura blockchain y permanece <strong>estrictamente separada y aislada de la capa de custodia y liquidación de los activos</strong>.
+              </p>
+</div>
+</div>
+<figure class="hero-illustration">
+<a href="/osnias-network.jpg" rel="noopener noreferrer" target="_blank" title="Ver a tamaño completo">
+<img alt="Osnias Clearing — red de compensación multinodo sujeta a las jurisdicciones locales" decoding="async" loading="eager" src="/osnias-network.jpg" width="670" height="447"/>
+</a>
+</figure>
+</div>
+</section>
+</div>
+</header>
+<main class="container">
+<section id="presentation">
+<div>
+<div class="section-label">01 · Presentación del proyecto</div>
+<h2>Una infraestructura para la compensación multilateral de operaciones económicas reales</h2>
+<p class="section-intro">Osnias Clearing está concebido para organizar la compensación multilateral de obligaciones económicas entre empresas e instituciones que mantienen intercambios recurrentes. Su objeto no es crear un nuevo medio de pago, sino reducir las liquidaciones brutas, calcular las posiciones netas y limitar la liquidez necesaria para la liquidación final.</p>
+<p>
+          La red se estructura en <strong>nodos locales</strong>. Cada nodo agrupa a operadores económicos que comparten un mismo entorno operativo o jurídico. Las obligaciones recíprocas se compensan, en primer lugar, dentro del nodo; únicamente el saldo residual queda expuesto posteriormente a nivel internodal.
+        </p>
+<p>
+          Esta organización permite contemplar usos dentro de una misma zona económica, entre varias jurisdicciones o en cadenas de valor verticales en las que las mismas empresas son sucesivamente clientes, proveedores o socios entre sí. El modelo se dirige prioritariamente a <strong>empresas medianas y de mayor tamaño</strong>, para las cuales los flujos recurrentes y las obligaciones cruzadas pueden justificar una compensación organizada en el tiempo.
+        </p>
+<p>
+          El protocolo se basa en un <strong>registro común de compensación en Sei</strong>, que registra las obligaciones y calcula las posiciones de compensación, mientras que los activos destinados a la liquidación permanecen separados a nivel de los nodos en <strong>Ethereum</strong>. Esta separación es estructural: Osnias desarrolla la infraestructura de compensación, pero no tiene acceso a los activos depositados en garantía que se utilizan para la liquidación.
+        </p>
+<p>
+          Los ciclos de <strong>1 semana, 9 semanas y 13 semanas</strong> responden a horizontes económicos reales: 1W para el entorno de pruebas (testnet); 9W para las obligaciones comerciales B2B, con liquidación dentro del plazo de 60 días aplicable a las operaciones comerciales en virtud de la Directiva 2011/7/UE; y 13W para las obligaciones no comerciales admisibles. Proporcionan a la red el tiempo necesario para agregar las obligaciones cruzadas antes de calcular las posiciones netas que deben liquidarse, primero a nivel local y después entre nodos.
+        </p>
+</div>
+</section>
+<section id="model">
+<div>
+<div class="section-label">02 · Modelo de compensación</div>
+<h2>Un registro común para la compensación internodal e interjurisdiccional</h2>
+<p class="section-intro">
+          Osnias Clearing organiza una red de nodos conectados a un registro común de compensación. Cada nodo presta servicio a sus propios usuarios, dentro de su entorno jurídico y operativo, y participa al mismo tiempo en una compensación común con los demás nodos.
+        </p>
+</div>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Compensación local</div>
+<h3>Dentro de cada nodo</h3>
+<p>Las obligaciones de los usuarios de un mismo nodo se agregan y compensan a nivel local antes de cualquier exposición internodal.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Compensación internodal</div>
+<h3>Entre varios nodos</h3>
+<p>Tras la compensación local, las posiciones residuales se agregan a nivel de la red y se compensan entre los nodos participantes.</p>
+</article>
+<article class="card">
+<div class="card-kicker">Interjurisdiccional</div>
+<h3>Una red común, marcos locales</h3>
+<p>Cada nodo sigue siendo una entidad local sujeta a su propio marco regulatorio, al tiempo que utiliza un protocolo común de compensación y comunicación.</p>
+</article>
+</div>
+</section>
+<section id="architecture">
+<div>
+<div class="section-label">03 · Arquitectura funcional</div>
+<h2>Compensación en Sei, activos separados en Ethereum</h2>
+<p class="section-intro">
+          La arquitectura separa estrictamente el cálculo de las obligaciones de compensación y la tenencia de los activos utilizados para su liquidación.
+        </p>
+</div>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">SEI</div>
+<h3>Registro común de obligaciones</h3>
+<p>Sei alberga el registro canónico de la compensación, las posiciones de los participantes, los ciclos y los estados necesarios para el cálculo de la compensación.</p>
+</article>
+<article class="card">
+<div class="card-kicker">ETHEREUM</div>
+<h3>Depósito en garantía y liquidación</h3>
+<p>Los activos destinados a la liquidación se depositan en garantía de forma separada en Ethereum, a nivel de los nodos. No son mantenidos por el registro de compensación.</p>
+</article>
+<article class="card">
+<div class="card-kicker">OSNIAS</div>
+<h3>Separación por diseño</h3>
+<p>Osnias desarrolla la infraestructura de compensación en Sei. Por diseño y por código, Osnias no tiene acceso a los activos mantenidos o depositados en garantía en Ethereum.</p>
+</article>
+</div>
+</section>
+<section id="cycles">
+<div>
+<div class="section-label">04 · Ciclos económicos</div>
+<h2>1 semana · 9 semanas · 13 semanas</h2>
+<p class="section-intro">Los ciclos de compensación responden a horizontes económicos reales. Permiten agregar las obligaciones recíprocas antes del cálculo de las posiciones netas y de su liquidación neta, con el fin de reducir los flujos brutos y la liquidez comprometida.</p>
+</div>
+<div class="notice"><strong>Principio.</strong> La red persigue un ahorro de liquidez mediante la reducción del número y del volumen de las liquidaciones brutas: compensación, en primer lugar, dentro de cada nodo y, posteriormente, entre nodos, antes de la liquidación de las posiciones netas.</div>
+</section>
+<section id="references">
+<div>
+<div class="section-label">05 · Referencias públicas</div>
+<h2>Regulación, despliegue y documentación técnica</h2>
+<p class="section-intro">La documentación técnica se encuentra disponible en inglés y en francés.</p>
+</div>
+<div class="resources">
+<a class="resource" href="/en/regulation/">
+<div><strong>Regulation</strong><span>Ámbito funcional · Memorandos · Actuaciones regulatorias</span></div>
+<div class="resource-type">OPEN →</div>
+</a>
+<a class="resource" href="/en/deployment/">
+<div><strong>Official Deployment</strong><span>Contratos publicados · Referencias de testnet · Verificación</span></div>
+<div class="resource-type">VERIFY →</div>
+</a>
+<a class="resource" href="/en/documentation/">
+<div><strong>Documentation</strong><span>Libros técnicos · DOI Zenodo · Código fuente · Referencias públicas</span></div>
+<div class="resource-type">OPEN →</div>
+</a>
+</div>
+</section>
+<section id="status">
+<div>
+<div class="section-label">06 · Estado del proyecto</div>
+<h2>Infraestructura en fase de desarrollo y cualificación</h2>
+<p class="section-intro">La documentación pública y varios componentes de testnet se encuentran disponibles. El proyecto prosigue su encuadre regulatorio, sus desarrollos técnicos y su cualificación de seguridad con carácter previo a cualquier despliegue en producción.</p>
+</div>
+<div class="notice"><strong>Información técnica.</strong> Este sitio describe una infraestructura tecnológica de compensación. No constituye una oferta de valores, un asesoramiento en materia de inversión, un folleto ni una solicitud.</div>
+</section>
+<section id="contact">
+<div class="section-label">07 · Contacto</div>
+<h2>Contacto Osnias Clearing</h2>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">Website</div>
+<h3>Osnias Clearing</h3>
+<p>Sitio oficial y documentación pública del proyecto.</p>
+<div class="actions"><a class="btn btn-primary" href="/es/">www.osnias-clearing.com</a></div>
+</article>
+<article class="card">
+<div class="card-kicker">Email</div>
+<h3>Contacto</h3>
+<p>Consultas técnicas, institucionales, regulatorias o de colaboración.</p>
+<div class="actions"><a class="btn" href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a></div>
+</article>
+<article class="card">
+<div class="card-kicker">Public Repository</div>
+<h3>GitHub</h3>
+<p>Páginas públicas, archivos técnicos y documentación del proyecto.</p>
+<div class="actions"><a class="btn" href="https://github.com/dbouzon/osnias-clearing" rel="noopener noreferrer" target="_blank">Open GitHub Repository ↗</a></div>
+</article>
+</div>
+<div class="notice">Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902" rel="noopener noreferrer" target="_blank">0009-0007-8894-8902</a></div>
+</section>
+</main>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div>© 2026 Osnias Clearing · Red de compensación multinodo · Última actualización: 12 de octubre de 2026</div>
+<div>
+<a href="/en/architecture/">Architecture</a> · 
+          <a href="/en/rules/">Rules</a> · 
+          <a href="/en/cycle/">Cycles</a> · 
+          <a href="/en/security/">Security</a> · 
+          <a href="/en/onboarding/">Onboarding</a> · 
+          <a href="/en/regulation/">Regulation</a>
+</div>
+</div>
+<div class="footer-legal">Osnias Clearing facilita información técnica pública con fines de investigación, desarrollo, revisión y auditoría. Ningún contrato de producción deberá considerarse activo si no figura en el registro oficial de despliegue.</div>
+</div>
+</footer>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
