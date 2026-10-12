@@ -6,8 +6,9 @@
     <loc>https://www.osnias-clearing.com/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/" />
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -15,8 +16,19 @@
     <loc>https://www.osnias-clearing.com/en/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/" />
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/es/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/" />
+    <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -127,7 +139,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/onboarding/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/onboarding/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/onboarding/" />
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -136,7 +148,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/onboarding/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/onboarding/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/onboarding/" />
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -247,7 +259,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/vida2030/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/vida2030/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/" />
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
@@ -256,7 +268,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/vida2030/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/vida2030/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/" />
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
