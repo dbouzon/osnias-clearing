@@ -18,7 +18,7 @@
 <meta content="Institutional Client Onboarding — Node Admission, Escrow Funding and Clearing Access" name="DC.title"/>
 <meta content="Denis Bouzon" name="DC.creator"/>
 <meta content="Osnias Clearing" name="DC.publisher"/>
-<meta content="2026-09-28" name="DC.date"/>
+<meta content="2026-10-12" name="DC.date"/>
 <meta content="Technical Documentation" name="DC.type"/>
 <meta content="institutional onboarding; client onboarding; node admission; participant lifecycle; EURC escrow; Ethereum escrow; Sei clearing access; Osnias-ID; non-custodial onboarding; secure onboarding; off-boarding; digital asset infrastructure" name="DC.subject"/>
 <meta content="https://www.osnias-clearing.com/en/onboarding/" name="DC.identifier"/>
@@ -35,7 +35,7 @@
 <meta content="https://www.osnias-clearing.com/onboarding/onboarding.jpg" property="og:image"/>
 <meta content="Institutional Client Onboarding — Node Admission, Escrow Funding and Clearing Access" property="og:image:alt"/>
 <meta content="#050814" name="theme-color"/>
-<meta content="10.5281/zenodo.23010805" name="citation_doi"/>
+<meta content="10.5281/zenodo.23318060" name="citation_doi"/>
 
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script defer="" src="/assets/js/osnias-seo.js"></script>
@@ -79,11 +79,11 @@
         "@id": "https://www.osnias-clearing.com/#organization"
       },
       "datePublished": "2026-09-28",
-      "dateModified": "2026-10-04",
-      "identifier": "https://doi.org/10.5281/zenodo.23010805",
+      "dateModified": "2026-10-12",
+      "identifier": "https://doi.org/10.5281/zenodo.23318060",
       "sameAs": [
-        "https://doi.org/10.5281/zenodo.23010805",
-        "https://zenodo.org/records/23010805"
+        "https://doi.org/10.5281/zenodo.23318060",
+        "https://zenodo.org/records/23318060"
       ],
       "inLanguage": "en",
       "keywords": [
@@ -156,14 +156,14 @@
 <p class="hero-lead">
               Book VI describes the operational process through which a company becomes a participant of an Osnias
               Clearing node, funds an escrow contract with native EURC on Ethereum and gains access to the canonical
-              clearing layer on Sei. It turns the identity, architecture, clearing, synchronization and security principles
+              clearing layer on Sei. It turns the identity, architecture, clearing, synchronisation and security principles
               established in the preceding Books into a coherent admission, activation and exit process.
             </p>
-<p class="section-intro"><strong>Book VI · Release 1.0 · 28 September 2026</strong></p>
+<p class="section-intro"><strong>Book VI · Release 1.1 · 12 October 2026</strong><br/><span style="opacity:.8">Last updated: <time datetime="2026-10-12">12 October 2026</time> · Release 1.0 of 28 September 2026: <a href="/onboarding/Book_6_Onboarding_1-0-en.pdf" target="_blank">PDF</a> · <a href="https://doi.org/10.5281/zenodo.23010805" rel="noopener" target="_blank">DOI 10.5281/zenodo.23010805</a></span></p>
 <div class="actions">
-<a class="btn btn-primary" href="/onboarding/Book_6_Onboarding_1-0-en.pdf" target="_blank">English PDF</a>
-<a class="btn" href="/onboarding/Livre%206-Onboarding-1-0-fr.pdf" target="_blank">French PDF</a>
-<a class="btn" href="https://zenodo.org/records/23010805" rel="noopener" target="_blank">Zenodo DOI</a>
+<a class="btn btn-primary" href="/onboarding/Book_6_Onboarding_1-1-en.pdf" target="_blank">English PDF</a>
+<a class="btn" href="/onboarding/Livre-6-Onboarding-1-1-fr.pdf" target="_blank">French PDF</a>
+<a class="btn" href="https://zenodo.org/records/23318060" rel="noopener" target="_blank">Zenodo DOI</a>
 </div>
 </div>
 <figure class="hero-illustration">
@@ -189,10 +189,22 @@
 <p class="section-intro"><strong>Book VI covers the full participant lifecycle from admission to controlled exit.</strong> It therefore includes onboarding controls, identity activation, escrow funding, access to the Sei clearing layer, renewal or update of participant credentials and off-boarding conditions. The documentation is intended for node operators, financial institutions, infrastructure partners, regulators and auditors assessing how corporate participants enter, operate within and leave the Osnias Clearing network.</p>
 </section>
 
+<section aria-label="What is new in Release 1.1">
+<div class="section-label">Release 1.1</div>
+<h2>Changes as at 12 October 2026</h2>
+<ul>
+<li><strong>Framework agreement:</strong> the participant’s adherence to the framework agreement and the Netting Rules (Book 3) becomes an admission requirement, prior to any transaction.</li>
+<li><strong>O-POP access:</strong> a new step in the journey, opening VPN access to the O-POP and to the dedicated RPC endpoint on Sei (Book 7), with optional ERP connection.</li>
+<li><strong>Key custody:</strong> by default, the participant retains sole control of domains A, B and C; any delegation to the node operator is governed by a private contract outside the protocol.</li>
+<li><strong>Forced exit:</strong> BLOCKED status, which is reversible, followed by REVOKED status, which is irreversible, at the initiative of the node operator.</li>
+<li><strong>Document framework:</strong> table of the seven Books at the beginning of the document; framework table completed with Book 7.</li>
+</ul>
+</section>
+
 </main>
 </div>
 <footer>
-<div class="container">© 2026 Osnias Clearing · Book VI · Public Technical Documentation</div>
+<div class="container">© 2026 Osnias Clearing · Book VI · Release 1.1 · Last updated: 12 October 2026</div>
 </footer>
 
 <script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
