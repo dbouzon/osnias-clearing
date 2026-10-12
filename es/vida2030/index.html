@@ -1,1 +1,264 @@
-hello
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ViDA 2030, IVA y compensación B2B — arquitectura de Osnias Clearing</title>
+<meta name="description" content="Nota técnica de Osnias Clearing sobre la integración de ViDA 2030: compensación multilateral B2B sin IVA, facturación electrónica, notificación digital del IVA, CLEAR 9W y propuesta de inversión del sujeto pasivo entre sujetos pasivos certificados."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+<link rel="canonical" href="https://www.osnias-clearing.com/es/vida2030/"/>
+<link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/vida2030/"/>
+<link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/vida2030/"/>
+<link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/vida2030/"/>
+<link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/"/>
+<link rel="stylesheet" href="/assets/css/osnias.css"/>
+<script defer src="/assets/js/osnias-seo.js"></script>
+<script defer src="/assets/js/osnias-nav.js"></script>
+
+<meta name="author" content="Denis Bouzon"/>
+<meta name="creator" content="Denis Bouzon"/>
+<meta name="publisher" content="Osnias Clearing"/>
+<meta name="citation_author" content="Denis Bouzon"/>
+<meta name="citation_title" content="Osnias Clearing — Integración de ViDA 2030: clasificación funcional y marco europeo"/>
+<meta name="citation_doi" content="10.5281/zenodo.23296472"/>
+<meta name="citation_publication_date" content="2026-10-11"/>
+<meta name="abstract" content="Arquitectura del IVA de Osnias Clearing: compensación multilateral de obligaciones comerciales B2B sin IVA, cálculo del IVA línea por línea en el ERP y en la facturación electrónica, liquidación por nodos autorizados, CLEAR 9W y propuesta de inversión del sujeto pasivo entre sujetos pasivos certificados."/>
+<meta name="subject" content="ViDA 2030; IVA; facturación electrónica; requisitos de notificación digital; B2B; compensación multilateral; netting; CLEAR 9W; Directiva 2006/112/CE; Directiva 2011/7/UE; EN 16931; ISO 20022; fraude carrusel"/>
+<meta name="keywords" content="Osnias Clearing, ViDA 2030, IVA en la era digital, IVA, facturación electrónica, requisitos de notificación digital, DRR, compensación B2B, compensación multilateral, sin IVA, CLEAR 9W, 59 días, Directiva 2006/112/CE, Directiva 2011/7/UE, Directiva (UE) 2025/516, EN 16931, inversión del sujeto pasivo, sujetos pasivos, fraude carrusel, MTIC, ISO 20022, Sei, Osnias-ID"/>
+<meta name="DC.title" content="Osnias Clearing — ViDA 2030"/>
+<meta name="DC.creator" content="Denis Bouzon"/>
+<meta name="DC.publisher" content="Osnias Clearing"/>
+<meta name="DC.date" content="2026-10-11"/>
+<meta name="DC.relation" content="https://hal.science/hal-05795026"/>
+<meta name="DC.type" content="Nota técnica"/>
+<meta name="DC.identifier" content="https://www.osnias-clearing.com/es/vida2030/"/>
+<meta name="DC.language" content="es"/>
+
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="Osnias Clearing"/>
+<meta property="og:locale" content="es_ES"/>
+<meta property="og:locale:alternate" content="fr_FR"/>
+<meta property="og:locale:alternate" content="en_GB"/>
+<meta property="og:url" content="https://www.osnias-clearing.com/es/vida2030/"/>
+<meta property="og:title" content="ViDA 2030, IVA y compensación B2B — Osnias Clearing"/>
+<meta property="og:description" content="Compensación B2B sin IVA, facturación electrónica, requisitos de notificación digital, CLEAR 9W y propuesta de inversión del sujeto pasivo entre sujetos pasivos certificados."/>
+<meta property="article:published_time" content="2026-10-11"/>
+<meta property="article:modified_time" content="2026-10-12"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ViDA 2030, IVA y compensación B2B — Osnias Clearing"/>
+<meta name="twitter:description" content="Arquitectura funcional de Osnias para ViDA 2030: compensación sin IVA, facturación electrónica, DRR, CLEAR 9W y propuesta de inversión del sujeto pasivo."/>
+
+<style>
+.vida-content{max-width:1100px;margin:2.2rem auto 0}.vida-content p,.vida-faq p{line-height:1.72}.vida-content h2{margin-top:2.2rem}.vida-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:1.25rem 0 2rem}.vida-card,.vida-callout,.vida-faq article{border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:20px;background:rgba(255,255,255,.025)}.vida-card h3,.vida-faq h3{margin-top:0}.vida-callout{margin:1.5rem 0}.vida-callout strong{display:block;margin-bottom:.35rem}.vida-faq{display:grid;gap:14px;margin-top:1rem}.vida-note{opacity:.82}.vida-kicker{font-weight:700}.vida-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:1.2rem 0}.vida-step{padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02)}.vida-step b{display:block;margin-bottom:.35rem}.vida-eu-flag{display:inline-flex;align-items:center;font-size:1.6rem;line-height:1;margin-left:.35rem;user-select:none}@media(max-width:900px){.vida-grid,.vida-steps{grid-template-columns:1fr}}
+</style>
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "TechArticle",
+   "@id": "https://www.osnias-clearing.com/es/vida2030/#article",
+   "headline": "Osnias Clearing — Integración de ViDA 2030: clasificación funcional y marco europeo",
+   "name": "ViDA 2030, IVA y compensación B2B — Osnias Clearing",
+   "description": "Nota técnica sobre la arquitectura del IVA de Osnias Clearing, la facturación electrónica, los requisitos de notificación digital, CLEAR 9W y una propuesta de inversión del sujeto pasivo entre sujetos pasivos certificados.",
+   "url": "https://www.osnias-clearing.com/es/vida2030/",
+   "inLanguage": "es",
+   "datePublished": "2026-10-11",
+   "dateModified": "2026-10-12",
+   "identifier": "https://doi.org/10.5281/zenodo.23296472",
+   "sameAs": [
+    "https://zenodo.org/records/23296472",
+    "https://hal.science/hal-05795026"
+   ],
+   "author": {
+    "@type": "Person",
+    "name": "Denis Bouzon",
+    "sameAs": "https://orcid.org/0009-0007-8894-8902"
+   },
+   "publisher": {
+    "@type": "Organization",
+    "name": "Osnias Clearing",
+    "url": "https://www.osnias-clearing.com/"
+   },
+   "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.osnias-clearing.com/es/vida2030/"
+   },
+   "keywords": [
+    "ViDA 2030",
+    "IVA",
+    "facturación electrónica",
+    "requisitos de notificación digital",
+    "compensación B2B",
+    "compensación multilateral",
+    "CLEAR 9W",
+    "EN 16931",
+    "inversión del sujeto pasivo",
+    "fraude carrusel",
+    "ISO 20022"
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://www.osnias-clearing.com/es/vida2030/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "¿Recauda Osnias Clearing el IVA?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "La arquitectura documentada mantiene el IVA fuera de la capa de compensación. El IVA sigue siendo calculado y declarado por los sistemas de la empresa; Osnias compensa la obligación comercial sin IVA."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Qué ciclo se aplica a las facturas comerciales B2B?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "CLEAR 9W es la modalidad de pago dedicada a las obligaciones comerciales B2B admisibles. La envolvente de nueve semanas del protocolo contiene una ventana operativa diseñada para que la liquidación se produzca en un plazo máximo de 59 días."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Forma ya parte de ViDA la propuesta de inversión del sujeto pasivo de Osnias?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Se trata de una propuesta de Osnias Clearing para ampliar el marco vigente de la Unión, que debe distinguirse de las normas ViDA ya adoptadas."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Cuál es la función del registro Sei?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "El protocolo utiliza el Osnias-ID como identificador interno. La identidad jurídica y la información de cumplimiento normativo permanecen fuera de la cadena, en el nodo autorizado."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Puede funcionar el protocolo sin la inversión del sujeto pasivo propuesta?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Sí. Sin inversión del sujeto pasivo, Osnias compensa los importes sin IVA y el IVA de cada factura se repercute, se abona y se declara conforme al régimen general. La inversión del sujeto pasivo es una evolución propuesta: su eventual adopción modificaría el tratamiento del IVA en el ERP, sin modificar el protocolo de compensación."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Cómo concilia el ERP las facturas compensadas?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "En cada ciclo, el participante recibe un extracto de compensación en formato ISO 20022 (camt.054) que detalla las obligaciones compensadas. El ERP puede conciliar así cada factura, su IVA y el saldo neto liquidado."
+     }
+    }
+   ]
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Osnias Clearing",
+     "item": "https://www.osnias-clearing.com/es/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "ViDA 2030",
+     "item": "https://www.osnias-clearing.com/es/vida2030/"
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/es/">OSNIAS <span>CLEARING</span></a><nav aria-label="Navegación principal" class="site-nav-buttons" id="mainNav"></nav></div></div>
+<div class="container"><div aria-label="Selección de idioma" class="actions"><a class="btn" href="/vida2030/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/vida2030/" hreflang="en" lang="en">🇬🇧 English</a><a aria-current="page" class="btn btn-primary" href="/es/vida2030/" hreflang="es" lang="es">🇪🇸 Español</a><span aria-hidden="true" class="vida-eu-flag" title="">🇪🇺</span></div></div>
+
+<header><div class="container"><section class="hero"><div class="hero-grid"><div>
+<div class="eyebrow">Nota técnica · ViDA 2030 · IVA · B2B</div>
+<h1>ViDA 2030: IVA, facturación electrónica y compensación B2B</h1>
+<p class="hero-lead">Osnias Clearing separa la compensación multilateral de las obligaciones comerciales B2B sin IVA del cálculo del IVA y de la liquidación monetaria. La presente nota expone esta clasificación funcional en el marco europeo de ViDA 2030 y presenta una evolución normativa propuesta para las operaciones entre sujetos pasivos certificados.</p>
+<div class="actions"><a class="btn btn-primary" href="/vida2030/Osnias_ViDA2030_en-1-0.pdf" target="_blank">PDF en inglés</a><a class="btn" href="/vida2030/Osnias_ViDA2030_fr-1-0.pdf" target="_blank">PDF en francés</a><a class="btn" href="https://zenodo.org/records/23296472" rel="noopener noreferrer" target="_blank">DOI Zenodo</a><a class="btn" href="https://hal.science/hal-05795026" rel="noopener noreferrer" target="_blank">HAL</a></div><p class="vida-note" style="margin-top:.9rem">Versión 1.0 publicada el <time datetime="2026-10-11">11 de octubre de 2026</time> · Última actualización de la página: <time datetime="2026-10-12">12 de octubre de 2026</time> · La nota está disponible en inglés y en francés.</p>
+</div>
+<div class="vida-callout"><strong>Principio funcional</strong>Osnias Clearing trata las obligaciones comerciales sin IVA. El protocolo compensa importes sin IVA; los datos del IVA permanecen en los sistemas de facturación y de declaración legal.</div>
+</div></section></div></header>
+
+<main class="container vida-content">
+<section aria-labelledby="architecture-title">
+<h2 id="architecture-title">Separación funcional entre compensación, IVA y liquidación</h2>
+<p>La nota técnica publicada en Zenodo define una arquitectura en tres capas. <strong>Osnias desempeña una única función: la compensación multilateral de las obligaciones comerciales B2B sin IVA.</strong> El IVA se calcula línea por línea en el ERP de cada empresa y se transmite a través de su proveedor de facturación electrónica. La liquidación monetaria del saldo neto resultante corresponde, a continuación, a los nodos autorizados.</p>
+<div class="vida-grid">
+<article class="vida-card"><h3>1. ERP y facturación electrónica</h3><p>La factura, la base imponible, el tipo aplicable y la cuota de IVA siguen determinándose a nivel de la empresa y en el marco de la facturación electrónica.</p></article>
+<article class="vida-card"><h3>2. Osnias Clearing</h3><p>El registro recibe la obligación comercial admisible sin IVA, la identifica mediante el Osnias-ID y la incorpora al proceso de compensación multilateral.</p></article>
+<article class="vida-card"><h3>3. Liquidación</h3><p>Una vez calculadas las posiciones netas, la liquidación es ejecutada por la infraestructura o el nodo autorizado, de forma separada de la capa de compensación.</p></article>
+</div>
+</section>
+
+<section aria-labelledby="vida-title">
+<h2 id="vida-title">ViDA 2030: facturación electrónica y requisitos de notificación digital</h2>
+<p>El paquete europeo <strong>«El IVA en la era digital» (ViDA)</strong>, adoptado en 2025, prevé la introducción progresiva de nuevas obligaciones de facturación electrónica y de notificación digital. Los <strong>requisitos de notificación digital (DRR)</strong> aplicables a las operaciones B2B transfronterizas serán exigibles a partir del 1 de julio de 2030. El marco de la Unión se basa en datos estructurados de las operaciones y en la factura electrónica como referencia documental.</p>
+<p>Osnias está concebido como una capa complementaria. No sustituye a la factura electrónica, al cálculo del IVA ni a la declaración legal. Interviene tras la calificación de la obligación comercial, con el fin de agregar los importes sin IVA y calcular las posiciones netas.</p>
+<div class="vida-steps">
+<div class="vida-step"><b>Factura</b>Datos de la operación y del IVA en el ERP.</div>
+<div class="vida-step"><b>Facturación electrónica / DRR</b>Transmisión reglamentaria conforme al marco aplicable.</div>
+<div class="vida-step"><b>CLEAR 9W</b>Compensación de las obligaciones comerciales B2B admisibles sin IVA.</div>
+<div class="vida-step"><b>Liquidación</b>Liquidación del saldo neto por el nodo autorizado.</div>
+</div>
+</section>
+
+<section aria-labelledby="clear9w-title">
+<h2 id="clear9w-title">CLEAR 9W para las obligaciones comerciales B2B</h2>
+<p>Las facturas comerciales admitidas en el protocolo pueden incluir la mención <strong>«Modalidad de pago: CLEAR 9W»</strong>. El ciclo constituye una envolvente de nueve semanas del protocolo, cuya ventana operativa se organiza de modo que una obligación admitida se liquide en un plazo <strong>máximo de 59 días</strong>, de conformidad con la doctrina operativa del Libro 4 y con el marco europeo relativo a los plazos de pago en las operaciones comerciales.</p>
+<p>Cuando el IVA se devenga en el momento del cobro, la nota establece que la fecha de liquidación del ciclo tiene la consideración de fecha de cobro, acreditada mediante un justificante por factura. La documentación de facturación y de IVA se mantiene así diferenciada de la posición neta calculada por la capa de compensación.</p>
+</section>
+
+<section aria-labelledby="identity-title">
+<h2 id="identity-title">Osnias-ID, confidencialidad y registro canónico</h2>
+<p>El registro canónico de compensación, mantenido en Sei, identifica a los participantes mediante su <strong>Osnias-ID</strong>. La identidad jurídica, los datos de diligencia debida (KYC) y la información de cumplimiento normativo se conservan fuera de la cadena, en el nodo competente.</p>
+<p>Esta separación limita la exposición de los datos de las empresas en el registro, preservando al mismo tiempo la posibilidad, en los sistemas habilitados, de vincular una obligación con su emisor, su destinatario y su documentación fiscal.</p>
+</section>
+
+<section aria-labelledby="proposal-title">
+<h2 id="proposal-title">Evolución propuesta: inversión del sujeto pasivo entre sujetos pasivos certificados</h2>
+<div class="vida-callout"><strong>Propuesta — una evolución normativa propuesta.</strong>La nota propone, como prolongación del marco ViDA, un mecanismo de inversión del sujeto pasivo entre sujetos pasivos certificados. No se presenta como una norma aplicable en el estado actual del Derecho de la Unión.</div>
+<p>El modelo propuesto suprimiría los flujos intermedios de IVA entre empresas certificadas, manteniendo el cálculo y la declaración del IVA operación por operación. Cada empresa contabilizaría su IVA repercutido y deducible conforme a las normas aplicables, y Osnias seguiría compensando los importes sin IVA.</p>
+<p>La propuesta tiene por objeto, en particular, reducir la exposición a los mecanismos de <strong>fraude del operador desaparecido (MTIC)</strong> y de fraude carrusel. La nota incluye un esbozo de disposición de la Unión destinado a alimentar el debate normativo.</p>
+</section>
+
+<section aria-labelledby="eu-title">
+<h2 id="eu-title">Marco jurídico europeo</h2>
+<p>La nota se inscribe en el marco de la <strong>Directiva 2006/112/CE relativa al sistema común del impuesto sobre el valor añadido</strong>, modificada por la <strong>Directiva (UE) 2025/516 del Consejo</strong> en el marco de ViDA, así como del Reglamento (UE) 2025/517 y del Reglamento de Ejecución (UE) 2025/518. En lo que respecta a los plazos de pago en las operaciones comerciales, la arquitectura CLEAR 9W tiene igualmente en cuenta la Directiva 2011/7/UE.</p>
+<p>La presente página describe la arquitectura técnica de Osnias Clearing y la propuesta publicada. La calificación jurídica corresponde a las autoridades competentes, y cualquier evolución del marco de la Unión se ajustará al procedimiento institucional aplicable.</p>
+<div class="actions"><a class="btn" href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-digital-age-vida_es" rel="noopener noreferrer" target="_blank">Comisión Europea — ViDA</a><a class="btn" href="https://eur-lex.europa.eu/eli/dir/2025/516/oj/spa" rel="noopener noreferrer" target="_blank">Directiva (UE) 2025/516</a><a class="btn" href="https://doi.org/10.5281/zenodo.23296472" rel="noopener noreferrer" target="_blank">DOI 10.5281/zenodo.23296472</a><a class="btn" href="https://hal.science/hal-05795026" rel="noopener noreferrer" target="_blank">HAL hal-05795026</a></div>
+</section>
+
+<section aria-labelledby="faq-title">
+<h2 id="faq-title">Preguntas frecuentes</h2>
+<div class="vida-faq">
+<article><h3>¿Recauda Osnias Clearing el IVA?</h3><p>La arquitectura documentada mantiene el IVA fuera de la capa de compensación. El IVA sigue siendo calculado y declarado por los sistemas de la empresa; Osnias compensa la obligación comercial sin IVA.</p></article>
+<article><h3>¿Qué ciclo se aplica a las facturas comerciales B2B?</h3><p>CLEAR 9W es la modalidad de pago dedicada a las obligaciones comerciales B2B admisibles. La envolvente de nueve semanas del protocolo contiene una ventana operativa diseñada para que la liquidación se produzca en un plazo máximo de 59 días.</p></article>
+<article><h3>¿Forma ya parte de ViDA la propuesta de inversión del sujeto pasivo de Osnias?</h3><p>Se trata de una propuesta de Osnias Clearing para ampliar el marco vigente de la Unión, que debe distinguirse de las normas ViDA ya adoptadas.</p></article>
+<article><h3>¿Cuál es la función del registro Sei?</h3><p>El protocolo utiliza el Osnias-ID como identificador interno. La identidad jurídica y la información de cumplimiento normativo permanecen fuera de la cadena, en el nodo autorizado.</p></article>
+<article><h3>¿Puede funcionar el protocolo sin la inversión del sujeto pasivo propuesta?</h3><p>Sí. Sin inversión del sujeto pasivo, Osnias compensa los importes sin IVA y el IVA de cada factura se repercute, se abona y se declara conforme al régimen general. La inversión del sujeto pasivo es una evolución propuesta: su eventual adopción modificaría el tratamiento del IVA en el ERP, sin modificar el protocolo de compensación.</p></article>
+<article><h3>¿Cómo concilia el ERP las facturas compensadas?</h3><p>En cada ciclo, el participante recibe un extracto de compensación en formato ISO 20022 (camt.054) que detalla las obligaciones compensadas. El ERP puede conciliar así cada factura, su IVA y el saldo neto liquidado.</p></article>
+</div>
+</section>
+
+<section aria-labelledby="ref-title">
+<h2 id="ref-title">Referencia de publicación</h2>
+<div class="vida-callout"><p><strong>Bouzon, Denis (2026).</strong> <cite>Osnias Clearing — ViDA 2030 integration: Functional classification and European framework.</cite> Versión 1.0. Zenodo y HAL.</p><ul><li>DOI: <a href="https://doi.org/10.5281/zenodo.23296472">10.5281/zenodo.23296472</a></li><li>HAL: <a href="https://hal.science/hal-05795026" rel="noopener noreferrer" target="_blank">hal-05795026</a></li><li>Idiomas de la nota: inglés y francés</li></ul></div>
+<h3>Documentos relacionados</h3>
+<div class="actions"><a class="btn" href="/en/rules/">Libro 3 — Netting Rules</a><a class="btn" href="/en/cycle/">Libro 4 — Ciclos 1W, 9W, 13W</a><a class="btn" href="/en/onboarding/">Libro 6 — Onboarding</a><a class="btn" href="/en/faq/">FAQ regulatoria</a></div>
+</section>
+
+<p class="vida-note"><strong>Estado del proyecto:</strong> Osnias Clearing se encuentra en fase de testnet. Las normas descritas (verificación de identidad y autorización de los nodos, normas del protocolo) se aplican al despliegue en producción.</p>
+<p class="vida-note">Versión web: 12 de octubre de 2026 · Fuente documental: Osnias Clearing, «ViDA 2030 integration — Functional classification and European framework», versión 1.0, Zenodo y HAL.</p>
+</main>
+
+<footer><div class="container">© 2026 Osnias Clearing · ViDA 2030 · DOI <a href="https://doi.org/10.5281/zenodo.23296472">10.5281/zenodo.23296472</a> · HAL <a href="https://hal.science/hal-05795026">hal-05795026</a> · Última actualización: 12 de octubre de 2026</div></footer>
+</body>
+</html>
