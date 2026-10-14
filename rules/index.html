@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="#050814" name="theme-color"/>
-<meta content="Osnias Clearing — Livre 3 : règles de compensation multilatérale, calcul et agrégation des positions, soldes résiduels, contrôles, contestation, finalisation et règlement par les nœuds NNN. Release 1.2." name="description"/>
+<meta content="Osnias Clearing — Livre 3 : règles de compensation multilatérale. Release 1.3 : registre de positions sans token sur Sei, contrôle de solvabilité à deux oracles (séquestre Ethereum, positions nettes Sei), position nette toujours strictement positive, calendrier de clôture du cycle et relecture réglementaire." name="description"/>
 <title>Livre 3 — Règles de compensation · Osnias Clearing</title>
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script defer="" src="/assets/js/osnias-nav.js"></script>
@@ -19,26 +19,33 @@
       .hero-media { justify-self: start; max-width: 100%; }
     }
   </style>
-<meta content="Osnias Clearing, règles de compensation, netting multilatéral, compensation multilatérale, nœuds NNN, soldes résiduels, règlement inter-nœuds, contrôle, contestation, finalisation, CPMI-IOSCO, FSB" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="index, follow, max-image-preview:large" name="robots"/><meta content="Denis Bouzon" name="citation_author"/><meta content="Livre 3 — Règles de compensation" name="citation_title"/><meta content="2026-10-11" name="citation_publication_date"/><meta content="10.5281/zenodo.23297413" name="citation_doi"/><meta content="Livre 3 — Règles de compensation" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-11" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/rules/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Livre 3 — Règles de compensation · Osnias Clearing" name="twitter:title"/><meta content="Osnias Clearing — Livre 3 : règles de compensation multilatérale, calcul et agrégation des positions, soldes résiduels, contrôles, contestation, finalisation et règlement par les nœuds NNN. Release 1.2." name="twitter:description"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" name="twitter:image"/><meta content="Livre 3 — Règles de compensation · Osnias Clearing" property="og:title"/><meta content="Osnias Clearing — Livre 3 : règles de compensation multilatérale, calcul et agrégation des positions, soldes résiduels, contrôles, contestation, finalisation et règlement par les nœuds NNN. Release 1.2." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/rules/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="fr_FR" property="og:locale"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" property="og:image"/><meta content="Livre 3 — Règles de compensation Osnias Clearing" property="og:image:alt"/><link href="https://www.osnias-clearing.com/rules/" rel="canonical"/><link href="https://www.osnias-clearing.com/rules/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/rules/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/rules/" hreflang="x-default" rel="alternate"/><script type="application/ld+json">
+<meta content="Osnias Clearing, règles de compensation, netting multilatéral, registre de positions, Sei, Ethereum, séquestre, EURC, contrôle de solvabilité, oracle, ISO 20022, nœuds NNN, MiCA, PFMI" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="index, follow, max-image-preview:large" name="robots"/><meta content="Denis Bouzon" name="citation_author"/><meta content="Livre 3 — Règles de compensation" name="citation_title"/><meta content="2026-10-14" name="citation_publication_date"/><meta content="10.5281/zenodo.23368986" name="citation_doi"/><meta content="Livre 3 — Règles de compensation" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-14" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/rules/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Livre 3 — Règles de compensation · Osnias Clearing" name="twitter:title"/><meta content="Osnias Clearing — Livre 3, Release 1.3 : registre de positions sans token, contrôle de solvabilité à deux oracles, position nette strictement positive et calendrier de clôture du cycle." name="twitter:description"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" name="twitter:image"/><meta content="Livre 3 — Règles de compensation · Osnias Clearing" property="og:title"/><meta content="Osnias Clearing — Livre 3, Release 1.3 : registre de positions sans token, contrôle de solvabilité à deux oracles, position nette strictement positive et calendrier de clôture du cycle." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/rules/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="fr_FR" property="og:locale"/><meta content="en_US" property="og:locale:alternate"/><meta content="es_ES" property="og:locale:alternate"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" property="og:image"/><meta content="Livre 3 — Règles de compensation Osnias Clearing" property="og:image:alt"/><link href="https://www.osnias-clearing.com/rules/" rel="canonical"/><link href="https://www.osnias-clearing.com/rules/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/rules/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/es/rules/" hreflang="es" rel="alternate"/><link href="https://www.osnias-clearing.com/rules/" hreflang="x-default" rel="alternate"/><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Livre 3 — Règles de compensation",
   "name": "Livre 3 — Règles de compensation",
-  "description": "Osnias Clearing — Livre 3 : règles de compensation multilatérale, calcul et agrégation des positions, soldes résiduels, contrôles, contestation, finalisation et règlement par les nœuds NNN. Release 1.2.",
+  "description": "Osnias Clearing — Livre 3 : règles de compensation multilatérale. Release 1.3 : registre de positions sans token sur Sei, contrôle de solvabilité à deux oracles, position nette toujours strictement positive, calendrier de clôture du cycle et relecture réglementaire.",
   "url": "https://www.osnias-clearing.com/rules/",
   "author": {
     "@type": "Person",
-    "name": "Denis Bouzon"
+    "name": "Denis Bouzon",
+    "identifier": "https://orcid.org/0009-0007-8894-8902"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Osnias Clearing"
   },
+  "version": "1.3",
   "datePublished": "2026-09-23",
-  "dateModified": "2026-10-11",
+  "dateModified": "2026-10-14",
   "inLanguage": "fr",
-  "identifier": "https://doi.org/10.5281/zenodo.23297413"
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "identifier": "https://doi.org/10.5281/zenodo.23368986",
+  "encoding": [
+    {"@type": "MediaObject", "contentUrl": "https://www.osnias-clearing.com/rules/Livre-3-regles-v1.3-fr.pdf", "encodingFormat": "application/pdf", "inLanguage": "fr"},
+    {"@type": "MediaObject", "contentUrl": "https://www.osnias-clearing.com/rules/Book-3-Clearing-Rules-v1.3-en.pdf", "encodingFormat": "application/pdf", "inLanguage": "en"}
+  ]
 }
 </script></head>
 <body>
@@ -59,16 +66,16 @@
 </div>
 </nav>
 <div class="site-nav-inner">
-<div aria-label="Sélection de langue" class="actions" role="group"><a aria-current="page" class="btn btn-primary" href="/rules/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/rules/" hreflang="en" lang="en">🇬🇧 English</a></div>
+<div aria-label="Sélection de langue" class="actions" role="group"><a aria-current="page" class="btn btn-primary" href="/rules/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/rules/" hreflang="en" lang="en">🇬🇧 English</a><a class="btn" href="/es/rules/" hreflang="es" lang="es">🇪🇸 Español</a></div>
 </div>
 <header>
 <div class="container hero hero-split">
 <div class="hero-text">
-<p class="eyebrow">Livre 3 · Release 1.2</p>
+<p class="eyebrow">Livre 3 · Release 1.3</p>
 <h1>Règles de compensation</h1>
-<p class="hero-role">Netting multilatéral · Contrôles · Règlement</p>
-<p class="hero-lead">Le Livre 3 définit les règles de compensation multilatérale d’Osnias : calcul et agrégation des positions, traitement des soldes résiduels, contrôles, contestation, finalisation et articulation avec le règlement exécuté par les nœuds NNN.</p>
-<p><strong>Denis Bouzon</strong> · <time datetime="2026-10-11">11 octobre 2026</time> · <span>Français &amp; anglais</span></p>
+<p class="hero-role">Registre de positions sans token · Contrôle de solvabilité · Règlement par les nœuds</p>
+<p class="hero-lead">Le Livre 3 définit les règles de compensation multilatérale d’Osnias. La Release 1.3 simplifie l’architecture : le token de clearing est supprimé, la capacité de clearing de chaque membre est inscrite directement comme une position nette sur le registre Sei, adossée 1:1 à son séquestre côté Ethereum, et la solvabilité de la chambre est contrôlée en temps réel par deux oracles.</p>
+<p><strong>Denis Bouzon</strong> · <time datetime="2026-10-14">14 octobre 2026</time> · <span>Français &amp; anglais</span></p>
 </div>
 <figure class="hero-media">
 <img alt="Plans, règle et recueil de règles de construction sur une table à dessin — illustration des règles de clearing" height="480" src="/rules/rules.jpg" width="480"/>
@@ -78,39 +85,59 @@
 <main class="container">
 <section aria-labelledby="access-title">
 <h2 id="access-title">Consulter le document</h2>
-<p class="section-intro">Ouvrez la version française ou anglaise en PDF, ou consultez les références de publication sur Zenodo et HAL.</p>
+<p class="section-intro">Ouvrez la Release 1.3 en PDF, en français ou en anglais, ou consultez les références de publication sur Zenodo et HAL.</p>
 <div class="actions">
-<a class="btn btn-primary" href="/rules/Livre-3-regle-1-2-fr.pdf" hreflang="fr" type="application/pdf">PDF en français</a>
-<a class="btn" href="/rules/Book_3-netting-rules1_2_en.pdf" hreflang="en" type="application/pdf">PDF en anglais</a>
-<a class="btn" href="https://zenodo.org/records/23297413">DOI Zenodo</a>
+<a class="btn btn-primary" href="/rules/Livre-3-regles-v1.3-fr.pdf" hreflang="fr" type="application/pdf">PDF en français · v1.3</a>
+<a class="btn" href="/rules/Book-3-Clearing-Rules-v1.3-en.pdf" hreflang="en" type="application/pdf">PDF en anglais · v1.3</a>
+<a class="btn" href="https://doi.org/10.5281/zenodo.23368986">DOI Zenodo</a>
 <a class="btn" href="https://hal.science/hal-05760527">HAL</a>
+</div>
+</section>
+<section aria-labelledby="new-title">
+<h2 id="new-title">Ce qui change dans la Release 1.3</h2>
+<div class="grid-2">
+<article class="card">
+<h3>Registre de positions sans token</h3>
+<p>Le token de clearing et les opérations MINT/BURN sont supprimés. À l’ouverture du cycle, la position de chaque membre est égale au montant séquestré ; chaque obligation acceptée inscrit simultanément −X chez le débiteur et +X chez le créancier, sans jamais modifier le total du système.</p>
+</article>
+<article class="card">
+<h3>Contrôle de solvabilité à deux oracles</h3>
+<p>Un oracle de séquestre côté Ethereum fait le total des séquestres et le transmet côté Sei via les Controllers ; un oracle de positions côté Sei fait le total des soldes nets. Le total net Sei doit être égal au total séquestre Ethereum : la différence doit être nulle à tout instant.</p>
+</article>
+<article class="card">
+<h3>Position nette toujours positive</h3>
+<p>La position nette d’un membre ne peut jamais être nulle ni négative : une demande ISO 20022 n’est validée que si la position nette suffit à la couvrir. En tant que débiteur, chaque client n’est ainsi exposé qu’à son propre collatéral.</p>
+</article>
+<article class="card">
+<h3>Calendrier de clôture du cycle</h3>
+<p>Fin du P2P le vendredi à 23:59 UTC ; freeze et contestations le samedi et le dimanche ; netting par le gestionnaire de nœud le lundi ; phase d’ajustement du séquestre par le client ; puis inscription de la position d’ouverture. Le séquestre reste figé pendant tout le cycle et aucun mouvement ne transite par un compte Osnias.</p>
+</article>
 </div>
 </section>
 <section aria-labelledby="scope-title">
 <h2 id="scope-title">Un cadre documenté et auditable</h2>
-<div class="grid-2">
-<article class="card">
-<h3>Calcul et compensation</h3>
-<p>Calcul des positions end-user et par nœud, agrégation, compensation multilatérale, fenêtre de contestation et finalisation des obligations.</p>
-</article>
-<article class="card">
-<h3>Règlement et contrôles</h3>
-<p>Disponibilité de l’escrow de règlement, règlement inter-nœuds, états de finalité, traitement des exceptions et éléments de preuve pour l’audit.</p>
-</article>
-</div>
-<p class="notice">Les référentiels internationaux, notamment CPMI-IOSCO et FSB, sont présentés comme des sources d’analyse et de conception. Leur mention ne préjuge pas de la qualification réglementaire d’Osnias et ne constitue pas une déclaration de conformité.</p>
+<ul class="list">
+<li>Calcul déterministe des écarts end-user et des positions par nœud, agrégation et vérification ΣRN = 0.</li>
+<li>États datés publiés par les nœuds pour leurs utilisateurs et par Osnias pour les nœuds, fenêtre de contestation et finalisation.</li>
+<li>Règlement inter-nœuds, quatre états de finalité, gestion des exceptions en fail-closed et rapprochement miroir post-clearing.</li>
+<li>Clés et pouvoirs d’administration, principaux risques, exigence d’agrément des nœuds, LCB-FT et règle de voyage (règlement TFR).</li>
+</ul>
+<p class="notice">Les référentiels internationaux, notamment les PFMI du CPMI-IOSCO, sont présentés comme des sources d’analyse et de conception. Leur mention, comme celle des autorités potentiellement concernées (AMF, ACPR, Banque de France), ne préjuge pas de la qualification réglementaire d’Osnias et ne constitue pas une déclaration de conformité.</p>
 </section>
 <section aria-labelledby="reference-title">
 <h2 id="reference-title">Référence de publication</h2>
 <div class="card">
-<p><strong>Bouzon, Denis (2026).</strong> <cite lang="fr">Livre 3 — Règles de compensation.</cite> Version 1.2. Zenodo.</p>
+<p><strong>Bouzon, Denis (2026).</strong> <cite lang="fr">Livre 3 — Règles de compensation.</cite> Version 1.3, 14 octobre 2026. Zenodo.</p>
 <ul class="list">
-<li>DOI : <a href="https://doi.org/10.5281/zenodo.23297413">10.5281/zenodo.23297413</a></li>
+<li>DOI : <a href="https://doi.org/10.5281/zenodo.23368986">10.5281/zenodo.23368986</a></li>
+<li>Auteur : Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902">0009-0007-8894-8902</a></li>
 <li>Identifiant HAL : hal-05760527</li>
 <li>Langues : français et anglais</li>
-<li>Licence du document : Creative Commons Attribution 4.0 International (CC BY 4.0)</li>
+<li>Licence du document : © Osnias Clearing, publié sous licence Creative Commons Attribution 4.0 International (CC BY 4.0)</li>
 </ul>
-<p><span>Version précédente (Release 1.1) :</span>
+<p><span>Version précédente (Release 1.2) :</span>
+<a href="https://doi.org/10.5281/zenodo.23297413">Zenodo · DOI 10.5281/zenodo.23297413</a><br/>
+<span>Release 1.1 :</span>
 <a href="https://doi.org/10.5281/zenodo.22922199">Zenodo · DOI 10.5281/zenodo.22922199</a><br/>
 <span>Release 1.0 :</span>
 <a href="https://doi.org/10.5281/zenodo.22914086">Zenodo · DOI 10.5281/zenodo.22914086</a></p>
@@ -121,7 +148,7 @@
 <footer>
 <div class="container footer-grid">
 <span>Osnias Clearing · Denis Bouzon</span>
-<span>Livre 3 · Règles de compensation · Release 1.2 · 11 octobre 2026</span>
+<span>Livre 3 · Règles de compensation · Release 1.3 · 14 octobre 2026</span>
 </div>
 </footer>
 
