@@ -5,8 +5,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="#050814" name="theme-color"/>
-<meta content="Osnias Clearing — Book 3: multilateral netting rules, position calculation and aggregation, residual balances, controls, dispute handling, finalisation and settlement by NNN nodes. Release 1.2." name="description"/>
-<title>Book 3 — Netting Rules · Osnias Clearing</title>
+<meta content="Osnias Clearing — Book 3: multilateral clearing rules. Release 1.3: tokenless position ledger on Sei, two-oracle solvency control (Ethereum escrow, Sei net positions), strictly positive net position, cycle closing calendar and regulatory review." name="description"/>
+<title>Book 3 — Clearing Rules · Osnias Clearing</title>
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script defer="" src="/assets/js/osnias-nav.js"></script>
 <script defer="" src="/assets/js/osnias-seo.js"></script>
@@ -19,26 +19,33 @@
       .hero-media { justify-self: start; max-width: 100%; }
     }
   </style>
-<meta content="Osnias Clearing, netting rules, multilateral netting, clearing rules, NNN nodes, residual balances, inter-node settlement, controls, dispute handling, finalisation, CPMI-IOSCO, FSB" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="index, follow, max-image-preview:large" name="robots"/><meta content="Denis Bouzon" name="citation_author"/><meta content="Book 3 — Netting Rules" name="citation_title"/><meta content="2026-10-11" name="citation_publication_date"/><meta content="10.5281/zenodo.23297413" name="citation_doi"/><meta content="Book 3 — Netting Rules" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-11" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/en/rules/" name="DC.identifier"/><meta content="en" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Book 3 — Netting Rules · Osnias Clearing" name="twitter:title"/><meta content="Osnias Clearing — Book 3: multilateral netting rules, position calculation and aggregation, residual balances, controls, dispute handling, finalisation and settlement by NNN nodes. Release 1.2." name="twitter:description"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" name="twitter:image"/><meta content="Book 3 — Netting Rules · Osnias Clearing" property="og:title"/><meta content="Osnias Clearing — Book 3: multilateral netting rules, position calculation and aggregation, residual balances, controls, dispute handling, finalisation and settlement by NNN nodes. Release 1.2." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/en/rules/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="en_US" property="og:locale"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" property="og:image"/><meta content="Book 3 — Osnias Clearing Netting Rules" property="og:image:alt"/><link href="https://www.osnias-clearing.com/en/rules/" rel="canonical"/><link href="https://www.osnias-clearing.com/rules/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/rules/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/rules/" hreflang="x-default" rel="alternate"/><script type="application/ld+json">
+<meta content="Osnias Clearing, clearing rules, multilateral netting, position ledger, Sei, Ethereum, escrow, EURC, solvency control, oracle, ISO 20022, NNN nodes, MiCA, PFMI" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="index, follow, max-image-preview:large" name="robots"/><meta content="Denis Bouzon" name="citation_author"/><meta content="Book 3 — Clearing Rules" name="citation_title"/><meta content="2026-10-14" name="citation_publication_date"/><meta content="10.5281/zenodo.23368986" name="citation_doi"/><meta content="Book 3 — Clearing Rules" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-14" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/en/rules/" name="DC.identifier"/><meta content="en" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Book 3 — Clearing Rules · Osnias Clearing" name="twitter:title"/><meta content="Osnias Clearing — Book 3, Release 1.3: tokenless position ledger, two-oracle solvency control, strictly positive net position and cycle closing calendar." name="twitter:description"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" name="twitter:image"/><meta content="Book 3 — Clearing Rules · Osnias Clearing" property="og:title"/><meta content="Osnias Clearing — Book 3, Release 1.3: tokenless position ledger, two-oracle solvency control, strictly positive net position and cycle closing calendar." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/en/rules/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="en_US" property="og:locale"/><meta content="fr_FR" property="og:locale:alternate"/><meta content="es_ES" property="og:locale:alternate"/><meta content="https://www.osnias-clearing.com/rules/rules.jpg" property="og:image"/><meta content="Book 3 — Osnias Clearing Clearing Rules" property="og:image:alt"/><link href="https://www.osnias-clearing.com/en/rules/" rel="canonical"/><link href="https://www.osnias-clearing.com/rules/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/rules/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/es/rules/" hreflang="es" rel="alternate"/><link href="https://www.osnias-clearing.com/rules/" hreflang="x-default" rel="alternate"/><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Book 3 — Netting Rules",
-  "name": "Book 3 — Netting Rules",
-  "description": "Osnias Clearing — Book 3: multilateral netting rules, position calculation and aggregation, residual balances, controls, dispute handling, finalisation and settlement by NNN nodes. Release 1.2.",
+  "headline": "Book 3 — Clearing Rules",
+  "name": "Book 3 — Clearing Rules",
+  "description": "Osnias Clearing — Book 3: multilateral clearing rules. Release 1.3: tokenless position ledger on Sei, two-oracle solvency control, strictly positive net position, cycle closing calendar and regulatory review.",
   "url": "https://www.osnias-clearing.com/en/rules/",
   "author": {
     "@type": "Person",
-    "name": "Denis Bouzon"
+    "name": "Denis Bouzon",
+    "identifier": "https://orcid.org/0009-0007-8894-8902"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Osnias Clearing"
   },
+  "version": "1.3",
   "datePublished": "2026-09-23",
-  "dateModified": "2026-10-11",
+  "dateModified": "2026-10-14",
   "inLanguage": "en",
-  "identifier": "https://doi.org/10.5281/zenodo.23297413"
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "identifier": "https://doi.org/10.5281/zenodo.23368986",
+  "encoding": [
+    {"@type": "MediaObject", "contentUrl": "https://www.osnias-clearing.com/rules/Book-3-Clearing-Rules-v1.3-en.pdf", "encodingFormat": "application/pdf", "inLanguage": "en"},
+    {"@type": "MediaObject", "contentUrl": "https://www.osnias-clearing.com/rules/Livre-3-regles-v1.3-fr.pdf", "encodingFormat": "application/pdf", "inLanguage": "fr"}
+  ]
 }
 </script></head>
 <body>
@@ -59,16 +66,16 @@
 </div>
 </nav>
 <div class="site-nav-inner">
-<div aria-label="Language selection" class="actions" role="group"><a class="btn" href="/rules/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/rules/" hreflang="en" lang="en">🇬🇧 English</a></div>
+<div aria-label="Language selection" class="actions" role="group"><a class="btn" href="/rules/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/rules/" hreflang="en" lang="en">🇬🇧 English</a><a class="btn" href="/es/rules/" hreflang="es" lang="es">🇪🇸 Español</a></div>
 </div>
 <header>
 <div class="container hero hero-split">
 <div class="hero-text">
-<p class="eyebrow">Book 3 · Release 1.2</p>
-<h1>Netting Rules</h1>
-<p class="hero-role">Multilateral netting · Controls · Settlement</p>
-<p class="hero-lead">Book 3 defines the Osnias multilateral netting rules: position calculation and aggregation, residual-balance processing, controls, dispute handling, finalisation and interaction with settlement executed by NNN nodes.</p>
-<p><strong>Denis Bouzon</strong> · <time datetime="2026-10-11">11 October 2026</time> · <span>French &amp; English</span></p>
+<p class="eyebrow">Book 3 · Release 1.3</p>
+<h1>Clearing Rules</h1>
+<p class="hero-role">Tokenless position ledger · Solvency control · Settlement by nodes</p>
+<p class="hero-lead">Book 3 defines the Osnias multilateral clearing rules. Release 1.3 simplifies the architecture: the clearing token is removed, each member's clearing capacity is recorded natively as a net position on the Sei ledger, backed 1:1 by its escrow on the Ethereum side, and the chamber's solvency is checked in real time by two oracles.</p>
+<p><strong>Denis Bouzon</strong> · <time datetime="2026-10-14">14 October 2026</time> · <span>French &amp; English</span></p>
 </div>
 <figure class="hero-media">
 <img alt="Drawings, ruler and building rules on a drafting table — illustration of clearing rules" height="480" src="/rules/rules.jpg" width="480"/>
@@ -78,39 +85,59 @@
 <main class="container">
 <section aria-labelledby="access-title">
 <h2 id="access-title">Read the document</h2>
-<p class="section-intro">Open the French or English PDF, or consult the publication records on Zenodo and HAL.</p>
+<p class="section-intro">Open Release 1.3 as a PDF, in English or French, or consult the publication records on Zenodo and HAL.</p>
 <div class="actions">
-<a class="btn" href="/rules/Livre-3-regle-1-2-fr.pdf" hreflang="fr" type="application/pdf">French PDF</a>
-<a class="btn btn-primary" href="/rules/Book_3-netting-rules1_2_en.pdf" hreflang="en" type="application/pdf">English PDF</a>
-<a class="btn" href="https://zenodo.org/records/23297413">Zenodo DOI</a>
+<a class="btn" href="/rules/Livre-3-regles-v1.3-fr.pdf" hreflang="fr" type="application/pdf">French PDF · v1.3</a>
+<a class="btn btn-primary" href="/rules/Book-3-Clearing-Rules-v1.3-en.pdf" hreflang="en" type="application/pdf">English PDF · v1.3</a>
+<a class="btn" href="https://doi.org/10.5281/zenodo.23368986">Zenodo DOI</a>
 <a class="btn" href="https://hal.science/hal-05760527">HAL</a>
+</div>
+</section>
+<section aria-labelledby="new-title">
+<h2 id="new-title">What changes in Release 1.3</h2>
+<div class="grid-2">
+<article class="card">
+<h3>Tokenless position ledger</h3>
+<p>The clearing token and MINT/BURN operations are removed. At cycle open, each member's position equals its escrowed amount; every accepted obligation atomically books −X on the debtor and +X on the creditor, without ever changing the system total.</p>
+</article>
+<article class="card">
+<h3>Two-oracle solvency control</h3>
+<p>An escrow oracle on the Ethereum side totals the escrows and relays that total to Sei through the Controllers; a position oracle on the Sei side totals the net balances. The Sei net total must equal the Ethereum escrow total: the difference must be zero at all times.</p>
+</article>
+<article class="card">
+<h3>Net position always positive</h3>
+<p>A member's net position can never be zero or negative: an ISO 20022 request is validated only if the net position is sufficient to cover it. As a debtor, each client is therefore exposed to its own collateral only.</p>
+</article>
+<article class="card">
+<h3>Cycle closing calendar</h3>
+<p>P2P ends on Friday at 23:59 UTC; freeze and disputes on Saturday and Sunday; netting by the node manager on Monday; client escrow adjustment phase; then booking of the opening position. The escrow stays frozen for the whole cycle and no movement passes through an Osnias account.</p>
+</article>
 </div>
 </section>
 <section aria-labelledby="scope-title">
 <h2 id="scope-title">A documented and auditable framework</h2>
-<div class="grid-2">
-<article class="card">
-<h3>Calculation and netting</h3>
-<p>End-user and node-level position calculations, aggregation, multilateral netting, the dispute window and finalisation of obligations.</p>
-</article>
-<article class="card">
-<h3>Settlement and controls</h3>
-<p>Settlement escrow availability, inter-node settlement, finality states, exception handling and audit evidence.</p>
-</article>
-</div>
-<p class="notice">International reference frameworks, including CPMI-IOSCO and FSB publications, are used as sources for analysis and design. Their inclusion does not prejudge the regulatory classification of Osnias or constitute a declaration of compliance.</p>
+<ul class="list">
+<li>Deterministic computation of end-user deltas and node positions, aggregation and ΣRN = 0 verification.</li>
+<li>Dated statements published by nodes for their users and by Osnias for the nodes, dispute window and finalisation.</li>
+<li>Inter-node settlement, four finality states, fail-closed exception handling and post-clearing mirror reconciliation.</li>
+<li>Administration keys and powers, main risks, node licensing requirement, AML/CFT and the travel rule (TFR).</li>
+</ul>
+<p class="notice">International reference frameworks, including the CPMI-IOSCO PFMI, are used as sources for analysis and design. Their inclusion, like the mention of the authorities potentially concerned (AMF, ACPR, Banque de France), does not prejudge the regulatory classification of Osnias or constitute a declaration of compliance.</p>
 </section>
 <section aria-labelledby="reference-title">
 <h2 id="reference-title">Publication reference</h2>
 <div class="card">
-<p><strong>Bouzon, Denis (2026).</strong> <cite lang="en">Book 3 — Netting Rules.</cite> Version 1.2. Zenodo.</p>
+<p><strong>Bouzon, Denis (2026).</strong> <cite lang="en">Book 3 — Clearing Rules.</cite> Version 1.3, 14 October 2026. Zenodo.</p>
 <ul class="list">
-<li>DOI: <a href="https://doi.org/10.5281/zenodo.23297413">10.5281/zenodo.23297413</a></li>
+<li>DOI: <a href="https://doi.org/10.5281/zenodo.23368986">10.5281/zenodo.23368986</a></li>
+<li>Author: Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902">0009-0007-8894-8902</a></li>
 <li>HAL identifier: hal-05760527</li>
 <li>Languages: French and English</li>
-<li>Document licence: Creative Commons Attribution 4.0 International (CC BY 4.0)</li>
+<li>Document licence: © Osnias Clearing, published under Creative Commons Attribution 4.0 International (CC BY 4.0)</li>
 </ul>
-<p><span>Previous version (Release 1.1):</span>
+<p><span>Previous version (Release 1.2):</span>
+<a href="https://doi.org/10.5281/zenodo.23297413">Zenodo · DOI 10.5281/zenodo.23297413</a><br/>
+<span>Release 1.1:</span>
 <a href="https://doi.org/10.5281/zenodo.22922199">Zenodo · DOI 10.5281/zenodo.22922199</a><br/>
 <span>Release 1.0:</span>
 <a href="https://doi.org/10.5281/zenodo.22914086">Zenodo · DOI 10.5281/zenodo.22914086</a></p>
@@ -121,7 +148,7 @@
 <footer>
 <div class="container footer-grid">
 <span>Osnias Clearing · Denis Bouzon</span>
-<span>Book 3 · Netting Rules · Release 1.2 · 11 October 2026</span>
+<span>Book 3 · Clearing Rules · Release 1.3 · 14 October 2026</span>
 </div>
 </footer>
 
