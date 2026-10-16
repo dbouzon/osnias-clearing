@@ -64,9 +64,9 @@ Each node is intended to remain:
 
 Osnias Clearing uses synchronized economic cycles intended to reflect real commercial horizons:
 
-- **1 week**
-- **4 weeks**
-- **13 weeks**
+- **1 week (1W)** — testnet and technical validation cycle;
+- **9 weeks (9W)** — commercial B2B obligations;
+- **13 weeks (13W)** — eligible non-commercial obligations.
 
 During a cycle, reciprocal obligations accumulate before net positions are calculated and finalized.
 

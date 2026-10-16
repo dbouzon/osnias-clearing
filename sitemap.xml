@@ -33,13 +33,14 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Page bilingue : Architecture (Livre 2) -->
+  <!-- Page trilingue : Architecture (Livre 2) -->
   <url>
     <loc>https://www.osnias-clearing.com/architecture/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/architecture/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/architecture/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/architecture/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/architecture/" />
-    <lastmod>2026-10-03</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -47,8 +48,19 @@
     <loc>https://www.osnias-clearing.com/en/architecture/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/architecture/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/architecture/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/architecture/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/architecture/" />
-    <lastmod>2026-10-03</lastmod>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/es/architecture/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/architecture/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/architecture/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/architecture/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/architecture/" />
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -73,13 +85,14 @@
     <priority>0.95</priority>
   </url>
 
-  <!-- Page bilingue : Règles de clearing (Livre 3) -->
+  <!-- Page trilingue : Règles de clearing (Livre 3) -->
   <url>
     <loc>https://www.osnias-clearing.com/rules/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/rules/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/rules/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/rules/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/rules/" />
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -87,8 +100,19 @@
     <loc>https://www.osnias-clearing.com/en/rules/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/rules/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/rules/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/rules/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/rules/" />
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/es/rules/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/rules/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/rules/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/rules/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/rules/" />
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -258,6 +282,7 @@
     <loc>https://www.osnias-clearing.com/vida2030/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/vida2030/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/vida2030/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/vida2030/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/" />
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -267,6 +292,17 @@
     <loc>https://www.osnias-clearing.com/en/vida2030/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/vida2030/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/vida2030/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/vida2030/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/" />
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/es/vida2030/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/vida2030/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/vida2030/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/vida2030/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/" />
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
