@@ -344,7 +344,7 @@
       "name": "How does the forced exit of a blocked participant work?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A participant placed in blocked status by the node operator can no longer create new exposures. Its existing recorded obligations remain included until cycle close and final netting. After settlement, the releasable balance can be withdrawn during the next BURN window. The operator may then move the participant from “blocked”, which is reversible, to “revoked”, the highest sanction status."
+        "text": "A participant blocked by the node manager can no longer create new exposures. Its existing recorded obligations remain included until cycle close and final netting. After settlement, the releasable balance may be withdrawn during the next escrow adjustment window, Tuesday to Thursday, days 2 to 4, to the dedicated, pre-registered withdrawal address. The manager may then move the participant from reversible blocked status to irreversible revoked status, the highest sanction level."
       }
     },
     {
@@ -352,7 +352,7 @@
       "name": "How is the clearing cycle organised?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "For B2B commercial obligations, the CLEAR 9W cycle lasts 9 weeks, i.e. 63 days between two settlements: D1 (Monday) settlement of the previous cycle; D2 to D4 BURN; D5 (Friday) to D61 MINT + P2P and live clearing; D62–D63 (weekend) FREEZE and final netting calculation. The following Monday is D1 of the next cycle. An admitted invoice is therefore settled within 59 days of issuance at most, within the 60-day limit applicable to commercial transactions. The same sequence applies to CLEAR 1W (testnet) and CLEAR 13W (91 days). Currency and cycle are set when the account is opened and are encoded in the Osnias-ID."
+        "text": "For B2B commercial obligations, CLEAR 9W lasts nine weeks, or 63 days between settlements. On day 1, Monday, the previous cycle’s net positions are settled. From day 2 to day 4, Tuesday to Thursday, participants may adjust escrow by adding funds or withdrawing the releasable amount to their registered dedicated address. Escrow is locked at the close of the Thursday window. From day 5, Friday, to day 61, eligible obligations are recorded and cleared. On days 62 and 63, the weekend, positions are frozen for final netting; the following Monday is day 1 of the next cycle. Currency and cycle profile are set when the account is opened and are recorded in the Osnias-ID. CLEAR 13W spans 91 days; the CLEAR 1W test calendar must be specified separately in accordance with Book 4."
       }
     },
     {
@@ -397,10 +397,10 @@
     },
     {
       "@type": "Question",
-      "name": "Is the clearing token a speculative blockchain innovation?",
+      "name": "What does a clearing position represent in the Osnias register?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. It is an internal technical representation of clearing positions in the Osnias register. Internal representations of rights, obligations and balances have long existed in clearing and settlement infrastructures. Blockchain is used here primarily to provide a shared, traceable and immutable register."
+        "text": "A clearing position is a register state reflecting the rights, obligations and balances resulting from admitted operations. It is not a standalone transferable or tradable digital asset. Internal representations of rights, obligations and balances have long existed in clearing and settlement infrastructures. Blockchain is used here primarily to provide a shared, traceable and immutable register."
       }
     },
     {
@@ -437,7 +437,7 @@
     "name": "Osnias Clearing",
     "url": "https://www.osnias-clearing.com/"
   },
-  "dateModified": "2026-10-11",
+  "dateModified": "2026-10-17",
   "keywords": [
     "Osnias Clearing FAQ",
     "multilateral clearing",
@@ -501,7 +501,7 @@
     "@id": "https://www.osnias-clearing.com/en/faq/"
   }
 }
-</script></head>
+</script><link href="https://www.osnias-clearing.com/es/faq/" hreflang="es" rel="alternate"/></head>
 <body>
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
@@ -510,7 +510,7 @@
 </div>
 </div>
 <div class="container">
-<div aria-label="Language selection" class="actions"><a class="btn" href="/faq/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/faq/" hreflang="en" lang="en">🇬🇧 English</a></div>
+<div aria-label="Language selection" class="actions"><a class="btn" href="/faq/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/faq/" hreflang="en" lang="en">🇬🇧 English</a><a class="btn" href="/es/faq/" hreflang="es" lang="es">🇪🇸 Español</a></div>
 </div>
 <main class="faq-wrap">
 <section class="faq-hero">
@@ -756,14 +756,14 @@
 <article class="faq-item"><h2>Does collateral limit the gross volume of obligations?</h2><p>No. It limits only the instantaneous net debit exposure during the clearing cycle. A participant may issue and receive gross volumes far above its collateral, provided that its instantaneous net exposure remains less than or equal to the available collateral.</p></article>
 <article class="faq-item"><h2>Does Osnias allow credit, overdrafts or leverage?</h2><p>No. The protocol does not permit overdrafts, internal credit or leverage. There is no mechanism allowing Osnias to grant discretionary exposure above the available collateral.</p></article>
 <article class="faq-item"><h2>Are funds or losses mutualised?</h2><p>No. Collateral is individualised at participant level. There is no common guarantee fund designed to absorb losses of other participants. Risk is deliberately brought down to the end-user level.</p></article>
-<article class="faq-item"><h2>How does the forced exit of a blocked participant work?</h2><p>A participant placed in blocked status by the node operator can no longer create new exposures. Its existing recorded obligations remain included until cycle close and final netting. After settlement, the releasable balance can be withdrawn during the next BURN window. The operator may then move the participant from “blocked”, which is reversible, to “revoked”, the highest sanction status.</p></article>
-<article class="faq-item"><h2>How is the clearing cycle organised?</h2><p>For B2B commercial obligations, the CLEAR 9W cycle lasts 9 weeks, i.e. 63 days between two settlements: D1 (Monday) settlement of the previous cycle; D2 to D4 BURN; D5 (Friday) to D61 MINT + P2P and live clearing; D62–D63 (weekend) FREEZE and final netting calculation. The following Monday is D1 of the next cycle. An admitted invoice is therefore settled within 59 days of issuance at most, within the 60-day limit applicable to commercial transactions. The same sequence applies to CLEAR 1W (testnet) and CLEAR 13W (91 days). Currency and cycle are set when the account is opened and are encoded in the Osnias-ID.</p></article>
+<article class="faq-item"><h2>How does the forced exit of a blocked participant work?</h2><p>A participant blocked by the node manager can no longer create new exposures. Its existing recorded obligations remain included until cycle close and final netting. After settlement, the releasable balance may be withdrawn during the next escrow adjustment window, Tuesday to Thursday, days 2 to 4, to the dedicated, pre-registered withdrawal address. The manager may then move the participant from reversible blocked status to irreversible revoked status, the highest sanction level.</p></article>
+<article class="faq-item"><h2>How is the clearing cycle organised?</h2><p>For B2B commercial obligations, CLEAR 9W lasts nine weeks, or 63 days between settlements. On day 1, Monday, the previous cycle’s net positions are settled. From day 2 to day 4, Tuesday to Thursday, participants may adjust escrow by adding funds or withdrawing the releasable amount to their registered dedicated address. Escrow is locked at the close of the Thursday window. From day 5, Friday, to day 61, eligible obligations are recorded and cleared. On days 62 and 63, the weekend, positions are frozen for final netting; the following Monday is day 1 of the next cycle. Currency and cycle profile are set when the account is opened and are recorded in the Osnias-ID. CLEAR 13W spans 91 days; the CLEAR 1W test calendar must be specified separately in accordance with Book 4.</p></article>
 <article class="faq-item"><h2>How are obligations issued and traced?</h2><p>Obligations are issued by users through ISO 20022 messaging integrated into the Osnias network. Validated messages and obligations are recorded on Sei, the canonical clearing register, providing a timestamped, verifiable and immutable trail. Sei is a public network, accessed through dedicated RPC endpoints behind the Osnias O-POPs, reachable via VPN, without a private blockchain network. Only Osnias-IDs appear in ISO 20022 messages; the purpose field must not contain any identifying data (Rule R-PURPOSE, Book 3).</p></article>
 <article class="faq-item"><h2>Why separate Sei and Ethereum?</h2><p>Sei carries the canonical clearing register and positions and is used for its speed and low cost. Ethereum carries the collateral escrow. Operations on that layer are less frequent and relate only to escrow. This technical and operational separation keeps the escrow chain distinct from the operational clearing chain.</p></article>
 <article class="faq-item"><h2>How does cross-jurisdiction netting work?</h2><p>Obligations are distributed by users according to their commercial relationships, within the same chamber (same currency, same cycle). A participant in one jurisdiction may receive an obligation from a supplier on another node and issue an obligation to a customer on a third node. Once those obligations are valid and recorded, they enter the netting process; each participant then settles its own net balance.</p></article>
 <article class="faq-item"><h2>Which law applies to cross-jurisdiction obligations?</h2><p>Opening the Osnias network in a jurisdiction requires appropriate local regulatory scoping. Each node operator remains responsible for its users and local obligations. The network then processes valid obligations under its common rules, without discretionary requalification of each obligation solely because it originates from another KK jurisdiction code.</p></article>
 <article class="faq-item"><h2>Can a node operator refuse an already validated foreign obligation?</h2><p>Under the protocol’s functional logic, an obligation recorded and validated by the parties enters the netting process under the common network rules. Access compliance is handled upstream through jurisdictional scoping and participant onboarding, rather than by discretionary requalification of each obligation during the cycle.</p></article>
-<article class="faq-item"><h2>Is the clearing token a speculative blockchain innovation?</h2><p>No. It is an internal technical representation of clearing positions in the Osnias register. Internal representations of rights, obligations and balances have long existed in clearing and settlement infrastructures. Blockchain is used here primarily to provide a shared, traceable and immutable register.</p></article>
+<article class="faq-item"><h2>What does a clearing position represent in the Osnias register?</h2><p>A clearing position is a register state reflecting the rights, obligations and balances resulting from admitted operations. It is not a standalone transferable or tradable digital asset. Internal representations of rights, obligations and balances have long existed in clearing and settlement infrastructures. Blockchain is used here primarily to provide a shared, traceable and immutable register.</p></article>
 <article class="faq-item"><h2>What is the exact role of Osnias Clearing?</h2><p>Osnias provides the distributed netting infrastructure, common network rules, position calculation, the canonical register and traceability. Osnias operates O-POPs, VPN access servers and data retention under the defined architecture; it does not hold funds, hold user keys, provide credit or decide participant onboarding or exit. It adapts node-module configurations to jurisdictions and assigns the KK code of each jurisdiction; KK-NNN node numbers are assigned by the competent authority of the territory, or under a procedure placed under its control. It implements network-management decisions taken by the association of node operators.</p></article>
 <article class="faq-item"><h2>Why request preliminary regulatory scoping before production?</h2><p>The project is sufficiently advanced to demonstrate its architecture and controls on testnet while remaining pre-production. Preliminary scoping is intended to support a testnet configured close to mainnet conditions, followed by security stress testing and audit before any formal regulatory filing. This is the planned path before mainnet.</p></article>
 <article class="faq-item"><h2>How is VAT handled?</h2><p>Osnias nets net-of-VAT amounts only. The VAT on each invoice remains calculated, invoiced and reported in companies’ ERP systems under the ordinary rules: Osnias does not calculate, collect or remit any tax. The netting statement (camt.054) allows the ERP to reconcile each invoice. The interaction with e-invoicing and the ViDA package is described in the public ViDA 2030 note, which also puts forward, prospectively and for discussion, a reverse-charge option on netted entries.</p><a class="faq-link" href="/en/vida2030/">Learn more → ViDA 2030</a></article>

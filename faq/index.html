@@ -344,7 +344,7 @@
       "name": "Comment fonctionne la sortie forcée d’un participant bloqué ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Un participant placé en statut bloqué par le gestionnaire ne peut plus créer de nouvelles expositions. Ses obligations déjà enregistrées restent prises en compte jusqu’à la clôture du cycle et au netting final. Après settlement, le solde libérable peut être retiré lors de la fenêtre BURN suivante. Le gestionnaire peut ensuite passer du statut « bloqué », réversible, au statut « révoqué », qui constitue la sanction la plus élevée."
+        "text": "Un participant placé en statut bloqué par le gestionnaire ne peut plus créer de nouvelles expositions. Ses obligations déjà enregistrées restent prises en compte jusqu’à la clôture du cycle et au netting final. Après règlement, le solde libérable peut être retiré pendant la prochaine fenêtre d’ajustement du séquestre, du mardi au jeudi, jours 2 à 4, vers l’adresse dédiée au retrait préalablement enregistrée. Le gestionnaire peut ensuite passer du statut « bloqué », réversible, au statut « révoqué », irréversible et correspondant au niveau de sanction le plus élevé."
       }
     },
     {
@@ -352,7 +352,7 @@
       "name": "Comment le cycle de clearing est-il organisé ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Pour les obligations commerciales B2B, le cycle CLEAR 9W dure 9 semaines, soit 63 jours entre deux settlements : J1 (lundi) settlement du cycle précédent ; J2 à J4 BURN ; J5 (vendredi) à J61 MINT + P2P et clearing live ; J62–J63 (week-end) FREEZE et calcul du netting de clôture. Le lundi suivant est le J1 du cycle suivant. Une facture admise est ainsi réglée au plus tard 59 jours après son émission, dans la limite de 60 jours applicable aux transactions commerciales. Le même séquencement existe pour CLEAR 1W (testnet) et CLEAR 13W (91 jours). La devise et le cycle sont fixés à l’ouverture du compte et figurent dans l’Osnias-ID."
+        "text": "Pour les obligations commerciales B2B, CLEAR 9W dure neuf semaines, soit 63 jours entre deux règlements. Le jour 1, lundi, les positions nettes du cycle précédent sont réglées. Du jour 2 au jour 4, mardi à jeudi, le participant peut ajuster son séquestre par ajout de fonds ou retrait du montant libérable vers son adresse dédiée enregistrée. Le séquestre est bloqué à la clôture de la fenêtre du jeudi. Du jour 5, vendredi, au jour 61, les obligations admissibles sont enregistrées et compensées. Les jours 62 et 63, le week-end, les positions sont figées pour le calcul final du netting ; le lundi suivant est le jour 1 du cycle suivant. La devise et le profil de cycle sont fixés à l’ouverture du compte et figurent dans l’Osnias-ID. CLEAR 13W couvre une durée de 91 jours ; le calendrier de test CLEAR 1W doit être précisé séparément selon le Livre 4."
       }
     },
     {
@@ -397,10 +397,10 @@
     },
     {
       "@type": "Question",
-      "name": "Le token de clearing est-il une innovation spéculative liée à la blockchain ?",
+      "name": "Que représente une position de clearing dans le registre Osnias ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Non. Il constitue une représentation technique interne des positions de clearing dans le registre Osnias. La représentation interne de droits, obligations et soldes existe depuis longtemps dans les infrastructures de clearing et de settlement. La blockchain apporte ici principalement un registre partagé, traçable et immuable."
+        "text": "Une position de clearing est un état du registre reflétant les droits, obligations et soldes résultant des opérations admises. Elle ne constitue pas un actif numérique autonome transférable ou négociable. La représentation interne de droits, obligations et soldes existe depuis longtemps dans les infrastructures de clearing et de règlement. La blockchain apporte ici principalement un registre partagé, traçable et immuable."
       }
     },
     {
@@ -437,7 +437,7 @@
     "name": "Osnias Clearing",
     "url": "https://www.osnias-clearing.com/"
   },
-  "dateModified": "2026-10-11",
+  "dateModified": "2026-10-17",
   "keywords": [
     "FAQ Osnias Clearing",
     "clearing multilatéral",
@@ -504,7 +504,7 @@
     "@id": "https://www.osnias-clearing.com/faq/"
   }
 }
-</script></head>
+</script><link href="https://www.osnias-clearing.com/es/faq/" hreflang="es" rel="alternate"/></head>
 <body>
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
@@ -513,7 +513,7 @@
 </div>
 </div>
 <div class="container">
-<div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/faq/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/faq/" hreflang="en" lang="en">🇬🇧 English</a></div>
+<div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/faq/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/faq/" hreflang="en" lang="en">🇬🇧 English</a><a class="btn" href="/es/faq/" hreflang="es" lang="es">🇪🇸 Español</a></div>
 </div>
 <main class="faq-wrap">
 <section class="faq-hero">
@@ -762,14 +762,14 @@
 <article class="faq-item"><h2>Le collatéral limite-t-il le volume brut des obligations ?</h2><p>Non. Il limite uniquement l’exposition nette débitrice instantanée pendant le cycle de clearing. Un participant peut émettre et recevoir un volume brut très supérieur à son collatéral, sous réserve que son exposition nette instantanée reste inférieure ou égale au collatéral disponible.</p></article>
 <article class="faq-item"><h2>Osnias autorise-t-il le crédit, le découvert ou le levier ?</h2><p>Non. Le protocole n’autorise ni découvert, ni crédit interne, ni levier. Il n’existe pas de mécanisme permettant à Osnias d’accorder discrétionnairement une exposition supérieure au collatéral disponible.</p></article>
 <article class="faq-item"><h2>Les fonds ou les pertes sont-ils mutualisés ?</h2><p>Non. Le collatéral est individualisé au niveau de chaque participant. Il n’existe pas de fonds commun de garantie destiné à absorber les pertes des autres participants. Le risque est volontairement ramené au niveau de l’utilisateur final.</p></article>
-<article class="faq-item"><h2>Comment fonctionne la sortie forcée d’un participant bloqué ?</h2><p>Un participant placé en statut bloqué par le gestionnaire ne peut plus créer de nouvelles expositions. Ses obligations déjà enregistrées restent prises en compte jusqu’à la clôture du cycle et au netting final. Après settlement, le solde libérable peut être retiré lors de la fenêtre BURN suivante. Le gestionnaire peut ensuite passer du statut « bloqué », réversible, au statut « révoqué », qui constitue la sanction la plus élevée.</p></article>
-<article class="faq-item"><h2>Comment le cycle de clearing est-il organisé ?</h2><p>Pour les obligations commerciales B2B, le cycle CLEAR 9W dure 9 semaines, soit 63 jours entre deux settlements : J1 (lundi) settlement du cycle précédent ; J2 à J4 BURN ; J5 (vendredi) à J61 MINT + P2P et clearing live ; J62–J63 (week-end) FREEZE et calcul du netting de clôture. Le lundi suivant est le J1 du cycle suivant. Une facture admise est ainsi réglée au plus tard 59 jours après son émission, dans la limite de 60 jours applicable aux transactions commerciales. Le même séquencement existe pour CLEAR 1W (testnet) et CLEAR 13W (91 jours). La devise et le cycle sont fixés à l’ouverture du compte et figurent dans l’Osnias-ID.</p></article>
+<article class="faq-item"><h2>Comment fonctionne la sortie forcée d’un participant bloqué ?</h2><p>Un participant placé en statut bloqué par le gestionnaire ne peut plus créer de nouvelles expositions. Ses obligations déjà enregistrées restent prises en compte jusqu’à la clôture du cycle et au netting final. Après règlement, le solde libérable peut être retiré pendant la prochaine fenêtre d’ajustement du séquestre, du mardi au jeudi, jours 2 à 4, vers l’adresse dédiée au retrait préalablement enregistrée. Le gestionnaire peut ensuite passer du statut « bloqué », réversible, au statut « révoqué », irréversible et correspondant au niveau de sanction le plus élevé.</p></article>
+<article class="faq-item"><h2>Comment le cycle de clearing est-il organisé ?</h2><p>Pour les obligations commerciales B2B, CLEAR 9W dure neuf semaines, soit 63 jours entre deux règlements. Le jour 1, lundi, les positions nettes du cycle précédent sont réglées. Du jour 2 au jour 4, mardi à jeudi, le participant peut ajuster son séquestre par ajout de fonds ou retrait du montant libérable vers son adresse dédiée enregistrée. Le séquestre est bloqué à la clôture de la fenêtre du jeudi. Du jour 5, vendredi, au jour 61, les obligations admissibles sont enregistrées et compensées. Les jours 62 et 63, le week-end, les positions sont figées pour le calcul final du netting ; le lundi suivant est le jour 1 du cycle suivant. La devise et le profil de cycle sont fixés à l’ouverture du compte et figurent dans l’Osnias-ID. CLEAR 13W couvre une durée de 91 jours ; le calendrier de test CLEAR 1W doit être précisé séparément selon le Livre 4.</p></article>
 <article class="faq-item"><h2>Comment sont émises et tracées les obligations ?</h2><p>Les obligations sont émises par les utilisateurs au moyen d’une messagerie ISO 20022 intégrée au réseau Osnias. Les messages et obligations validées sont enregistrés sur Sei, registre canonique du clearing, afin d’assurer une trace horodatée, vérifiable et immuable. Sei est un réseau public, consulté par des RPC dédiés derrière les O-POP Osnias, accessibles par VPN, sans réseau blockchain privé. Seuls les Osnias-ID figurent dans les messages ISO 20022 ; le champ motif ne doit contenir aucune donnée nominative (règle R-MOTIF, Livre 3).</p></article>
 <article class="faq-item"><h2>Pourquoi séparer Sei et Ethereum ?</h2><p>Sei porte le registre canonique du clearing et les positions ; il est utilisé pour sa rapidité et son faible coût. Ethereum porte le séquestre du collatéral. Les opérations sur cette couche sont moins nombreuses et concernent uniquement le séquestre. Cette séparation technique et opérationnelle maintient une étanchéité entre la chaîne de séquestre et la chaîne opérationnelle de clearing.</p></article>
 <article class="faq-item"><h2>Comment fonctionne la compensation entre juridictions ?</h2><p>Les obligations sont distribuées par les utilisateurs selon leurs relations commerciales, au sein d’une même chambre (même devise, même cycle). Un participant d’une juridiction peut recevoir une obligation d’un fournisseur situé sur un autre nœud et émettre une obligation envers un client situé sur un troisième nœud. Dès lors que ces obligations sont valides et enregistrées, elles entrent dans le netting ; chaque participant règle ensuite son propre solde net.</p></article>
 <article class="faq-item"><h2>Quelle loi s’applique aux obligations inter-juridictionnelles ?</h2><p>L’ouverture du réseau Osnias dans une juridiction suppose un cadrage réglementaire local approprié. Chaque gestionnaire de nœud reste responsable de ses utilisateurs et de ses obligations locales. Le réseau traite ensuite les obligations valides selon ses règles communes, sans requalification discrétionnaire de chaque obligation du seul fait de son code juridictionnel KK.</p></article>
 <article class="faq-item"><h2>Le gestionnaire de nœud peut-il refuser une obligation étrangère déjà validée ?</h2><p>Dans la logique fonctionnelle du protocole, une obligation enregistrée et validée par les parties entre dans le netting selon les règles communes du réseau. La conformité d’accès est traitée en amont par le cadrage de la juridiction et l’onboarding des participants, et non par une requalification discrétionnaire de chaque obligation pendant le cycle.</p></article>
-<article class="faq-item"><h2>Le token de clearing est-il une innovation spéculative liée à la blockchain ?</h2><p>Non. Il constitue une représentation technique interne des positions de clearing dans le registre Osnias. La représentation interne de droits, obligations et soldes existe depuis longtemps dans les infrastructures de clearing et de settlement. La blockchain apporte ici principalement un registre partagé, traçable et immuable.</p></article>
+<article class="faq-item"><h2>Que représente une position de clearing dans le registre Osnias ?</h2><p>Une position de clearing est un état du registre reflétant les droits, obligations et soldes résultant des opérations admises. Elle ne constitue pas un actif numérique autonome transférable ou négociable. La représentation interne de droits, obligations et soldes existe depuis longtemps dans les infrastructures de clearing et de règlement. La blockchain apporte ici principalement un registre partagé, traçable et immuable.</p></article>
 <article class="faq-item"><h2>Quel est le rôle exact d’Osnias Clearing ?</h2><p>Osnias fournit l’infrastructure distribuée de compensation, les règles communes du réseau, le calcul des positions, le registre canonique et la traçabilité. Osnias exploite les O-POP, les serveurs d’accès VPN et la conservation des données selon le dispositif prévu ; il ne détient pas les fonds, ne détient pas les clés des utilisateurs, ne fournit pas de crédit et ne décide pas de l’onboarding ou de la sortie des participants. Il adapte la configuration des modules aux juridictions et attribue le code KK de chaque juridiction ; les numéros de nœuds KK-NNN sont attribués par l’autorité compétente du territoire, ou selon une procédure placée sous son contrôle. Il met en œuvre les décisions de l’association des gestionnaires de nœuds pour la gestion du réseau.</p></article>
 <article class="faq-item"><h2>Pourquoi demander un précadrage réglementaire avant production ?</h2><p>Le projet est suffisamment avancé pour démontrer son architecture et ses contrôles en testnet tout en restant avant le déploiement réel. Le précadrage doit permettre de développer un testnet en configuration proche du mainnet, puis de le soumettre à des stress tests de sécurité et à un audit avant le dépôt d’un dossier officiel. Cette séquence constitue le chemin prévu avant un mainnet.</p></article>
 <article class="faq-item"><h2>Comment la TVA est-elle traitée ?</h2><p>Osnias compense uniquement les montants hors taxe. La TVA de chaque facture reste calculée, facturée et déclarée dans les ERP des entreprises, selon le droit commun : Osnias ne calcule, ne collecte et ne reverse aucune taxe. Le relevé de compensation (camt.054) permet à l’ERP de rapprocher chaque facture. L’articulation avec la facturation électronique et le paquet ViDA est décrite dans la note publique ViDA 2030, qui ouvre aussi, à titre prospectif et pour débat, une piste d’autoliquidation sur les écritures compensées.</p><a class="faq-link" href="/vida2030/">En savoir plus → ViDA 2030</a></article>
