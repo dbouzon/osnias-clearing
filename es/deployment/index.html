@@ -125,6 +125,8 @@
 <strong>Fase de borrador — solo testnet.</strong>
 <span>Los contratos del lado EVM están desplegados en Ethereum Sepolia (Chain ID 11155111). Los contratos del lado Sei están desplegados en Sei Testnet Atlantic-2 (EVM Chain ID 1328). Actualmente no hay ningún contrato activo en Mainnet.</span>
 <br/>
+<span>Los tokens ORUSD y OEURO desplegados en la testnet de Sei son residuos de desarrollo de una versión anterior.</span>
+<br/>
 <span>Desplegador de todos los contratos:</span>
 <code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
 </div><section class="deployment-description"><h2>1. Registro público de los despliegues testnet</h2><p class="section-intro">Esta página constituye la referencia pública de los smart contracts de Osnias Clearing actualmente desplegados en redes testnet. Recoge las direcciones, transacciones de creación, compiladores, parámetros de verificación y estados de cada componente, de modo que el estado experimental de la infraestructura pueda verificarse directamente en los exploradores de cadena.</p></section><section class="deployment-description"><h2>2. Capa Sei — registro canónico y control del clearing</h2><p class="section-intro">La capa Sei Testnet Atlantic-2 agrupa el oráculo temporal, el registro de identidad y el controlador del protocolo. Estos componentes representan el lado clearing de la arquitectura: estado canónico, control de ciclos, identidad y posiciones de clearing, sin constituir un entorno Mainnet de producción.</p></section><section class="deployment-description"><h2>3. Capa EVM — nodos, registro y depósito en garantía</h2><p class="section-intro">La capa Ethereum Sepolia agrupa los componentes EVM asociados a los operadores de nodo: Node Registrar, registro EVM, contrato de depósito en garantía (escrow) y controlador EVM. Esta separación permite probar públicamente la articulación entre el registro de clearing en Sei y la capa externa de escrow y control EVM antes de cualquier despliegue en producción.</p></section>
@@ -154,8 +156,8 @@
 <p>Una aplicación end-user de Osnias Clearing está actualmente disponible en línea en Sei Atlantic-2 Testnet. Permite visualizar el estado del registro, el ciclo de clearing y el estado del oráculo temporal desde una interfaz operativa de demostración.</p>
 <ul class="app-features">
 <li>Conexión de wallet y lectura de la posición de clearing de la cuenta conectada.</li>
-<li>Visualización del ciclo, de las ventanas MINT / BURN / CLEARING / P2P y del estado del oráculo.</li>
-<li>Interfaces de prueba para instrucciones, transferencias, registro y burn.</li>
+<li>Visualización del ciclo, de las ventanas de clearing y del estado del oráculo.</li>
+<li>Interfaces de prueba para instrucciones, transferencias y registro.</li>
 </ul>
 <p class="note-cell">Esta interfaz es un entorno de demostración en desarrollo. Funciona únicamente en testnet y no constituye un servicio de producción.</p>
 <div class="app-actions">
