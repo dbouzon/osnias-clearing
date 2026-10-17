@@ -125,6 +125,8 @@
 <strong>Draft stage — testnet only.</strong>
 <span>EVM-side contracts are deployed on Ethereum Sepolia (Chain ID 11155111). Sei-side contracts are deployed on Sei Testnet Atlantic-2 (EVM Chain ID 1328). No Mainnet contract is currently active.</span>
 <br/>
+<span>The ORUSD and OEURO tokens deployed on the Sei testnet are development leftovers from a previous version.</span>
+<br/>
 <span>Deployer for all contracts:</span>
 <code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
 </div><section class="deployment-description"><h2>1. Public registry of testnet deployments</h2><p class="section-intro">This page is the public reference for the Osnias Clearing smart contracts currently deployed on testnets. It lists the addresses, creation transactions, compilers, verification parameters and status of each component so that the experimental state of the infrastructure can be verified directly on chain explorers.</p></section><section class="deployment-description"><h2>2. Sei layer — canonical ledger and clearing control</h2><p class="section-intro">The Sei Testnet Atlantic-2 layer brings together the temporal oracle, the identity registry and the protocol controller. These components represent the clearing side of the architecture: canonical state, cycle control, identity and clearing positions, without constituting a production Mainnet environment.</p></section><section class="deployment-description"><h2>3. EVM layer — nodes, registry and escrow</h2><p class="section-intro">The Ethereum Sepolia layer brings together the EVM components associated with node operators: Node Registrar, EVM registry, escrow contract and EVM controller. This separation makes it possible to test publicly the interaction between the clearing ledger on Sei and the external escrow and EVM control layer before any production deployment.</p></section>
@@ -154,8 +156,8 @@
 <p>An Osnias Clearing end-user application is currently available online on Sei Atlantic-2 Testnet. It shows the state of the ledger, the clearing cycle and the temporal oracle from an operational demonstration interface.</p>
 <ul class="app-features">
 <li>Wallet connection and reading of the connected account’s clearing position.</li>
-<li>Display of the cycle, the MINT / BURN / CLEARING / P2P windows and the oracle state.</li>
-<li>Test interfaces for instructions, transfers, registry and burn.</li>
+<li>Display of the cycle, the clearing windows and the oracle state.</li>
+<li>Test interfaces for instructions, transfers and registry.</li>
 </ul>
 <p class="note-cell">This interface is a demonstration environment under development. It runs on testnet only and is not a production service.</p>
 <div class="app-actions">
