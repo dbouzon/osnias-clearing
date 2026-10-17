@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>Un piloto por jurisdicción, un núcleo común para todos — Osnias Clearing</title>
+<meta content="Hoja de ruta de Osnias Clearing v0.6: un piloto por jurisdicción, un Clearing Core común, integración, pruebas de estrés y auditoría independiente; presupuesto indicativo de 215 k€ en unos seis meses, financiado por hitos, antes de presentar el expediente normativo previo a Mainnet." name="description">
+<meta content="Denis Bouzon" name="author">
+<meta content="Osnias Clearing" name="publisher">
+<meta content="index, follow, max-image-preview:large" name="robots">
+<meta content="#050814" name="theme-color">
+<link href="/favicon.ico" rel="icon" sizes="any">
+<link href="/favicon_32x32.png" rel="icon" sizes="32x32" type="image/png">
+<link href="/favicon_180x180.png" rel="apple-touch-icon" sizes="180x180">
+<meta content="Un piloto por jurisdicción, un núcleo común para todos — Osnias Clearing" name="DC.title">
+<meta content="Denis Bouzon" name="DC.creator">
+<meta content="2026-10-17" name="DC.date">
+<meta content="https://www.osnias-clearing.com/es/roadmap/" name="DC.identifier">
+<meta content="es" name="DC.language">
+<meta content="CC BY-ND 4.0" name="DC.rights">
+<link href="https://www.osnias-clearing.com/es/roadmap/" rel="canonical"><link href="https://www.osnias-clearing.com/roadmap/" hreflang="fr" rel="alternate"><link href="https://www.osnias-clearing.com/en/roadmap/" hreflang="en" rel="alternate"><link href="https://www.osnias-clearing.com/roadmap/" hreflang="x-default" rel="alternate">
+<link href="https://orcid.org/0009-0007-8894-8902" rel="author">
+<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
+<meta content="Un piloto por jurisdicción, un núcleo común para todos — Osnias Clearing" property="og:title">
+<meta content="Hoja de ruta de Osnias Clearing v0.6: un piloto por jurisdicción, un Clearing Core común, integración, pruebas de estrés y auditoría independiente; presupuesto indicativo de 215 k€ en unos seis meses, financiado por hitos, antes de presentar el expediente normativo previo a Mainnet." property="og:description">
+<meta content="website" property="og:type">
+<meta content="https://www.osnias-clearing.com/es/roadmap/" property="og:url">
+<meta content="Osnias Clearing" property="og:site_name">
+<meta content="es_ES" property="og:locale">
+<meta content="fr_FR" property="og:locale:alternate">
+<meta content="https://www.osnias-clearing.com/roadmap/trajectoire_fr.png" property="og:image">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Un piloto por jurisdicción, un núcleo común para todos — Osnias Clearing" name="twitter:title">
+<meta content="https://www.osnias-clearing.com/roadmap/trajectoire_fr.png" name="twitter:image">
+<link href="/assets/css/osnias.css" rel="stylesheet">
+<script defer src="/assets/js/osnias-seo.js"></script>
+<script defer src="/assets/js/osnias-nav.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://www.osnias-clearing.com/es/roadmap/#webpage",
+  "url": "https://www.osnias-clearing.com/es/roadmap/",
+  "name": "Un piloto por jurisdicción, un núcleo común para todos — Osnias Clearing",
+  "description": "Hoja de ruta de Osnias Clearing v0.6: un piloto por jurisdicción, un Clearing Core común, integración, pruebas de estrés y auditoría independiente; presupuesto indicativo de 215 k€ en unos seis meses, financiado por hitos, antes de presentar el expediente normativo previo a Mainnet.",
+  "isPartOf": {
+    "@id": "https://www.osnias-clearing.com/#website"
+  },
+  "about": {
+    "@id": "https://www.osnias-clearing.com/#organization"
+  },
+  "author": {
+    "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+  },
+  "dateModified": "2026-10-17",
+  "inLanguage": "es"
+}
+</script>
+<style>
+    .hero{padding-top:2.2rem;padding-bottom:2rem}
+    .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.05;margin:.35rem 0 .8rem;text-align:center}
+    .hero .eyebrow{display:block;text-align:center;font-size:1.05rem;letter-spacing:.14em;margin-bottom:.9rem}
+    .hero-role{font-size:clamp(1.05rem,2vw,1.4rem);line-height:1.3;margin-bottom:1.35rem;text-align:center}
+    .hero-lead{max-width:62rem;margin:0 auto 1rem;text-align:justify}
+    .language-switch{display:flex;justify-content:flex-start;gap:.65rem;margin:0 0 1.5rem;flex-wrap:wrap}
+    .language-switch a,.language-switch .active-language{display:inline-block;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:.45rem .8rem;color:inherit;text-decoration:none;font:inherit}
+    .language-switch .active-language{background:rgba(255,255,255,.10)}
+    .language-switch a:hover{background:rgba(255,255,255,.07)}
+
+    /* Statuts */
+    .st-done{--st:#4fd1a5}
+    .st-cons{--st:#6aa8ff}
+    .st-dev{--st:#f5b84a}
+    .st-audit{--st:#c08cff}
+    .pill{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.28rem .6rem;border-radius:999px;border:1px solid var(--st);color:var(--st);background:color-mix(in srgb,var(--st) 12%,transparent);white-space:nowrap}
+
+    .overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.25rem}
+    .ov-col{border:1px solid rgba(255,255,255,.12);border-top:3px solid var(--st);border-radius:14px;padding:1rem 1.1rem;background:rgba(255,255,255,.025)}
+    .ov-col h3{margin:.6rem 0 .6rem;font-size:1.05rem}
+    .ov-col ul{list-style:none;margin:0;padding:0}
+    .ov-col li{padding:.32rem 0;border-bottom:1px dashed rgba(255,255,255,.08);font-size:.95rem}
+    .ov-col li:last-child{border-bottom:0}
+    .ov-col li b{color:var(--st);font-variant-numeric:tabular-nums;margin-right:.35rem}
+
+    .assets{width:100%;border-collapse:collapse;margin-top:1.25rem;font-size:.97rem}
+    .assets th,.assets td{text-align:left;vertical-align:top;padding:.85rem .9rem;border-bottom:1px solid rgba(255,255,255,.1)}
+    .assets th{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+    .assets td:first-child{font-weight:600;white-space:nowrap}
+    .assets td:last-child{opacity:.85}
+
+    .lot-group{margin-top:2rem}
+    .lot-head{display:flex;align-items:baseline;gap:.9rem;flex-wrap:wrap;margin-bottom:.9rem}
+    .lot-head .lot-num{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+    .lot-head h3{margin:0;font-size:1.3rem}
+    .blocks{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+    .block{border:1px solid rgba(255,255,255,.12);border-left:3px solid var(--st);border-radius:14px;padding:1.1rem 1.2rem;background:rgba(255,255,255,.025)}
+    .block-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;margin-bottom:.4rem}
+    .block-id{font-size:.8rem;letter-spacing:.12em;opacity:.7}
+    .block h4{margin:.15rem 0 .5rem;font-size:1.08rem;line-height:1.25}
+    .block .sub{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin:.75rem 0 .3rem}
+    .block ul{margin:0;padding-left:1.1rem}
+    .block li{margin:.22rem 0;font-size:.94rem;line-height:1.45}
+
+    .sequence{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.25rem;counter-reset:lot}
+    .seq{position:relative;border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:1.1rem 1.15rem;background:rgba(255,255,255,.03)}
+    .seq:not(:last-child)::after{content:"→";position:absolute;right:-.85rem;top:50%;transform:translateY(-50%);opacity:.5;font-size:1.1rem}
+    .seq .lot-num{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+    .seq h3{margin:.35rem 0 .2rem;font-size:1.1rem}
+    .seq .range{font-size:.85rem;opacity:.7;margin-bottom:.55rem}
+    .seq p{margin:0;font-size:.94rem;line-height:1.45}
+
+    @media (max-width:900px){
+      .overview,.sequence{grid-template-columns:1fr 1fr}
+      .seq:not(:last-child)::after{display:none}
+    }
+    @media (max-width:600px){
+      .overview,.sequence,.blocks{grid-template-columns:1fr}
+      .assets thead{display:none}
+      .assets,.assets tbody,.assets tr,.assets td{display:block;width:100%}
+      .assets tr{border-bottom:1px solid rgba(255,255,255,.12);padding:.5rem 0}
+      .assets td{border:0;padding:.3rem 0;white-space:normal}
+    }
+
+    .figure{margin:1.5rem 0 0;text-align:center}
+    .figure img{width:100%;height:auto;border-radius:12px;background:#fff;display:block}
+    .figure figcaption{font-size:.85rem;opacity:.7;margin-top:.5rem}
+    .block .status{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--st);margin:-.2rem 0 .4rem}
+    .plain{max-width:62rem}
+    .chain{margin:.75rem 0 0;padding-left:1.2rem}
+    .chain li{margin:.3rem 0}
+    .assets a{color:inherit}
+
+
+    .poc-separation{margin:1.25rem 0;padding:1rem 1.15rem;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(255,255,255,.03);line-height:1.55}
+    .milestone{margin-top:1rem;padding:.9rem 1rem;border-left:3px solid var(--st,#6aa8ff);background:rgba(255,255,255,.035);border-radius:0 10px 10px 0}
+    .milestone strong{display:block;margin-bottom:.2rem}
+    .budget-note{margin-top:1rem;font-size:.92rem;opacity:.88}
+    .post-poc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.25rem}
+    .post-poc .seq{min-height:100%}
+    @media (max-width:900px){.post-poc{grid-template-columns:1fr}}
+</style>
+<link href="https://www.osnias-clearing.com/es/roadmap/" hreflang="es" rel="alternate"/></head>
+<body>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Navegación principal del sitio" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<header>
+<div class="container">
+<section class="hero">
+<div aria-label="Selección de idioma" class="language-switch"><a href="/roadmap/" hreflang="fr" lang="fr">🇫🇷 Français</a><a href="/en/roadmap/" hreflang="en" lang="en">🇬🇧 English</a><span class="active-language" aria-current="page">🇪🇸 Español</span></div>
+<div class="eyebrow">Hoja de ruta técnica · Octubre de 2026 · v0.6</div>
+<h1>Un piloto por jurisdicción, un núcleo común para todos</h1>
+<div class="hero-role">2 módulos de software · 4 paquetes de trabajo · 215 k€ indicativos · ~6 meses · Pruebas de estrés · Auditoría independiente</div>
+<p class="hero-lead"><strong>Osnias Clearing no parte de cero.</strong> El proyecto ya cuenta con un corpus técnico de los Libros I–VII, componentes funcionales en Sei Atlantic-2 y Ethereum Sepolia y un proceso de análisis normativo preliminar en curso.</p>
+<p class="hero-lead">La fase propuesta financia sucesivamente un <strong>Node Stack por jurisdicción</strong>, después el <strong>Clearing Core común</strong>, su integración y las pruebas de estrés, y finalmente la auditoría independiente. Cada hito validado abre el siguiente tramo. Después de la auditoría se prevén el expediente normativo completo previo a Mainnet, la industrialización O-POP y, finalmente, Mainnet.</p>
+<div class="actions" style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.25rem"><a class="btn btn-primary" href="/roadmap/Osnias_Clearing_Roadmap_0.6-FR.pdf" rel="noopener noreferrer" target="_blank">PDF v0.6 en francés</a><a class="btn" href="/roadmap/Osnias_Clearing_Roadmap_0.6-EN.pdf" rel="noopener noreferrer" target="_blank">PDF v0.6 en inglés</a></div>
+</section>
+</div>
+</header>
+<main class="container">
+<section id="overview">
+<div><div class="section-label">01 · Visión general</div><h2>Dos módulos de software, seguidos de validación y auditoría</h2></div>
+<div class="overview">
+<div class="ov-col st-done"><span class="pill">Base existente</span><ul><li>Arquitectura y Libros I–VII</li><li>Borradores testnet Sei / Sepolia</li><li>Análisis preliminares AMF / AFA / CSSF</li><li>Contactos exploratorios</li></ul></div>
+<div class="ov-col st-cons"><span class="pill">Paquete 1</span><h3>Node Stack por jurisdicción</h3><ul><li>KYB/KYC/AML</li><li>SQL + API / backend</li><li>Cuentas 0x + Osnias-ID</li><li>Node Registrar</li><li>Garantía / controlador EVM</li><li>Interfaz del operador de nodo</li></ul></div>
+<div class="ov-col st-dev"><span class="pill">Paquete 2</span><h3>Clearing Core común</h3><ul><li>Netting + registro canónico</li><li>3 cámaras / divisa: 1W, 9W, 13W</li><li>Interfaces de usuario final</li><li>Oráculos de tiempo y solvencia</li><li>ISO 20022 + conciliación</li><li>Adaptador Sei + interfaces O-POP</li></ul></div>
+<div class="ov-col st-audit"><span class="pill">Paquetes 3–4</span><h3>Validación y auditoría</h3><ul><li>Integración de múltiples nodos</li><li>Pruebas de estrés y demostración</li><li>Preparación para la auditoría</li><li>Auditoría independiente</li><li>Correcciones y nuevas pruebas</li></ul></div>
+</div>
+<p class="section-intro" style="margin-top:1rem;font-size:.9rem">BASE EXISTENTE: elementos disponibles antes de la financiación | PAQUETES 1–2: desarrollo de los dos módulos de software | PAQUETE 3: integración, pruebas de estrés y demostración | PAQUETE 4: auditoría de seguridad independiente.</p>
+<div class="notice" style="margin-top:1.25rem"><strong>Principio de financiación.</strong> Los paquetes 1 a 4 forman una gran prueba de concepto técnica financiada progresivamente por hitos. Cada tramo financia un entregable verificable; la validación del hito abre la fase siguiente. Los TRL, gastos subvencionables, porcentajes de ayuda e instrumentos deben definirse con el socio de financiación.</div>
+</section>
+<section id="framework">
+<div><div class="section-label">02 · Promotor, mercado y marco</div><h2>Promotor, mercado y marco normativo</h2></div>
+<h3>Promotor del proyecto</h3><p class="plain">Osnias Clearing ha sido ideado, diseñado, organizado y documentado por su promotor, Denis Bouzon, con autofinanciación íntegra (100 %) hasta la fecha. El proyecto alcanza ahora la etapa en la que necesita apoyo para complementar las competencias del promotor en los próximos pasos: revisión estructurada del código, seguridad, demostrador con múltiples nodos y auditoría.</p>
+<h3>Mercado: una solución que todavía no existe</h3><p class="plain">Osnias propone a las empresas una solución de compensación que hoy no existe. La compensación multilateral es un mecanismo probado desde hace décadas, pero reservado a infraestructuras interbancarias y de mercado: como orden de magnitud, CLS y Clearstream procesan conjuntamente unos 4,3 billones de euros de volumen nocional al día, más de mil billones de euros al año. Las obligaciones comerciales recurrentes entre empresas no disponen de un equivalente. No se trata, por tanto, de captar una cuota de un mercado existente, sino de abrir este mecanismo a los flujos entre empresas.</p>
+<h3>Marco normativo y riesgos</h3><p class="plain">El principal riesgo es normativo: la calificación de la infraestructura y de los servicios prestados. El análisis preliminar se está tratando con la AMF; los expedientes presentados ante la CSSF (Luxemburgo) y la AFA (Andorra) están pendientes de conversaciones. El sector espera este análisis antes de asumir compromisos; hasta entonces, los intercambios con posibles operadores de nodos siguen siendo exploratorios.</p>
+<p class="plain">Los siguientes principios de diseño acotan el riesgo desde la arquitectura (detalles: <a href="/faq/">osnias-clearing.com/faq/</a>):</p>
+<table class="assets"><thead><tr><th>Principio</th><th>Alcance</th></tr></thead><tbody><tr><td>Sin custodia por Osnias</td><td>Osnias no mantiene fondos, claves privadas ni frases semilla de los usuarios; el colateral se deposita por separado en garantía en Ethereum.</td></tr><tr><td>Sin crédito, descubierto ni apalancamiento</td><td>Invariante de ejecución: exposición neta instantánea ≤ colateral disponible; el código rechaza toda obligación que lo supere.</td></tr><tr><td>Colateral individualizado</td><td>Sin fondo común de garantía: el riesgo permanece en el nivel de cada participante.</td></tr><tr><td>Sin novación central</td><td>Osnias no se diseña como una CCP; compensación multilateral distribuida, con calificación final por determinar con las autoridades.</td></tr><tr><td>Responsabilidades de los nodos</td><td>La admisión, el bloqueo y la salida de participantes los decide el gestor de nodo conforme a su marco local.</td></tr><tr><td>Sin declaración de conformidad PFMI</td><td>No se declara certificación ni conformidad PFMI; la arquitectura toma sus principios como referencia para la gestión de riesgos.</td></tr></tbody></table>
+<div class="notice" style="margin-top:1.25rem">Preguntas frecuentes: <a href="/faq/">osnias-clearing.com/faq/</a></div>
+<p class="plain"><strong>Estimación del promotor:</strong> unos 215 k€ durante 6 meses para los paquetes 1 a 4, excluidos el paquete 5 normativo, el O-POP físico, Mainnet y la operación.</p></section>
+<section id="foundation">
+<div><div class="section-label">03 · Base constituida</div><h2>Lo que ya existe</h2><p class="section-intro">El proyecto no parte de cero. Los trabajos realizados constituyen la base sobre la que los paquetes 1 a 4 de la prueba de concepto pueden evaluarse, presupuestarse y vincularse a instrumentos de financiación adecuados.</p></div>
+<table class="assets"><thead><tr><th>Área</th><th>Elementos ya constituidos</th><th>Estado / alcance</th></tr></thead><tbody><tr><td>Documentación técnica</td><td>Corpus técnico estructurado de los Libros I–VII sobre arquitectura, Osnias-ID, ciclos de clearing, seguridad y reglas, incorporación y arquitectura O-POP / RPC. Documentos de posición y documentación pública asociados.</td><td>Base documental disponible; debe mantenerse alineada con la versión técnica de referencia.</td></tr><tr><td>Desarrollos preliminares en testnet</td><td>Ocho componentes funcionales preliminares: oráculo temporal 1W, registro Sei de identidad, controlador Sei y registro de posiciones en Sei Atlantic-2 —contratos Sei verificados—; Node Registrar, registro EVM, depósito en garantía y controlador EVM en Ethereum Sepolia; plataforma Osnias Clearing Desk en línea. Detalles: <a href="/deployment/">osnias-clearing.com/deployment/</a> y <a href="/end-user/">/end-user/</a>.</td><td>Desarrollo preliminar en testnet; el código debe revisarse —Cursor AI → Foundry → Slither— antes de la auditoría.</td></tr><tr><td>Análisis normativo preliminar</td><td>Francia — AMF: memorando y expediente de análisis normativo preliminar. Andorra — AFA: expediente bilingüe presentado. Luxemburgo — CSSF: expediente bilingüe presentado.</td><td>Trabajos normativos preparatorios ya constituidos en tres jurisdicciones.</td></tr><tr><td>Ecosistema y terceros</td><td>Contactos exploratorios con actores bancarios, fintech y de infraestructuras y tecnologías, así como con otros interlocutores institucionales.</td><td>Únicamente contactos e intercambios exploratorios; no se presenta ninguna asociación o consorcio como comprometido.</td></tr><tr><td>Difusión y trazabilidad</td><td>Sitio público, FAQ resumida, documentación FR / EN, esquemas de arquitectura y publicaciones técnicas que permiten a terceros evaluar rápidamente el proyecto antes de consultar los documentos detallados.</td><td>Apoyo a la evaluación por socios técnicos y autoridades.</td></tr></tbody></table>
+<p class="section-intro" style="margin-top:1rem"><strong>Lectura para una entidad financiadora:</strong> la fase que debe financiarse comprende dos módulos de software distintos —Node Stack por jurisdicción y Clearing Core común—, seguidos de integración, pruebas de estrés y auditoría independiente.</p></section>
+<section id="draft">
+<div><div class="section-label">04 · Desarrollo preliminar en testnet</div><h2>Componentes ya desarrollados de forma preliminar en testnet</h2><p class="section-intro">Los componentes siguientes están desplegados en testnet como desarrollos preliminares: se revisarán mediante un proceso de desarrollo estructurado antes de fijar la versión de referencia y realizar la auditoría.</p></div>
+<table class="assets"><thead><tr><th>Componente</th><th>Red</th><th>Estado</th><th>Funciones operativas</th></tr></thead><tbody><tr><td>Oráculo temporal 1W</td><td>Sei Atlantic-2</td><td>Desplegado y verificado</td><td>Ciclo semanal, estados y ventanas del ciclo de clearing, número de ciclo y bloque inicial.</td></tr><tr><td>Registro Sei de identidad</td><td>Sei Atlantic-2</td><td>Desplegado y verificado</td><td>Identidad de participantes y nodos en la capa de clearing.</td></tr><tr><td>Controlador Sei</td><td>Sei Atlantic-2</td><td>Desplegado y verificado</td><td>Vincula el oráculo, el registro, las posiciones de clearing y la cadena EVM Sepolia.</td></tr><tr><td>Registro de posiciones de clearing</td><td>Sei Atlantic-2</td><td>Desplegado</td><td>Registro de obligaciones y posiciones de clearing; instrucciones y controles del ciclo.</td></tr><tr><td>Node Registrar</td><td>Ethereum Sepolia</td><td>Desplegado</td><td>Registro de nodos KK-NNN —primer nodo: 90-017—.</td></tr><tr><td>Registro EVM</td><td>Ethereum Sepolia</td><td>Desplegado</td><td>Registro de zona KK en la capa EVM.</td></tr><tr><td>Depósito en garantía y controlador EVM</td><td>Ethereum Sepolia</td><td>Desplegado</td><td>Depósito del colateral en garantía y control en la capa EVM.</td></tr><tr><td>Plataforma de cámara —Clearing Desk—</td><td>Sei Atlantic-2</td><td>En línea, preliminar</td><td>Conexión de monedero, posición en el registro, estado del oráculo, disponibilidad de funciones según la ventana y consulta del registro.</td></tr></tbody></table>
+<p class="section-intro" style="font-size:.9rem;margin-top:.75rem">Direcciones, transacciones de creación y parámetros de verificación: <a href="/deployment/">osnias-clearing.com/deployment/</a> · plataforma: <a href="/end-user/">osnias-clearing.com/end-user/</a></p>
+<h3>Proceso de revisión estructurada del código preliminar</h3>
+<p class="plain">La herramienta importa menos que el marco: cada componente se revisa en estricta conformidad con las especificaciones técnicas de los Libros I a VII.</p>
+<ol class="chain"><li>Cursor AI — reescritura asistida del código preliminar a partir de especificaciones fijadas, convenciones homogéneas y documentación NatSpec.</li><li>Foundry — pruebas unitarias, fuzzing, pruebas de invariantes y simulaciones con múltiples participantes.</li><li>Slither — análisis estático, revisión y tratamiento de detectores y revisión de dependencias.</li><li>Nuevo despliegue testnet verificado y fijación de la versión de referencia que se entrega para el refuerzo de seguridad y la auditoría.</li></ol>
+<figure class="figure"><a href="/roadmap/chain_fr.png" rel="noopener noreferrer" target="_blank"><img alt="Figura 1 — Proceso de revisión: del desarrollo preliminar en testnet a la versión auditable" decoding="async" loading="lazy" src="/roadmap/chain_fr.png"></a><figcaption>Figura 1 — Proceso de revisión: del desarrollo preliminar en testnet a la versión auditable</figcaption></figure>
+</section>
+<section id="corpus">
+<div><div class="section-label">05 · Corpus documental</div><h2>Corpus documental — Libros I a VII</h2><p class="section-intro">El corpus técnico se publica en siete Libros, disponibles en francés e inglés en el sitio público y archivados en Zenodo con un DOI permanente.</p></div>
+<table class="assets"><thead><tr><th>Libro</th><th>Título</th><th>Versión</th><th>Página pública</th><th>DOI Zenodo</th></tr></thead><tbody><tr><td>I</td><td><strong>Osnias-ID</strong></td><td>3.0</td><td><a href="/osniasid/">/osniasid/</a></td><td><a href="https://doi.org/10.5281/zenodo.22978105" rel="noopener noreferrer" target="_blank">10.5281/zenodo.22978105</a></td></tr><tr><td>II</td><td><strong>Arquitectura</strong></td><td>2.0</td><td><a href="/architecture/">/architecture/</a></td><td><a href="https://doi.org/10.5281/zenodo.23392588" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23392588</a></td></tr><tr><td>III</td><td><strong>Reglas de clearing</strong></td><td>1.3</td><td><a href="/rules/">/rules/</a></td><td><a href="https://doi.org/10.5281/zenodo.23368986" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23368986</a></td></tr><tr><td>IV</td><td><strong>Ciclos de clearing 1W / 9W / 13W</strong></td><td>2.2</td><td><a href="/cycle/">/cycle/</a></td><td><a href="https://doi.org/10.5281/zenodo.23295463" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23295463</a></td></tr><tr><td>V</td><td><strong>Topología de seguridad y resiliencia</strong></td><td>2.1</td><td><a href="/security/">/security/</a></td><td><a href="https://doi.org/10.5281/zenodo.23435558" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23435558</a></td></tr><tr><td>VI</td><td><strong>Incorporación a través de un nodo</strong></td><td>1.1</td><td><a href="/onboarding/">/onboarding/</a></td><td><a href="https://doi.org/10.5281/zenodo.23318060" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23318060</a></td></tr><tr><td>VII</td><td><strong>O-POP Osnias — arquitectura Mainnet</strong></td><td>1.0</td><td><a href="/pop/">/pop/</a></td><td><a href="https://doi.org/10.5281/zenodo.23055994" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23055994</a></td></tr></tbody></table>
+</section>
+<section id="blocks">
+<div><div class="section-label">06 · Arquitectura de la prueba de concepto</div><h2>Dos módulos de software, seguidos de validación</h2><p class="section-intro">El Node Stack es específico de cada jurisdicción y gestiona la incorporación, el cumplimiento local y las funciones EVM del nodo. El Clearing Core es transversal y común a todas las jurisdicciones; el despliegue de referencia sigue siendo Sei, con las dependencias de red aisladas en un adaptador.</p></div>
+<div class="poc-separation"><strong>Principio de separación.</strong> El Node Stack decide quién es admitido y aplica el marco local. El Clearing Core ejecuta la compensación una vez admitido el participante. El paquete 3 somete a prueba el sistema integrado; el paquete 4 lo audita.</div>
+<div class="lot-group"><div class="lot-head"><span class="lot-num">Paquete 1</span><h3>Node Stack por jurisdicción — Ethereum / EVM</h3></div>
+<div class="blocks"><article class="block st-cons"><div class="status">POR DESARROLLAR SOBRE LA BASE EVM EXISTENTE — ESPECÍFICO DE LA JURISDICCIÓN</div>
+<p><strong>Objetivo:</strong> disponer de un nodo operativo en testnet capaz de admitir una empresa, crear sus identidades y cuentas técnicas, registrar su Osnias-ID y gestionar las funciones EVM necesarias conforme a las reglas locales aplicables.</p>
+<ul><li>Incorporación empresarial: KYB/KYC/AML, representantes, titulares reales, estados de admisión y evidencias documentales.</li><li>Backend de negocio: base SQL, API, módulos PHP o equivalentes, gestión de estados de incorporación y trazas de auditoría.</li><li>Aprovisionamiento de cuentas 0x y vinculación empresa ↔ Osnias-ID ↔ nodo ↔ divisa ↔ ciclo.</li><li>Node Registrar, registro EVM, depósito en garantía y controlador en Ethereum testnet; controles de entrada y salida y eventos necesarios para el clearing.</li><li>Interfaz del operador de nodo: admisión, suspensión, salida, colateral, alertas y estados operativos.</li><li>Aprovisionamiento de cuenta e identidad VPN para el futuro O-POP; el despliegue físico del O-POP queda fuera de la prueba de concepto previa a la auditoría.</li><li>Interfaces locales de conversión y liquidación preparadas como puntos de integración, sin imponer un único modelo normativo a las jurisdicciones.</li></ul>
+<div class="milestone st-cons"><strong>Hito 1 — criterio de cierre</strong>Un Node Stack de referencia para una jurisdicción funciona de extremo a extremo en testnet: incorporación → cuentas 0x → Osnias-ID → EVM, con registros e interfaz de operador.</div>
+</article></div></div>
+<div class="lot-group"><div class="lot-head"><span class="lot-num">Paquete 2</span><h3>Clearing Core común — despliegue de referencia en Sei</h3></div>
+<div class="blocks"><article class="block st-dev"><div class="status">DESARROLLOS TESTNET PRELIMINARES EXISTENTES — REVISIÓN ESTRUCTURADA, INTEGRACIÓN Y AMPLIACIÓN</div>
+<p><strong>Objetivo:</strong> construir la estructura transversal común de clearing, independiente del derecho local de los nodos y replicable para cada divisa.</p>
+<ul><li>Motor de netting multilateral, registro canónico de clearing e invariantes de coherencia.</li><li><strong>Tres cámaras por divisa: 1W, 9W y 13W</strong>, cada una con estados de ciclo, reglas de registro, compensación, ajuste de garantías y liquidación, e interfaz específica de usuario final.</li><li>Oráculo temporal 1W / 9W / 13W y oráculo de solvencia en la capa de clearing; políticas de redundancia, congelación y recuperación.</li><li>Osnias-ID en la capa de clearing y correspondencia con los nodos admitidos.</li><li>ISO 20022 en la capa de clearing: correspondencia de eventos Osnias, órdenes, confirmaciones, estados y gestión de errores.</li><li>Conciliación entre capas Sei ↔ Ethereum, detección de divergencias y bloqueo ante incertidumbre —fail-closed—.</li><li>Núcleo basado en primitivas EVM estándar con adaptador Sei; portabilidad y futura migración o despliegue múltiple sin reescribir la lógica de negocio.</li><li>Interfaces y especificaciones O-POP en la capa de clearing; la instalación física del O-POP se realiza después del paquete 5, durante la industrialización.</li></ul>
+<div class="milestone st-dev"><strong>Hito 2 — criterio de cierre</strong>El Clearing Core común ejecuta los tres horizontes 1W / 9W / 13W en testnet, con interfaz de cámara, netting, oráculos, ISO 20022 y conciliación operativos.</div>
+</article></div></div>
+<div class="lot-group"><div class="lot-head"><span class="lot-num">Paquete 3</span><h3>Integración, pruebas de estrés y demostración</h3></div>
+<div class="blocks"><article class="block st-dev"><div class="status">VALIDACIÓN DEL SISTEMA — NO ES UN TERCER MÓDULO DE NEGOCIO</div>
+<p><strong>Objetivo:</strong> conectar varios Node Stacks al Clearing Core, ejecutar ciclos completos y someter el sistema a escenarios normales, de carga y de fallo antes de la auditoría.</p>
+<ul><li>Demostrador con al menos tres nodos y varios participantes simulados.</li><li>Ciclos completos 1W / 9W / 13W y conjuntos de flujos de distintos tamaños.</li><li>Pruebas de carga: número de obligaciones, frecuencia de eventos, cambios de estado y ventanas de ciclo.</li><li>Escenarios adversos: colateral insuficiente, participante suspendido, mensajes inválidos y operaciones fuera de ventana.</li><li>Desincronización Sei / Ethereum, retraso o indisponibilidad del oráculo, pérdida de conexión, latencia y recuperación.</li><li>Verificación sistemática del bloqueo fail-closed, registros, evidencias y procedimientos de recuperación.</li><li>Medición de la tasa de compensación y producción de métricas reproducibles para el expediente de auditoría.</li></ul>
+<div class="milestone st-dev"><strong>Hito 3 — criterio de cierre</strong>Se ejecutan y documentan varios ciclos con múltiples nodos; los escenarios de fallo y estrés son reproducibles; no queda ninguna anomalía crítica conocida abierta antes de la auditoría.</div>
+</article></div></div>
+<div class="lot-group"><div class="lot-head"><span class="lot-num">Paquete 4</span><h3>Auditoría de seguridad</h3></div>
+<div class="blocks"><article class="block st-audit"><div class="status">PREPARACIÓN PARA LA AUDITORÍA → AUDITORÍA INDEPENDIENTE → CORRECCIONES → NUEVAS PRUEBAS</div>
+<ul><li>Fijación del código y de la versión de referencia.</li><li>Expediente de auditoría: arquitectura, especificaciones, lista de invariantes, modelo de amenaza, pruebas, cobertura, procedimientos y evidencias del paquete 3.</li><li>Refuerzo final de seguridad: análisis estático, fuzzing, dependencias, controles de acceso, DoS y superficies de ataque.</li><li>Auditoría independiente de los contratos inteligentes y componentes críticos dentro del alcance acordado.</li><li>Plan de corrección, modificaciones y nuevas pruebas por el auditor.</li></ul>
+<div class="milestone st-audit"><strong>Hito 4 — criterio de cierre</strong>Informe de auditoría independiente entregado; vulnerabilidades tratadas; correcciones probadas de nuevo; versión auditada fijada para presentar el expediente normativo completo.</div>
+</article></div></div>
+</section>
+<section id="sequencing">
+<div><div class="section-label">07 · Planificación y financiación</div><h2>215 k€ indicativos en ~6 meses, por hitos</h2><p class="section-intro">Estimación del promotor para la prueba de concepto global. Los importes son indicativos y deberán ajustarse a los gastos subvencionables, porcentajes de ayuda y cofinanciación seleccionados.</p></div>
+<table class="assets"><thead><tr><th>Paquete</th><th>Período</th><th>Presupuesto indicativo</th><th>Hito / entregable</th><th>Apertura de la fase siguiente</th></tr></thead><tbody>
+<tr><td>PAQUETE 1 — Node Stack</td><td>M1–M2</td><td>60 k€</td><td>Nodo de una jurisdicción en testnet: incorporación → Osnias-ID → EVM, interfaz de operador y registros.</td><td>Validación M1 → financiación del paquete 2</td></tr>
+<tr><td>PAQUETE 2 — Clearing Core</td><td>M2–M4</td><td>70 k€</td><td>Núcleo común: netting, 3 cámaras por divisa, usuario final, oráculos, ISO 20022 y conciliación.</td><td>Validación M2 → financiación del paquete 3</td></tr>
+<tr><td>PAQUETE 3 — Estrés y demostración</td><td>M4–M5</td><td>45 k€</td><td>Demostrador con múltiples nodos, ciclos completos, carga, fallos, métricas y tasa de compensación.</td><td>Validación M3 → financiación del paquete 4</td></tr>
+<tr><td>PAQUETE 4 — Auditoría de seguridad</td><td>M5–M6</td><td>40 k€</td><td>Versión de referencia fijada, auditoría independiente, correcciones y nuevas pruebas.</td><td>Validación M4 → apertura del paquete 5 normativo</td></tr>
+</tbody></table>
+<p class="budget-note"><strong>Total de los paquetes 1 a 4: 215 k€.</strong> El calendario exacto de pagos dentro de cada tramo —anticipo, pago intermedio y saldo tras la aceptación— se definirá con la entidad o entidades financiadoras.</p>
+<h3 style="margin-top:2rem">Arquitectura de financiación de la prueba de concepto</h3>
+<p class="plain">Un hito puede financiarse mediante uno o varios contribuyentes: subvención pública, cofinanciación privada o socio industrial. Un contribuyente puede participar en un único tramo o en varios, permitiendo constituir progresivamente la financiación sin exigir una única entidad financiadora.</p>
+<p class="plain">Para los cofinanciadores privados estratégicos, una posible entrada posterior en el capital de la futura sociedad operadora puede negociarse por separado. La financiación de la prueba de concepto y la inversión en capital son operaciones distintas; ninguna participación en la prueba de concepto confiere automáticamente un derecho sobre el capital.</p>
+<h3 style="margin-top:2rem">Después de la prueba de concepto: expediente normativo, O-POP y Mainnet</h3>
+<div class="post-poc">
+<div class="seq"><div class="lot-num">Paquete 5</div><h3>Expediente normativo completo previo a Mainnet</h3><p>Presentación del expediente completo con la versión auditada, resultados de las pruebas de estrés, procedimientos y documentación de seguridad. Continuidad del análisis preliminar ya iniciado con la AMF: la autoridad examina un proyecto conocido y previamente analizado, completado con su versión auditada.</p><div class="range" style="margin-top:.65rem">Promotor, asesoramiento, procedimiento y coste: por determinar tras la respuesta al análisis preliminar.</div></div>
+<div class="seq"><div class="lot-num">Paquete 6</div><h3>O-POP e industrialización</h3><p>Despliegue físico del O-POP en la capa de clearing: servidores y RPC privados, VPN, DMZ, registros, supervisión, refuerzo y aceptación, jurisdicción por jurisdicción.</p><div class="range" style="margin-top:.65rem">Fuera de la prueba de concepto de los paquetes 1–4; por presupuestar según la jurisdicción.</div></div>
+<div class="seq"><div class="lot-num">Paquete 7</div><h3>Mainnet</h3><p>Despliegue en producción del Clearing Core en la red de referencia Sei y de los componentes EVM en Ethereum; activación de los nodos autorizados. El núcleo sigue siendo independiente de la cadena y portable.</p><div class="range" style="margin-top:.65rem">Fuera de la prueba de concepto; presupuesto de despliegue y operación por determinar.</div></div>
+</div>
+<h3 style="margin-top:2rem">Trabajo previsto con un socio de financiación de la innovación</h3>
+<ul class="chain"><li>Determinar el TRL de entrada y salida de cada paquete, sin imponer un único TRL al proyecto.</li><li>Ajustar los presupuestos indicativos a los gastos realmente subvencionables y a los porcentajes de ayuda.</li><li>Identificar los instrumentos franceses, europeos o locales adecuados para cada hito.</li><li>Estructurar la secuencia de tramos y las condiciones de aceptación y desembolso.</li><li>Identificar cofinanciadores o socios técnicos útiles; permitir que un actor financie un hito concreto.</li><li>Preparar, cuando proceda, la relación separada con inversores estratégicos de la futura sociedad operadora.</li><li>Preparar la transición tras la auditoría al paquete 5 normativo, y después a la industrialización O-POP y Mainnet.</li></ul>
+<div class="notice" style="margin-top:1.5rem"><strong>Objetivo.</strong> Financiar una prueba de concepto global verificable por hitos: Node Stack por jurisdicción → Clearing Core común → integración y pruebas de estrés → auditoría; después presentar el expediente normativo completo de un proyecto previamente analizado antes de la industrialización O-POP y Mainnet.</div>
+</section>
+<section id="disclaimer"><div class="notice"><strong>Información técnica.</strong> Esta hoja de ruta describe una propuesta de prueba de concepto global y un presupuesto indicativo; los TRL, gastos subvencionables, porcentajes de ayuda, entidades financiadoras, calendario y condiciones de desembolso están por determinar. No constituye una oferta de valores, asesoramiento de inversión ni una solicitud de inversión.</div></section>
+</main>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div>© 2026 Osnias Clearing · Hoja de ruta · Última actualización: 17 de octubre de 2026</div>
+<div>
+<a href="/architecture/">Arquitectura</a> ·
+          <a href="/rules/">Reglas</a> ·
+          <a href="/cycle/">Ciclos</a> ·
+          <a href="/security/">Seguridad</a> ·
+          <a href="/onboarding/">Incorporación</a> ·
+          <a href="/regulation/">Regulación</a>
+</div>
+</div>
+<div class="footer-legal">Osnias Clearing proporciona información técnica pública para investigación, desarrollo, revisión y auditoría. Ningún contrato de producción debe considerarse activo si no está identificado en el registro oficial de despliegue.</div>
+</div>
+</footer>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
