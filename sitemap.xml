@@ -237,25 +237,6 @@
     <priority>0.90</priority>
   </url>
 
-  <!-- Page bilingue : Partenariat / Partnership -->
-  <url>
-    <loc>https://www.osnias-clearing.com/partnership/</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/partnership/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/partnership/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/partnership/" />
-    <lastmod>2026-10-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.90</priority>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/en/partnership/</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/partnership/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/partnership/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/partnership/" />
-    <lastmod>2026-10-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.90</priority>
-  </url>
 
   <!-- Page bilingue : FAQ -->
   <url>
