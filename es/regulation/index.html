@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>Osnias Clearing — Regulación, arquitectura actual y memorando AMF</title>
+<meta content="Análisis normativo preliminar de Osnias Clearing: arquitectura actual de compensación, funciones de los gestores de nodo, separación entre liquidación y custodia, diálogo con las autoridades y memorando AMF v2.0 conservado como referencia histórica." name="description">
+<meta content="análisis normativo preliminar; arquitectura actual; memorando AMF histórico; compensación multilateral; registro Sei; depósito en garantía externo; gestor de nodo; servicios efectivos; MiCA; pagos; testnet" name="keywords">
+<meta content="Denis Bouzon" name="author">
+<meta content="Denis Bouzon" name="creator">
+<meta content="Osnias Clearing" name="publisher">
+<meta content="index, follow, max-image-preview:large" name="robots">
+<meta content="Análisis normativo preliminar de Osnias Clearing: arquitectura actual de compensación, funciones de los gestores de nodo, separación entre liquidación y custodia, diálogo con las autoridades y memorando AMF v2.0 conservado como referencia histórica." name="abstract">
+<meta content="análisis normativo preliminar; arquitectura actual; memorando AMF histórico; compensación multilateral; registro Sei; depósito en garantía externo; gestor de nodo; servicios efectivos; MiCA; pagos; testnet" name="subject">
+<meta content="Osnias Clearing — Regulación, arquitectura actual y memorando AMF" name="DC.title">
+<meta content="Denis Bouzon" name="DC.creator">
+<meta content="Osnias Clearing" name="DC.publisher">
+<meta content="2026-10-17" name="DC.date">
+<meta content="Regulatory Analysis" name="DC.type">
+<meta content="análisis normativo preliminar; arquitectura actual; memorando AMF histórico; compensación multilateral; registro Sei; depósito en garantía externo; gestor de nodo; servicios efectivos; MiCA; pagos; testnet" name="DC.subject">
+<meta content="https://www.osnias-clearing.com/es/regulation/" name="DC.identifier">
+<meta content="es" name="DC.language">
+<meta content="#050814" name="theme-color">
+<link href="https://www.osnias-clearing.com/es/regulation/" rel="canonical"><link href="https://orcid.org/0009-0007-8894-8902" rel="author">
+<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
+<meta content="Osnias Clearing — Regulación, arquitectura actual y memorando AMF" property="og:title">
+<meta content="Análisis normativo preliminar de Osnias Clearing: arquitectura actual de compensación, funciones de los gestores de nodo, separación entre liquidación y custodia, diálogo con las autoridades y memorando AMF v2.0 conservado como referencia histórica." property="og:description">
+<meta content="article" property="og:type">
+<meta content="https://www.osnias-clearing.com/es/regulation/" property="og:url">
+<meta content="Osnias Clearing" property="og:site_name">
+<meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image">
+<meta content="Osnias Clearing — Regulación, arquitectura actual y memorando AMF" property="og:image:alt">
+<meta content="Denis Bouzon" name="citation_author">
+<meta content="Mémorandum AMF v2.0 — Régulation MiCA &amp; analyse réglementaire" name="citation_title">
+<meta content="2026-09-28" name="citation_publication_date">
+<meta content="https://www.osnias-clearing.com/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" name="citation_pdf_url">
+<meta content="10.5281/zenodo.23020714" name="citation_doi">
+<link href="/assets/css/osnias.css" rel="stylesheet">
+<script defer src="/assets/js/osnias-seo.js"></script>
+<script defer src="/assets/js/osnias-nav.js"></script>
+<style>
+    
+    
+    
+    
+    
+
+    .hero-title-center{
+      text-align:center;
+      max-width:980px;
+      margin:0 auto 1.35rem auto;
+    }
+
+    .hero-title-center .hero-role{
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .dossier-label{
+      display:inline-block;
+      margin:0 0 .55rem 0;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+
+    .doi-callout{
+      margin:.85rem 0 1.1rem 0;
+      padding:.8rem 1rem;
+      border:1px solid rgba(43,185,230,.35);
+      border-radius:14px;
+      background:rgba(43,185,230,.06);
+    }
+
+    .doi-callout strong{
+      display:block;
+      margin-bottom:.2rem;
+    }
+
+    .doi-callout a{
+      font-weight:700;
+    }
+  </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.osnias-clearing.com/#denis-bouzon",
+      "name": "Denis Bouzon",
+      "sameAs": [
+        "https://orcid.org/0009-0007-8894-8902"
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://www.osnias-clearing.com/#organization",
+      "name": "Osnias Clearing",
+      "url": "https://www.osnias-clearing.com/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.osnias-clearing.com/#website",
+      "url": "https://www.osnias-clearing.com/",
+      "name": "Osnias Clearing",
+      "publisher": {
+        "@id": "https://www.osnias-clearing.com/#organization"
+      }
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.osnias-clearing.com/es/regulation/#article",
+      "headline": "Osnias Clearing — Regulación, arquitectura actual y memorando AMF",
+      "alternativeHeadline": "Regulación · Arquitectura actual · Memorando AMF v2.0 histórico",
+      "description": "Análisis normativo preliminar de Osnias Clearing: arquitectura actual de compensación, funciones de los gestores de nodo, separación entre liquidación y custodia, diálogo con las autoridades y memorando AMF v2.0 conservado como referencia histórica.",
+      "url": "https://www.osnias-clearing.com/es/regulation/",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.osnias-clearing.com/es/regulation/"
+      },
+      "author": {
+        "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+      },
+      "publisher": {
+        "@id": "https://www.osnias-clearing.com/#organization"
+      },
+      "datePublished": "2026-09-28",
+      "dateModified": "2026-10-17",
+      "inLanguage": "es",
+      "isPartOf": {
+        "@id": "https://www.osnias-clearing.com/#website"
+      },
+      "keywords": [
+        "análisis normativo preliminar",
+        "arquitectura actual",
+        "memorando AMF histórico",
+        "compensación multilateral",
+        "registro Sei",
+        "depósito en garantía externo",
+        "gestor de nodo",
+        "servicios efectivos",
+        "MiCA",
+        "pagos",
+        "testnet"
+      ],
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "análisis normativo preliminar"
+        },
+        {
+          "@type": "Thing",
+          "name": "arquitectura actual"
+        },
+        {
+          "@type": "Thing",
+          "name": "memorando AMF histórico"
+        },
+        {
+          "@type": "Thing",
+          "name": "compensación multilateral"
+        },
+        {
+          "@type": "Thing",
+          "name": "registro Sei"
+        },
+        {
+          "@type": "Thing",
+          "name": "depósito en garantía externo"
+        }
+      ],
+      "citation": {
+        "@type": "CreativeWork",
+        "name": "AMF Memorandum v2.0",
+        "identifier": "https://doi.org/10.5281/zenodo.23020714",
+        "datePublished": "2026-09-28"
+      }
+    }
+  ]
+}
+</script>
+<meta content="summary_large_image" name="twitter:card"><meta content="Osnias Clearing — Regulación, arquitectura actual y memorando AMF" name="twitter:title"><meta content="Análisis normativo preliminar de Osnias Clearing: arquitectura actual de compensación, funciones de los gestores de nodo, separación entre liquidación y custodia, diálogo con las autoridades y memorando AMF v2.0 conservado como referencia histórica." name="twitter:description"><meta content="https://www.osnias-clearing.com/index-picture.png" name="twitter:image"><link href="https://www.osnias-clearing.com/regulation/" hreflang="fr" rel="alternate"><link href="https://www.osnias-clearing.com/en/regulation/" hreflang="en" rel="alternate"><link href="https://www.osnias-clearing.com/es/regulation/" hreflang="es" rel="alternate"><link href="https://www.osnias-clearing.com/regulation/" hreflang="x-default" rel="alternate"></head>
+<body>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Navegación principal del sitio" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<main>
+<div class="container">
+<section class="hero">
+<div aria-label="Selección de idioma" class="actions"><a href="/regulation/" hreflang="fr" lang="fr" class="btn">🇫🇷 Français</a><a href="/en/regulation/" hreflang="en" lang="en" class="btn">🇬🇧 English</a><a href="/es/regulation/" hreflang="es" lang="es" class="btn btn-primary" aria-current="page">🇪🇸 Español</a></div>
+<div class="hero-grid single">
+<div>
+<div class="eyebrow">Regulación · Arquitectura actual · Memorando AMF v2.0 histórico</div>
+<div class="hero-title-center">
+<h1>Análisis normativo</h1>
+<div class="hero-role">Primero las funciones reales. Después la calificación jurídica.</div>
+</div>
+<p class="hero-lead"><span class="dossier-label">Primer expediente: Francia — AMF Fintech</span><br>Esta página distingue el <strong>Memorando AMF v2.0, publicado el 28 de septiembre de 2026</strong>, de la presentación actual del proyecto. Preparado en respuesta al correo del equipo AMF Innovation &amp; Finance digitale del 22 de septiembre de 2026, el documento conserva el registro de una primera solicitud de análisis preliminar antes de un piloto en testnet con un socio establecido en Francia. Debe leerse en su contexto de publicación; las evoluciones posteriores de la arquitectura no se incorporan automáticamente.</p>
+<div class="doi-callout">
+<strong>Referencia histórica publicada — Zenodo</strong>
+Memorando AMF v2.0 · 28 de septiembre de 2026 · DOI:
+<a href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23020714 ↗</a>
+              · <a href="https://zenodo.org/records/23020714" rel="noopener noreferrer" target="_blank">Registro Zenodo ↗</a>
+</div>
+<div class="tags">
+<span class="tag tag-accent">Registro de clearing en Sei</span>
+<span class="tag">Depósito en garantía externo</span>
+<span class="tag">Colateral individualizado</span>
+<span class="tag">Controles fail-closed</span>
+<span class="tag">Posiciones no negociables</span>
+<span class="tag">Sin custodia por Osnias</span>
+</div>
+<div class="actions">
+<a class="btn btn-primary" href="/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" rel="noopener noreferrer" target="_blank">Memorando histórico FR ↗</a>
+<a class="btn" href="/regulation/Osnias-Clearing-AMF-Memorandum-2_0-EN.pdf" rel="noopener noreferrer" target="_blank">Memorando histórico EN ↗</a>
+<a class="btn" href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">DOI ↗</a>
+</div><div class="document-summary-block"><h3>1. Documento histórico y alcance de su lectura</h3><p class="section-intro">El Memorando AMF v2.0 se conserva como referencia documental histórica. Presenta los hechos técnicos, las hipótesis y las preguntas de calificación formulados en su fecha de publicación. Sus PDF en francés e inglés y su DOI siguen disponibles. Esta página no modifica esos archivos ni los presenta como una descripción exhaustiva de la arquitectura actual.</p></div><div class="document-summary-block"><h3>2. Arquitectura actual y responsabilidades</h3><p class="section-intro">En el diseño actual, el registro canónico en Sei registra obligaciones, posiciones y estados de clearing. Estas posiciones no constituyen activos digitales autónomos transferibles o negociables. Los activos de liquidación permanecen en una capa externa de depósito en garantía y liquidación. Los gestores de nodo y sus proveedores intervienen según los servicios efectivamente prestados y las autorizaciones aplicables.</p></div><div class="document-summary-block"><h3>3. Cuestiones de calificación y diálogo con las autoridades</h3><p class="section-intro">El análisis preliminar busca examinar las funciones de la sociedad operadora, los gestores de nodo y los proveedores de liquidación conforme al derecho aplicable. La separación técnica de capas no basta, por sí sola, para determinar un estatus normativo. Los intercambios con las autoridades son preliminares; no constituyen autorización, permiso de despliegue en producción ni calificación definitiva.</p></div>
+
+<section class="document-summary-block" aria-label="Contexto normativo y arquitectura actual">
+<h2>Arquitectura actual y análisis normativo preliminar</h2>
+<p class="section-intro"><strong>Osnias Clearing se presenta como una infraestructura de cálculo y compensación de obligaciones, distinta de las funciones de custodia y liquidación.</strong> El registro de clearing en Sei registra y concilia las posiciones; el depósito en garantía y los movimientos de activos permanecen en una capa separada. Osnias no mantiene las claves privadas de los usuarios ni directamente sus fondos.</p>
+<p class="section-intro">El diálogo con <strong>AMF Innovation &amp; Finance Digitale</strong> se refiere a las funciones descritas y su calificación conforme a <strong>MiCA y al marco francés y europeo aplicable</strong>. El análisis debe considerar los activos utilizados, los permisos técnicos, los mandatos, los contratos y las responsabilidades de cada interviniente, en particular para la custodia, las transferencias o los servicios de pago efectivamente prestados.</p>
+<p class="section-intro"><strong>El proyecto sigue en desarrollo y en testnet; no se presupone ninguna calificación normativa definitiva.</strong> El memorando histórico y la documentación actual constituyen dos niveles de lectura distintos. Las páginas <a href="/es/architecture/">Arquitectura</a>, <a href="/es/rules/">Reglas</a>, <a href="/es/security/">Seguridad</a> y <a href="/es/faq/">FAQ</a> presentan el funcionamiento descrito actualmente y deben consultarse junto con el documento histórico.</p>
+</section>
+
+
+<section class="document-summary-block" aria-label="Compensación y servicios efectivos">
+<h2>Compensación multilateral y servicios efectivamente prestados</h2>
+<p class="section-intro">La arquitectura actual busca <strong>registrar, agregar y compensar obligaciones antes de su liquidación</strong> y determinar después los saldos netos. La representación de una posición en un registro no debe confundirse con el activo utilizado para liquidar ese saldo. Por ello, el cálculo de posiciones, la custodia de activos y la ejecución de movimientos se examinan por separado.</p>
+<p class="section-intro">El gestor de nodo asume las funciones operativas correspondientes a su ámbito y sus autorizaciones. La sociedad operadora proporciona las reglas comunes, el registro y los componentes técnicos del protocolo. Este reparto debe confirmarse mediante los contratos y los permisos reales; no exime a ningún interviniente de sus propias obligaciones.</p>
+<p class="section-intro">El expediente normativo debe relacionar <strong>los servicios realmente prestados, los activos utilizados y la persona jurídica responsable</strong>. Ni el uso de DLT, ni la ausencia de custodia directa por Osnias, ni el término «nodo» determinan por sí solos el régimen aplicable. Toda evolución importante de las funciones o de los activos debe tenerse en cuenta en el diálogo de análisis preliminar.</p>
+</section>
+
+</div>
+</div>
+</section>
+</div>
+</main>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div>© 2026 Osnias Clearing · Análisis normativo · Última actualización: 17 de octubre de 2026</div>
+<div><a href="/es/">Inicio</a></div>
+</div>
+<div class="footer-legal">Autor: Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902" rel="noopener noreferrer" target="_blank">0009-0007-8894-8902</a> · <a href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a></div>
+</div>
+</footer>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js">
+</script>
+</body>
+</html>
