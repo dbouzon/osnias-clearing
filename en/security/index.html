@@ -1,48 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><link href="https://www.osnias-clearing.com/en/security/" rel="canonical"/><link href="https://www.osnias-clearing.com/security/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/security/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/security/" hreflang="x-default" rel="alternate"/>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Book 5 — Security Topology, Resilience & Dual-Domain Authorization | Osnias Clearing</title>
-<meta content="Osnias Clearing Book 5 documents the security topology and resilience model of the protocol: dual-domain authorization across EVM and Sei, secure onboarding and off-boarding, cold fund release, identity lifecycle, key-compromise resilience, cryptographic hygiene and audit-readiness." name="description"/>
-<meta content="Osnias Clearing security, security topology, resilience architecture, dual-domain authorization, EVM security, Sei security, secure onboarding, secure off-boarding, cold fund release, Osnias-ID, identity lifecycle, ECDSA key compromise, key rotation, cryptographic hygiene, smart contract security, cross-chain verification, non-custodial security, audit readiness, digital asset infrastructure security" name="keywords"/>
-<meta content="Book 5 defines the Osnias Clearing security design for participant identity, authorization, fund release and cross-domain verification. The architecture separates EVM signing, Sei authorization and cold-release controls to reduce correlated failure and key-compromise risk." name="abstract"/>
-<meta content="security topology; resilience architecture; dual-domain authorization; EVM security; Sei security; Osnias-ID; secure onboarding; cold fund release; identity lifecycle; cryptographic hygiene; smart contract security; audit readiness" name="subject"/>
-<meta content="Book 5 — Security Topology, Resilience & Dual-Domain Authorization" name="DC.title"/>
-<meta content="Denis Bouzon" name="DC.creator"/>
-<meta content="Osnias Clearing" name="DC.publisher"/>
-<meta content="2026-09-26" name="DC.date"/>
-<meta content="Technical Documentation" name="DC.type"/>
-<meta content="en" name="DC.language"/>
-<meta content="security topology; resilience architecture; dual-domain authorization; EVM security; Sei security; Osnias-ID; secure onboarding; cold fund release; identity lifecycle; cryptographic hygiene; smart contract security; audit readiness" name="DC.subject"/>
-<meta content="summary_large_image" name="twitter:card"/>
-<meta content="Book 5 — Security Topology, Resilience & Dual-Domain Authorization | Osnias Clearing" name="twitter:title"/>
-<meta content="Security topology and resilience model for Osnias Clearing: EVM signing, Sei authorization, dual-domain controls, secure fund release, identity lifecycle and audit-readiness." name="twitter:description"/>
-<meta content="https://www.osnias-clearing.com/security/osnias-dual-domain-authorization.png" name="twitter:image"/>
-<meta content="#050814" name="theme-color"/>
-<meta content="index, follow, max-image-preview:large" name="robots"/>
-<meta content="Denis Bouzon" name="author"/>
-<meta content="Book 5 — Security Topology, Resilience & Dual-Domain Authorization" name="citation_title"/>
-<meta content="Denis Bouzon" name="citation_author"/>
-<meta content="2026/09/26" name="citation_publication_date"/>
-<meta content="10.5281/zenodo.22981575" name="citation_doi"/>
-<meta content="https://www.osnias-clearing.com/security/Book_5_Security_en_2_0.pdf" name="citation_pdf_url"/>
-<meta content="Book 5 — Security Topology, Resilience & Dual-Domain Authorization | Osnias Clearing" property="og:title"/>
-<meta content="Security topology and resilience model for Osnias Clearing: EVM signing, Sei authorization, dual-domain controls, secure fund release, identity lifecycle and audit-readiness." property="og:description"/>
-<meta content="https://www.osnias-clearing.com/en/security/" property="og:url"/>
-<meta content="article" property="og:type"/>
-<meta content="Osnias Clearing" property="og:site_name"/>
-<meta content="https://www.osnias-clearing.com/security/osnias-dual-domain-authorization.png" property="og:image"/>
-<meta content="Osnias Clearing dual-domain authorization architecture" property="og:image:alt"/>
+<head><link href="https://www.osnias-clearing.com/en/security/" rel="canonical"><link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/security/"><link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/security/"><link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/security/"><link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/security/"><meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>Book 5 — Security Topology, Resilience &amp; Dual-Domain Authorization | Osnias Clearing</title>
+<meta content="Book 5 v2.1 presents participant and manager security in Osnias Clearing: EVM/Sei authorization, a dedicated withdrawal address, escrow adjustment on days 2–4, Monday settlement, independent management keys, per-node escrow limits and audit readiness." name="description">
+<meta content="Osnias Clearing security, Book 5 v2.1, EVM Sei authorization, Osnias-ID, escrow, dedicated withdrawal address, day 2–4 adjustment, net settlement, node manager, Osnias manager, independent keys, escrow limit, identity renewal, audit readiness" name="keywords">
+<meta content="Version 2.1 describes participants’ three security domains, the rights of the node manager and the Osnias manager, the Tuesday-to-Thursday escrow adjustment window, and controls to be implemented and tested. It distinguishes design requirements from validation evidence still pending." name="abstract">
+<meta content="Osnias Clearing security, Book 5 v2.1, EVM Sei authorization, Osnias-ID, escrow, dedicated withdrawal address, day 2–4 adjustment, net settlement, node manager, Osnias manager, independent keys, escrow limit, identity renewal, audit readiness" name="subject">
+<meta content="Book 5 — Security Topology, Resilience &amp; Dual-Domain Authorization" name="DC.title">
+<meta content="Denis Bouzon" name="DC.creator">
+<meta content="Osnias Clearing" name="DC.publisher">
+<meta content="2026-10-17" name="DC.date">
+<meta content="Technical Documentation" name="DC.type">
+<meta content="en" name="DC.language">
+<meta content="Osnias Clearing security, Book 5 v2.1, EVM Sei authorization, Osnias-ID, escrow, dedicated withdrawal address, day 2–4 adjustment, net settlement, node manager, Osnias manager, independent keys, escrow limit, identity renewal, audit readiness" name="DC.subject">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Book 5 — Security Topology, Resilience &amp; Dual-Domain Authorization | Osnias Clearing" name="twitter:title">
+<meta content="Book 5 v2.1 presents participant and manager security in Osnias Clearing: EVM/Sei authorization, a dedicated withdrawal address, escrow adjustment on days 2–4, Monday settlement, independent management keys, per-node escrow limits and audit readiness." name="twitter:description">
+<meta content="https://www.osnias-clearing.com/security/osnias-dual-domain-authorization.png" name="twitter:image">
+<meta content="#050814" name="theme-color">
+<meta content="index, follow, max-image-preview:large" name="robots">
+<meta content="Denis Bouzon" name="author">
+<meta content="Book 5 — Security Topology, Resilience &amp; Dual-Domain Authorization" name="citation_title">
+<meta content="Denis Bouzon" name="citation_author">
+<meta content="2026/10/17" name="citation_publication_date">
+<meta content="10.5281/zenodo.23435558" name="citation_doi">
+<meta content="https://www.osnias-clearing.com/security/Book_5_Security_en_2_1.pdf" name="citation_pdf_url">
+<meta content="Book 5 — Security Topology, Resilience &amp; Dual-Domain Authorization | Osnias Clearing" property="og:title">
+<meta content="Book 5 v2.1 presents participant and manager security in Osnias Clearing: EVM/Sei authorization, a dedicated withdrawal address, escrow adjustment on days 2–4, Monday settlement, independent management keys, per-node escrow limits and audit readiness." property="og:description">
+<meta content="https://www.osnias-clearing.com/en/security/" property="og:url">
+<meta content="article" property="og:type">
+<meta content="Osnias Clearing" property="og:site_name">
+<meta content="https://www.osnias-clearing.com/security/osnias-dual-domain-authorization.png" property="og:image">
+<meta content="Safe protected by three padlocks representing the three independent security domains A, B and C" property="og:image:alt">
 
-<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<link href="/assets/css/osnias.css" rel="stylesheet">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Book 5 — Security Topology, Resilience & Dual-Domain Authorization",
-  "alternativeHeadline": "Release 2.0 — Security Architecture and Internal Audit-Readiness Assessment",
-  "description": "Osnias Clearing Book 5 documents the security topology and resilience model of the protocol: dual-domain authorization across EVM and Sei, secure onboarding and off-boarding, cold fund release, identity lifecycle, key-compromise resilience, cryptographic hygiene and audit-readiness.",
+  "alternativeHeadline": "Version 2.1 — Participant Security, Management Keys and Escrow Controls",
+  "description": "Book 5 v2.1 presents participant and manager security in Osnias Clearing: EVM/Sei authorization, a dedicated withdrawal address, escrow adjustment on days 2–4, Monday settlement, independent management keys, per-node escrow limits and audit readiness.",
   "author": {
     "@type": "Person",
     "name": "Denis Bouzon",
@@ -60,54 +59,85 @@
     "@type": "WebPage",
     "@id": "https://www.osnias-clearing.com/en/security/"
   },
-  "identifier": "https://doi.org/10.5281/zenodo.22981575",
+  "identifier": "https://doi.org/10.5281/zenodo.23435558",
   "sameAs": [
-    "https://zenodo.org/records/22981575"
+    "https://zenodo.org/records/23435558"
   ],
-  "datePublished": "2026-09-26",
-  "dateModified": "2026-10-05",
+  "datePublished": "2026-10-17",
+  "dateModified": "2026-10-17",
   "inLanguage": "en",
-  "license": "https://creativecommons.org/licenses/by/4.0/",
   "isPartOf": {
     "@type": "CreativeWorkSeries",
     "name": "Osnias Clearing Technical Documentation"
   },
   "keywords": [
-    "security topology",
-    "resilience architecture",
-    "dual-domain authorization",
-    "EVM security",
-    "Sei security",
+    "Osnias Clearing security",
+    "Book 5 v2.1",
+    "EVM Sei authorization",
     "Osnias-ID",
-    "secure onboarding",
-    "cold fund release",
-    "identity lifecycle",
-    "cryptographic hygiene",
-    "smart contract security",
+    "escrow",
+    "dedicated withdrawal address",
+    "day 2–4 adjustment",
+    "net settlement",
+    "node manager",
+    "Osnias manager",
+    "independent keys",
+    "escrow limit",
+    "identity renewal",
     "audit readiness"
   ],
   "about": [
     {
       "@type": "Thing",
-      "name": "Security architecture"
+      "name": "Participant Security"
     },
     {
       "@type": "Thing",
-      "name": "Dual-domain authorization"
+      "name": "Key Management and Separation of Powers"
     },
     {
       "@type": "Thing",
-      "name": "Cryptographic resilience"
+      "name": "Escrow Adjustment and Locking"
     },
     {
       "@type": "Thing",
-      "name": "Digital asset infrastructure security"
+      "name": "Settlement of Net Positions"
+    },
+    {
+      "@type": "Thing",
+      "name": "Node Parameter and Limit Controls"
+    }
+  ],
+  "version": "2.1",
+  "copyrightYear": 2026,
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Denis Bouzon"
+  },
+  "hasPart": [
+    {
+      "@type": "DigitalDocument",
+      "name": "Book 5 — Version 2.1 — FR",
+      "inLanguage": "fr",
+      "url": "https://www.osnias-clearing.com/security/Livre_5_Securite_fr_2_1.pdf"
+    },
+    {
+      "@type": "DigitalDocument",
+      "name": "Book 5 — Version 2.1 — EN",
+      "inLanguage": "en",
+      "url": "https://www.osnias-clearing.com/security/Book_5_Security_en_2_1.pdf"
+    },
+    {
+      "@type": "DigitalDocument",
+      "name": "Book 5 — Version 2.1 — ES",
+      "inLanguage": "es",
+      "url": "https://www.osnias-clearing.com/security/Libro_5_Seguridad_es_2_1.pdf"
     }
   ]
 }
 </script>
-<script defer="" src="/assets/js/osnias-seo.js"></script>
-<script defer="" src="/assets/js/osnias-nav.js"></script>
+<script defer src="/assets/js/osnias-seo.js"></script>
+<script defer src="/assets/js/osnias-nav.js"></script>
 <style>
     .security-v4 { --sv4-accent:#53d7c4; --sv4-blue:#84a9ff; --sv4-soft:#0d1425; --sv4-line:rgba(255,255,255,.10); }
     .security-v4 .hero { padding-bottom: 2.5rem; }
@@ -320,48 +350,54 @@
 <body class="security-v4">
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
-<a class="site-nav-brand" href="/en/">OSNIAS <span>CLEARING</span></a>
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
 <nav aria-label="Main site navigation" class="site-nav-buttons" id="mainNav">
 <a href="/en/architecture/">Architecture</a>
 <a href="/en/deployment/">Official Deployment</a>
 <a aria-current="page" href="/en/security/">Security</a>
 <a href="/en/regulation/">Regulation</a>
-<a href="/en/documentation/">Documentation</a>
+<a href="/en/rules/">Rules</a>
 </nav>
 </div>
-</div><div class="security-langbar"><div class="container"><div aria-label="Language / Langue" class="lang-switch" role="group"><a aria-current="false" class="lang-btn" href="/security/" hreflang="fr" lang="fr">🇫🇷 FR</a><a aria-current="page" class="lang-btn is-active" href="/en/security/" hreflang="en" lang="en">🇬🇧 EN</a></div></div></div>
+</div><div class="security-langbar"><div class="container"><div aria-label="Language" class="lang-switch" role="group"><a href="/security/" hreflang="fr" lang="fr" class="lang-btn" aria-current="false">🇫🇷 FR</a><a href="/en/security/" hreflang="en" lang="en" class="lang-btn is-active" aria-current="page">🇬🇧 EN</a><a href="/es/security/" hreflang="es" lang="es" class="lang-btn" aria-current="false">🇪🇸 ES</a></div></div></div>
 <main>
 <div class="container">
 <section class="hero">
 <div class="hero-grid security-hero-grid"><div class="security-hero-top"><div>
-<div class="eyebrow">Book 5 - Security Design · Internal Audit Readiness · Release 2.0</div>
+<div class="eyebrow">Book 5 — Security Design · Internal Audit Readiness · Version 2.1</div>
 <h1>Security Topology &amp; Resilience Configuration</h1>
 <div class="hero-role">Design assessed. Implementation evidence, adversarial testing and independent review pending.</div>
-</div><div class="security-hero-visual"><img alt="Coffre-fort protégé par trois cadenas représentant les trois domaines de sécurité indépendants A, B et C" decoding="async" height="465" loading="eager" src="./coffre-fort.jpg" width="620"/></div></div>
+</div><div class="security-hero-visual"><img alt="Safe protected by three padlocks representing the three independent security domains A, B and C" decoding="async" height="465" loading="eager" src="/security/coffre-fort.jpg" width="620"></div></div>
 <section id="publication">
 <div class="section-label">Publication &amp; Research</div>
 <div class="publication-card">
 <div>
 <div class="card-kicker">Technical Report · Audit Readiness</div>
-<h3>Release 2.0 · Published Technical Assessment</h3>
-<div class="publication-meta">
-            Denis Bouzon · Osnias Clearing<br/>
-            ORCID 0009-0007-8894-8902<br/>September 2026 · CC BY 4.0<br/>Onboarding · Secure Fund Release · Identity Renewal · Off-Boarding</div>
-<p>The paper defines the security architecture and its assumptions. Implementation, hard-attack testing, remediation and retesting will be documented separately in a future<strong>Security Validation and Implementation Report</strong>.</p>
+<h3>Version 2.1 · Published Technical Assessment</h3>
+<div class="publication-meta">Denis Bouzon · Osnias Clearing<br>ORCID 0009-0007-8894-8902<br>17 October 2026 · Version 2.1<br>Identity · Escrow · Management Keys · Net Settlement</div>
+<p>The report describes the security design for participants and managers, trust boundaries and expected controls. Implementation evidence, adversarial testing, remediation and retesting will be documented in a future <strong>Security Validation and Implementation Report</strong>.</p>
 </div>
 <div class="publication-actions">
-<a class="btn btn-primary" href="./Book_5_Security_en_2_0.pdf">PDF in English</a>
-<a class="btn" href="./Livre_5_Securite_fr_2_0.pdf">PDF in French</a>
-<a class="btn" href="https://zenodo.org/records/22981575" rel="noopener noreferrer" target="_blank">Zenodo — DOI 10.5281/zenodo.22981575</a>
+<a class="btn btn-primary" href="/security/Livre_5_Securite_fr_2_1.pdf">PDF in French · v2.1</a>
+<a class="btn" href="/security/Book_5_Security_en_2_1.pdf">PDF in English · v2.1</a>
+<a class="btn" href="/security/Libro_5_Seguridad_es_2_1.pdf">PDF in Spanish · v2.1</a>
+<a class="btn" href="https://zenodo.org/records/23435558" rel="noopener noreferrer" target="_blank">Zenodo — DOI 10.5281/zenodo.23435558</a>
 </div>
 </div>
 </section>
 
-<section class="security-hero-below" aria-label="Security architecture summary">
-<h2>Multi-Domain Security Architecture and Resilience</h2>
-<p class="hero-lead"><strong>Osnias Clearing uses a deliberately separated security topology rather than a single trust domain.</strong> The design distinguishes transaction signing on the EVM side, authorization and registry controls on Sei, and the release of funds toward a pre-defined cold destination. This separation is intended to reduce correlated failure, limit the consequences of a compromised credential and preserve a clear boundary between clearing logic, asset custody and settlement execution.</p>
-<p class="hero-lead">The security model covers the full participant lifecycle: <strong>secure onboarding, Osnias-ID binding, key use, identity renewal, off-boarding and controlled fund release</strong>. Cross-domain checks are designed so that access to the clearing network depends on consistent identity and authorization state rather than on a single private key or application layer. The architecture therefore treats credential compromise, operational error and cryptographic obsolescence as distinct failure modes that must be contained independently.</p>
-<p class="hero-lead"><strong>Book 5 is an architecture and audit-readiness document, not an independent security certification.</strong> It defines the security assumptions, control boundaries and resilience objectives that implementation evidence, adversarial testing, remediation and third-party review will later have to validate. The published PDF and DOI provide a stable technical reference for developers, auditors, infrastructure partners and regulators assessing the Osnias Clearing security model.</p>
+<section class="security-hero-below" aria-label="Summary of Book 5 version 2.1">
+<h2>Participant Security and Separation of Powers</h2>
+<p class="hero-lead"><strong>Book 5 v2.1 describes a security architecture based on independent domains.</strong> For each participant, the design separates the operational EVM signing key, Sei authorization and a cold receiving address derived from a third seed. Osnias-ID binds these elements. Fund release relies on a composite condition, a pre-registered destination and replay protection: compromise of one operational key should not, by itself, be sufficient to divert escrowed funds.</p>
+<h2>Tuesday-to-Thursday Escrow Adjustment</h2>
+<p class="hero-lead">After settlement on Monday, day 1 of the cycle, the participant may <strong>add funds or withdraw the releasable amount on Tuesday, Wednesday and Thursday, days 2, 3 and 4</strong>, subject to applicable controls and outstanding obligations. Withdrawals are sent exclusively to the dedicated, pre-registered address, which is different from the escrow address. At the close of the Thursday window, escrow is locked for the active phase of the cycle. This lock is distinct from the end-of-cycle freeze of clearing positions.</p>
+<p class="hero-lead">The reference calendar is described in <a href="/en/cycle/">Book 4 — Cycles / Calendar</a>. The exact Thursday UTC closing time remains to be specified, and the 1W testnet calendar must be explicitly aligned before the same sequence is applied.</p>
+<h2>Node Manager and Osnias Manager Keys</h2>
+<p class="hero-lead"><strong>The node manager has a dedicated key derived from an independent seed, allowing it to act only on its assigned node.</strong> During the netting window on the first Monday of the cycle, the manager adjusts members’ accounts in the smart contracts according to the finalized net positions of the previous cycle. Depending on the node’s balance, the manager arranges transfer of the net amount due through the node account or waits for receipt of the net credit balance before finalizing the corresponding adjustments. Operations must remain restricted to authorized amounts, members and settlement destinations.</p>
+<p class="hero-lead"><strong>The Osnias manager uses a separate key to administer node parameters.</strong> Its functions include assigning node numbers and configuring per-node escrow limits in accordance with applicable regulatory requests. This role alone does not confer authority to dispose of escrowed assets. Parameter changes must be traceable; the treatment of limit reductions where funds are already escrowed remains to be specified.</p>
+<h2>Identity Lifecycle and Audit Readiness</h2>
+<p class="hero-lead">The report also covers <strong>onboarding, voluntary identity renewal, off-boarding and terminal revocation</strong>. It examines registry consistency, cross-chain verification, key custody and rotation, compromise risks and failure scenarios. The control matrix distinguishes design requirements from implementation and testing evidence still pending.</p>
+<p class="hero-lead"><strong>This publication is an internal technical assessment and audit-readiness review.</strong> It is not an independent audit, formal verification or production-security certification. Security objectives must be assessed against the implemented code, adversarial testing, remediation and independent review. The three PDFs and DOI provide access to the same document version in French, English and Spanish.</p>
 </section>
 
 </div>
@@ -375,11 +411,11 @@
 <div>
 <a href="/en/architecture/">Architecture</a> · 
           <a href="/en/deployment/">Official Deployment</a> · 
-          <a href="/en/documentation/">Documentation</a> · 
+          <a href="/en/rules/">Rules</a> · 
           <a href="/en/regulation/">Regulation</a>
 </div>
 </div>
-<div class="footer-legal">Public technical information for research, development, review and audit purposes. CC BY 4.0 where expressly stated.</div>
+<div class="footer-legal">Public technical information for research, development, review and audit. © 2026 Denis Bouzon — Osnias Clearing.</div>
 </div>
 </footer>
 <script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
