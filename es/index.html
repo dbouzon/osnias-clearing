@@ -1,349 +1,358 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Osnias Clearing — Red multinodo de compensación B2B</title>
-<meta content="Osnias Clearing organiza compensación multilateral B2B para reducir liquidaciones brutas, liquidez de liquidación y apoyar la gestión del capital circulante." name="description"/>
-<meta content="Denis Bouzon" name="author"/>
-<meta content="Denis Bouzon" name="creator"/>
-<meta content="Osnias Clearing" name="publisher"/>
-<meta content="2.0" name="version"/>
+<title>Osnias Clearing — Despliegue Testnet, smart contracts verificados e infraestructura Sei/Ethereum</title>
+<meta content="Registro público de los despliegues testnet de Osnias Clearing en Sei Atlantic-2 y Ethereum Sepolia: smart contracts verificados, oráculo temporal, registros, controladores, escrow EVM, Node Registrar e interfaz end-user de clearing." name="description"/>
 <meta content="index, follow, max-image-preview:large" name="robots"/>
-<meta content="#050814" name="theme-color"/>
-<link href="/favicon.ico" rel="icon" sizes="any"/>
-<link href="/favicon_16x16.png" rel="icon" sizes="16x16" type="image/png"/>
-<link href="/favicon_32x32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="/favicon_64x64.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="/favicon_128x128.png" rel="icon" sizes="128x128" type="image/png"/>
-<link href="/favicon_180x180.png" rel="apple-touch-icon" sizes="180x180"/>
-<meta content="Osnias Clearing, clearing B2B, compensación B2B, compensación multilateral, multilateral netting, B2B netting, infraestructura de compensación, red multinodo de compensación, liquidación neta, posiciones netas, ahorro de liquidez, liquidez de liquidación, tesorería, capital circulante, fondo de maniobra, obligaciones comerciales B2B, reducción de liquidaciones brutas, compensación interjurisdiccional, compensación transfronteriza, Sei Network, Ethereum escrow, ISO 20022, empresas medianas, Osnias-ID" name="keywords"/>
-<meta content="Osnias Clearing — Red multinodo de compensación B2B" name="DC.title"/>
-<meta content="Denis Bouzon" name="DC.creator"/>
-<meta content="Osnias Clearing; clearing B2B; compensación B2B; compensación multilateral; multilateral netting; B2B netting; liquidación neta; posiciones netas; ahorro de liquidez; liquidez de liquidación; tesorería; capital circulante; fondo de maniobra; obligaciones comerciales B2B; compensación interjurisdiccional; Sei Network; Ethereum escrow; ISO 20022; Osnias-ID" name="DC.subject"/>
-<meta content="Infraestructura multinodo de compensación B2B para netting multilateral, liquidación neta, ahorro de liquidez, tesorería y gestión del capital circulante." name="DC.description"/>
-<meta content="Osnias Clearing" name="DC.publisher"/>
-<meta content="2026-10-16" name="DC.date"/>
-<meta content="Software" name="DC.type"/>
-<meta content="https://www.osnias-clearing.com/es/" name="DC.identifier"/>
-<meta content="es" name="DC.language"/>
-<meta content="CC BY-ND 4.0" name="DC.rights"/>
-<link href="https://www.osnias-clearing.com/es/" rel="canonical"><link href="https://www.osnias-clearing.com/" hreflang="fr" rel="alternate"><link href="https://www.osnias-clearing.com/en/" hreflang="en" rel="alternate"><link href="https://www.osnias-clearing.com/es/" hreflang="es" rel="alternate"><link href="https://www.osnias-clearing.com/" hreflang="x-default" rel="alternate">
-<link href="https://orcid.org/0009-0007-8894-8902" rel="author">
-<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"/>
-<meta content="Osnias Clearing — Red multinodo de compensación B2B" property="og:title"/>
-<meta content="Compensación B2B multinodo para netting multilateral, liquidación neta, ahorro de liquidez y gestión del capital circulante." property="og:description"/>
-<meta content="website" property="og:type"/>
-<meta content="https://www.osnias-clearing.com/es/" property="og:url"/>
-<meta content="Osnias Clearing" property="og:site_name"/>
-<meta content="es_ES" property="og:locale"/>
-<meta content="fr_FR" property="og:locale:alternate"/>
-<meta content="en_GB" property="og:locale:alternate"/>
-<meta content="https://www.osnias-clearing.com/osnias-network.jpg" property="og:image"/>
-<meta content="Osnias Clearing — red multinodo de compensación B2B" property="og:image:alt"/>
-<meta content="Denis Bouzon" name="citation_author"/>
-<meta content="Osnias Clearing — Red multinodo de compensación B2B" name="citation_title"/>
-<meta content="2026-10-16" name="citation_publication_date"/>
-<meta content="summary_large_image" name="twitter:card"/>
-<meta content="Osnias Clearing — Red multinodo de compensación B2B" name="twitter:title"/>
-<meta content="Compensación B2B multinodo para netting multilateral, liquidación neta, ahorro de liquidez y gestión del capital circulante." name="twitter:description"/>
-<meta content="https://www.osnias-clearing.com/osnias-network.jpg" name="twitter:image"/>
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script defer="" src="/assets/js/osnias-seo.js"></script>
 <script defer="" src="/assets/js/osnias-nav.js"></script>
-<script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Person",
-      "@id": "https://www.osnias-clearing.com/#denis-bouzon",
-      "name": "Denis Bouzon",
-      "url": "https://www.osnias-clearing.com/",
-      "sameAs": [
-        "https://orcid.org/0009-0007-8894-8902",
-        "https://www.linkedin.com/in/denis-bouzon-3b766a437/"
-      ]
-    },
-    {
-      "@type": "Organization",
-      "@id": "https://www.osnias-clearing.com/#organization",
-      "name": "Osnias Clearing",
-      "url": "https://www.osnias-clearing.com/",
-      "email": "contact@osnias-clearing.com",
-      "description": "Infraestructura multinodo de compensación B2B para la compensación multilateral de obligaciones económicas recurrentes, el cálculo de posiciones netas y la reducción de liquidaciones brutas y de liquidez de liquidación, con registro canónico en Sei y activos de liquidación separados a nivel de nodo en Ethereum.",
-      "founder": {
-        "@id": "https://www.osnias-clearing.com/#denis-bouzon"
-      },
-      "sameAs": [
-        "https://github.com/dbouzon/osnias-clearing",
-        "https://www.linkedin.com/in/denis-bouzon-3b766a437/"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://www.osnias-clearing.com/#website",
-      "url": "https://www.osnias-clearing.com/",
-      "name": "Osnias Clearing",
-      "publisher": {
-        "@id": "https://www.osnias-clearing.com/#organization"
-      },
-      "inLanguage": [
-        "fr",
-        "en",
-        "es"
-      ]
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://www.osnias-clearing.com/es/#webpage",
-      "url": "https://www.osnias-clearing.com/es/",
-      "name": "Osnias Clearing — Red multinodo de compensación B2B",
-      "description": "Red multinodo de compensación B2B para netting multilateral, liquidación neta, ahorro de liquidez, tesorería y gestión del capital circulante.",
-      "isPartOf": {
-        "@id": "https://www.osnias-clearing.com/#website"
-      },
-      "about": {
-        "@id": "https://www.osnias-clearing.com/#organization"
-      },
-      "author": {
-        "@id": "https://www.osnias-clearing.com/#denis-bouzon"
-      },
-      "dateModified": "2026-10-16",
-      "inLanguage": "es"
-    }
-  ]
-}</script>
 <style>
-    .hero{padding-top:2.2rem;padding-bottom:2.5rem}
-    .hero h1{font-size:clamp(2.4rem,5vw,4rem);line-height:1.05;margin:.35rem 0 .8rem}
-    .hero-role{font-size:clamp(1.1rem,2vw,1.55rem);line-height:1.25;margin-bottom:1.35rem}
-    .hero-lead{max-width:62rem}
-    .hero-heading{text-align:left;margin-bottom:1.15rem}.hero-heading h1{max-width:none}.hero-heading .hero-role{max-width:none}.hero-split{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);gap:2.25rem;align-items:start}
-    .hero-copy{text-align:left}
-    .hero-copy .hero-lead{max-width:none;margin-left:0 !important;margin-right:0 !important}
-    .hero-copy .hero-role{max-width:54rem}
-    .hero-illustration{margin:0 !important;text-align:center}
-    .hero-illustration img{width:100%;max-width:100%;height:auto;display:block;margin:0 auto;border-radius:16px}
-    .language-switch{display:flex;justify-content:flex-start;gap:.5rem;margin:0 0 1.5rem;flex-wrap:wrap}
-    
-    
-    
-    
-    .hero-copy p{text-align:justify;text-justify:inter-word;}
-    @media (max-width:900px){
-      .hero{padding-top:1.5rem}
-      .hero h1{font-size:clamp(2.1rem,10vw,3.2rem)}
-      .hero-split{grid-template-columns:1fr;gap:1.5rem}
-      .hero-heading{text-align:center}.hero-copy{text-align:center}
-      .hero-copy .hero-role{max-width:none}
-      .hero-copy .hero-lead{margin-left:auto !important;margin-right:auto !important}
-      .hero-illustration{margin-top:.25rem !important}
-    }
-  
-    .language-switch,
-    .lang-switch{
-      justify-content:flex-start !important;
-      text-align:left !important;
-      margin-left:0 !important;
-      margin-right:auto !important;
-    }
-
-  
-    .hero-heading .eyebrow{
-      display:block;
-      width:100%;
-      max-width:none;
+    .deployment-hero{
       text-align:center;
-      font-size:1.05rem;
-      letter-spacing:.14em;
-      margin-bottom:.9rem;
+      max-width:980px;
+      margin:0 auto 1.5rem auto;
     }
-
-  
-    .hero-heading h1,
-    .hero-heading .hero-role{
-      text-align:center;
-      margin-left:auto;
-      margin-right:auto;
+    .deployment-hero .eyebrow{
+      margin-bottom:.75rem;
     }
-
-  
-    .language-switch{display:flex;justify-content:flex-start;gap:.65rem;margin:0 0 1.5rem;flex-wrap:wrap}
-    .language-switch a,.language-switch .active-language{
-      display:inline-block;
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:999px;
-      padding:.45rem .8rem;
-      color:inherit;
-      text-decoration:none;
-      font:inherit;
+    .deployment-hero h1{
+      margin-top:0;
+      margin-bottom:1rem;
     }
-    .language-switch .active-language{background:rgba(255,255,255,.10)}
-    .language-switch a:hover{background:rgba(255,255,255,.07)}
-    </style>
-</head>
+    .app-showcase{margin:2rem 0 2.5rem}
+    .app-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:1.25rem;align-items:stretch}
+    .app-shot,.app-info{border:1px solid rgba(148,163,184,.22);border-radius:18px;overflow:hidden;background:rgba(15,23,42,.45)}
+    .app-shot{display:flex;align-items:center;justify-content:center;padding:.75rem}.app-shot img{display:block;width:100%;height:auto;max-height:100%;object-fit:contain;border-radius:12px}
+    .app-info{padding:1.35rem}
+    .app-info h2{margin:.2rem 0 .65rem}
+    .app-status{display:inline-flex;gap:.45rem;align-items:center;margin-bottom:.8rem;font-weight:700}
+    .app-dot{width:.55rem;height:.55rem;border-radius:999px;background:#48c78e;box-shadow:0 0 0 4px rgba(72,199,142,.12)}
+    .app-features{margin:.9rem 0 1.15rem;padding-left:1.1rem}
+    .app-features li{margin:.38rem 0}
+    .app-actions{display:flex;gap:.65rem;flex-wrap:wrap}
+    @media (max-width:860px){.app-grid{grid-template-columns:1fr}}
+  </style>
+<meta content="Osnias Clearing deployment, despliegue testnet blockchain, smart contracts verificados, verified smart contracts, Sei Atlantic-2, Ethereum Sepolia, Sei clearing infrastructure, Ethereum escrow infrastructure, public smart contract registry, registro de despliegues blockchain, clearing smart contracts, oráculo temporal, Sei registry, EVM registry, clearing controller, escrow smart contract, Node Registrar, on-chain clearing infrastructure, testnet clearing infrastructure, verificación de smart contracts, Etherscan Sepolia, SeiScan" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/>
+<meta content="Esta página constituye el registro público de los despliegues testnet de Osnias Clearing. Documenta los smart contracts desplegados y verificables en Sei Atlantic-2 y Ethereum Sepolia: controladores, registros, oráculo temporal, escrow EVM y componentes de nodo utilizados para probar la arquitectura de clearing." name="abstract"/>
+<meta content="despliegue testnet; smart contracts verificados; registro público on-chain; Sei Atlantic-2; Ethereum Sepolia; clearing infrastructure; oráculo temporal; registro Sei; registro EVM; escrow EVM; Node Registrar; blockchain deployment registry; verificación de smart contracts" name="subject"/>
+<meta content="Despliegues Testnet de Osnias Clearing — Registro público de smart contracts" name="citation_title"/>
+<meta content="Denis Bouzon" name="citation_author"/>
+<meta content="2026-10-17" name="citation_publication_date"/>
+<meta content="Despliegues Testnet de Osnias Clearing — Registro público de smart contracts" name="DC.title"/>
+<meta content="Denis Bouzon" name="DC.creator"/>
+<meta content="Osnias Clearing" name="DC.publisher"/>
+<meta content="2026-10-17" name="DC.date"/>
+<meta content="Technical Documentation" name="DC.type"/>
+<meta content="despliegue testnet; smart contracts verificados; registro público on-chain; Sei Atlantic-2; Ethereum Sepolia; clearing infrastructure; oráculo temporal; registro Sei; registro EVM; escrow EVM; Node Registrar; blockchain deployment registry; verificación de smart contracts" name="DC.subject"/>
+<meta content="https://www.osnias-clearing.com/es/deployment/" name="DC.identifier"/>
+<meta content="es" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Osnias Clearing — Despliegue Testnet, smart contracts verificados e infraestructura Sei/Ethereum" name="twitter:title"/><meta content="Registro público de los despliegues testnet de Osnias Clearing: smart contracts verificados en Sei Atlantic-2 y Ethereum Sepolia, oráculo temporal, registros, controladores, escrow EVM y Node Registrar." name="twitter:description"/><meta content="https://www.osnias-clearing.com/deployment/end-user.jpg" name="twitter:image"/><meta content="Osnias Clearing — Despliegue Testnet, smart contracts verificados e infraestructura Sei/Ethereum" property="og:title"/><meta content="Registro público de los despliegues testnet de Osnias Clearing: smart contracts verificados en Sei Atlantic-2 y Ethereum Sepolia, oráculo temporal, registros, controladores, escrow EVM y Node Registrar." property="og:description"/><meta content="website" property="og:type"/><meta content="https://www.osnias-clearing.com/es/deployment/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="es_ES" property="og:locale"/><meta content="fr_FR" property="og:locale:alternate"/><meta content="en_GB" property="og:locale:alternate"/><meta content="https://www.osnias-clearing.com/deployment/end-user.jpg" property="og:image"/><meta content="Osnias Clearing — despliegues testnet oficiales en Sei y Ethereum Sepolia" property="og:image:alt"/><link href="https://www.osnias-clearing.com/es/deployment/" rel="canonical"/><link href="https://www.osnias-clearing.com/deployment/" hreflang="x-default" rel="alternate"/><link href="https://www.osnias-clearing.com/deployment/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/deployment/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/es/deployment/" hreflang="es" rel="alternate"/><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": [
+    "WebPage",
+    "TechArticle"
+  ],
+  "name": "Despliegues Testnet de Osnias Clearing — Registro público de smart contracts",
+  "headline": "Despliegues Testnet de Osnias Clearing — Registro público de smart contracts",
+  "description": "Registro público de los despliegues testnet de Osnias Clearing en Sei Atlantic-2 y Ethereum Sepolia: smart contracts verificados, oráculo temporal, registros, controladores, escrow EVM, Node Registrar e interfaz end-user de clearing.",
+  "url": "https://www.osnias-clearing.com/es/deployment/",
+  "inLanguage": "es",
+  "dateModified": "2026-10-17",
+  "author": {
+    "@type": "Person",
+    "name": "Denis Bouzon"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Osnias Clearing",
+    "url": "https://www.osnias-clearing.com/"
+  },
+  "about": [
+    {"@type": "Thing", "name": "Blockchain deployment registry"},
+    {"@type": "Thing", "name": "Verified smart contracts"},
+    {"@type": "Thing", "name": "Sei Atlantic-2 Testnet"},
+    {"@type": "Thing", "name": "Ethereum Sepolia"},
+    {"@type": "Thing", "name": "On-chain clearing infrastructure"},
+    {"@type": "Thing", "name": "Smart contract verification"}
+  ],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.osnias-clearing.com/es/deployment/"
+  },
+  "keywords": [
+    "despliegue testnet",
+    "smart contracts verificados",
+    "registro público on-chain",
+    "Sei Atlantic-2",
+    "Ethereum Sepolia",
+    "clearing infrastructure",
+    "oráculo temporal",
+    "registro Sei",
+    "registro EVM",
+    "escrow EVM",
+    "Node Registrar",
+    "blockchain deployment registry",
+    "verificación de smart contracts"
+  ]
+}
+</script></head>
 <body>
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
 <a class="site-nav-brand" href="/es/">OSNIAS <span>CLEARING</span></a>
-<nav aria-label="Navegación principal del sitio" class="site-nav-buttons" id="mainNav"></nav>
+<nav aria-label="Navegación principal" class="site-nav-buttons" id="mainNav"></nav>
 </div>
 </div>
-<header>
-<div class="container">
-<section class="hero">
-<div aria-label="Selección de idioma" class="language-switch"><a href="/" hreflang="fr" lang="fr" title="Version française">🇫🇷 Français</a><a href="/en/" hreflang="en" lang="en" title="English version">🇬🇧 English</a><span class="active-language">🇪🇸 Español</span></div>
-<div class="hero-heading">
-<div class="eyebrow">Infraestructura B2B de compensación multilateral</div>
-<h1>Red multinodo de compensación B2B</h1>
-<p class="home-version" style="text-align:center;opacity:.78;font-size:.95rem;margin:.15rem 0 .65rem">Versión 2.0 · <time datetime="2026-10-16">16 de octubre de 2026</time></p>
-<div class="hero-role">Compensación multilateral · Liquidación neta · Liquidez y capital circulante</div>
+<main>
+<div class="wrap">
+<div aria-label="Selección de idioma" class="actions"><a class="btn" href="/deployment/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/deployment/" hreflang="en" lang="en">🇬🇧 English</a><a aria-current="page" class="btn btn-primary" href="/es/deployment/" hreflang="es" lang="es">🇪🇸 Español</a></div>
+<div class="deployment-hero">
+<div class="eyebrow">Registro público on-chain</div>
+<h1>Despliegue oficial — Testnet</h1>
 </div>
-<div class="hero-split">
-<div class="hero-copy">
-<div>
-<p class="hero-lead" style="margin-left:auto;margin-right:auto;"><strong>Osnias Clearing permite a las empresas con obligaciones B2B recurrentes compensar posiciones recíprocas antes de la liquidación. Los flujos se agregan dentro de los nodos locales y posteriormente entre nodos, de modo que solo se liquiden las posiciones netas residuales.</strong></p>
-<p class="hero-lead" style="margin-left:auto;margin-right:auto;">La red se dirige a <strong>empresas medianas y de mayor tamaño</strong>, cadenas de valor y ecosistemas empresariales en los que clientes, proveedores y socios generan obligaciones recurrentes. La compensación multilateral reduce el número y el volumen de las liquidaciones brutas y limita la liquidez necesaria para la liquidación final.</p>
-<p class="hero-lead" style="margin-left:auto;margin-right:auto;">El ciclo de <strong>9 semanas</strong> cubre las obligaciones comerciales B2B. La agregación de obligaciones recíprocas antes de la liquidación apoya la gestión de los flujos de tesorería, la liquidez de liquidación y el <strong>capital circulante</strong>. El ciclo de 13 semanas cubre obligaciones no comerciales admisibles y el ciclo de 1 semana se utiliza para entornos técnicos y pilotos.</p>
-</div>
-</div>
-<figure class="hero-illustration">
-<a href="/osnias-network.jpg" rel="noopener noreferrer" target="_blank" title="Ver a tamaño completo">
-<img alt="Osnias Clearing — red multinodo de compensación B2B" decoding="async" height="447" loading="eager" src="/osnias-network.jpg" width="670"/>
+<p class="lead">
+<span>Esta página recoge los smart contracts de Osnias Clearing actualmente desplegados en redes testnet públicas. Todos los contratos presentados aquí se encuentran en fase de borrador/testnet y no constituyen contratos de producción. Solo los contratos enumerados en esta página constituyen los despliegues testnet oficiales de Osnias Clearing.</span>
+<br/><br/>
+<span>Documentación de arquitectura y funcional:</span>
+<a href="/architecture/Osnias_Clearing_Functional_Architecture.pdf" target="_blank">Position Paper funcional (PDF)</a>
+      · <a href="https://doi.org/10.5281/zenodo.22807190" rel="noopener" target="_blank">Zenodo DOI</a>
+      · <a href="/end-user/" target="_blank">Interfaz testnet de usuario</a>
+</p>
+<div class="notice">
+<strong>Fase de borrador — solo testnet.</strong>
+<span>Los contratos del lado EVM están desplegados en Ethereum Sepolia (Chain ID 11155111). Los contratos del lado Sei están desplegados en Sei Testnet Atlantic-2 (EVM Chain ID 1328). Actualmente no hay ningún contrato activo en Mainnet.</span>
+<br/>
+<span>Los tokens ORUSD y OEURO desplegados en la testnet de Sei son residuos de desarrollo de una versión anterior.</span>
+<br/>
+<span>Desplegador de todos los contratos:</span>
+<code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
+</div><section class="deployment-description"><h2>1. Registro público de los despliegues testnet</h2><p class="section-intro">Esta página constituye la referencia pública de los smart contracts de Osnias Clearing actualmente desplegados en redes testnet. Recoge las direcciones, transacciones de creación, compiladores, parámetros de verificación y estados de cada componente, de modo que el estado experimental de la infraestructura pueda verificarse directamente en los exploradores de cadena.</p></section><section class="deployment-description"><h2>2. Capa Sei — registro canónico y control del clearing</h2><p class="section-intro">La capa Sei Testnet Atlantic-2 agrupa el oráculo temporal, el registro de identidad y el controlador del protocolo. Estos componentes representan el lado clearing de la arquitectura: estado canónico, control de ciclos, identidad y posiciones de clearing, sin constituir un entorno Mainnet de producción.</p></section><section class="deployment-description"><h2>3. Capa EVM — nodos, registro y depósito en garantía</h2><p class="section-intro">La capa Ethereum Sepolia agrupa los componentes EVM asociados a los operadores de nodo: Node Registrar, registro EVM, contrato de depósito en garantía (escrow) y controlador EVM. Esta separación permite probar públicamente la articulación entre el registro de clearing en Sei y la capa externa de escrow y control EVM antes de cualquier despliegue en producción.</p></section>
+
+<section class="deployment-description" aria-label="Resumen del registro de despliegue">
+<h2>4. Infraestructura testnet verificable y registro público de smart contracts</h2>
+<p class="section-intro"><strong>La página Deployment es la referencia pública de los smart contracts de Osnias Clearing desplegados en redes testnet accesibles.</strong> Centraliza las direcciones de contratos, transacciones de creación, versiones de compilador, parámetros de optimización y estados de verificación para ofrecer un <strong>public smart contract registry</strong> utilizable por desarrolladores, auditores y socios técnicos.</p>
+<p class="section-intro">La arquitectura testnet se reparte entre <strong>Sei Atlantic-2</strong>, que alberga el registro canónico de clearing, el oráculo temporal y los controladores del protocolo, y <strong>Ethereum Sepolia</strong>, que aloja los componentes EVM asociados a los nodos, al registro local y al escrow. Esta separación permite probar públicamente una <strong>on-chain clearing infrastructure</strong> sin confundir la capa de clearing con las funciones de collateral, custodia o liquidación.</p>
+<p class="section-intro"><strong>Los despliegues presentados son experimentales y no constituyen una infraestructura Mainnet de producción.</strong> Su función es proporcionar referencias verificables en SeiScan y Etherscan, permitir la validación de los smart contracts y de las interfaces entre dominios, y documentar el estado técnico del protocolo antes de cualquier migración hacia una infraestructura de producción auditable.</p>
+</section>
+
+<!-- LIVE END-USER TESTNET -->
+<section class="app-showcase" id="end-user-testnet">
+<div class="section-title">Aplicación end-user — Testnet en línea</div>
+<div class="app-grid">
+<div class="app-shot">
+<a href="/end-user/" rel="noopener" target="_blank">
+<img alt="Osnias Clearing Desk — interfaz testnet end-user" loading="lazy" src="/deployment/end-user.jpg"/>
 </a>
-</figure>
+</div>
+<div class="app-info">
+<div class="app-status">
+<span aria-hidden="true" class="app-dot"></span>
+<span>EN LÍNEA · DRAFT · TESTNET</span>
+</div>
+<h2>Osnias Clearing Desk</h2>
+<p>Una aplicación end-user de Osnias Clearing está actualmente disponible en línea en Sei Atlantic-2 Testnet. Permite visualizar el estado del registro, el ciclo de clearing y el estado del oráculo temporal desde una interfaz operativa de demostración.</p>
+<ul class="app-features">
+<li>Conexión de wallet y lectura de la posición de clearing de la cuenta conectada.</li>
+<li>Visualización del ciclo, de las ventanas de clearing y del estado del oráculo.</li>
+<li>Interfaces de prueba para instrucciones, transferencias y registro.</li>
+</ul>
+<p class="note-cell">Esta interfaz es un entorno de demostración en desarrollo. Funciona únicamente en testnet y no constituye un servicio de producción.</p>
+<div class="app-actions">
+<a class="btn primary" href="/end-user/" rel="noopener" target="_blank">Abrir la aplicación testnet</a>
+</div>
+</div>
+</div>
+</section>
+<!-- SEI CHAIN SIDE -->
+<div class="section-title">Capa Sei — Sei Testnet Atlantic-2 (Chain ID 1328)</div>
+<div class="registry">
+<section class="card" id="sei-oracle">
+<div class="card-head">
+<div>
+<div class="eyebrow">Sei — Control temporal</div>
+<h2>Osnias 1W Sei Temporal Oracle</h2>
+</div>
+<div class="status verified"><span>Verificado · Coincidencia exacta</span></div>
+</div>
+<table>
+<tr><th><span>Nombre del contrato</span></th><td><code>OsniasTemporalOracle1W</code></td></tr>
+<tr><th><span>Dirección del contrato</span></th><td><code>0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11</code></td></tr>
+<tr><th><span>Transacción de creación</span></th><td><code>0xfa2b3fd8da4997a202df7580a9ce8afb42b87194f76a4804c72504e623819e15</code></td></tr>
+<tr><th><span>Desplegado el</span></th><td>15 de septiembre de 2026</td></tr>
+<tr><th><span>Ciclo de clearing</span></th><td><span>1 semana (7 días)</span></td></tr>
+<tr><th><span>Compilador</span></th><td><code>v0.8.24+commit.e11b9ed9</code></td></tr>
+<tr><th><span>Optimizador</span></th><td><span>Activado · 200 runs</span></td></tr>
+<tr><th><span>Versión EVM</span></th><td>Cancun</td></tr>
+<tr><th><span>Verificación</span></th><td><span>Código fuente verificado — Coincidencia exacta</span></td></tr>
+<tr><th><span>Estado de producción</span></th><td><span>Borrador — solo testnet · Sin producción en Sei Mainnet</span></td></tr>
+</table>
+<div class="actions">
+<a class="btn primary" href="https://testnet.seiscan.io/address/0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11#code" rel="noopener" target="_blank"><span>Ver en SeiScan</span></a>
+<a class="btn" href="https://testnet.seiscan.io/tx/0xfa2b3fd8da4997a202df7580a9ce8afb42b87194f76a4804c72504e623819e15" rel="noopener" target="_blank"><span>Transacción de creación</span></a>
+</div>
+</section>
+<section class="card" id="sei-registry">
+<div class="card-head">
+<div>
+<div class="eyebrow">Sei — Identidad</div>
+<h2>Osnias SEI Registry</h2>
+</div>
+<div class="status verified"><span>Verificado · Coincidencia exacta</span></div>
+</div>
+<table>
+<tr><th><span>Nombre del contrato</span></th><td><code>OsniasRegistrySei</code></td></tr>
+<tr><th><span>Dirección del contrato</span></th><td><code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code></td></tr>
+<tr><th><span>Transacción de creación</span></th><td><code>0x64eecbaeda3207dd040eadc58804b985330c5a2a1cd12498f14a034a3c798f17</code></td></tr>
+<tr><th><span>Desplegado el</span></th><td>10 de septiembre de 2026</td></tr>
+<tr><th><span>Compilador</span></th><td><code>v0.8.26+commit.8a97fa7a</code></td></tr>
+<tr><th><span>Optimizador</span></th><td><span>Activado · 200 runs</span></td></tr>
+<tr><th><span>Versión EVM</span></th><td>Cancun</td></tr>
+<tr><th><span>Verificación</span></th><td><span>Código fuente verificado — Coincidencia exacta</span></td></tr>
+<tr><th><span>Nota</span></th><td class="note-cell"><span>Misma dirección de contrato que el Escrow Smart Contract en Ethereum Sepolia — desplegado desde la misma wallet con el mismo nonce en una cadena diferente. Ambos contratos son despliegues independientes en sus respectivas redes.</span></td></tr>
+<tr><th><span>Estado de producción</span></th><td><span>Borrador — solo testnet · Sin producción en Sei Mainnet</span></td></tr>
+</table>
+<div class="actions">
+<a class="btn primary" href="https://testnet.seiscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE#code" rel="noopener" target="_blank"><span>Ver en SeiScan</span></a>
+<a class="btn" href="https://testnet.seiscan.io/tx/0x64eecbaeda3207dd040eadc58804b985330c5a2a1cd12498f14a034a3c798f17" rel="noopener" target="_blank"><span>Transacción de creación</span></a>
+</div>
+</section>
+<section class="card" id="sei-controller">
+<div class="card-head">
+<div>
+<div class="eyebrow">Sei — Control del protocolo</div>
+<h2>Osnias Sei Controller</h2>
+</div>
+<div class="status verified"><span>Verificado · Coincidencia exacta</span></div>
+</div>
+<table>
+<tr><th><span>Nombre del contrato</span></th><td><code>OsniasSeiController</code></td></tr>
+<tr><th><span>Dirección del contrato</span></th><td><code>0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4</code></td></tr>
+<tr><th><span>Transacción de creación</span></th><td><code>0xe548afef2393795925b9ac0f7078cc02eab340664b917276c3692375f5ecc1d3</code></td></tr>
+<tr><th><span>Desplegado el</span></th><td>10 de septiembre de 2026</td></tr>
+<tr><th><span>Compilador</span></th><td><code>v0.8.26+commit.8a97fa7a</code></td></tr>
+<tr><th><span>Optimizador</span></th><td><span>Activado · 200 runs</span></td></tr>
+<tr><th><span>Versión EVM</span></th><td>Cancun</td></tr>
+<tr><th><span>Contratos vinculados</span></th><td>
+            Temporal Oracle: <code>0x09ddc99ADb1dD104676dedFd16CE98BCf0399b11</code><br/>
+            Registry: <code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code><br/>
+            EVM Chain ID: <code>11155111</code> (Ethereum Sepolia)
+          </td></tr>
+<tr><th><span>Verificación</span></th><td><span>Código fuente verificado — Coincidencia exacta</span></td></tr>
+<tr><th><span>Estado de producción</span></th><td><span>Borrador — solo testnet · Sin producción en Sei Mainnet</span></td></tr>
+</table>
+<div class="actions">
+<a class="btn primary" href="https://testnet.seiscan.io/address/0xE5A7f3EA1609619D48AF00DB4b0529D439789Ff4#code" rel="noopener" target="_blank"><span>Ver en SeiScan</span></a>
+<a class="btn" href="https://testnet.seiscan.io/tx/0xe548afef2393795925b9ac0f7078cc02eab340664b917276c3692375f5ecc1d3" rel="noopener" target="_blank"><span>Transacción de creación</span></a>
 </div>
 </section>
 </div>
-</header>
-<main class="container">
-<section id="presentation">
+<!-- EVM SIDE -->
+<div class="section-title">Capa EVM — Ethereum Sepolia (Chain ID 11155111)</div>
+<div class="registry">
+<section class="card" id="node-registrar">
+<div class="card-head">
 <div>
-<div class="section-label">01 · Compensación B2B</div>
-<h2>Compensación multilateral de obligaciones recurrentes entre empresas</h2>
-<p class="section-intro">Osnias Clearing transforma un conjunto de liquidaciones bilaterales brutas en posiciones netas que deben liquidarse. Las obligaciones económicas recurrentes se registran, agregan y compensan durante un ciclo para reducir los movimientos de tesorería necesarios en la liquidación final.</p>
-<p>La red se estructura alrededor de <strong>nodos locales</strong>. Cada nodo presta servicio a sus empresas clientes dentro de su propio entorno operativo y jurídico. Las obligaciones recíprocas se compensan dentro del nodo y las posiciones residuales participan posteriormente en la compensación internodal.</p>
-<p>El modelo se dirige a empresas que mantienen intercambios recurrentes dentro de una zona económica, entre varias zonas o dentro de una misma cadena de valor. Los flujos cruzados entre clientes y proveedores crean oportunidades de <strong>compensación multilateral</strong> y ahorro de liquidez.</p>
-<p>El registro común de compensación opera en <strong>Sei</strong>. Los activos destinados a la liquidación permanecen separados a nivel de los nodos en <strong>Ethereum</strong>. Esta arquitectura mantiene separadas la función de cálculo de posiciones netas y la liquidación de activos.</p>
-<p>Los ciclos de <strong>1 semana, 9 semanas y 13 semanas</strong> cubren respectivamente los pilotos técnicos, las obligaciones comerciales B2B en un horizonte de 60 días y las obligaciones no comerciales admisibles.</p>
-</div></section>
-<section id="model">
-<div>
-<div class="section-label">02 · Valor para la empresa</div>
-<h2>Reducir liquidaciones brutas, limitar la liquidez movilizada y gestionar la posición neta</h2>
-<p class="section-intro">El valor económico de la compensación procede de netear obligaciones recíprocas antes de la liquidación. Un mismo volumen de actividad económica puede requerir así menos movimientos de tesorería en la liquidación final.</p>
+<div class="eyebrow">EVM — Infraestructura de nodos</div>
+<h2>Node Registrar</h2>
 </div>
-<div class="grid-3">
-<article class="card">
-<div class="card-kicker">Liquidaciones brutas</div>
-<h3>Reducir movimientos de tesorería</h3>
-<p>Las obligaciones recíprocas se compensan antes de la liquidación y solo la posición neta residual debe liquidarse.</p>
-</article>
-<article class="card">
-<div class="card-kicker">Liquidez</div>
-<h3>Limitar la liquidez de liquidación</h3>
-<p>La compensación multilateral reduce el número y el volumen de las liquidaciones brutas y concentra la liquidez en la posición neta final.</p>
-</article>
-<article class="card">
-<div class="card-kicker">Capital circulante</div>
-<h3>Gestionar tesorería y capital circulante</h3>
-<p>Los ciclos hacen visible la posición neta que deberá liquidarse al vencimiento y estructuran la gestión de obligaciones recurrentes, tesorería y capital circulante.</p>
-</article>
-</div></section>
-<section id="architecture">
-<div>
-<div class="section-label">03 · Arquitectura funcional</div>
-<h2>Un registro común de compensación y activos de liquidación separados</h2>
-<p class="section-intro">El tratamiento de las obligaciones, el cálculo de posiciones netas y los ciclos de compensación permanecen separados de la tenencia y liquidación de los activos.</p>
+<div class="status"><span>Borrador</span></div>
 </div>
-<div class="grid-3">
-<article class="card">
-<div class="card-kicker">SEI</div>
-<h3>Registro común de compensación</h3>
-<p>Sei alberga el registro canónico de las obligaciones, las posiciones de los participantes, los ciclos y los estados necesarios para los cálculos de compensación.</p>
-</article>
-<article class="card">
-<div class="card-kicker">ETHEREUM</div>
-<h3>Depósito en garantía y liquidación a nivel de nodo</h3>
-<p>Los activos destinados a la liquidación se depositan en garantía de forma separada en Ethereum bajo la responsabilidad de los operadores de nodo.</p>
-</article>
-<article class="card">
-<div class="card-kicker">OSNIAS</div>
-<h3>Compensación separada de la liquidación</h3>
-<p>Osnias opera la lógica y la infraestructura de compensación. La custodia, el depósito en garantía y la liquidación de activos permanecen a nivel de los nodos.</p>
-</article>
+<table>
+<tr><th><span>Dirección del contrato</span></th><td><code>0xD14C1b90635521A1C586ec9B871D797458cB1Db8</code></td></tr>
+<tr><th><span>Transacción de creación</span></th><td><code>0x12d3937457418a7eccbb03f6540214f9f6b6fe6389c07416fb4af2be27750a26</code></td></tr>
+<tr><th><span>Red</span></th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+<tr><th>KK / NNN</th><td><code>90 / 017</code> — Node Denis</td></tr>
+<tr><th><span>Compilador</span></th><td><code>Solidity v0.8.26</code></td></tr>
+<tr><th><span>Optimizador</span></th><td><span>Activado · 200 runs · viaIR desactivado</span></td></tr>
+<tr><th><span>Versión EVM</span></th><td>Cancun</td></tr>
+<tr><th><span>Estado de producción</span></th><td><span>Borrador — solo testnet · Sin producción en Mainnet</span></td></tr>
+</table>
+<div class="actions">
+<a class="btn primary" href="https://sepolia.etherscan.io/address/0xD14C1b90635521A1C586ec9B871D797458cB1Db8#code" rel="noopener" target="_blank"><span>Ver en Etherscan Sepolia</span></a>
+<a class="btn" href="https://sepolia.etherscan.io/tx/0x12d3937457418a7eccbb03f6540214f9f6b6fe6389c07416fb4af2be27750a26" rel="noopener" target="_blank"><span>Transacción de creación</span></a>
 </div>
 </section>
-<section id="cycles">
+<section class="card" id="evm-registry">
+<div class="card-head">
 <div>
-<div class="section-label">04 · Ciclos económicos</div>
-<h2>1 semana · 9 semanas B2B · 13 semanas</h2>
-<p class="section-intro">El ciclo 1W se utiliza para entornos técnicos y pilotos. El ciclo 9W organiza las obligaciones comerciales B2B en un horizonte de 60 días. El ciclo 13W cubre las obligaciones no comerciales admisibles.</p>
+<div class="eyebrow">EVM — Identidad</div>
+<h2>Osnias EVM Registry</h2>
 </div>
-<div class="notice"><strong>Principio.</strong> Las obligaciones recíprocas se agregan durante el ciclo, se compensan primero a nivel local y después entre nodos, y solo las posiciones netas residuales se liquidan al vencimiento.</div>
+<div class="status"><span>Borrador</span></div>
+</div>
+<table>
+<tr><th><span>Dirección del contrato</span></th><td><code>0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55</code></td></tr>
+<tr><th><span>Transacción de creación</span></th><td><code>0x310f31ecaca523f4f942e913e843b4d714896f78d2aa5a6a4c516d5daeecebb8</code></td></tr>
+<tr><th><span>Red</span></th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+<tr><th>KK</th><td><code>90</code></td></tr>
+<tr><th><span>Compilador</span></th><td><code>Solidity v0.8.26</code></td></tr>
+<tr><th><span>Optimizador</span></th><td><span>Activado · 200 runs · viaIR desactivado</span></td></tr>
+<tr><th><span>Versión EVM</span></th><td>Cancun</td></tr>
+<tr><th><span>Estado de producción</span></th><td><span>Borrador — solo testnet · Sin producción en Mainnet</span></td></tr>
+</table>
+<div class="actions">
+<a class="btn primary" href="https://sepolia.etherscan.io/address/0xf7a0cAd5DDE44cA3E8B61C0d08A9019c3944Cb55#code" rel="noopener" target="_blank"><span>Ver en Etherscan Sepolia</span></a>
+<a class="btn" href="https://sepolia.etherscan.io/tx/0x310f31ecaca523f4f942e913e843b4d714896f78d2aa5a6a4c516d5daeecebb8" rel="noopener" target="_blank"><span>Transacción de creación</span></a>
+</div>
 </section>
-<section id="references">
+<section class="card" id="escrow-evm">
+<div class="card-head">
 <div>
-<div class="section-label">05 · Comprender y participar en la red</div>
-<h2>Reglas, ciclos y despliegue</h2>
-<p class="section-intro">Las reglas públicas describen el funcionamiento de la compensación, la organización de los ciclos económicos y las referencias de despliegue disponibles para empresas y operadores de nodo.</p>
+<div class="eyebrow">EVM — Garantía</div>
+<h2>Escrow Smart Contract</h2>
 </div>
-<div class="resources">
-<a class="resource" href="/es/rules/"><div><strong>Rules</strong><span>Compensación multilateral · Posiciones netas · Controles</span></div><div class="resource-type">OPEN →</div></a>
-<a class="resource" href="/en/cycle/"><div><strong>Cycles</strong><span>1W · 9W B2B · 13W · Calendario de compensación</span></div><div class="resource-type">OPEN →</div></a>
-<a class="resource" href="/en/deployment/"><div><strong>Official Deployment</strong><span>Testnet · Contratos publicados · Referencias públicas</span></div><div class="resource-type">VERIFY →</div></a>
-</div></section>
-<section id="status">
+<div class="status"><span>Borrador</span></div>
+</div>
+<table>
+<tr><th><span>Dirección del contrato</span></th><td><code>0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE</code></td></tr>
+<tr><th><span>Transacción de creación</span></th><td><code>0x7817c87c2cbd67be3a680fce0b72c91223668904ba84c4cad309062c0e948365</code></td></tr>
+<tr><th><span>Red</span></th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+<tr><th><span>Compilador</span></th><td><code>Solidity v0.8.26</code></td></tr>
+<tr><th><span>Optimizador</span></th><td><span>Activado · 200 runs · viaIR desactivado</span></td></tr>
+<tr><th><span>Versión EVM</span></th><td>Cancun</td></tr>
+<tr><th><span>Nota</span></th><td class="note-cell"><span>Misma dirección de contrato que el Osnias SEI Registry en Sei Testnet — desplegado desde la misma wallet con el mismo nonce en una cadena diferente. Ambos contratos son despliegues independientes en sus respectivas redes.</span></td></tr>
+<tr><th><span>Estado de producción</span></th><td><span>Borrador — solo testnet · Sin producción en Mainnet</span></td></tr>
+</table>
+<div class="actions">
+<a class="btn primary" href="https://sepolia.etherscan.io/address/0xA864dFA541cF1418B9bc7beC4cFEd50281bE48dE#code" rel="noopener" target="_blank"><span>Ver en Etherscan Sepolia</span></a>
+<a class="btn" href="https://sepolia.etherscan.io/tx/0x7817c87c2cbd67be3a680fce0b72c91223668904ba84c4cad309062c0e948365" rel="noopener" target="_blank"><span>Transacción de creación</span></a>
+</div>
+</section>
+<section class="card" id="evm-controller">
+<div class="card-head">
 <div>
-<div class="section-label">06 · Fase actual</div>
-<h2>Pilotos con empresas, desarrollo y cualificación de seguridad</h2>
-<p class="section-intro">El marco funcional y regulatorio del protocolo se encuentra documentado. La fase actual se centra en pilotos B2B, desarrollo de la red multinodo, pruebas de estrés y cualificación de seguridad antes del despliegue en producción.</p>
+<div class="eyebrow">EVM — Control del protocolo</div>
+<h2>Osnias EVM Controller</h2>
 </div>
-<div class="notice"><strong>Pilotos B2B.</strong> Las empresas, direcciones financieras y de tesorería, operadores de nodo y socios técnicos pueden evaluar el modelo en testnet a partir de las reglas, ciclos y referencias públicas del protocolo.</div>
-</section>
-<section id="contact">
-<div class="section-label">07 · Contacto</div>
-<h2>Estudiar un piloto de Osnias Clearing</h2>
-<div class="grid-3">
-<article class="card">
-<div class="card-kicker">Website</div>
-<h3>Osnias Clearing</h3>
-<p>Sitio oficial y documentación pública del proyecto.</p>
-<div class="actions"><a class="btn btn-primary" href="/es/">www.osnias-clearing.com</a></div>
-</article>
-<article class="card">
-<div class="card-kicker">Email</div>
-<h3>Contacto</h3>
-<p>Empresas, direcciones financieras y de tesorería, operadores de nodo, socios técnicos y proyectos piloto.</p>
-<div class="actions"><a class="btn" href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a></div>
-</article>
-<article class="card">
-<div class="card-kicker">Public Repository</div>
-<h3>GitHub</h3>
-<p>Páginas públicas, archivos técnicos y documentación del proyecto.</p>
-<div class="actions"><a class="btn" href="https://github.com/dbouzon/osnias-clearing" rel="noopener noreferrer" target="_blank">Open GitHub Repository ↗</a></div>
-</article>
+<div class="status"><span>Borrador</span></div>
 </div>
-<div class="notice">Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902" rel="noopener noreferrer" target="_blank">0009-0007-8894-8902</a></div>
+<table>
+<tr><th><span>Dirección del contrato</span></th><td><code>0x3A794d05916d1D5E77b970D5A54d77db1d331e8d</code></td></tr>
+<tr><th><span>Transacción de creación</span></th><td><code>0x178851722296208bed425df0f581165430df32abe9fce5fabf7869eabc3020f7</code></td></tr>
+<tr><th><span>Red</span></th><td>Ethereum Sepolia · Chain ID 11155111</td></tr>
+<tr><th><span>Compilador</span></th><td><code>Solidity v0.8.26</code></td></tr>
+<tr><th><span>Optimizador</span></th><td><span>Activado · 200 runs · viaIR desactivado</span></td></tr>
+<tr><th><span>Versión EVM</span></th><td>Cancun</td></tr>
+<tr><th><span>Estado de producción</span></th><td><span>Borrador — solo testnet · Sin producción en Mainnet</span></td></tr>
+</table>
+<div class="actions">
+<a class="btn primary" href="https://sepolia.etherscan.io/address/0x3A794d05916d1D5E77b970D5A54d77db1d331e8d#code" rel="noopener" target="_blank"><span>Ver en Etherscan Sepolia</span></a>
+<a class="btn" href="https://sepolia.etherscan.io/tx/0x178851722296208bed425df0f581165430df32abe9fce5fabf7869eabc3020f7" rel="noopener" target="_blank"><span>Transacción de creación</span></a>
+</div>
 </section>
+</div>
+</div>
 </main>
 <footer>
-<div class="container">
-<div class="footer-grid">
-<div>© 2026 Osnias Clearing · Red multinodo de compensación B2B · Versión 2.0 · 16 de octubre de 2026</div>
-<div>
-<a href="/en/architecture/">Architecture</a> · 
-          <a href="/en/rules/">Rules</a> · 
-          <a href="/en/cycle/">Cycles</a> · 
-          <a href="/en/security/">Security</a> · 
-          <a href="/en/onboarding/">Onboarding</a> · 
-          <a href="/en/regulation/">Regulation</a>
-</div>
-</div>
-<div class="footer-legal">Osnias Clearing publica las reglas, referencias técnicas y despliegues de la red para evaluación, pilotos, revisión y auditoría. Los despliegues de producción se identifican en el registro oficial de despliegue.</div>
+<div class="wrap">
+<span>Osnias Clearing · Despliegue oficial testnet · Referencia técnica pública · © 2026 Denis Bouzon</span>
 </div>
 </footer>
-<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
+
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js">
+</script>
 </body>
 </html>
