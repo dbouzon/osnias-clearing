@@ -223,10 +223,10 @@
       notice = document.createElement("span");
       notice.className = "site-nav-notice";
       notice.textContent = isSpanishPage()
-        ? "EN DESARROLLO · SIN VENTA DE TOKENS"
+        ? "EN DESARROLLO"
         : isEnglishPage()
-        ? "UNDER DEVELOPMENT · NO TOKEN SALE"
-        : "EN DÉVELOPPEMENT · AUCUNE VENTE DE TOKEN";
+        ? "UNDER DEVELOPMENT"
+        : "EN DÉVELOPPEMENT";
     }
 
     notice.style.position = "static";
