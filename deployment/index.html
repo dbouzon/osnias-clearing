@@ -125,6 +125,8 @@
 <strong>Stade brouillon — testnet uniquement.</strong>
 <span>Les contrats côté EVM sont déployés sur Ethereum Sepolia (Chain ID 11155111). Les contrats côté Sei sont déployés sur Sei Testnet Atlantic-2 (EVM Chain ID 1328). Aucun contrat Mainnet n’est actuellement actif.</span>
 <br/>
+<span>Les tokens ORUSD et OEURO déployés sur le Sei testnet sont des résidus de développement d’une ancienne version.</span>
+<br/>
 <span>Déployeur pour l’ensemble des contrats :</span>
 <code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
 </div><section class="deployment-description"><h2>1. Registre public des déploiements testnet</h2><p class="section-intro">Cette page constitue la référence publique des smart contracts Osnias Clearing actuellement déployés sur des réseaux testnet. Elle recense les adresses, transactions de création, compilateurs, paramètres de vérification et statuts de chaque composant afin de rendre l’état expérimental de l’infrastructure vérifiable directement sur les explorateurs de chaînes.</p></section><section class="deployment-description"><h2>2. Couche Sei — registre canonique et contrôle du clearing</h2><p class="section-intro">La couche Sei Testnet Atlantic-2 regroupe l’oracle temporel, le registre d’identité et le contrôleur du protocole. Ces composants représentent le côté clearing de l’architecture : état canonique, contrôle des cycles, identité et positions de clearing, sans constituer un environnement Mainnet de production.</p></section><section class="deployment-description"><h2>3. Couche EVM — nœuds, registre et séquestre</h2><p class="section-intro">La couche Ethereum Sepolia regroupe les composants EVM associés aux opérateurs de nœuds : Node Registrar, registre EVM, contrat de séquestre et contrôleur EVM. Cette séparation permet de tester publiquement l’articulation entre le registre de clearing sur Sei et la couche externe de séquestre et de contrôle EVM avant tout déploiement de production.</p></section>
@@ -154,8 +156,8 @@
 <p>Une application end-user Osnias Clearing est actuellement accessible en ligne sur Sei Atlantic-2 Testnet. Elle permet de visualiser l’état du registre, le cycle de clearing et l’état de l’oracle temporel depuis une interface opérationnelle de démonstration.</p>
 <ul class="app-features">
 <li>Connexion wallet et lecture de la position de clearing du compte connecté.</li>
-<li>Affichage du cycle, des fenêtres MINT / BURN / CLEARING / P2P et de l’état de l’oracle.</li>
-<li>Interfaces de test pour instructions, transferts, registre et burn.</li>
+<li>Affichage du cycle, des fenêtres de clearing et de l’état de l’oracle.</li>
+<li>Interfaces de test pour instructions, transferts et registre.</li>
 </ul>
 <p class="note-cell">Cette interface est un environnement de démonstration en cours de développement. Elle fonctionne uniquement sur testnet et ne constitue pas un service de production.</p>
 <div class="app-actions">
