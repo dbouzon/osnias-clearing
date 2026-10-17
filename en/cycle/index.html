@@ -1,30 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Book 4 — Clearing Cycles · Osnias Clearing</title>
-<meta content="Osnias Clearing Book 4 documents 1W, 9W and 13W multilateral clearing cycles, UTC synchronization, BURN windows, net positions, net settlement obligations and the calculation methodology for a non-custodial digital clearing infrastructure." name="description"/>
-<link href="https://www.osnias-clearing.com/en/cycle/" rel="canonical"/><link href="https://www.osnias-clearing.com/cycle/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/cycle/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/cycle/" hreflang="x-default" rel="alternate"/>
-<link href="/assets/css/osnias.css" rel="stylesheet"/><script defer="" src="/assets/js/osnias-seo.js"></script><script defer="" src="/assets/js/osnias-nav.js"></script>
-<meta content="Denis Bouzon" name="citation_author"/><meta content="10.5281/zenodo.23295463" name="citation_doi"/><meta content="2026-10-11" name="citation_publication_date"/>
-<meta content="Osnias Clearing Book 4 defines synchronized 1W, 9W and 13W clearing cycles for multilateral netting, UTC-based clearing calendars, BURN windows and net settlement obligations." name="abstract"/>
-<meta content="multilateral clearing; clearing cycles; multilateral netting; net settlement; financial market infrastructure; FMI; UTC clearing calendar; 1W 9W 13W; liquidity efficiency; digital asset clearing; non-custodial clearing; Sei Network" name="subject"/>
-<meta content="Clearing cycles, multilateral netting, net settlement, financial market infrastructure, FMI, digital asset infrastructure" name="DC.subject"/>
+<meta charset="utf-8"><meta content="width=device-width,initial-scale=1" name="viewport">
+<title>Book 4 — Clearing Cycles 1W, 9W and 13W · Osnias Clearing</title>
+<meta content="Osnias Clearing 1W testnet, 9W B2B commercial and 13W non-commercial cycles: UTC calendar, escrow adjustment, locking, multilateral netting and net settlement." name="description">
+<link href="https://www.osnias-clearing.com/en/cycle/" rel="canonical"><link href="/assets/css/osnias.css" rel="stylesheet"><script defer src="/assets/js/osnias-seo.js"></script><script defer src="/assets/js/osnias-nav.js"></script>
+<meta content="Denis Bouzon" name="citation_author"><meta content="10.5281/zenodo.23295463" name="citation_doi"><meta content="2026-10-11" name="citation_publication_date">
+<meta content="Osnias Clearing 1W testnet, 9W B2B commercial and 13W non-commercial cycles: UTC calendar, escrow adjustment, locking, multilateral netting and net settlement." name="abstract">
+<meta content="clearing cycles, multilateral netting, net settlement, UTC calendar, escrow adjustment, 1W, 9W, 13W" name="subject">
+<meta content="clearing cycles, multilateral netting, net settlement, UTC calendar, escrow adjustment, 1W, 9W, 13W" name="DC.subject">
 <style>
 .cycle-figure img{width:min(100%,350px);display:block;margin:auto}.cycle-figure figcaption{color:var(--muted);text-align:center;font-size:.9rem}[hidden]{display:none!important}
 </style>
-<meta content="Osnias Clearing, clearing cycles, multilateral clearing, multilateral netting, 1W 9W 13W, UTC clearing calendar, BURN window, net settlement positions, liquidity efficiency, financial market infrastructure, FMI, digital asset clearing, non-custodial clearing, clearing schedule, Sei Network" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/><meta content="index, follow, max-image-preview:large" name="robots"/><meta content="Book 4 — Clearing Cycles" name="citation_title"/><meta content="Book 4 — Clearing Cycles" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-11" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/en/cycle/" name="DC.identifier"/><meta content="en" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Book 4 — Clearing Cycles · Osnias Clearing" name="twitter:title"/><meta content="1W, 9W and 13W multilateral clearing cycles, UTC synchronization, BURN windows and net settlement positions." name="twitter:description"/><meta content="https://www.osnias-clearing.com/cycle/cycle.jpg" name="twitter:image"/><meta content="Book 4 — Clearing Cycles · Osnias Clearing" property="og:title"/><meta content="1W, 9W and 13W multilateral clearing cycles, UTC synchronization, BURN windows and net settlement positions." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/en/cycle/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="https://www.osnias-clearing.com/cycle/cycle.jpg" property="og:image"/><meta content="Osnias Clearing cycles — 1W, 9W and 13W profiles" property="og:image:alt"/><script type="application/ld+json">
+<meta content="clearing cycles, multilateral netting, net settlement, UTC calendar, escrow adjustment, 1W, 9W, 13W" name="keywords"><meta content="Denis Bouzon" name="author"><meta content="Denis Bouzon" name="creator"><meta content="Osnias Clearing" name="publisher"><meta content="index, follow, max-image-preview:large" name="robots"><meta content="Book 4 — Clearing Cycles" name="citation_title"><meta content="Book 4 — Clearing Cycles 1W, 9W and 13W · Osnias Clearing" name="DC.title"><meta content="Denis Bouzon" name="DC.creator"><meta content="Osnias Clearing" name="DC.publisher"><meta content="2026-10-17" name="DC.date"><meta content="Technical Documentation" name="DC.type"><meta content="https://www.osnias-clearing.com/en/cycle/" name="DC.identifier"><meta content="en" name="DC.language"><meta content="summary_large_image" name="twitter:card"><meta content="Book 4 — Clearing Cycles 1W, 9W and 13W · Osnias Clearing" name="twitter:title"><meta content="Osnias Clearing 1W testnet, 9W B2B commercial and 13W non-commercial cycles: UTC calendar, escrow adjustment, locking, multilateral netting and net settlement." name="twitter:description"><meta content="https://www.osnias-clearing.com/cycle/cycle.jpg" name="twitter:image"><meta content="Book 4 — Clearing Cycles 1W, 9W and 13W · Osnias Clearing" property="og:title"><meta content="Osnias Clearing 1W testnet, 9W B2B commercial and 13W non-commercial cycles: UTC calendar, escrow adjustment, locking, multilateral netting and net settlement." property="og:description"><meta content="article" property="og:type"><meta content="https://www.osnias-clearing.com/en/cycle/" property="og:url"><meta content="Osnias Clearing" property="og:site_name"><meta content="https://www.osnias-clearing.com/cycle/cycle.jpg" property="og:image"><meta content="Book 4 — Clearing Cycles 1W, 9W and 13W · Osnias Clearing" property="og:image:alt"><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Book 4 — Clearing Cycles",
-  "name": "Book 4 — Clearing Cycles",
-  "description": "Osnias Clearing — Book 4: 1W, 9W and 13W clearing cycles, UTC calendar, BURN windows, net positions and calculation documentation.",
+  "headline": "Book 4 — Clearing Cycles 1W, 9W and 13W · Osnias Clearing",
+  "name": "Book 4 — Clearing Cycles 1W, 9W and 13W · Osnias Clearing",
+  "description": "Osnias Clearing 1W testnet, 9W B2B commercial and 13W non-commercial cycles: UTC calendar, escrow adjustment, locking, multilateral netting and net settlement.",
   "url": "https://www.osnias-clearing.com/en/cycle/",
-  "author": {"@type": "Person","name": "Denis Bouzon"},
-  "publisher": {"@type": "Organization","name": "Osnias Clearing"},
+  "author": {
+    "@type": "Person",
+    "name": "Denis Bouzon"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Osnias Clearing"
+  },
   "datePublished": "2026-10-11",
-  "dateModified": "2026-10-11",
+  "dateModified": "2026-10-17",
   "inLanguage": "en",
   "identifier": "https://doi.org/10.5281/zenodo.23295463",
   "mainEntityOfPage": {
@@ -36,38 +41,44 @@
     "name": "Osnias Clearing Technical Documentation"
   },
   "keywords": [
-    "multilateral clearing",
     "clearing cycles",
     "multilateral netting",
     "net settlement",
-    "financial market infrastructure",
-    "1W 9W 13W",
-    "UTC clearing calendar",
-    "BURN window",
-    "liquidity efficiency",
-    "non-custodial clearing",
-    "Sei Network"
+    "UTC calendar",
+    "escrow adjustment",
+    "1W",
+    "9W",
+    "13W"
   ],
   "about": [
-    {"@type": "Thing", "name": "Multilateral clearing"},
-    {"@type": "Thing", "name": "Net settlement"},
-    {"@type": "Thing", "name": "Financial market infrastructure"}
+    {
+      "@type": "Thing",
+      "name": "Multilateral clearing"
+    },
+    {
+      "@type": "Thing",
+      "name": "Net settlement"
+    },
+    {
+      "@type": "Thing",
+      "name": "Financial market infrastructure"
+    }
   ]
 }
-</script></head>
+</script><link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/cycle/"><link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/cycle/"><link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/es/cycle/"><link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/cycle/"></head>
 <body>
 <div class="site-nav-fixed"><div class="site-nav-inner"><a class="site-nav-brand" href="/en/">OSNIAS <span>CLEARING</span></a><nav aria-label="Main navigation" class="site-nav-buttons" id="mainNav"></nav></div></div>
-<div class="container"><div aria-label="Language selection" class="actions"><a class="btn" href="/cycle/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/cycle/" hreflang="en" lang="en">🇬🇧 English</a></div></div>
+<div class="container"><div aria-label="Language selection" class="actions"><a href="/cycle/" hreflang="fr" lang="fr" class="btn">🇫🇷 Français</a><a href="/en/cycle/" hreflang="en" lang="en" class="btn btn-primary" aria-current="page">🇬🇧 English</a><a href="/es/cycle/" hreflang="es" lang="es" class="btn">🇪🇸 Español</a></div></div>
 
-<header><div class="container"><section class="hero"><div class="hero-grid"><div><div class="eyebrow">Book 4 · Clearing calendar · UTC</div><h1>Clearing cycles</h1><p class="hero-lead">Three cycle profiles share one UTC calendar: 1W for testnet validation, 9W for B2B commercial obligations and 13W for eligible non-commercial obligations. Book 4 and its calculation workbook document BURN, P2P/MINT, freeze, net calculation and settlement.</p><div class="actions"><a class="btn btn-primary" href="/cycle/Book-4-cycles-en-v2.2.pdf" target="_blank">English PDF</a><a class="btn" href="/cycle/Livre-4-cycle-fr-v2.2.pdf" target="_blank">French PDF</a><a class="btn" href="https://zenodo.org/records/23295463" rel="noopener noreferrer" target="_blank">Zenodo DOI</a><a class="btn" href="/cycle/osnias-cycles-v2.2.xlsx">XLSX Workbook</a></div><div class="cycle-summary"><h2>1W, 9W and 13W Clearing Cycles</h2>
+<header><div class="container"><section class="hero"><div class="hero-grid"><div><div class="eyebrow">Book 4 · Clearing calendar · UTC</div><h1>Clearing cycles</h1><p class="hero-lead">Three cycle profiles share a common UTC time reference: 1W for testnet validation, 9W for B2B commercial obligations and 13W for eligible non-commercial obligations. They structure recording, clearing, freezing, net calculation and settlement.</p><div class="actions"><a class="btn btn-primary" href="/cycle/Book-4-cycles-en-v2.2.pdf" target="_blank" rel="noopener noreferrer">English PDF</a><a class="btn" href="/cycle/Livre-4-cycle-fr-v2.2.pdf" target="_blank" rel="noopener noreferrer">French PDF</a><a class="btn" href="https://zenodo.org/records/23295463" rel="noopener noreferrer" target="_blank">Zenodo DOI</a><a class="btn" href="/cycle/osnias-cycles-v2.2.xlsx">XLSX Workbook</a></div><div class="cycle-summary"><h2>1W, 9W and 13W Clearing Cycles</h2>
 <p><strong>Osnias Clearing organizes multilateral clearing around three synchronized profiles: 1W testnet, 9W B2B commercial and 13W non-commercial.</strong> Each profile follows a common UTC reference calendar so that participants, nodes and clearing rooms operate from the same temporal framework. The objective is to make clearing obligations predictable, auditable and reproducible across jurisdictions and technical environments.</p>
 <p>The cycle mechanism separates <strong>clearing from settlement</strong>. Transactions are aggregated during the active period and converted at the clearing date into net positions and net settlement obligations. This multilateral netting model is designed to reduce gross settlement flows, improve liquidity efficiency and preserve a clear distinction between the calculation of obligations and the subsequent monetary settlement performed by the relevant settlement infrastructure or node operator.</p>
 <h2>Cycle classification</h2>
-<p><strong>1W — TESTNET:</strong> technical validation cycle reproducing the core state transitions over one UTC week.</p>
+<p><strong>1W — TESTNET:</strong> a technical validation profile reproducing the main state transitions within one UTC week. Its test calendar must be specified separately; the day-by-day adjustment window of long cycles is not assumed to apply.</p>
 <p><strong>9W — B2B commercial:</strong> cycle for commercial obligations between undertakings. The invoice may state <strong>“Payment method: CLEAR 9W”</strong>. The protocol envelope is nine weeks, with a 59-day operational window before settlement.</p>
 <p><strong>13W — non-commercial:</strong> cycle for eligible non-commercial obligations. The settlement-to-settlement envelope is 13 weeks (91 days), with an 87-day operational window.</p>
-<h2>UTC Schedule, Multilateral Netting and Net Settlement</h2><p><strong>Book 4 is the reference document for the timing model.</strong> It describes the 1W, 9W and 13W profiles, the UTC calendar, BURN windows, P2P/MINT periods, freeze, net calculation and settlement methodology associated with each cycle. The published PDF, Zenodo DOI and XLSX workbook provide a stable technical basis for implementation, review, audit and regulatory analysis of the Osnias Clearing cycle architecture.</p>
-</div></div><figure class="hero-illustration cycle-figure"><a href="/cycle/cycle.png" rel="noopener noreferrer" target="_blank"><img alt="Four 13-week periods of a regular 52-week year" src="/cycle/cycle.jpg"/></a><figcaption>Illustration of the 13W profile in a regular year.</figcaption></figure></div></section></div></header>
+<h2>UTC Schedule, Multilateral Netting and Net Settlement</h2><p><strong>Book 4 is the reference document for the timing model.</strong> The published v2.2 PDFs and workbook document the cycle profiles and calculation methodology. For long cycles, Monday, day 1, settles the previous cycle’s net positions. From Tuesday to Thursday, days 2 to 4, participants may add funds or withdraw the releasable amount to their registered dedicated withdrawal address, which is separate from the escrow address. Escrow is locked at the close of Thursday’s adjustment window. The active phase follows, then positions are frozen at cycle end for final netting. The exact Thursday UTC closing time remains to be specified. The 1W test calendar must be defined separately. Published files remain unchanged and should be read alongside current security and calendar clarifications.</p>
+</div></div><figure class="hero-illustration cycle-figure"><a href="/cycle/cycle.png" rel="noopener noreferrer" target="_blank"><img alt="Four 13-week periods of a regular 52-week year" src="/cycle/cycle.jpg"></a><figcaption>Illustration of the 13W profile in a regular year.</figcaption></figure></div></section></div></header>
 
 <footer><div class="container">© 2026 Osnias Clearing · Book 4 · <a href="https://zenodo.org/records/23295463">10.5281/zenodo.23295463</a></div></footer>
 </body></html>
