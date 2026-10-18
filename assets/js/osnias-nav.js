@@ -30,9 +30,8 @@
   }
 
   function isEnglishPage(){
-    /* Les pages espagnoles utilisent le menu anglais : la documentation détaillée existe en anglais et en français. */
     const path = getLocalPath();
-    return path === "/en" || path.startsWith("/en/") || isSpanishPage();
+    return path === "/en" || path.startsWith("/en/");
   }
 
   function buildMainNavigation(){
@@ -44,7 +43,20 @@
 
     const isEn = isEnglishPage();
 
-    const items = isEn ? [
+    const items = isSpanishPage() ? [
+      { label: "1-Osnias-ID", href: prefix + "/es/osniasid/" },
+      { label: "2-Arquitectura", href: prefix + "/es/architecture/" },
+      { label: "3-Reglas", href: prefix + "/es/rules/" },
+      { label: "4-Ciclos", href: prefix + "/es/cycle/" },
+      { label: "5-Seguridad", href: prefix + "/es/security/" },
+      { label: "6-Onboarding", href: prefix + "/es/onboarding/" },
+      { label: "7-POP Osnias", href: prefix + "/es/pop/" },
+      { label: "A-Regulación", href: prefix + "/es/regulation/" },
+      { label: "B-Despliegue", href: prefix + "/es/deployment/" },
+      { label: "C-Hoja de ruta", href: prefix + "/es/roadmap/" },
+      { label: "D-ViDA2030", href: prefix + "/es/vida2030/" },
+      { label: "E-FAQ", href: prefix + "/es/faq/" }
+    ] : isEn ? [
       { label: "1-Osnias-ID", href: prefix + "/en/osniasid/" },
       { label: "2-Architecture", href: prefix + "/en/architecture/" },
       { label: "3-Rules", href: prefix + "/en/rules/" },

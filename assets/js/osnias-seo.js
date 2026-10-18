@@ -1,4 +1,7 @@
+(function(){
+  "use strict";
 
+  const defaults = {
     siteName: "Osnias Clearing",
     siteUrl: "https://www.osnias-clearing.com/",
     type: "website",
@@ -96,16 +99,21 @@
 
   function localeFromLanguage(lang, page){
     if(page.locale) return page.locale;
-    return String(lang).toLowerCase().startsWith("fr") ? "fr_FR" : defaults.locale;
+    const language = String(lang).toLowerCase();
+    if(language.startsWith("fr")) return "fr_FR";
+    if(language.startsWith("es")) return "es_ES";
+    return defaults.locale;
   }
 
   function applyAlternates(page){
     const alternates = page.alternates || {};
     Object.keys(alternates).forEach(function(lang){
-      upsertLink("alternate", cleanUrl(alternates[lang]), lang);
+      if(!document.querySelector('link[rel="alternate"][hreflang="' + lang + '"]')){
+        upsertLink("alternate", cleanUrl(alternates[lang]), lang);
+      }
     });
 
-    if(page.xDefault){
+    if(page.xDefault && !document.querySelector('link[rel="alternate"][hreflang="x-default"]')){
       upsertLink("alternate", cleanUrl(page.xDefault), "x-default");
     }
   }
@@ -132,7 +140,7 @@
         "url": defaults.siteUrl,
         "name": defaults.siteName,
         "description": defaults.description,
-        "inLanguage": ["en", "fr"],
+        "inLanguage": ["en", "fr", "es"],
         "creator": { "@id": authorId }
       },
       {
@@ -183,13 +191,13 @@
     const page = getPageConfig();
 
     const title =
-      page.title ||
       document.title ||
+      page.title ||
       defaults.title;
 
     const description =
-      page.description ||
       document.querySelector('meta[name="description"]')?.getAttribute("content") ||
+      page.description ||
       defaults.description;
 
     const keywords =
@@ -197,12 +205,11 @@
       defaults.keywords;
 
     const url = cleanUrl(
-      page.canonical ||
       canonicalUrl()
     );
 
     const image =
-      page.image || defaults.ogImage;
+      document.querySelector('meta[property="og:image"]')?.content || page.image || defaults.ogImage;
 
     const imageAlt =
       page.imageAlt || defaults.ogImageAlt;
@@ -210,7 +217,7 @@
     const lang = languageFromPage(page);
     const locale = localeFromLanguage(lang, page);
 
-    document.title = title;
+    if(title){ document.title = title; }
 
     upsertMeta("description", description);
 
@@ -218,11 +225,15 @@
     // Google does not use the keywords meta tag as a ranking signal.
     upsertMeta("keywords", keywords);
 
-    upsertMeta("robots", page.robots || "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1");
-    upsertMeta("googlebot", page.googlebot || "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1");
+    // Static indexing directives are authoritative. Never opt a page into indexing.
+    const robots = document.querySelector('meta[name="robots"]');
+    if(!robots){ upsertMeta("robots", page.robots || "noindex,follow"); }
+    if(!document.querySelector('meta[name="googlebot"]')){
+      upsertMeta("googlebot", document.querySelector('meta[name="robots"]')?.content || "noindex,follow");
+    }
     upsertMeta("author", page.author || "Denis Bouzon");
 
-    ensureCanonical(url);
+    // Canonical and language links are supplied by the page HTML.
     applyAlternates(page);
 
     upsertProperty("og:title", title);
