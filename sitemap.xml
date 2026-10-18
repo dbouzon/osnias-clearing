@@ -312,30 +312,4 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/"/>
     <lastmod>2026-10-18</lastmod>
   </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/partnership/</loc>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/partnership/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/partnership/"/>
-    <lastmod>2026-10-18</lastmod>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/comparaison/comparison.html</loc>
-    <lastmod>2026-10-18</lastmod>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/oracle/oracle.html</loc>
-    <lastmod>2026-10-18</lastmod>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/history/history.html</loc>
-    <lastmod>2026-10-18</lastmod>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/sei/sei.html</loc>
-    <lastmod>2026-10-18</lastmod>
-  </url>
-  <url>
-    <loc>https://www.osnias-clearing.com/pitch/pitch.html</loc>
-    <lastmod>2026-10-18</lastmod>
-  </url>
-</urlset>
+  </urlset>
