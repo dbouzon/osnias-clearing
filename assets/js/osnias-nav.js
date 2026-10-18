@@ -26,12 +26,14 @@
 
   function isSpanishPage(){
     const path = getLocalPath();
-    return path === "/es" || path.startsWith("/es/");
+    return path === "/es" || path.startsWith("/es/") ||
+      (path.startsWith("/comparaison/") && document.documentElement.lang.toLowerCase().split("-")[0] === "es");
   }
 
   function isEnglishPage(){
     const path = getLocalPath();
-    return path === "/en" || path.startsWith("/en/");
+    return path === "/en" || path.startsWith("/en/") ||
+      (path.startsWith("/comparaison/") && document.documentElement.lang.toLowerCase().split("-")[0] === "en");
   }
 
   function buildMainNavigation(){
