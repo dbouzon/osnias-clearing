@@ -312,4 +312,28 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/vida2030/"/>
     <lastmod>2026-10-18</lastmod>
   </url>
-  </urlset>
+  <url>
+    <loc>https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4-EN.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4-ES.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4.html"/>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4-EN.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4-EN.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4-ES.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4.html"/>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4-ES.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4-EN.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4-ES.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/comparaison/Osnias-60-paiements-compensation-v4.html"/>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+</urlset>
