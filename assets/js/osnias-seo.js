@@ -118,8 +118,115 @@
     }
   }
 
+  function buildOrganizationData(){
+    return {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": defaults.siteUrl + "#organization",
+      "name": defaults.siteName,
+      "url": defaults.siteUrl,
+      "email": defaults.email,
+      "logo": {
+        "@type": "ImageObject",
+        "url": defaults.ogImage
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "general inquiries",
+        "email": defaults.email,
+        "availableLanguage": ["fr", "en", "es"]
+      }
+    };
+  }
+
+  function breadcrumbLabel(slug, isLast){
+    if(isLast){
+      const h1 = document.querySelector("h1");
+      if(h1 && h1.textContent.trim()) return h1.textContent.trim();
+    }
+
+    const labels = {
+      osniasid: "Osnias-ID",
+      architecture: "Architecture",
+      rules: "Rules",
+      cycle: "Clearing Cycles",
+      cycles: "Clearing Cycles",
+      security: "Security",
+      onboarding: "Onboarding",
+      regulation: "Regulation",
+      deployment: "Deployment",
+      roadmap: "Roadmap",
+      partnership: "Partnership",
+      faq: "FAQ",
+      vida2030: "ViDA 2030",
+      pop: "O-POP",
+      oracle: "Oracle",
+      escrow: "Escrow",
+      node: "Node",
+      sei: "Sei"
+    };
+
+    if(labels[slug]) return labels[slug];
+    return slug
+      .replace(/[-_]+/g, " ")
+      .replace(/\b\w/g, function(letter){ return letter.toUpperCase(); });
+  }
+
+  function buildBreadcrumbData(url, lang){
+    let parsed;
+    try {
+      parsed = new URL(url, defaults.siteUrl);
+    } catch(e){
+      return null;
+    }
+
+    const rawSegments = parsed.pathname.split("/").filter(Boolean);
+    let languagePrefix = "";
+    let segments = rawSegments.slice();
+
+    if(segments[0] === "en" || segments[0] === "es"){
+      languagePrefix = segments.shift();
+    }
+
+    if(!segments.length) return null;
+
+    const language = String(lang || "").toLowerCase();
+    const homeName = language.startsWith("fr") ? "Accueil" :
+      (language.startsWith("es") ? "Inicio" : "Home");
+    const homePath = languagePrefix ? "/" + languagePrefix + "/" : "/";
+    const items = [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": homeName,
+        "item": new URL(homePath, defaults.siteUrl).href
+      }
+    ];
+
+    const builtSegments = [];
+    segments.forEach(function(segment, index){
+      builtSegments.push(segment);
+      const path = (languagePrefix ? "/" + languagePrefix : "") +
+        "/" + builtSegments.join("/") + "/";
+      items.push({
+        "@type": "ListItem",
+        "position": index + 2,
+        "name": breadcrumbLabel(segment, index === segments.length - 1),
+        "item": new URL(path, defaults.siteUrl).href
+      });
+    });
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": url + "#breadcrumb",
+      "itemListElement": items
+    };
+  }
+
   function buildStructuredData(page, data){
     const authorId = defaults.siteUrl + "#denis-bouzon";
+    const organizationId = defaults.siteUrl + "#organization";
     const websiteId = defaults.siteUrl + "#website";
     const webpageId = data.url + "#webpage";
 
@@ -141,7 +248,8 @@
         "name": defaults.siteName,
         "description": defaults.description,
         "inLanguage": ["en", "fr", "es"],
-        "creator": { "@id": authorId }
+        "creator": { "@id": authorId },
+        "publisher": { "@id": organizationId }
       },
       {
         "@type": page.schemaType || "WebPage",
@@ -258,6 +366,15 @@
     upsertMeta("twitter:description", description);
     upsertMeta("twitter:image", image);
     upsertMeta("twitter:image:alt", imageAlt);
+
+    // Global Organization entity, independent of page-specific JSON-LD.
+    upsertJsonLd("osnias-organization-jsonld", buildOrganizationData());
+
+    // Breadcrumb structured data for each non-home page.
+    const breadcrumbData = buildBreadcrumbData(url, lang);
+    if(breadcrumbData){
+      upsertJsonLd("osnias-breadcrumb-jsonld", breadcrumbData);
+    }
 
     // Page-specific HTML now carries the authoritative structured data.
     // Add the generic graph only when no JSON-LD is already present.
