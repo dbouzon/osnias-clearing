@@ -57,7 +57,8 @@
       { label: "B-Despliegue", href: prefix + "/es/deployment/" },
       { label: "C-Hoja de ruta", href: prefix + "/es/roadmap/" },
       { label: "D-ViDA2030", href: prefix + "/es/vida2030/" },
-      { label: "E-FAQ", href: prefix + "/es/faq/" }
+      { label: "E-FAQ", href: prefix + "/es/faq/" },
+      { label: "F-Asociación", href: prefix + "/partnership/" }
     ] : isEn ? [
       { label: "1-Osnias-ID", href: prefix + "/en/osniasid/" },
       { label: "2-Architecture", href: prefix + "/en/architecture/" },
@@ -70,7 +71,8 @@
       { label: "B-Official Deployment", href: prefix + "/en/deployment/" },
       { label: "C-Roadmap", href: prefix + "/en/roadmap/" },
       { label: "D-ViDA2030", href: prefix + "/en/vida2030/" },
-      { label: "E-FAQ", href: prefix + "/en/faq/" }
+      { label: "E-FAQ", href: prefix + "/en/faq/" },
+      { label: "F-Partnership", href: prefix + "/partnership/" }
     ] : [
       { label: "1-Osnias-ID", href: prefix + "/osniasid/" },
       { label: "2-Architecture", href: prefix + "/architecture/" },
@@ -83,7 +85,8 @@
       { label: "B-Déploiement", href: prefix + "/deployment/" },
       { label: "C-Roadmap", href: prefix + "/roadmap/" },
       { label: "D-ViDA2030", href: prefix + "/vida2030/" },
-      { label: "E-FAQ", href: prefix + "/faq/" }
+      { label: "E-FAQ", href: prefix + "/faq/" },
+      { label: "F-Partenariat", href: prefix + "/partnership/" }
     ];
 
     nav.replaceChildren();
