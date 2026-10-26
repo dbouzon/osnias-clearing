@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<!-- Osnias Clearing · Architecture · Livre 2 / Book 2 · page v2.1 · 2026-10-14 · DOI 10.5281/zenodo.23392588 -->
+
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Architecture du clearing sur Sei | Osnias Clearing</title>
-<meta content="Architecture du protocole Osnias : registre de compensation sur Sei, positions nettes et séparation avec les actifs de règlement sur les réseaux EVM." name="description"/>
+<title>Architecture Release 3.0 | Osnias Clearing</title>
+<meta content="Core Solidity EVM pur sur Sei, Bank Escrow Gateway Go et séquestres bancaires dédiés : compensation sur chaîne et règlement net bancaire de fin de cycle." name="description"/>
 <meta content="index, follow, max-image-preview:large" name="robots"/>
 <meta content="Denis Bouzon" name="author"/>
 <meta content="#050814" name="theme-color"/>
-<meta content="2.1" name="version"/>
-<meta content="10.5281/zenodo.23392588" name="citation_doi"/>
+<meta content="3.0" name="version"/>
 <link href="https://www.osnias-clearing.com/architecture/" rel="canonical"/><link href="https://www.osnias-clearing.com/architecture/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/architecture/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/es/architecture/" hreflang="es" rel="alternate"/><link href="https://www.osnias-clearing.com/architecture/" hreflang="x-default" rel="alternate"/>
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script defer="" src="/assets/js/osnias-seo.js"></script>
 <script defer="" src="/assets/js/osnias-nav.js"></script>
-<meta content="Osnias Clearing, architecture de clearing, registre canonique, Sei Network, règlement, séquestre Ethereum, oracle temporel, nœuds NNN, compensation multilatérale, infrastructure EVM" name="keywords"/><meta content="Architecture — Livre 2" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-14" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/architecture/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="Architecture — Livre 2" name="citation_title"/><meta content="Denis Bouzon" name="citation_author"/><meta content="2026-10-14" name="citation_publication_date"/><meta content="https://www.osnias-clearing.com/architecture/Livre_II_Architecture_2_1.pdf" name="citation_pdf_url"/><meta content="summary_large_image" name="twitter:card"/><meta content="Architecture du clearing sur Sei | Osnias Clearing" name="twitter:title"/><meta content="Architecture du protocole Osnias : registre de compensation sur Sei, positions nettes et séparation avec les actifs de règlement sur les réseaux EVM." name="twitter:description"/><meta content="https://www.osnias-clearing.com/architecture/architecture.jpg" name="twitter:image"/><meta content="Architecture du clearing sur Sei | Osnias Clearing" property="og:title"/><meta content="Architecture du protocole Osnias : registre de compensation sur Sei, positions nettes et séparation avec les actifs de règlement sur les réseaux EVM." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/architecture/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="fr_FR" property="og:locale"/><meta content="en_GB" property="og:locale:alternate"/><meta content="es_ES" property="og:locale:alternate"/><meta content="https://www.osnias-clearing.com/architecture/architecture.jpg" property="og:image"/><meta content="Architecture Osnias Clearing — clearing sur Sei et règlement séparé" property="og:image:alt"/><script type="application/ld+json">
-{
+<meta content="Osnias Clearing, Release 3.0, Sei, Solidity, EVM, Bank Escrow Gateway, Go, ISO 20022, REST, EBICS" name="keywords"/><meta content="Architecture Release 3.0 | Osnias Clearing" name="DC.title"/><meta content="Denis Bouzon" name="DC.creator"/><meta content="Osnias Clearing" name="DC.publisher"/><meta content="2026-10-26" name="DC.date"/><meta content="Technical Documentation" name="DC.type"/><meta content="https://www.osnias-clearing.com/architecture/" name="DC.identifier"/><meta content="fr" name="DC.language"/><meta content="summary_large_image" name="twitter:card"/><meta content="Architecture Release 3.0 | Osnias Clearing" name="twitter:title"/><meta content="Core Solidity EVM pur sur Sei, Bank Escrow Gateway Go et séquestres bancaires dédiés : compensation sur chaîne et règlement net bancaire de fin de cycle." name="twitter:description"/><meta content="Architecture Release 3.0 | Osnias Clearing" property="og:title"/><meta content="Core Solidity EVM pur sur Sei, Bank Escrow Gateway Go et séquestres bancaires dédiés : compensation sur chaîne et règlement net bancaire de fin de cycle." property="og:description"/><meta content="article" property="og:type"/><meta content="https://www.osnias-clearing.com/architecture/" property="og:url"/><meta content="Osnias Clearing" property="og:site_name"/><meta content="fr_FR" property="og:locale"/><meta content="en_GB" property="og:locale:alternate"/><meta content="es_ES" property="og:locale:alternate"/><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Architecture — Livre 2",
+  "headline": "Architecture Release 3.0 | Osnias Clearing",
   "name": "Architecture",
-  "version": "2.1",
-  "description": "Architecture du protocole Osnias : registre de compensation sur Sei, positions nettes et séparation avec les actifs de règlement sur les réseaux EVM.",
+  "version": "3.0",
+  "description": "Core Solidity EVM pur sur Sei, Bank Escrow Gateway Go et séquestres bancaires dédiés : compensation sur chaîne et règlement net bancaire de fin de cycle.",
   "url": "https://www.osnias-clearing.com/architecture/",
   "author": {
     "@type": "Person",
@@ -33,16 +31,10 @@
     "@type": "Organization",
     "name": "Osnias Clearing"
   },
-  "dateModified": "2026-10-14",
+  "dateModified": "2026-10-26",
   "inLanguage": "fr",
-  "identifier": "https://doi.org/10.5281/zenodo.23392588",
-  "encoding": {
-    "@type": "MediaObject",
-    "contentUrl": "https://www.osnias-clearing.com/architecture/Livre_II_Architecture_2_1.pdf",
-    "encodingFormat": "application/pdf"
-  }
-}
-</script></head>
+  "image": "https://www.osnias-clearing.com/architecture/architecture-release-3-fr.png"
+}</script><meta content="https://www.osnias-clearing.com/architecture/Livre2_FR-3-0.pdf" name="citation_pdf_url"/><meta content="https://www.osnias-clearing.com/architecture/architecture-release-3-fr.png" property="og:image"/><meta content="https://www.osnias-clearing.com/architecture/architecture-release-3-fr.png" name="twitter:image"/><meta content="Compensation sur Sei, preuves bancaires en lecture seule et règlement exécuté par les banques sous mandat." property="og:image:alt"/></head>
 <body>
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
@@ -53,48 +45,22 @@
 <div class="container">
 <div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/architecture/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/architecture/" hreflang="en" lang="en">🇬🇧 English</a><a class="btn" href="/es/architecture/" hreflang="es" lang="es">🇪🇸 Español</a></div>
 </div>
-
 <div class="container">
 <section class="hero">
-<div class="hero-grid">
+<div class="hero-grid" style="grid-template-columns:1fr">
 <div>
-<div class="eyebrow">Livre 2 · v2.1 - Architecture du protocole · Compensation · Temps · Séparation fonctionnelle</div>
-<h1>Architecture</h1>
-<p class="doc-meta" style="opacity:.8;font-size:.95em;margin:.25rem 0 1rem">Version 2.1 · <time datetime="2026-10-14">14 octobre 2026</time> · DOI <a href="https://doi.org/10.5281/zenodo.23392588" rel="noopener" target="_blank">10.5281/zenodo.23392588</a></p>
-<p class="hero-lead">
-              Le Livre 2 présente l’architecture fonctionnelle d’Osnias Clearing : registre canonique de compensation sur Sei,
-              séparation entre clearing et règlement, coordination temporelle par oracle et articulation avec les infrastructures
-              EVM de séquestre et de règlement exploitées par les nœuds NNN.
-            </p>
-<div class="actions">
-<a class="btn btn-primary" href="/architecture/Livre_II_Architecture_2_1.pdf" target="_blank">PDF en français</a>
-<a class="btn" href="/architecture/Book_II_Architecture_2_1_en.pdf" target="_blank">PDF en anglais</a>
-<a class="btn" href="https://doi.org/10.5281/zenodo.23392588" rel="noopener" target="_blank">DOI Zenodo</a>
-<a class="btn" href="https://hal.science/hal-05752756" rel="noopener" target="_blank">HAL / ArXiv</a>
+<div class="eyebrow">Release 3.0 · Sei EVM · Go · Bank Escrow Gateway</div>
+<h1>Architecture Release 3.0</h1>
+<p class="doc-meta" style="opacity:.8;font-size:.95em;margin:.25rem 0 1rem">Release 3.0 · 26/10/2026</p><p class="release-status">Projet de travail — architecture cible, non auditée, soumise aux validations bancaires, contractuelles et réglementaires.</p>
+<p class="hero-lead">La Release 3.0 sépare le calcul de compensation sur Sei, l’interface bancaire en Go et les fonds conservés dans des séquestres bancaires dédiés. Les Ethereum Controllers et les stablecoins sont retirés de cette architecture.</p>
 </div>
-</div>
-<figure class="hero-illustration">
-<img alt="Architecture Osnias Clearing" decoding="async" loading="eager" onerror="this.closest('.hero-illustration')?.remove()" src="/architecture/architecture.jpg"/>
-</figure>
 </div>
 </section>
 </div>
-<main class="container">
-<section>
-<div class="section-label">Architecture fonctionnelle</div>
-<h2>Une séparation stricte entre registre de compensation et règlement final</h2>
-<p class="section-intro">
-          Sei constitue la couche canonique du registre de compensation. Les obligations acceptées y sont enregistrées et compensées ;
-          les positions nettes qui en résultent en fin de cycle sont réglées par les opérateurs de nœuds NNN dans leur propre
-          infrastructure et sous leur cadre juridique applicable. Osnias Clearing ne conserve ni ne déplace les fonds des participants.
-        </p>
-</section>
-</main>
-
+<main class="container"><section><figure style="margin:0"><a href="/architecture/architecture-release-3-fr.png"><img alt="Compensation sur Sei, preuves bancaires en lecture seule et règlement exécuté par les banques sous mandat." decoding="async" height="1100" loading="eager" src="/architecture/architecture-release-3-fr.png" style="display:block;width:100%;height:auto;border-radius:16px" width="1800"/></a><figcaption>Compensation sur Sei, preuves bancaires en lecture seule et règlement exécuté par les banques sous mandat.</figcaption></figure></section><section><h2>Un Core portable, une chaîne canonique</h2><p>La logique métier utilise Solidity EVM standard, sans bibliothèque ni précompilé spécifique à Sei. Sei EVM est la chaîne canonique de référence ; les dépendances réseau sont isolées dans des adaptateurs configurables. Le Core valide les obligations et conserve les positions, cycles et empreintes de preuve. Il ne détient pas de fonds et ne peut pas débiter un IBAN.</p></section><section><h2>Une passerelle Go composée de services distincts</h2><p>Le Sei Connector observe les événements et vérifie la finalité. L’ISO 20022 Engine valide les messages XML/XSD et leurs variantes bancaires. L’Escrow Service vérifie les fonds bloqués en lecture seule ; le Settlement Service transmet uniquement les ordres nets autorisés. Les Bank Adapters gèrent REST/HTTPS avec mTLS et, selon la banque, EBICS 3.0 TS. Reconciliation &amp; Audit rapproche les écritures et conserve la piste d’audit. PostgreSQL porte les états hors chaîne ; les clés sont protégées selon les exigences du partenaire bancaire, notamment par HSM/KMS.</p></section><section><h2>Des séquestres individuels et une correspondance confidentielle</h2><p>Chaque Osnias-ID actif correspond à un compte séquestre avec IBAN distinct, affecté à une entreprise, une monnaie ISO 4217 et un profil de cycle 1W, 9W ou 13W. Les fonds ne sont pas mutualisés entre entreprises. La correspondance Osnias-ID / IBAN / banque / titulaire / monnaie / cycle reste dans un registre protégé hors chaîne. Aucun IBAN nominatif, relevé ou détail de facture n’est publié en clair sur Sei.</p></section><section><h2>Une attestation de blocage, pas un simple solde</h2><p>Avant d’activer la capacité Cᵢ, le Core vérifie une preuve bancaire authentique et fraîche, rattachée au bon Osnias-ID et cycle. Elle établit le montant effectivement immobilisé, la monnaie, la période, les restrictions et les conditions de libération. Les signatures, horodatages, expirations, références uniques et protections contre le rejeu sont contrôlés. Un solde créditeur, un gel révocable ou un message ISO 20022 générique ne suffisent pas.</p></section><section><h2>Admission des obligations et maîtrise des incidents</h2><p>La position suit Pᵢ(t) = Cᵢ + Rᵢ(t) − Eᵢ(t). Une obligation n’est admise que si la position reste non négative et si les autres contrôles sont satisfaits. Une preuve absente, périmée ou incohérente bloque les nouvelles obligations qui nécessitent cette couverture, sans annuler les obligations déjà acceptées. La compensation n’éteint pas automatiquement les créances : cet effet dépend du rulebook et des conventions applicables.</p></section><section><h2>Du cycle actif au règlement bancaire confirmé</h2><p>La banque immobilise les fonds avant activation. Pendant le cycle, l’oracle peut vérifier le séquestre à la demande du Core. À la clôture, les positions sont figées ; les contrôles et contestations prévus précèdent un lot déterministe par chambre, monnaie et cycle. Les passerelles mandatées transmettent les instructions individualisées aux banques. Au maximum un débit net est généré par compte débiteur dans le lot, sous réserve des exceptions prévues. Les banques effectuent les débits et crédits ; la libération ou réaffectation du reliquat attend leur confirmation et le rapprochement.</p></section><section><h2>Messages, canaux et preuve de règlement</h2><p>pain.001 porte l’initiation client-banque lorsque le contrat le prévoit ; pain.002 rapporte les statuts. camt.053 et camt.054 permettent le rapprochement des écritures, avec camt.052 pour le reporting intrajournalier. pacs.008 relève du circuit interbancaire. REST et EBICS transportent les échanges selon les interfaces convenues : ISO 20022 n’est pas un protocole de transport. Un statut positif de réception ne prouve pas à lui seul le règlement définitif.</p></section><section><h2>Un ordre unique, une clôture fondée sur les preuves</h2><p>Chaque instruction possède une référence stable, unique et liée à l’état figé du cycle. Si une confirmation manque, le Gateway conserve le statut PENDING_RECONCILIATION et interroge la banque sans créer un nouvel ordre sous une autre référence. Rejets, règlements partiels et écarts restent en exception. Le cycle n’est marqué réglé qu’après preuves bancaires suffisantes et rapprochement de tous les comptes concernés.</p></section><section><h2>Des nœuds fédérés, sans Controllers Ethereum</h2><p>Les nœuds assurent l’onboarding, les interfaces ERP, l’identité, la relation client et la coordination bancaire dans leurs juridictions. La Release 3.0 remplace les séquestres tokenisés, les Ethereum Controllers et la concordance Ethereum/Sei par des séquestres bancaires et leurs attestations. Le Core ne détient, n’émet ni ne transfère de token de clearing ou de stablecoin.</p></section><section><h2>Documentation</h2><div class="actions"><a class="btn btn-primary" href="/architecture/Livre2_FR-3-0.pdf" hreflang="fr" type="application/pdf">PDF français · Release 3.0</a><a class="btn" href="/architecture/Book2_EN-3-0.pdf" hreflang="en" type="application/pdf">PDF anglais · Release 3.0</a></div><h3>Références historiques — version 2.1 (architecture antérieure)</h3><a class="btn" href="/architecture/Livre_II_Architecture_2_1.pdf">PDF FR · 2.1</a><a class="btn" href="/architecture/Book_II_Architecture_2_1_en.pdf">PDF EN · 2.1</a><a class="btn" href="https://doi.org/10.5281/zenodo.23392588">Zenodo · 2.1</a><a class="btn" href="https://hal.science/hal-05752756">HAL</a></section></main>
 <footer>
-<div class="container">© 2026 Osnias Clearing · Architecture · Livre 2 · v2.1 · 14/10/2026 · Documentation technique publique</div>
+<div class="container">© 2026 Osnias Clearing · Release 3.0 · 26/10/2026</div>
 </footer>
-
 <script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
