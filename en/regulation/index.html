@@ -1,43 +1,44 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1" name="viewport">
-<title>B2B clearing regulatory scoping | Osnias Clearing</title>
-<meta content="Preliminary regulatory analysis of the protocol and node managers, separation of clearing and settlement, and the historical AMF Memorandum." name="description">
-<meta content="regulatory scoping; current architecture; historical AMF memorandum; multilateral clearing; Sei register; external escrow; node manager; actual services; MiCA; payments; testnet" name="keywords">
-<meta content="Denis Bouzon" name="author">
-<meta content="Denis Bouzon" name="creator">
-<meta content="Osnias Clearing" name="publisher">
-<meta content="index, follow, max-image-preview:large" name="robots">
-<meta content="Preliminary regulatory scoping for Osnias Clearing: current clearing architecture, node manager roles, separation of settlement and custody, dialogue with authorities and the AMF Memorandum v2.0 retained as a historical reference." name="abstract">
-<meta content="regulatory scoping; current architecture; historical AMF memorandum; multilateral clearing; Sei register; external escrow; node manager; actual services; MiCA; payments; testnet" name="subject">
-<meta content="Osnias Clearing — Regulation, Current Architecture and AMF Memorandum" name="DC.title">
-<meta content="Denis Bouzon" name="DC.creator">
-<meta content="Osnias Clearing" name="DC.publisher">
-<meta content="2026-10-17" name="DC.date">
-<meta content="Regulatory Analysis" name="DC.type">
-<meta content="regulatory scoping; current architecture; historical AMF memorandum; multilateral clearing; Sei register; external escrow; node manager; actual services; MiCA; payments; testnet" name="DC.subject">
-<meta content="https://www.osnias-clearing.com/en/regulation/" name="DC.identifier">
-<meta content="en" name="DC.language">
-<meta content="#050814" name="theme-color">
-<link href="https://www.osnias-clearing.com/en/regulation/" rel="canonical"><link href="https://orcid.org/0009-0007-8894-8902" rel="author">
-<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
-<meta content="B2B clearing regulatory scoping | Osnias Clearing" property="og:title">
-<meta content="Preliminary regulatory analysis of the protocol and node managers, separation of clearing and settlement, and the historical AMF Memorandum." property="og:description">
-<meta content="article" property="og:type">
-<meta content="https://www.osnias-clearing.com/en/regulation/" property="og:url">
-<meta content="Osnias Clearing" property="og:site_name">
-<meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image">
-<meta content="Osnias Clearing — Regulation, Current Architecture and AMF Memorandum" property="og:image:alt">
-<meta content="Denis Bouzon" name="citation_author">
-<meta content="AMF Memorandum v2.0 — MiCA Regulation &amp; Regulatory Analysis" name="citation_title">
-<meta content="2026-09-28" name="citation_publication_date">
-<meta content="https://www.osnias-clearing.com/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" name="citation_pdf_url">
-<meta content="10.5281/zenodo.23020714" name="citation_doi">
-<link href="/assets/css/osnias.css" rel="stylesheet">
-<script defer src="/assets/js/osnias-seo.js"></script>
-<script defer src="/assets/js/osnias-nav.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>B2B Multilateral Netting and EU Regulation | Osnias Clearing</title>
+<meta content="Explore B2B multilateral netting, DTCC and OSTTRA precedents, CLEAR 9W settlement cycles, bank escrow architecture and EU regulatory considerations." name="description"/>
+<meta content="B2B multilateral netting; trade receivables clearing; CLEAR 9W cycle; synchronised settlement; bank escrow; bank oracle; EVM clearing protocol; EU regulation; MiCA" name="keywords"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="Denis Bouzon" name="creator"/>
+<meta content="Osnias Clearing" name="publisher"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="Overview of Osnias Clearing, B2B multilateral netting, the portable EVM core, bank escrow design, DLT precedents and EU regulatory scoping." name="abstract"/>
+<meta content="B2B multilateral netting; trade receivables clearing; CLEAR 9W cycle; synchronised settlement; bank escrow; bank oracle; EVM clearing protocol; EU regulation; MiCA" name="subject"/>
+<meta content="B2B Multilateral Netting and EU Regulation | Osnias Clearing" name="DC.title"/>
+<meta content="Denis Bouzon" name="DC.creator"/>
+<meta content="Osnias Clearing" name="DC.publisher"/>
+<meta content="2026-10-28" name="DC.date"/>
+<meta content="Regulatory Analysis" name="DC.type"/>
+<meta content="B2B multilateral netting; trade receivables clearing; CLEAR 9W cycle; synchronised settlement; bank escrow; bank oracle; EVM clearing protocol; EU regulation; MiCA" name="DC.subject"/>
+<meta content="https://www.osnias-clearing.com/en/regulation/" name="DC.identifier"/>
+<meta content="en" name="DC.language"/>
+<meta content="#050814" name="theme-color"/>
+<link href="https://www.osnias-clearing.com/en/regulation/" rel="canonical"/><link href="https://orcid.org/0009-0007-8894-8902" rel="author"/>
+<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"/>
+<meta content="B2B Multilateral Netting and EU Regulation | Osnias Clearing" property="og:title"/>
+<meta content="Explore B2B multilateral netting, DTCC and OSTTRA precedents, CLEAR 9W settlement cycles, bank escrow architecture and EU regulatory considerations." property="og:description"/>
+<meta content="article" property="og:type"/>
+<meta content="https://www.osnias-clearing.com/en/regulation/" property="og:url"/>
+<meta content="Osnias Clearing" property="og:site_name"/>
+<meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/>
+<meta content="Osnias Clearing — B2B netting and EU regulatory framework" property="og:image:alt"/>
+<meta content="Denis Bouzon" name="citation_author"/>
+<meta content="AMF Memorandum v2.0 — MiCA Regulation &amp; Regulatory Analysis" name="citation_title"/>
+<meta content="2026-09-28" name="citation_publication_date"/>
+<meta content="https://www.osnias-clearing.com/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" name="citation_pdf_url"/>
+<meta content="10.5281/zenodo.23020714" name="citation_doi"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
 <style>
     
     
@@ -80,8 +81,7 @@
       font-weight:700;
     }
   </style>
-<script type="application/ld+json">
-{
+<script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -110,9 +110,9 @@
     {
       "@type": "TechArticle",
       "@id": "https://www.osnias-clearing.com/en/regulation/#article",
-      "headline": "B2B clearing regulatory scoping | Osnias Clearing",
+      "headline": "B2B Multilateral Netting and EU Regulation | Osnias Clearing",
       "alternativeHeadline": "Regulation · Current Architecture · Historical AMF Memorandum v2.0",
-      "description": "Preliminary regulatory analysis of the protocol and node managers, separation of clearing and settlement, and the historical AMF Memorandum.",
+      "description": "Overview of Osnias Clearing, B2B multilateral netting, the portable EVM core, bank escrow design, DLT precedents and EU regulatory scoping.",
       "url": "https://www.osnias-clearing.com/en/regulation/",
       "mainEntityOfPage": {
         "@type": "WebPage",
@@ -125,48 +125,42 @@
         "@id": "https://www.osnias-clearing.com/#organization"
       },
       "datePublished": "2026-09-28",
-      "dateModified": "2026-10-17",
+      "dateModified": "2026-10-28",
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://www.osnias-clearing.com/#website"
       },
       "keywords": [
-        "regulatory scoping",
-        "current architecture",
-        "historical AMF memorandum",
-        "multilateral clearing",
-        "Sei register",
-        "external escrow",
-        "node manager",
-        "actual services",
-        "MiCA",
-        "payments",
-        "testnet"
+        "B2B multilateral netting",
+        "trade receivables clearing",
+        "CLEAR 9W cycle",
+        "synchronised settlement",
+        "bank escrow",
+        "bank oracle",
+        "EVM clearing protocol",
+        "EU regulation",
+        "MiCA"
       ],
       "about": [
         {
           "@type": "Thing",
-          "name": "regulatory scoping"
+          "name": "B2B multilateral netting"
         },
         {
           "@type": "Thing",
-          "name": "current architecture"
+          "name": "trade receivables clearing"
         },
         {
           "@type": "Thing",
-          "name": "historical AMF memorandum"
+          "name": "CLEAR 9W cycle"
         },
         {
           "@type": "Thing",
-          "name": "multilateral clearing"
+          "name": "synchronised settlement"
         },
         {
           "@type": "Thing",
-          "name": "Sei register"
-        },
-        {
-          "@type": "Thing",
-          "name": "external escrow"
+          "name": "bank escrow"
         }
       ],
       "citation": {
@@ -174,12 +168,35 @@
         "name": "AMF Memorandum v2.0",
         "identifier": "https://doi.org/10.5281/zenodo.23020714",
         "datePublished": "2026-09-28"
-      }
+      },
+      "articleSection": [
+        "Overview",
+        "Market precedents",
+        "Architecture",
+        "Regulatory framework"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.osnias-clearing.com/en/regulation/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.osnias-clearing.com/en/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Regulation",
+          "item": "https://www.osnias-clearing.com/en/regulation/"
+        }
+      ]
     }
   ]
-}
-</script>
-<meta content="summary_large_image" name="twitter:card"><meta content="B2B clearing regulatory scoping | Osnias Clearing" name="twitter:title"><meta content="Preliminary regulatory analysis of the protocol and node managers, separation of clearing and settlement, and the historical AMF Memorandum." name="twitter:description"><meta content="https://www.osnias-clearing.com/index-picture.png" name="twitter:image"><link href="https://www.osnias-clearing.com/regulation/" hreflang="fr" rel="alternate"><link href="https://www.osnias-clearing.com/en/regulation/" hreflang="en" rel="alternate"><link href="https://www.osnias-clearing.com/es/regulation/" hreflang="es" rel="alternate"><link href="https://www.osnias-clearing.com/regulation/" hreflang="x-default" rel="alternate"></head>
+}</script>
+<meta content="summary_large_image" name="twitter:card"/><meta content="B2B Multilateral Netting and EU Regulation | Osnias Clearing" name="twitter:title"/><meta content="Explore B2B multilateral netting, DTCC and OSTTRA precedents, CLEAR 9W settlement cycles, bank escrow architecture and EU regulatory considerations." name="twitter:description"/><meta content="https://www.osnias-clearing.com/index-picture.png" name="twitter:image"/><link href="https://www.osnias-clearing.com/regulation/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/regulation/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/es/regulation/" hreflang="es" rel="alternate"/><link href="https://www.osnias-clearing.com/regulation/" hreflang="x-default" rel="alternate"/><meta content="en_GB" property="og:locale"/><meta content="Osnias Clearing — B2B netting and EU regulatory framework" name="twitter:image:alt"/><meta content="2026-10-28" property="article:modified_time"/><meta content="2026-09-28" property="article:published_time"/></head>
 <body>
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
@@ -190,7 +207,7 @@
 <main>
 <div class="container">
 <section class="hero">
-<div aria-label="Language selection" class="actions"><a href="/regulation/" hreflang="fr" lang="fr" class="btn">🇫🇷 Français</a><a href="/en/regulation/" hreflang="en" lang="en" class="btn btn-primary" aria-current="page">🇬🇧 English</a><a href="/es/regulation/" hreflang="es" lang="es" class="btn">🇪🇸 Español</a></div>
+<div aria-label="Language selection" class="actions"><a class="btn" href="/regulation/" hreflang="fr" lang="fr">🇫🇷 Français</a><a aria-current="page" class="btn btn-primary" href="/en/regulation/" hreflang="en" lang="en">🇬🇧 English</a><a class="btn" href="/es/regulation/" hreflang="es" lang="es">🇪🇸 Español</a></div>
 <div class="hero-grid single">
 <div>
 <div class="eyebrow">Regulation · Current Architecture · Historical AMF Memorandum v2.0</div>
@@ -198,13 +215,7 @@
 <h1>Regulatory Analysis</h1>
 <div class="hero-role">Actual functions first. Legal qualification next.</div>
 </div>
-<p class="hero-lead"><span class="dossier-label">First dossier: France — AMF Fintech</span><br>This page distinguishes the <strong>AMF Memorandum v2.0, published on 28 September 2026</strong>, from the current presentation of the project. Prepared in response to the AMF Innovation &amp; Digital Finance team’s email of 22 September 2026, the document records an initial scoping request before a testnet pilot with a partner established in France. It should be read in its publication context; later architectural developments are not automatically reflected in it.</p>
-<div class="doi-callout">
-<strong>Published historical reference — Zenodo</strong>
-AMF Memorandum v2.0 · 28 September 2026 · DOI:
-<a href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23020714 ↗</a>
-              · <a href="https://zenodo.org/records/23020714" rel="noopener noreferrer" target="_blank">Zenodo record ↗</a>
-</div>
+<p class="hero-lead">Osnias Clearing proposes to net commercial obligations between businesses before bank settlement. A common protocol calculates participants’ net positions within coordinated cycles, while banks and authorised operators retain their respective responsibilities. This page explains the precedents, the proposed distinctions and the regulatory questions still under examination.</p>
 <div class="tags">
 <span class="tag tag-accent">Clearing register on Sei</span>
 <span class="tag">External escrow</span>
@@ -213,28 +224,44 @@ AMF Memorandum v2.0 · 28 September 2026 · DOI:
 <span class="tag">Non-tradable positions</span>
 <span class="tag">No custody by Osnias</span>
 </div>
-<div class="actions">
-<a class="btn btn-primary" href="/regulation/Osnias-Clearing-AMF-Memorandum-2_0-EN.pdf" rel="noopener noreferrer" target="_blank">Historical memorandum FR ↗</a>
-<a class="btn" href="/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" rel="noopener noreferrer" target="_blank">Historical memorandum EN ↗</a>
-<a class="btn" href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">DOI ↗</a>
-</div><div class="document-summary-block"><h3>1. Historical document and scope of its interpretation</h3><p class="section-intro">The AMF Memorandum v2.0 is retained as a historical documentary reference. It presents the technical facts, assumptions and qualification questions formulated at publication. Its French and English PDFs and DOI remain available. This page does not modify those files or present them as an exhaustive description of the current architecture.</p></div><div class="document-summary-block"><h3>2. Current architecture and responsibilities</h3><p class="section-intro">In the current design, the canonical register on Sei records obligations, positions and clearing states. These positions are not standalone transferable or tradable digital assets. Settlement assets remain in an external escrow and settlement layer. Node managers and their providers act according to the services actually performed and the applicable authorizations.</p></div><div class="document-summary-block"><h3>3. Qualification questions and dialogue with authorities</h3><p class="section-intro">Scoping seeks to examine the functions of the operating company, node managers and settlement providers under applicable law. Technical separation of layers is not, by itself, sufficient to determine regulatory status. Discussions with authorities are preliminary; they do not constitute authorization, permission for production deployment or a definitive qualification.</p></div>
-
-<section class="document-summary-block" aria-label="Regulatory context and current architecture">
-<h2>Current Architecture and Regulatory Scoping</h2>
-<p class="section-intro"><strong>Osnias Clearing is presented as an infrastructure for calculating and clearing obligations, separate from custody and settlement functions.</strong> The clearing register on Sei records and reconciles positions; escrow and asset movements remain in a separate layer. Osnias does not hold users’ private keys or directly hold their funds.</p>
-<p class="section-intro">Dialogue with <strong>AMF Innovation &amp; Digital Finance</strong> concerns the functions described and their qualification under <strong>MiCA and the applicable French and European framework</strong>. Analysis must consider the assets used, technical permissions, mandates, contracts and responsibilities of each party, including any custody, transfers or payment services actually provided.</p>
-<p class="section-intro"><strong>The project remains in development and on testnet; no definitive regulatory qualification is assumed.</strong> The historical memorandum and current documentation serve different purposes. The <a href="/en/architecture/">Architecture</a>, <a href="/en/rules/">Rules</a>, <a href="/en/security/">Security</a> and <a href="/en/faq/">FAQ</a> pages present the currently described operation and should be consulted alongside the historical document.</p>
-</section>
-
-
-<section class="document-summary-block" aria-label="Clearing and actual services">
+<nav aria-label="On this page" class="actions"><a class="btn" href="#osnias-overview">Overview</a><a class="btn" href="#etat-des-lieux-dlt">Precedents</a><a class="btn" href="#osnias-differences">Differences</a><a class="btn" href="#osnias-functions">Architecture</a><a class="btn" href="#osnias-qualification">Regulation</a><a class="btn" href="#osnias-documentation">Documents</a></nav><section class="document-summary-block" id="osnias-overview"><h2>Understanding Osnias Clearing</h2><p class="section-intro">An invoice gives rise to a payment obligation. When businesses are connected through purchases and sales, multilateral netting may reduce the amount of money that ultimately needs to move between them. Osnias aims to perform this calculation on a shared register without turning invoices into tradable assets or replacing banks as custodians of funds.</p><p class="section-intro">Clearing or netting identifies obligations that offset one another; the net position is the resulting balance for each business; settlement is the actual transfer of funds. These are separate processes.</p><p class="section-intro">Simplified example: A owes 100 to B, B owes 80 to C, and C owes 70 to A. Net positions are: A pays 30, B receives 20, and C receives 10. Gross obligations total 250, whereas 30 can settle the net positions in this example, provided the obligations are legally valid and admitted to the protocol.</p></section><section aria-labelledby="dlt-landscape-title" class="document-summary-block" id="etat-des-lieux-dlt">
+<h2 id="dlt-landscape-title">Existing DLT clearing and settlement infrastructures: comparative overview</h2>
+<p class="section-intro">Financial market infrastructures already use distributed ledgers to record transactions, coordinate settlement and manage liquidity. These precedents demonstrate the feasibility of individual technical mechanisms, but do not establish an equivalent system for multilateral clearing of B2B trade payables and receivables. The calculation of net obligations, safeguarding of funds and legal finality of settlement must be assessed separately.</p>
+<div style="overflow-x:auto"><table><thead><tr><th scope="col">Infrastructure</th><th scope="col">Scope and maturity</th><th scope="col">Relevant mechanism</th><th scope="col">Difference from Osnias</th></tr></thead><tbody>
+<tr><th scope="row">DTCC / Project Ion</th><td>Securities; a Corda-based DLT system launched for parallel processing in 2022.</td><td>Large-scale settlement workflow trials and support for alternative settlement cycles.</td><td>No commercial invoice clearing or collective 9W commercial cycle; the existing DTC ledger remained authoritative.</td></tr>
+<tr><th scope="row">OSTTRA / Baton Systems</th><td>Institutional foreign exchange; payment-versus-payment (PvP) settlement and continuous bilateral netting.</td><td>Prefunded settlement accounts, verification of available funds and coordinated transfers.</td><td>Short or on-demand bilateral settlement, not nine-week multilateral clearing of trade invoices.</td></tr>
+<tr><th scope="row">Fnality</th><td>Institutional settlement using a dedicated DLT-based monetary infrastructure.</td><td>Liquidity management and coordinated or conditional settlement.</td><td>Interbank monetary infrastructure rather than an individual bank escrow account for each company and commercial cycle.</td></tr>
+<tr><th scope="row">Clearstream / FundsDLT</th><td>Tokenised fund units and fund administration through a digital transfer-agency model.</td><td>Shared ledger and automated fund operations.</td><td>Asset administration and fund distribution, not clearing of B2B trade obligations.</td></tr>
+<tr><th scope="row">Marco Polo Network</th><td>Trade finance on Corda; bank and ERP integration pilots; subsequent operator viability difficulties.</td><td>Documentary workflows, bank payment undertakings and multi-party integration.</td><td>Trade finance rather than multilateral netting and discharge of commercial payables.</td></tr>
+</tbody></table></div>
+<h3>Osnias Clearing: proposed distinct architecture</h3>
+<p class="section-intro">Osnias aims to combine <strong>multilateral clearing of B2B trade obligations</strong>, <strong>synchronised collective cycles</strong>, a <strong>portable Solidity/EVM core</strong> and <strong>individually assigned bank escrow accounts</strong>, monitored through an independent bank oracle. Bank-specific functions and network adapters remain separate from core business logic. These are design objectives subject to pilot testing and regulatory assessment, not services represented as already authorised or in production.</p>
+<p class="section-intro">The <strong>CLEAR 9W</strong> protocol envelope spans 63 calendar days between consecutive settlement points. Under Book IV, release 2.2, the commercial window begins on the Friday of week 1, leaving a maximum of <strong>59 calendar days</strong> between admission and settlement. Each obligation must still meet its own contractual and statutory due date; otherwise admission is refused. <strong>1W</strong> is for testnet validation, while <strong>13W</strong> concerns legally eligible non-commercial obligations.</p>
+<p class="section-intro"><strong>Comparative conclusion.</strong> Existing market systems demonstrate periodic netting, coordinated settlement and prefunding, individually or in combination. The potential differentiation of Osnias is their combined application to commercial B2B obligations and a 9W cycle. This selective review does not establish a claim of worldwide exclusivity.</p>
+</section><section class="document-summary-block" id="osnias-differences"><h2>What sets the Osnias proposal apart</h2><p class="section-intro">The infrastructures reviewed primarily serve securities, foreign-exchange or fund-processing markets. Osnias targets a different use case: B2B trade obligations, coordinated cycles aligned with contractual due dates, individual bank escrow accounts and an independently verifiable banking oracle. This combination is proposed for pilot validation; worldwide novelty has not been established.</p><p class="section-intro">CLEAR 1W is for testing; CLEAR 9W is for eligible B2B trade obligations; CLEAR 13W is reserved for eligible non-commercial obligations. Under CLEAR 9W, settlement points are 63 days apart, but the maximum window from the opening of commercial submissions to settlement is 59 days. An invoice is not admitted when its legal or contractual due date precedes the scheduled settlement (Book IV, v2.2).</p></section><section class="document-summary-block" id="osnias-functions"><h2>How responsibilities are separated</h2><p class="section-intro">The standard Solidity/EVM Core calculates net positions and enforces common rules. Sei is a reference deployment, not a mandatory dependency of the Core. Node managers perform their contractual functions; banks maintain the accounts; the proposed banking oracle is intended to verify balances, activity and lock status independently. These responsibilities remain subject to contractual validation and applicable regulatory qualification.</p></section><section aria-label="Clearing and actual services" class="document-summary-block" id="osnias-qualification"><h2>Regulatory qualification and responsibilities</h2>
 <h2>Multilateral Clearing and Services Actually Provided</h2>
 <p class="section-intro">The current architecture aims to <strong>record, aggregate and net obligations before settlement</strong>, then determine net balances. A position represented in a register must not be confused with the asset used to settle that balance. Position calculation, asset custody and execution of movements are therefore examined separately.</p>
 <p class="section-intro">The node manager assumes the operational functions associated with its scope and authorizations. The operating company provides common rules, the register and technical protocol components. This allocation must be confirmed by contracts and actual permissions; it does not exempt any party from its own obligations.</p>
 <p class="section-intro">The regulatory dossier must connect <strong>the services actually provided, the assets used and the responsible legal entity</strong>. Neither DLT use, the absence of direct custody by Osnias nor the term “node” alone determines the applicable regime. Material changes to functions or assets must be addressed in regulatory scoping discussions.</p>
-</section>
-
-</div>
+<p class="section-intro"><strong>Osnias Clearing is presented as an infrastructure for calculating and clearing obligations, separate from custody and settlement functions.</strong> The clearing register on Sei records and reconciles positions; escrow and asset movements remain in a separate layer. Osnias does not hold users’ private keys or directly hold their funds.</p>
+<p class="section-intro">Dialogue with <strong>AMF Innovation &amp; Digital Finance</strong> concerns the functions described and their qualification under <strong>MiCA and the applicable French and European framework</strong>. Analysis must consider the assets used, technical permissions, mandates, contracts and responsibilities of each party, including any custody, transfers or payment services actually provided.</p>
+<p class="section-intro"><strong>The project remains in development and on testnet; no definitive regulatory qualification is assumed.</strong> The historical memorandum and current documentation serve different purposes. The <a href="/en/architecture/">Architecture</a>, <a href="/en/rules/">Rules</a>, <a href="/en/security/">Security</a> and <a href="/en/faq/">FAQ</a> pages present the currently described operation and should be consulted alongside the historical document.</p>
+</section><section class="document-summary-block" id="osnias-documentation"><h2>Institutional dossier and historical references</h2><p class="section-intro">The AMF Memorandum v2.0 dated 28 September 2026 remains a historical document. It records initial scoping, not regulatory approval or an exhaustive description of the present architecture.</p><div class="doi-callout">
+<strong>Published historical reference — Zenodo</strong>
+AMF Memorandum v2.0 · 28 September 2026 · DOI:
+<a href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23020714 ↗</a>
+              · <a href="https://zenodo.org/records/23020714" rel="noopener noreferrer" target="_blank">Zenodo record ↗</a>
+</div><div class="actions">
+<a class="btn btn-primary" href="/regulation/Osnias-Clearing-AMF-Memorandum-2_0-EN.pdf" rel="noopener noreferrer" target="_blank">Historical memorandum EN ↗</a>
+<a class="btn" href="/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" rel="noopener noreferrer" target="_blank">Historical memorandum FR ↗</a>
+<a class="btn" href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">DOI ↗</a>
+</div><div class="document-summary-block"><h3>1. Historical document and scope of its interpretation</h3><p class="section-intro">The AMF Memorandum v2.0 is retained as a historical documentary reference. It presents the technical facts, assumptions and qualification questions formulated at publication. Its French and English PDFs and DOI remain available. This page does not modify those files or present them as an exhaustive description of the current architecture.</p></div><div class="document-summary-block"><h3>2. Current architecture and responsibilities</h3><p class="section-intro">In the current design, the canonical register on Sei records obligations, positions and clearing states. These positions are not standalone transferable or tradable digital assets. Settlement assets remain in an external escrow and settlement layer. Node managers and their providers act according to the services actually performed and the applicable authorizations.</p></div><div class="document-summary-block"><h3>3. Qualification questions and dialogue with authorities</h3><p class="section-intro">Scoping seeks to examine the functions of the operating company, node managers and settlement providers under applicable law. Technical separation of layers is not, by itself, sufficient to determine regulatory status. Discussions with authorities are preliminary; they do not constitute authorization, permission for production deployment or a definitive qualification.</p></div><h3>References</h3><ul>
+<li><a href="https://www.dtcc.com/news/2022/july/27/project-ion" rel="noopener noreferrer" target="_blank">DTCC — Project Ion (2022)</a></li>
+<li><a href="https://osttra.com/services/trade-lifecycle-services/pvp-settlement-orchestration/" rel="noopener noreferrer" target="_blank">OSTTRA — PvP settlement orchestration</a></li>
+<li><a href="https://osttra.com/press_releases/fnality-joins-osttra-and-baton-systems-fx-pvp-network-to-expand-settlement-choice-and-bolster-liquidity-efficiencies/" rel="noopener noreferrer" target="_blank">OSTTRA, Baton and Fnality — announcement (2025)</a></li>
+<li><a href="https://www.clearstream.com/clearstream-en/newsroom/260622-5343058" rel="noopener noreferrer" target="_blank">Clearstream — FundsDLT / Digital TA</a></li>
+<li><a href="/en/cycles/">Osnias Clearing — Book IV, cycle schedule (French reference release 2.2)</a></li>
+</ul><p class="section-intro"><small>Documentary comparison as of 28 October 2026. This overview is not a legal opinion and does not determine the regulatory status of any third party.</small></p></section></div>
 </div>
 </section>
 </div>
@@ -242,7 +269,7 @@ AMF Memorandum v2.0 · 28 September 2026 · DOI:
 <footer>
 <div class="container">
 <div class="footer-grid">
-<div>© 2026 Osnias Clearing · Regulatory Analysis · Last updated: 17 October 2026</div>
+<div>© 2026 Osnias Clearing · Regulatory Analysis · Last updated: 28 October 2026</div>
 <div><a href="/en/">Home</a></div>
 </div>
 <div class="footer-legal">Author: Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902" rel="noopener noreferrer" target="_blank">0009-0007-8894-8902</a> · <a href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a></div>
