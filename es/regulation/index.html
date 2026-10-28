@@ -1,43 +1,44 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1" name="viewport">
-<title>Análisis normativo del clearing B2B | Osnias Clearing</title>
-<meta content="Análisis normativo preliminar del protocolo y los gestores de nodos, separación de clearing y liquidación, y memorando histórico para la AMF." name="description">
-<meta content="análisis normativo preliminar; arquitectura actual; memorando AMF histórico; compensación multilateral; registro Sei; depósito en garantía externo; gestor de nodo; servicios efectivos; MiCA; pagos; testnet" name="keywords">
-<meta content="Denis Bouzon" name="author">
-<meta content="Denis Bouzon" name="creator">
-<meta content="Osnias Clearing" name="publisher">
-<meta content="index, follow, max-image-preview:large" name="robots">
-<meta content="Análisis normativo preliminar de Osnias Clearing: arquitectura actual de compensación, funciones de los gestores de nodo, separación entre liquidación y custodia, diálogo con las autoridades y memorando AMF v2.0 conservado como referencia histórica." name="abstract">
-<meta content="análisis normativo preliminar; arquitectura actual; memorando AMF histórico; compensación multilateral; registro Sei; depósito en garantía externo; gestor de nodo; servicios efectivos; MiCA; pagos; testnet" name="subject">
-<meta content="Osnias Clearing — Regulación, arquitectura actual y memorando AMF" name="DC.title">
-<meta content="Denis Bouzon" name="DC.creator">
-<meta content="Osnias Clearing" name="DC.publisher">
-<meta content="2026-10-17" name="DC.date">
-<meta content="Regulatory Analysis" name="DC.type">
-<meta content="análisis normativo preliminar; arquitectura actual; memorando AMF histórico; compensación multilateral; registro Sei; depósito en garantía externo; gestor de nodo; servicios efectivos; MiCA; pagos; testnet" name="DC.subject">
-<meta content="https://www.osnias-clearing.com/es/regulation/" name="DC.identifier">
-<meta content="es" name="DC.language">
-<meta content="#050814" name="theme-color">
-<link href="https://www.osnias-clearing.com/es/regulation/" rel="canonical"><link href="https://orcid.org/0009-0007-8894-8902" rel="author">
-<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
-<meta content="Análisis normativo del clearing B2B | Osnias Clearing" property="og:title">
-<meta content="Análisis normativo preliminar del protocolo y los gestores de nodos, separación de clearing y liquidación, y memorando histórico para la AMF." property="og:description">
-<meta content="article" property="og:type">
-<meta content="https://www.osnias-clearing.com/es/regulation/" property="og:url">
-<meta content="Osnias Clearing" property="og:site_name">
-<meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image">
-<meta content="Osnias Clearing — Regulación, arquitectura actual y memorando AMF" property="og:image:alt">
-<meta content="Denis Bouzon" name="citation_author">
-<meta content="Mémorandum AMF v2.0 — Régulation MiCA &amp; analyse réglementaire" name="citation_title">
-<meta content="2026-09-28" name="citation_publication_date">
-<meta content="https://www.osnias-clearing.com/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" name="citation_pdf_url">
-<meta content="10.5281/zenodo.23020714" name="citation_doi">
-<link href="/assets/css/osnias.css" rel="stylesheet">
-<script defer src="/assets/js/osnias-seo.js"></script>
-<script defer src="/assets/js/osnias-nav.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Compensación multilateral B2B y regulación UE | Osnias Clearing</title>
+<meta content="Compensación multilateral B2B, antecedentes DTCC y OSTTRA, ciclo CLEAR 9W, cuentas bancarias en garantía y análisis del marco regulatorio europeo." name="description"/>
+<meta content="compensación multilateral B2B; compensación de facturas; ciclo CLEAR 9W; liquidación sincronizada; cuentas bancarias en garantía; oráculo bancario; protocolo EVM; regulación europea; MiCA" name="keywords"/>
+<meta content="Denis Bouzon" name="author"/>
+<meta content="Denis Bouzon" name="creator"/>
+<meta content="Osnias Clearing" name="publisher"/>
+<meta content="index, follow, max-image-preview:large" name="robots"/>
+<meta content="Panorama de Osnias Clearing: compensación multilateral B2B, núcleo EVM portable, cuentas bancarias en garantía, referentes DLT y análisis normativo europeo." name="abstract"/>
+<meta content="compensación multilateral B2B; compensación de facturas; ciclo CLEAR 9W; liquidación sincronizada; cuentas bancarias en garantía; oráculo bancario; protocolo EVM; regulación europea; MiCA" name="subject"/>
+<meta content="Compensación multilateral B2B y regulación UE | Osnias Clearing" name="DC.title"/>
+<meta content="Denis Bouzon" name="DC.creator"/>
+<meta content="Osnias Clearing" name="DC.publisher"/>
+<meta content="2026-10-28" name="DC.date"/>
+<meta content="Regulatory Analysis" name="DC.type"/>
+<meta content="compensación multilateral B2B; compensación de facturas; ciclo CLEAR 9W; liquidación sincronizada; cuentas bancarias en garantía; oráculo bancario; protocolo EVM; regulación europea; MiCA" name="DC.subject"/>
+<meta content="https://www.osnias-clearing.com/es/regulation/" name="DC.identifier"/>
+<meta content="es" name="DC.language"/>
+<meta content="#050814" name="theme-color"/>
+<link href="https://www.osnias-clearing.com/es/regulation/" rel="canonical"/><link href="https://orcid.org/0009-0007-8894-8902" rel="author"/>
+<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"/>
+<meta content="Compensación multilateral B2B y regulación UE | Osnias Clearing" property="og:title"/>
+<meta content="Compensación multilateral B2B, antecedentes DTCC y OSTTRA, ciclo CLEAR 9W, cuentas bancarias en garantía y análisis del marco regulatorio europeo." property="og:description"/>
+<meta content="article" property="og:type"/>
+<meta content="https://www.osnias-clearing.com/es/regulation/" property="og:url"/>
+<meta content="Osnias Clearing" property="og:site_name"/>
+<meta content="https://www.osnias-clearing.com/index-picture.png" property="og:image"/>
+<meta content="Osnias Clearing — compensación B2B y marco regulatorio europeo" property="og:image:alt"/>
+<meta content="Denis Bouzon" name="citation_author"/>
+<meta content="Mémorandum AMF v2.0 — Régulation MiCA &amp; analyse réglementaire" name="citation_title"/>
+<meta content="2026-09-28" name="citation_publication_date"/>
+<meta content="https://www.osnias-clearing.com/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" name="citation_pdf_url"/>
+<meta content="10.5281/zenodo.23020714" name="citation_doi"/>
+<link href="/assets/css/osnias.css" rel="stylesheet"/>
+<script defer="" src="/assets/js/osnias-seo.js"></script>
+<script defer="" src="/assets/js/osnias-nav.js"></script>
 <style>
     
     
@@ -80,8 +81,7 @@
       font-weight:700;
     }
   </style>
-<script type="application/ld+json">
-{
+<script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -110,9 +110,9 @@
     {
       "@type": "TechArticle",
       "@id": "https://www.osnias-clearing.com/es/regulation/#article",
-      "headline": "Análisis normativo del clearing B2B | Osnias Clearing",
+      "headline": "Compensación multilateral B2B y regulación UE | Osnias Clearing",
       "alternativeHeadline": "Regulación · Arquitectura actual · Memorando AMF v2.0 histórico",
-      "description": "Análisis normativo preliminar del protocolo y los gestores de nodos, separación de clearing y liquidación, y memorando histórico para la AMF.",
+      "description": "Panorama de Osnias Clearing: compensación multilateral B2B, núcleo EVM portable, cuentas bancarias en garantía, referentes DLT y análisis normativo europeo.",
       "url": "https://www.osnias-clearing.com/es/regulation/",
       "mainEntityOfPage": {
         "@type": "WebPage",
@@ -125,48 +125,42 @@
         "@id": "https://www.osnias-clearing.com/#organization"
       },
       "datePublished": "2026-09-28",
-      "dateModified": "2026-10-17",
+      "dateModified": "2026-10-28",
       "inLanguage": "es",
       "isPartOf": {
         "@id": "https://www.osnias-clearing.com/#website"
       },
       "keywords": [
-        "análisis normativo preliminar",
-        "arquitectura actual",
-        "memorando AMF histórico",
-        "compensación multilateral",
-        "registro Sei",
-        "depósito en garantía externo",
-        "gestor de nodo",
-        "servicios efectivos",
-        "MiCA",
-        "pagos",
-        "testnet"
+        "compensación multilateral B2B",
+        "compensación de facturas",
+        "ciclo CLEAR 9W",
+        "liquidación sincronizada",
+        "cuentas bancarias en garantía",
+        "oráculo bancario",
+        "protocolo EVM",
+        "regulación europea",
+        "MiCA"
       ],
       "about": [
         {
           "@type": "Thing",
-          "name": "análisis normativo preliminar"
+          "name": "compensación multilateral B2B"
         },
         {
           "@type": "Thing",
-          "name": "arquitectura actual"
+          "name": "compensación de facturas"
         },
         {
           "@type": "Thing",
-          "name": "memorando AMF histórico"
+          "name": "ciclo CLEAR 9W"
         },
         {
           "@type": "Thing",
-          "name": "compensación multilateral"
+          "name": "liquidación sincronizada"
         },
         {
           "@type": "Thing",
-          "name": "registro Sei"
-        },
-        {
-          "@type": "Thing",
-          "name": "depósito en garantía externo"
+          "name": "cuentas bancarias en garantía"
         }
       ],
       "citation": {
@@ -174,12 +168,35 @@
         "name": "AMF Memorandum v2.0",
         "identifier": "https://doi.org/10.5281/zenodo.23020714",
         "datePublished": "2026-09-28"
-      }
+      },
+      "articleSection": [
+        "Presentación",
+        "Infraestructuras existentes",
+        "Arquitectura",
+        "Marco normativo"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.osnias-clearing.com/es/regulation/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://www.osnias-clearing.com/es/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Regulación",
+          "item": "https://www.osnias-clearing.com/es/regulation/"
+        }
+      ]
     }
   ]
-}
-</script>
-<meta content="summary_large_image" name="twitter:card"><meta content="Análisis normativo del clearing B2B | Osnias Clearing" name="twitter:title"><meta content="Análisis normativo preliminar del protocolo y los gestores de nodos, separación de clearing y liquidación, y memorando histórico para la AMF." name="twitter:description"><meta content="https://www.osnias-clearing.com/index-picture.png" name="twitter:image"><link href="https://www.osnias-clearing.com/regulation/" hreflang="fr" rel="alternate"><link href="https://www.osnias-clearing.com/en/regulation/" hreflang="en" rel="alternate"><link href="https://www.osnias-clearing.com/es/regulation/" hreflang="es" rel="alternate"><link href="https://www.osnias-clearing.com/regulation/" hreflang="x-default" rel="alternate"></head>
+}</script>
+<meta content="summary_large_image" name="twitter:card"/><meta content="Compensación multilateral B2B y regulación UE | Osnias Clearing" name="twitter:title"/><meta content="Compensación multilateral B2B, antecedentes DTCC y OSTTRA, ciclo CLEAR 9W, cuentas bancarias en garantía y análisis del marco regulatorio europeo." name="twitter:description"/><meta content="https://www.osnias-clearing.com/index-picture.png" name="twitter:image"/><link href="https://www.osnias-clearing.com/regulation/" hreflang="fr" rel="alternate"/><link href="https://www.osnias-clearing.com/en/regulation/" hreflang="en" rel="alternate"/><link href="https://www.osnias-clearing.com/es/regulation/" hreflang="es" rel="alternate"/><link href="https://www.osnias-clearing.com/regulation/" hreflang="x-default" rel="alternate"/><meta content="es_ES" property="og:locale"/><meta content="Osnias Clearing — compensación B2B y marco regulatorio europeo" name="twitter:image:alt"/><meta content="2026-10-28" property="article:modified_time"/><meta content="2026-09-28" property="article:published_time"/></head>
 <body>
 <div class="site-nav-fixed">
 <div class="site-nav-inner">
@@ -190,7 +207,7 @@
 <main>
 <div class="container">
 <section class="hero">
-<div aria-label="Selección de idioma" class="actions"><a href="/regulation/" hreflang="fr" lang="fr" class="btn">🇫🇷 Français</a><a href="/en/regulation/" hreflang="en" lang="en" class="btn">🇬🇧 English</a><a href="/es/regulation/" hreflang="es" lang="es" class="btn btn-primary" aria-current="page">🇪🇸 Español</a></div>
+<div aria-label="Selección de idioma" class="actions"><a class="btn" href="/regulation/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/regulation/" hreflang="en" lang="en">🇬🇧 English</a><a aria-current="page" class="btn btn-primary" href="/es/regulation/" hreflang="es" lang="es">🇪🇸 Español</a></div>
 <div class="hero-grid single">
 <div>
 <div class="eyebrow">Regulación · Arquitectura actual · Memorando AMF v2.0 histórico</div>
@@ -198,13 +215,7 @@
 <h1>Análisis normativo</h1>
 <div class="hero-role">Primero las funciones reales. Después la calificación jurídica.</div>
 </div>
-<p class="hero-lead"><span class="dossier-label">Primer expediente: Francia — AMF Fintech</span><br>Esta página distingue el <strong>Memorando AMF v2.0, publicado el 28 de septiembre de 2026</strong>, de la presentación actual del proyecto. Preparado en respuesta al correo del equipo AMF Innovation &amp; Finance digitale del 22 de septiembre de 2026, el documento conserva el registro de una primera solicitud de análisis preliminar antes de un piloto en testnet con un socio establecido en Francia. Debe leerse en su contexto de publicación; las evoluciones posteriores de la arquitectura no se incorporan automáticamente.</p>
-<div class="doi-callout">
-<strong>Referencia histórica publicada — Zenodo</strong>
-Memorando AMF v2.0 · 28 de septiembre de 2026 · DOI:
-<a href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23020714 ↗</a>
-              · <a href="https://zenodo.org/records/23020714" rel="noopener noreferrer" target="_blank">Registro Zenodo ↗</a>
-</div>
+<p class="hero-lead">Osnias Clearing propone compensar obligaciones comerciales entre empresas antes de su liquidación bancaria. El protocolo calcula las posiciones netas de los participantes mediante ciclos coordinados, mientras que bancos y operadores autorizados conservan sus respectivas responsabilidades. Esta página explica los precedentes, las diferencias previstas y las cuestiones regulatorias pendientes.</p>
 <div class="tags">
 <span class="tag tag-accent">Registro de clearing en Sei</span>
 <span class="tag">Depósito en garantía externo</span>
@@ -213,28 +224,44 @@ Memorando AMF v2.0 · 28 de septiembre de 2026 · DOI:
 <span class="tag">Posiciones no negociables</span>
 <span class="tag">Sin custodia por Osnias</span>
 </div>
-<div class="actions">
-<a class="btn btn-primary" href="/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" rel="noopener noreferrer" target="_blank">Memorando histórico FR ↗</a>
-<a class="btn" href="/regulation/Osnias-Clearing-AMF-Memorandum-2_0-EN.pdf" rel="noopener noreferrer" target="_blank">Memorando histórico EN ↗</a>
-<a class="btn" href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">DOI ↗</a>
-</div><div class="document-summary-block"><h3>1. Documento histórico y alcance de su lectura</h3><p class="section-intro">El Memorando AMF v2.0 se conserva como referencia documental histórica. Presenta los hechos técnicos, las hipótesis y las preguntas de calificación formulados en su fecha de publicación. Sus PDF en francés e inglés y su DOI siguen disponibles. Esta página no modifica esos archivos ni los presenta como una descripción exhaustiva de la arquitectura actual.</p></div><div class="document-summary-block"><h3>2. Arquitectura actual y responsabilidades</h3><p class="section-intro">En el diseño actual, el registro canónico en Sei registra obligaciones, posiciones y estados de clearing. Estas posiciones no constituyen activos digitales autónomos transferibles o negociables. Los activos de liquidación permanecen en una capa externa de depósito en garantía y liquidación. Los gestores de nodo y sus proveedores intervienen según los servicios efectivamente prestados y las autorizaciones aplicables.</p></div><div class="document-summary-block"><h3>3. Cuestiones de calificación y diálogo con las autoridades</h3><p class="section-intro">El análisis preliminar busca examinar las funciones de la sociedad operadora, los gestores de nodo y los proveedores de liquidación conforme al derecho aplicable. La separación técnica de capas no basta, por sí sola, para determinar un estatus normativo. Los intercambios con las autoridades son preliminares; no constituyen autorización, permiso de despliegue en producción ni calificación definitiva.</p></div>
-
-<section class="document-summary-block" aria-label="Contexto normativo y arquitectura actual">
-<h2>Arquitectura actual y análisis normativo preliminar</h2>
-<p class="section-intro"><strong>Osnias Clearing se presenta como una infraestructura de cálculo y compensación de obligaciones, distinta de las funciones de custodia y liquidación.</strong> El registro de clearing en Sei registra y concilia las posiciones; el depósito en garantía y los movimientos de activos permanecen en una capa separada. Osnias no mantiene las claves privadas de los usuarios ni directamente sus fondos.</p>
-<p class="section-intro">El diálogo con <strong>AMF Innovation &amp; Finance Digitale</strong> se refiere a las funciones descritas y su calificación conforme a <strong>MiCA y al marco francés y europeo aplicable</strong>. El análisis debe considerar los activos utilizados, los permisos técnicos, los mandatos, los contratos y las responsabilidades de cada interviniente, en particular para la custodia, las transferencias o los servicios de pago efectivamente prestados.</p>
-<p class="section-intro"><strong>El proyecto sigue en desarrollo y en testnet; no se presupone ninguna calificación normativa definitiva.</strong> El memorando histórico y la documentación actual constituyen dos niveles de lectura distintos. Las páginas <a href="/es/architecture/">Arquitectura</a>, <a href="/es/rules/">Reglas</a>, <a href="/es/security/">Seguridad</a> y <a href="/es/faq/">FAQ</a> presentan el funcionamiento descrito actualmente y deben consultarse junto con el documento histórico.</p>
-</section>
-
-
-<section class="document-summary-block" aria-label="Compensación y servicios efectivos">
+<nav aria-label="Contenido de la página" class="actions"><a class="btn" href="#osnias-overview">Comprender</a><a class="btn" href="#etat-des-lieux-dlt">Comparar</a><a class="btn" href="#osnias-differences">Diferencias</a><a class="btn" href="#osnias-functions">Arquitectura</a><a class="btn" href="#osnias-qualification">Regulación</a><a class="btn" href="#osnias-documentation">Documentos</a></nav><section class="document-summary-block" id="osnias-overview"><h2>Comprender Osnias Clearing</h2><p class="section-intro">Una factura genera una obligación de pago. Cuando varias empresas están vinculadas por compras y ventas, la compensación multilateral puede reducir el dinero que finalmente debe transferirse entre ellas. Osnias pretende realizar este cálculo en un registro común, sin convertir las facturas en activos negociables ni sustituir a los bancos en la custodia de fondos.</p><p class="section-intro">La compensación determina qué obligaciones pueden neutralizarse; la posición neta es el saldo resultante de cada empresa; la liquidación consiste en la transferencia efectiva de fondos. Son funciones diferentes.</p><p class="section-intro">Ejemplo simplificado: A debe 100 a B, B debe 80 a C y C debe 70 a A. Las posiciones netas son: A paga 30, B recibe 20 y C recibe 10. Las obligaciones brutas suman 250, mientras que 30 bastarían para liquidar las posiciones netas del ejemplo, siempre que las obligaciones sean válidas y admitidas por el protocolo.</p></section><section aria-labelledby="panorama-dlt-title" class="document-summary-block" id="etat-des-lieux-dlt">
+<h2 id="panorama-dlt-title">Estado de las infraestructuras existentes de compensación y liquidación en DLT</h2>
+<p class="section-intro">Las infraestructuras financieras ya utilizan registros distribuidos para registrar operaciones, coordinar liquidaciones y gestionar la liquidez. Estos precedentes demuestran la viabilidad de determinados mecanismos técnicos, pero no acreditan la existencia de un sistema equivalente para la compensación multilateral de obligaciones comerciales B2B. Es necesario distinguir el cálculo de posiciones netas, la salvaguardia de fondos y la firmeza jurídica de la liquidación.</p>
+<div style="overflow-x:auto"><table><thead><tr><th scope="col">Infraestructura</th><th scope="col">Ámbito y madurez</th><th scope="col">Mecanismo comparable</th><th scope="col">Diferencia frente a Osnias</th></tr></thead><tbody>
+<tr><th scope="row">DTCC / Project Ion</th><td>Valores financieros; sistema DLT basado en Corda utilizado en paralelo desde 2022.</td><td>Pruebas de procesos de liquidación a gran escala y ciclos alternativos.</td><td>No compensa facturas B2B ni dispone de un ciclo comercial colectivo de 9 semanas; el registro tradicional de DTC seguía siendo el autoritativo.</td></tr>
+<tr><th scope="row">OSTTRA / Baton Systems</th><td>Mercado institucional de divisas; liquidación pago contra pago (PvP) y compensación bilateral continua.</td><td>Cuentas de liquidación prefinanciadas, comprobación de fondos y transferencias coordinadas.</td><td>Liquidación bilateral de ciclo corto o a demanda, no compensación multilateral de facturas durante nueve semanas.</td></tr>
+<tr><th scope="row">Fnality</th><td>Liquidación institucional mediante una infraestructura monetaria específica basada en DLT.</td><td>Gestión de liquidez y liquidación coordinada o condicional.</td><td>Infraestructura monetaria interbancaria, no cuentas bancarias de depósito bloqueado individualizadas por empresa y ciclo comercial.</td></tr>
+<tr><th scope="row">Clearstream / FundsDLT</th><td>Participaciones en fondos tokenizadas y administración digital de fondos.</td><td>Registro compartido y automatización de operaciones de fondos.</td><td>Administración y distribución de activos, no compensación de obligaciones comerciales B2B.</td></tr>
+<tr><th scope="row">Marco Polo Network</th><td>Financiación del comercio sobre Corda; pilotos de integración bancaria y ERP; dificultades posteriores de continuidad del operador.</td><td>Documentación comercial, compromisos bancarios de pago e integración entre participantes.</td><td>Financiación comercial, no extinción multilateral de deudas mediante compensación.</td></tr>
+</tbody></table></div>
+<h3>Arquitectura diferenciadora propuesta por Osnias Clearing</h3>
+<p class="section-intro">Osnias pretende reunir la <strong>compensación multilateral de obligaciones comerciales B2B</strong>, <strong>ciclos colectivos sincronizados</strong>, un <strong>núcleo Solidity/EVM portable</strong> y <strong>cuentas bancarias bloqueadas individualizadas</strong>, verificadas mediante un oráculo bancario independiente. Las funciones bancarias y los adaptadores de red permanecen separados de la lógica del núcleo. Son objetivos de diseño sujetos a pruebas piloto y evaluación regulatoria, no servicios ya autorizados o en producción.</p>
+<p class="section-intro">El ciclo <strong>CLEAR 9W</strong> comprende 63 días naturales entre dos puntos consecutivos de liquidación. Conforme al Libro IV, versión 2.2, la ventana comercial comienza el viernes de la primera semana y deja un máximo de <strong>59 días naturales</strong> entre la admisión y la liquidación. Cada obligación debe respetar además su propio vencimiento contractual o legal; de lo contrario, se rechaza su admisión. <strong>1W</strong> se reserva a pruebas y <strong>13W</strong> a obligaciones no comerciales jurídicamente admisibles.</p>
+<p class="section-intro"><strong>Conclusión comparativa.</strong> Los sistemas existentes demuestran la compensación periódica, la liquidación coordinada y la prefinanciación, por separado o combinadas en mercados financieros. La diferenciación potencial de Osnias consiste en su aplicación conjunta a las obligaciones comerciales B2B y al horizonte 9W. Esta revisión selectiva no permite afirmar una exclusividad mundial.</p>
+</section><section class="document-summary-block" id="osnias-differences"><h2>Qué diferencia la propuesta Osnias</h2><p class="section-intro">Las infraestructuras examinadas atienden principalmente a valores, divisas o fondos. Osnias propone otra aplicación: obligaciones comerciales B2B, ciclos coordinados acordes con los vencimientos contractuales, cuentas bancarias de depósito en garantía individualizadas y un oráculo bancario verificable de forma independiente. La combinación está prevista para un piloto; no se ha demostrado su exclusividad mundial.</p><p class="section-intro">CLEAR 1W se destina a pruebas; CLEAR 9W, a obligaciones comerciales B2B admisibles; CLEAR 13W, únicamente a obligaciones no comerciales admisibles. En CLEAR 9W, los puntos de liquidación están separados por 63 días, pero la ventana máxima entre la apertura de admisiones comerciales y la liquidación es de 59 días. Una factura queda excluida si su vencimiento legal o contractual es anterior a la liquidación prevista (Libro IV, v2.2).</p></section><section class="document-summary-block" id="osnias-functions"><h2>Cómo se separan las responsabilidades</h2><p class="section-intro">El Core estándar Solidity/EVM calcula las posiciones y aplica las reglas comunes. Sei es una red de referencia, no una dependencia obligatoria del Core. Los gestores de nodos desempeñan sus funciones contractuales; los bancos mantienen las cuentas; el oráculo bancario previsto deberá verificar de forma independiente saldos, movimientos y condiciones de bloqueo. Estas funciones requieren validación contractual y calificación jurídica.</p></section><section aria-label="Compensación y servicios efectivos" class="document-summary-block" id="osnias-qualification"><h2>Calificación regulatoria y responsabilidades</h2>
 <h2>Compensación multilateral y servicios efectivamente prestados</h2>
 <p class="section-intro">La arquitectura actual busca <strong>registrar, agregar y compensar obligaciones antes de su liquidación</strong> y determinar después los saldos netos. La representación de una posición en un registro no debe confundirse con el activo utilizado para liquidar ese saldo. Por ello, el cálculo de posiciones, la custodia de activos y la ejecución de movimientos se examinan por separado.</p>
 <p class="section-intro">El gestor de nodo asume las funciones operativas correspondientes a su ámbito y sus autorizaciones. La sociedad operadora proporciona las reglas comunes, el registro y los componentes técnicos del protocolo. Este reparto debe confirmarse mediante los contratos y los permisos reales; no exime a ningún interviniente de sus propias obligaciones.</p>
 <p class="section-intro">El expediente normativo debe relacionar <strong>los servicios realmente prestados, los activos utilizados y la persona jurídica responsable</strong>. Ni el uso de DLT, ni la ausencia de custodia directa por Osnias, ni el término «nodo» determinan por sí solos el régimen aplicable. Toda evolución importante de las funciones o de los activos debe tenerse en cuenta en el diálogo de análisis preliminar.</p>
-</section>
-
-</div>
+<p class="section-intro"><strong>Osnias Clearing se presenta como una infraestructura de cálculo y compensación de obligaciones, distinta de las funciones de custodia y liquidación.</strong> El registro de clearing en Sei registra y concilia las posiciones; el depósito en garantía y los movimientos de activos permanecen en una capa separada. Osnias no mantiene las claves privadas de los usuarios ni directamente sus fondos.</p>
+<p class="section-intro">El diálogo con <strong>AMF Innovation &amp; Finance Digitale</strong> se refiere a las funciones descritas y su calificación conforme a <strong>MiCA y al marco francés y europeo aplicable</strong>. El análisis debe considerar los activos utilizados, los permisos técnicos, los mandatos, los contratos y las responsabilidades de cada interviniente, en particular para la custodia, las transferencias o los servicios de pago efectivamente prestados.</p>
+<p class="section-intro"><strong>El proyecto sigue en desarrollo y en testnet; no se presupone ninguna calificación normativa definitiva.</strong> El memorando histórico y la documentación actual constituyen dos niveles de lectura distintos. Las páginas <a href="/es/architecture/">Arquitectura</a>, <a href="/es/rules/">Reglas</a>, <a href="/es/security/">Seguridad</a> y <a href="/es/faq/">FAQ</a> presentan el funcionamiento descrito actualmente y deben consultarse junto con el documento histórico.</p>
+</section><section class="document-summary-block" id="osnias-documentation"><h2>Expediente institucional y referencias históricas</h2><p class="section-intro">El Memorando AMF v2.0 de 28 de septiembre de 2026 se conserva como documento histórico. Registra el análisis preliminar inicial, pero no implica aprobación de las autoridades ni describe de forma exhaustiva la arquitectura actual.</p><div class="doi-callout">
+<strong>Referencia histórica publicada — Zenodo</strong>
+Memorando AMF v2.0 · 28 de septiembre de 2026 · DOI:
+<a href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">10.5281/zenodo.23020714 ↗</a>
+              · <a href="https://zenodo.org/records/23020714" rel="noopener noreferrer" target="_blank">Registro Zenodo ↗</a>
+</div><div class="actions">
+<a class="btn btn-primary" href="/regulation/Memorandum-AMF_V2-0%3Bdocx.pdf" rel="noopener noreferrer" target="_blank">Memorando histórico FR ↗</a>
+<a class="btn" href="/regulation/Osnias-Clearing-AMF-Memorandum-2_0-EN.pdf" rel="noopener noreferrer" target="_blank">Memorando histórico EN ↗</a>
+<a class="btn" href="https://doi.org/10.5281/zenodo.23020714" rel="noopener noreferrer" target="_blank">DOI ↗</a>
+</div><div class="document-summary-block"><h3>1. Documento histórico y alcance de su lectura</h3><p class="section-intro">El Memorando AMF v2.0 se conserva como referencia documental histórica. Presenta los hechos técnicos, las hipótesis y las preguntas de calificación formulados en su fecha de publicación. Sus PDF en francés e inglés y su DOI siguen disponibles. Esta página no modifica esos archivos ni los presenta como una descripción exhaustiva de la arquitectura actual.</p></div><div class="document-summary-block"><h3>2. Arquitectura actual y responsabilidades</h3><p class="section-intro">En el diseño actual, el registro canónico en Sei registra obligaciones, posiciones y estados de clearing. Estas posiciones no constituyen activos digitales autónomos transferibles o negociables. Los activos de liquidación permanecen en una capa externa de depósito en garantía y liquidación. Los gestores de nodo y sus proveedores intervienen según los servicios efectivamente prestados y las autorizaciones aplicables.</p></div><div class="document-summary-block"><h3>3. Cuestiones de calificación y diálogo con las autoridades</h3><p class="section-intro">El análisis preliminar busca examinar las funciones de la sociedad operadora, los gestores de nodo y los proveedores de liquidación conforme al derecho aplicable. La separación técnica de capas no basta, por sí sola, para determinar un estatus normativo. Los intercambios con las autoridades son preliminares; no constituyen autorización, permiso de despliegue en producción ni calificación definitiva.</p></div><h3>Fuentes documentales</h3><ul>
+<li><a href="https://www.dtcc.com/news/2022/july/27/project-ion" rel="noopener noreferrer" target="_blank">DTCC — Project Ion (2022)</a></li>
+<li><a href="https://osttra.com/services/trade-lifecycle-services/pvp-settlement-orchestration/" rel="noopener noreferrer" target="_blank">OSTTRA — liquidación PvP</a></li>
+<li><a href="https://osttra.com/press_releases/fnality-joins-osttra-and-baton-systems-fx-pvp-network-to-expand-settlement-choice-and-bolster-liquidity-efficiencies/" rel="noopener noreferrer" target="_blank">OSTTRA, Baton y Fnality — comunicado (2025)</a></li>
+<li><a href="https://www.clearstream.com/clearstream-en/newsroom/260622-5343058" rel="noopener noreferrer" target="_blank">Clearstream — FundsDLT / Digital TA</a></li>
+<li><a href="/es/cycles/">Osnias Clearing — Libro IV, calendario de ciclos (referencia francesa, versión 2.2)</a></li>
+</ul><p class="section-intro"><small>Comparación documental a 28 de octubre de 2026. No constituye un dictamen jurídico ni determina la calificación regulatoria de las entidades citadas.</small></p></section></div>
 </div>
 </section>
 </div>
@@ -242,7 +269,7 @@ Memorando AMF v2.0 · 28 de septiembre de 2026 · DOI:
 <footer>
 <div class="container">
 <div class="footer-grid">
-<div>© 2026 Osnias Clearing · Análisis normativo · Última actualización: 17 de octubre de 2026</div>
+<div>© 2026 Osnias Clearing · Análisis normativo · Última actualización: 28 de octubre de 2026</div>
 <div><a href="/es/">Inicio</a></div>
 </div>
 <div class="footer-legal">Autor: Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902" rel="noopener noreferrer" target="_blank">0009-0007-8894-8902</a> · <a href="mailto:contact@osnias-clearing.com">contact@osnias-clearing.com</a></div>
