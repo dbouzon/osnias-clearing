@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Déploiements testnet Sei et Ethereum | Osnias Clearing</title>
-<meta content="Consulter les déploiements testnet Osnias sur Sei Atlantic-2 et Ethereum Sepolia : contrats, registres, contrôleurs, oracle et séquestres EVM." name="description"/>
+<title>Développement du protocole et déploiements testnet | Osnias Clearing</title>
+<meta content="Avancement vérifiable du développement Osnias Clearing : Core Solidity/EVM, registres, gouvernance, interfaces, ISO 20022, EBICS H005 et déploiements testnet." name="description"/>
 <meta content="index, follow, max-image-preview:large" name="robots"/>
 <link href="/assets/css/osnias.css" rel="stylesheet"/>
 <script defer="" src="/assets/js/osnias-seo.js"></script>
@@ -34,7 +34,18 @@
     .app-features li{margin:.38rem 0}
     .app-actions{display:flex;gap:.65rem;flex-wrap:wrap}
     @media (max-width:860px){.app-grid{grid-template-columns:1fr}}
-  </style>
+  
+/* Public development progress panel - 2026-11-05 */
+.dev-report{margin:1.5rem 0 2rem;padding:1.4rem;border:1px solid rgba(148,163,184,.28);border-radius:16px;background:rgba(15,23,42,.22)}
+.dev-report h2{margin:.3rem 0 1rem}.dev-report h3{margin:1.3rem 0 .55rem;font-size:1.15rem}.dev-report p{line-height:1.7}
+.dev-highlights{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin:1.2rem 0 1.5rem}
+.dev-highlight{padding:1rem;border:1px solid rgba(148,163,184,.22);border-radius:12px;background:rgba(148,163,184,.08)}
+.dev-highlight strong{display:block;font-size:1.55rem;line-height:1.25;margin-bottom:.35rem;color:#8fd4fa}
+.dev-highlight span{display:block;font-size:.9rem;line-height:1.45}
+.dev-disclaimer{border-left:3px solid rgba(148,163,184,.65);padding:.85rem 1rem;margin-top:1.3rem;background:rgba(148,163,184,.07)}
+@media(max-width:850px){.dev-highlights{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:470px){.dev-highlights{grid-template-columns:1fr}.dev-report{padding:1rem}}
+</style>
 <meta content="Osnias Clearing deployment, déploiement testnet blockchain, smart contracts vérifiés, verified smart contracts, Sei Atlantic-2, Ethereum Sepolia, Sei clearing infrastructure, Ethereum escrow infrastructure, public smart contract registry, blockchain deployment registry, clearing smart contracts, temporal oracle, Sei registry, EVM registry, clearing controller, escrow smart contract, Node Registrar, on-chain clearing infrastructure, digital asset infrastructure deployment, testnet clearing infrastructure, smart contract verification, Etherscan Sepolia, SeiScan, public blockchain deployment" name="keywords"/><meta content="Denis Bouzon" name="author"/><meta content="Denis Bouzon" name="creator"/><meta content="Osnias Clearing" name="publisher"/>
 <meta content="Cette page constitue le registre public des déploiements testnet Osnias Clearing. Elle documente les smart contracts déployés et vérifiables sur Sei Atlantic-2 et Ethereum Sepolia, les contrôleurs, registres, oracle temporel, escrow EVM et composants de nœud utilisés pour tester l’architecture de clearing." name="abstract"/>
 <meta content="déploiement testnet; smart contracts vérifiés; registre public on-chain; Sei Atlantic-2; Ethereum Sepolia; clearing infrastructure; temporal oracle; registre Sei; registre EVM; escrow EVM; Node Registrar; blockchain deployment registry; smart contract verification" name="subject"/>
@@ -110,13 +121,10 @@
 <div class="wrap">
 <div aria-label="Sélection de langue" class="actions"><a aria-current="page" class="btn btn-primary" href="/deployment/" hreflang="fr" lang="fr">🇫🇷 Français</a><a class="btn" href="/en/deployment/" hreflang="en" lang="en">🇬🇧 English</a><a class="btn" href="/es/deployment/" hreflang="es" lang="es">🇪🇸 Español</a></div>
 <div class="deployment-hero">
-<div class="eyebrow">Registre public on-chain</div>
+<div class="eyebrow">Rapport de développement · 5 novembre 2026</div>
 <h1>Déploiement officiel — Testnet</h1>
 </div>
-<p class="lead">
-<span>Cette page recense les smart contracts Osnias Clearing actuellement déployés sur des réseaux testnet publics. Tous les contrats présentés ici sont à l’état de brouillon/testnet et ne constituent pas des contrats de production. Seuls les contrats listés sur cette page constituent les déploiements testnet officiels d’Osnias Clearing.</span>
-<br/><br/>
-<span>Documentation d’architecture et fonctionnelle :</span>
+<p class="lead">Osnias Clearing développe une infrastructure européenne de compensation multilatérale des obligations commerciales B2B. Les développements du Core EVM, de la gouvernance des nœuds, des interfaces de gestion et des connecteurs bancaires sont présentés ci-dessous, avec leurs tests et leurs limites. Les adresses de contrats testnet demeurent consultables plus bas sur cette page.<br/><br/><span>Documentation d’architecture et fonctionnelle :</span>
 <a href="/architecture/Osnias_Clearing_Functional_Architecture.pdf" target="_blank">Position Paper fonctionnel (PDF)</a>
       · <a href="https://doi.org/10.5281/zenodo.22807190" rel="noopener" target="_blank">Zenodo DOI</a>
       · <a href="/end-user/" target="_blank">Interface testnet utilisateur</a>
@@ -129,7 +137,28 @@
 <br/>
 <span>Déployeur pour l’ensemble des contrats :</span>
 <code>0xEAcc9B9e1f18AaE5879e9259684578903d09C4CC</code>
-</div><section class="deployment-description"><h2>1. Registre public des déploiements testnet</h2><p class="section-intro">Cette page constitue la référence publique des smart contracts Osnias Clearing actuellement déployés sur des réseaux testnet. Elle recense les adresses, transactions de création, compilateurs, paramètres de vérification et statuts de chaque composant afin de rendre l’état expérimental de l’infrastructure vérifiable directement sur les explorateurs de chaînes.</p></section><section class="deployment-description"><h2>2. Couche Sei — registre canonique et contrôle du clearing</h2><p class="section-intro">La couche Sei Testnet Atlantic-2 regroupe l’oracle temporel, le registre d’identité et le contrôleur du protocole. Ces composants représentent le côté clearing de l’architecture : état canonique, contrôle des cycles, identité et positions de clearing, sans constituer un environnement Mainnet de production.</p></section><section class="deployment-description"><h2>3. Couche EVM — nœuds, registre et séquestre</h2><p class="section-intro">La couche Ethereum Sepolia regroupe les composants EVM associés aux opérateurs de nœuds : Node Registrar, registre EVM, contrat de séquestre et contrôleur EVM. Cette séparation permet de tester publiquement l’articulation entre le registre de clearing sur Sei et la couche externe de séquestre et de contrôle EVM avant tout déploiement de production.</p></section>
+</div><section class="deployment-description dev-report" id="development-progress" aria-labelledby="development-progress-title">
+<div class="eyebrow">Bilan technique · 5 novembre 2026</div>
+<h2 id="development-progress-title">De l’architecture au démonstrateur intégré</h2>
+<p class="section-intro"><strong>Une base logicielle désormais constituée et testée.</strong> Le dépôt privé de développement comprend le Core Solidity/EVM portable, les registres d’identification et de nœuds, la gouvernance des chambres, les interfaces Node Manager et Protocol Manager, les bibliothèques ISO 20022 et un connecteur EBICS 3.0 H005 en Go. Sei est le réseau de référence, sans dépendance imposée au Core.</p>
+<div class="dev-highlights" aria-label="Indicateurs de qualification">
+<div class="dev-highlight"><strong>252/252</strong><span>tests Foundry réussis, campagne d’intégration M38-4</span></div>
+<div class="dev-highlight"><strong>30</strong><span>schémas ISO 20022 dans le catalogue de validation</span></div>
+<div class="dev-highlight"><strong>10</strong><span>tranches EBICS H005 publiées et documentées (M39-T01 à T10)</span></div>
+<div class="dev-highlight"><strong>49 + 20</strong><span>tests Go EBICS et XMLDSig réussis selon le rapport M39-T10</span></div>
+</div>
+<h3>1. Core EVM, identité et gouvernance</h3>
+<p>Les oracles temporels <strong>1W, 9W et 13W</strong>, les registres Osnias-ID et de nœuds V2, les compteurs d’identifiants, les associations de chambres et les contrôles de gouvernance bilatérale disposent d’implémentations Solidity. La campagne M38-4 documente <strong>252 tests Foundry réussis sur 252</strong> et des scénarios d’intégration exécutés sur Anvil, réseau local de test.</p>
+<h3>2. Interfaces Node Manager et Protocol Manager</h3>
+<p>Les interfaces TypeScript de gestion des nœuds et du protocole comportent l’authentification par portefeuille, les contrôles d’habilitation, la consultation des chambres et des parcours de gouvernance testés localement. Ces applications constituent des démonstrateurs, non des services opérationnels de compensation.</p>
+<h3>3. Interopérabilité ISO 20022 et bancaire</h3>
+<p>Le catalogue ISO 20022 couvre <strong>30 versions de schémas</strong>, avec composants Go, contrôles XSD et jeux de tests. La qualification transversale M14 conserve deux anomalies bloquantes relatives à la preuve effective de validation et au respect des délais. Leur correction et une nouvelle qualification sont nécessaires.</p>
+<p>Le connecteur bancaire <strong>EBICS 3.0 H005 en Go</strong> a franchi les tranches T01 à T10 : schémas officiels, enveloppes INI/HIA, signature XMLDSig, transferts FUL/FDL biphasés et requête HPB corrigée. Le rapport T10 documente <strong>49 tests Go et 20 tests XMLDSig réussis</strong>, avec contrôles de conformité XSD et vérification de signatures par xmlsec1. Les réponses de gestion des clés, le format sémantique des signatures S002/A006 et la compatibilité avec une banque indépendante restent à qualifier.</p>
+<h3>4. Prochaine étape : cycle pilote complet</h3>
+<p>Les travaux à poursuivre concernent le registre opérationnel des obligations commerciales, le moteur de compensation multilatérale hors chaîne en Go, la publication des positions nettes sur EVM, les API ERP et la qualification des échanges avec les banques. L’objectif est un cycle pilote reproductible de bout en bout, avant tout déploiement opérationnel.</p>
+<p class="dev-disclaimer"><strong>Statut et portée.</strong> Ces résultats proviennent des rapports de qualification du dépôt de développement, et non d’un audit externe. Aucun moteur complet de netting en production, règlement bancaire réel, homologation bancaire ou validation réglementaire n’est revendiqué. Les contrats détaillés ci-dessous sont des déploiements testnet historiques ; leur présence ne signifie pas que les nouvelles versions de développement y ont été déployées.</p>
+</section>
+<section class="deployment-description"><h2>1. Registre public des déploiements testnet</h2><p class="section-intro">Cette page constitue la référence publique des smart contracts Osnias Clearing actuellement déployés sur des réseaux testnet. Elle recense les adresses, transactions de création, compilateurs, paramètres de vérification et statuts de chaque composant afin de rendre l’état expérimental de l’infrastructure vérifiable directement sur les explorateurs de chaînes.</p></section><section class="deployment-description"><h2>2. Couche Sei — registre canonique et contrôle du clearing</h2><p class="section-intro">La couche Sei Testnet Atlantic-2 regroupe l’oracle temporel, le registre d’identité et le contrôleur du protocole. Ces composants représentent le côté clearing de l’architecture : état canonique, contrôle des cycles, identité et positions de clearing, sans constituer un environnement Mainnet de production.</p></section><section class="deployment-description"><h2>3. Couche EVM — nœuds, registre et séquestre</h2><p class="section-intro">La couche Ethereum Sepolia regroupe les composants EVM associés aux opérateurs de nœuds : Node Registrar, registre EVM, contrat de séquestre et contrôleur EVM. Cette séparation permet de tester publiquement l’articulation entre le registre de clearing sur Sei et la couche externe de séquestre et de contrôle EVM avant tout déploiement de production.</p></section>
 
 <section class="deployment-description" aria-label="Résumé du registre de déploiement">
 <h2>4. Infrastructure testnet vérifiable et registre public des smart contracts</h2>
