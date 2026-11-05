@@ -655,3 +655,88 @@ footer{
     flex-direction:column;
   }
 }
+
+/* Osnias Clearing — Deployment technical report.
+ * Shared by /deployment/, /en/deployment/ and /es/deployment/.
+ * The global design tokens and navigation remain in osnias.css.
+ */
+.tech-report{
+max-width:1120px;margin:auto;padding:1.3rem 1.25rem 4rem;color:#e6edf7}
+.tech-report h1,.tech-report h2,.tech-report h3{
+color:#f6fbff}
+.tech-report p{
+line-height:1.7}
+.tech-hero{
+padding:2.6rem 2rem;background:linear-gradient(120deg,#102b47,#164d65);border:1px solid #42647b;border-radius:20px;margin-top:1.5rem}
+.tech-hero h1{
+font-size:clamp(2rem,4vw,3.3rem);line-height:1.15;margin:.65rem 0}
+.tech-hero p{
+max-width:900px}
+.tech-overline{
+color:#97d7f6;font-size:.87rem}
+.tech-metrics{
+display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;margin:1.5rem 0}
+.tech-metric{
+border:1px solid #3f596d;background:#122c42;padding:1.1rem;border-radius:13px}
+.tech-metric strong{
+display:block;color:#87d9f7;font-size:1.8rem}
+.tech-metric span{
+font-size:.87rem;color:#c4d7e6}
+.tech-section{
+border-top:1px solid rgba(148,163,184,.25);padding:1.6rem 0}
+.tech-section h2{
+font-size:1.5rem}
+.tech-section p{
+margin:.65rem 0 1rem}
+.tech-small{
+font-size:.8rem;color:#99c8e5}
+.tech-flow{
+max-width:820px;margin:1rem auto;display:grid;gap:.3rem}
+.tech-flow-item{
+text-align:center;background:#123248;border:1px solid #48718b;padding:.85rem;border-radius:12px}
+.tech-flow-item b,.tech-flow-item small{
+display:block}
+.tech-flow-item small{
+color:#abc7dc}
+.tech-flow-arrow{
+text-align:center;color:#9edfff;font-size:1.3rem}
+.tech-notice{
+padding:1rem;border-left:3px solid #9eb2c4;background:#1b2c40;border-radius:0 10px 10px 0}
+.tech-table{
+width:100%;border-collapse:collapse}
+.tech-table th,.tech-table td{
+text-align:left;padding:.7rem;border-bottom:1px solid #3b5166}
+.tech-table th{
+color:#9edfff}
+.tech-steps{
+display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.tech-step{
+background:#132d41;border:1px solid #39566b;border-radius:10px;padding:.7rem}
+.tech-step b{
+color:#92d7f5;margin-right:.6rem}
+.tech-risk{
+display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+.tech-risk article{
+border:1px solid #3c5a71;border-radius:12px;padding:.9rem;background:#132e42}
+.tech-risk b{
+display:block;color:#d7f2ff}
+.language-switch{
+display:flex;gap:.5rem;flex-wrap:wrap}
+.language-switch a{
+border:1px solid #4c6d84;border-radius:999px;padding:.4rem .75rem;color:#d9f2ff}
+.language-switch a[aria-current]{
+background:#1d5578}
+@media(max-width:750px){
+.tech-metrics{
+grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:500px){
+.tech-metrics,.tech-steps,.tech-risk{
+grid-template-columns:1fr}
+.tech-hero{
+padding:1.5rem 1rem}
+.tech-report{
+padding:.8rem}
+}
+
+
