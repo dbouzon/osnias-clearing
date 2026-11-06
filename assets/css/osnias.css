@@ -749,3 +749,13 @@ padding:.8rem}
 .tech-report .tech-history li h3{margin:0;font-size:1.05rem;font-weight:650}
 .tech-report .tech-history li p{margin:.45rem 0 0;color:var(--muted)}
 .tech-report .tech-disclaimer{margin:1.2rem 0;padding:.75rem 0;border-top:1px solid var(--border);background:transparent;color:var(--muted)}
+
+/* Deployment pages inherit the shared site theme, with no colored cards. */
+.tech-report .tech-flow{display:block;max-width:none;margin:1rem 0}
+.tech-report .tech-flow-item{display:block;text-align:left;padding:.65rem 0;background:transparent;border:0;border-bottom:1px solid var(--border);border-radius:0}
+.tech-report .tech-flow-arrow{display:none}
+.tech-report .tech-steps,.tech-report .tech-risk{display:block}
+.tech-report .tech-step,.tech-report .tech-risk article{display:block;padding:.8rem 0;margin:0;background:transparent;border:0;border-bottom:1px solid var(--border);border-radius:0}
+.tech-report .tech-notice{padding:.8rem 0;background:transparent;border:0;border-top:1px solid var(--border);border-radius:0;color:var(--muted)}
+.tech-report .tech-table{background:transparent}
+.tech-report .tech-table th,.tech-report .tech-table td{background:transparent;border-bottom:1px solid var(--border)}
