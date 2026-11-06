@@ -740,3 +740,12 @@ padding:.8rem}
 }
 
 
+
+/* Deployment report: plain reverse-chronological history (FR/EN/ES). */
+.tech-report .tech-intro{padding:1rem 0 1.5rem;background:transparent;border:0;border-bottom:1px solid var(--border);border-radius:0}
+.tech-report .tech-intro h1{margin:.6rem 0 1rem;font-size:clamp(1.7rem,3vw,2.6rem)}
+.tech-report .tech-history{display:block;list-style:none;padding:0;margin:1.2rem 0 0}
+.tech-report .tech-history li{display:block;padding:1rem 0;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent}
+.tech-report .tech-history li h3{margin:0;font-size:1.05rem;font-weight:650}
+.tech-report .tech-history li p{margin:.45rem 0 0;color:var(--muted)}
+.tech-report .tech-disclaimer{margin:1.2rem 0;padding:.75rem 0;border-top:1px solid var(--border);background:transparent;color:var(--muted)}
