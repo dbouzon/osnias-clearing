@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OSNIAS — Accès sécurisé Node Manager</title>
+<style>
+  :root { font-family: "Segoe UI", system-ui, sans-serif; background: #0d1321; color: #e8eef7; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .card { width: 100%; max-width: 520px; background: #141c30; border: 1px solid #263252; border-radius: 14px; padding: 32px; box-shadow: 0 12px 40px rgba(0,0,0,.45); }
+  .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  h1 { font-size: 19px; margin: 0; }
+  h2 { font-size: 15px; margin: 22px 0 8px; color: #b8c8e8; }
+  .sub { color: #8ea0c4; font-size: 13px; margin: 4px 0 18px; }
+  label { display: block; font-size: 11px; color: #8ea0c4; margin: 12px 0 5px; text-transform: uppercase; letter-spacing: .8px; }
+  input, select { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #2b3a61; background: #0d1321; color: #e8eef7; font-size: 14px; outline: none; }
+  input:focus, select:focus { border-color: #4f8cff; }
+  input.bad { border-color: #ff5f6b; }
+  input[readonly] { color: #8ea0c4; }
+  .hint { font-size: 12px; margin-top: 5px; color: #6f81a8; min-height: 15px; }
+  .hint.ok { color: #55d68a; } .hint.err { color: #ff8a93; }
+  button { padding: 12px 14px; border: 0; border-radius: 8px; background: linear-gradient(135deg, #2f6df6, #1e4fd8); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; transition: filter .15s; }
+  button:hover { filter: brightness(1.12); }
+  button:disabled { filter: grayscale(.7); cursor: not-allowed; }
+  button.ghost { background: #1b2645; border: 1px solid #2b3a61; font-weight: 500; }
+  .row { display: flex; gap: 10px; } .row > * { flex: 1; }
+  .status { margin-top: 16px; padding: 10px 12px; border-radius: 8px; font-size: 13px; display: none; white-space: pre-wrap; word-break: break-word; }
+  .status.info { display: block; background: #16233f; border: 1px solid #2b3a61; color: #b8c8e8; }
+  .status.ok { display: block; background: #10291c; border: 1px solid #1e5c3a; color: #7fe0a8; }
+  .status.err { display: block; background: #2f1418; border: 1px solid #7a2730; color: #ff9aa4; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; letter-spacing: .5px; background: #16233f; border: 1px solid #2b3a61; color: #8ea0c4; }
+  .badge.live { border-color: #1e5c3a; color: #7fe0a8; }
+  #screen-actions { display: none; }
+  .addr { font-family: ui-monospace, Consolas, monospace; font-size: 13px; color: #7fe0a8; }
+  .divider { height: 1px; background: #263252; margin: 20px 0; }
+  footer { margin-top: 20px; font-size: 11px; color: #57688c; text-align: center; line-height: 1.6; }
+</style>
+</head>
+<body>
+<main class="card">
+
+  <div class="logo">
+    <!-- Logo officiel Pennylane : remplacer ce bloc par le SVG téléchargé depuis
+         https://brandfetch.com/pennylane.com (assets de marque officiels). -->
+    <svg width="38" height="38" viewBox="0 0 40 40" aria-label="Pennylane">
+      <rect x="1" y="1" width="38" height="38" rx="10" fill="#7862ff"/>
+      <path d="M15 29V11h7.5c3.6 0 6 2.2 6 5.4 0 3.3-2.4 5.5-6 5.5H19V29h-4zm4-11h3.2c1.5 0 2.4-.9 2.4-2.2 0-1.3-.9-2.2-2.4-2.2H19v4.4z" fill="#fff"/>
+    </svg>
+    <div>
+      <h1>Pennylane — Node Manager OSNIAS</h1>
+      <div class="sub" style="margin:2px 0 0">Accès sécurisé par portefeuille (0x…) — Nœud 33-001 · France</div>
+    </div>
+  </div>
+
+  <!-- ══════════ ÉCRAN 1 : IDENTIFICATION ══════════ -->
+  <section id="screen-login">
+    <div class="sub">Authentifiez-vous avec l'adresse de votre portefeuille pour agir sur le Node Manager. La signature cryptographique prouve que vous êtes le titulaire de l'adresse.</div>
+
+    <h2>Identification par portefeuille</h2>
+    <button id="btnConnect" type="button">🔐 Connexion — signature portefeuille 0x…</button>
+    <div class="hint" id="walletHint"></div>
+    <div class="row" style="margin-top:10px">
+      <button id="btnManual" class="ghost" type="button" style="width:auto">Saisie manuelle (sans signature)</button>
+    </div>
+    <div id="manualBox" style="display:none">
+      <label for="addr">Adresse du portefeuille</label>
+      <input id="addr" placeholder="0x1A2B3C…" spellcheck="false" />
+      <div class="hint" id="addrHint"></div>
+      <button id="btnManualGo" class="ghost" type="button" style="margin-top:10px">Ouvrir la session sans preuve cryptographique</button>
+    </div>
+    <div id="addrLive" class="hint ok" style="display:none"></div>
+
+    <h2>2. Environnement</h2>
+    <div class="row">
+      <div>
+        <select id="env">
+          <option value="sandbox">Sandbox</option>
+          <option value="production">Production</option>
+        </select>
+      </div>
+      <div>
+        <input id="node" inputmode="numeric" maxlength="3" placeholder="Nœud NNN" value="001" />
+        <div class="hint" id="nodeHint"></div>
+    </div>
+    </div>
+
+    <button id="btnAuth" type="button" style="display:none">Ouvrir la session</button>
+    <div id="statusLogin" class="status" role="status"></div>
+  </section>
+
+  <!-- ══════════ ÉCRAN 2 : ACTIONS NODE MANAGER ══════════ -->
+  <section id="screen-actions">
+    <div class="row" style="align-items:center">
+      <span class="badge live">● Session authentifiée</span>
+      <span class="badge" id="envBadge">sandbox</span>
+    </div>
+    <div class="sub" style="margin-top:10px">
+      Portefeuille : <span class="addr" id="addrShown"></span>
+    </div>
+
+    <h2>Adresse du Node Manager</h2>
+    <input id="url" type="url" placeholder="https://node-manager.osnias.example/api" />
+    <div class="hint" id="urlHint"></div>
+
+    <div class="divider"></div>
+
+    <h2>Base entreprises (Go + SQL)</h2>
+    <div class="row">
+      <button id="btnCompanies" class="ghost" type="button">Charger les entreprises</button>
+      <button id="btnPending" class="ghost" type="button">Demandes en cours</button>
+    </div>
+    <div id="tableBox" style="margin-top:14px"></div>
+
+    <div class="divider"></div>
+
+    <h2>Écrire une demande (client, OID)</h2>
+    <label for="osniasId">Votre Osnias-ID</label>
+    <input id="osniasId" placeholder="33001…  ·  ex. 3300100000000000180" spellcheck="false" />
+    <div class="hint" id="idHint"></div>
+    <div class="row" style="margin-top:8px">
+      <div>
+        <label for="currency">Monnaie (CCC)</label>
+        <select id="currency">
+          <option value="978">978 — EUR</option>
+          <option value="840">840 — USD</option>
+          <option value="826">826 — GBP</option>
+          <option value="756">756 — CHF</option>
+        </select>
+      </div>
+      <div>
+        <label for="cycle">Cycle (WW) — profils Livre 4</label>
+        <select id="cycle">
+          <option value="09">09 — CLEAR 9W : obligations commerciales B2B (seul activé)</option>
+        </select>
+      </div>
+    </div>
+    <div class="hint" id="oidHint"></div>
+    <label for="subject">Objet de la demande</label>
+    <input id="subject" placeholder="ex. Ouverture de compte, mise à jour de statut…" />
+    <div class="row" style="margin-top:10px">
+      <button id="btnRequest" type="button">Soumettre la demande</button>
+      <button id="btnMyRequests" class="ghost" type="button">Mes demandes</button>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <button id="btnLogout" class="ghost" type="button">Verrouiller la session</button>
+    </div>
+
+    <div id="statusActions" class="status" role="status"></div>
+  </section>
+
+  <style>
+    table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.tbl th { text-align: left; color: #8ea0c4; font-weight: 600; padding: 8px 10px; border-bottom: 1px solid #2b3a61; text-transform: uppercase; font-size: 11px; letter-spacing: .6px; }
+    table.tbl td { padding: 9px 10px; border-bottom: 1px solid #1c2742; font-family: ui-monospace, Consolas, monospace; }
+    .st { padding: 2px 9px; border-radius: 20px; font-size: 11px; font-family: "Segoe UI", sans-serif; }
+    .st.actif { background: #10291c; color: #7fe0a8; border: 1px solid #1e5c3a; }
+    .st.attente { background: #2b2410; color: #ffd66b; border: 1px solid #7a6420; }
+    .st.bloque, .st.rejete { background: #2f1418; color: #ff9aa4; border: 1px solid #7a2730; }
+  </style>
+
+  <footer>
+    Session en mémoire uniquement — aucune clé, aucun jeton stocké.<br>
+    Validation Osnias-ID locale (checksum Livre I v3.0) · preuve de détention par signature.
+  </footer>
+</main>
+
+<script>
+"use strict";
+
+/* ═══════════ Validation Osnias-ID — Livre I v3.0 (parité OsniasIdIntegrity.sol) ═══════════ */
+function validateOsniasID(s) {
+  s = String(s || "").trim();
+  if (s.length !== 19 && s.length !== 24) return false;
+  const canonical = s.length === 24, dash = [2, 6, 10, 13, 21];
+  let digits = "";
+  for (let i = 0; i < s.length; i++) {
+    if (canonical && dash.includes(i)) { if (s[i] !== "-") return false; continue; }
+    if (s[i] < "0" || s[i] > "9") return false;
+    digits += s[i];
+  }
+  if (digits.length !== 19) return false;
+  const id = BigInt(digits);
+  if (id > 9999999999999999999n || id < 100000000000000000n) return false;
+  return id % 100n === 98n - ((id / 100n) * 100n) % 97n;
+}
+
+/* ═══════════ Adresse 0x ═══════════ */
+const ADDR_RE = /^0x[0-9a-fA-F]{40}$/;
+function validAddr(s) { return ADDR_RE.test(String(s || "").trim()); }
+function shortAddr(a) { a = a.trim(); return a.slice(0, 6) + "…" + a.slice(-4); }
+
+const $ = (id) => document.getElementById(id);
+const ethereum = (typeof window !== "undefined" && window.ethereum) || null;
+
+function hint(id, msg, cls) {
+  const el = $(id); el.textContent = msg || "";
+  el.className = "hint" + (cls ? " " + cls : "");
+  if (id.endsWith("Hint")) {
+    const f = $(id.replace("Hint", ""));
+    if (f) f.classList.toggle("bad", cls === "err");
+  }
+}
+function status(id, cls, msg) { const el = $(id); el.className = "status " + cls; el.textContent = msg; }
+
+/* ═══════════ État de session (en mémoire uniquement) ═══════════ */
+const session = { address: null, env: "sandbox", node: null, proof: null };
+
+/* ═══════════ Détection portefeuille ═══════════ */
+if (!ethereum) {
+  hint("walletHint", "Aucun portefeuille détecté — la saisie manuelle reste possible, sans preuve cryptographique.");
+} else {
+  hint("walletHint", "Portefeuille détecté — cliquez sur Connexion : l'adresse 0x sera récupérée puis un défi sera signé.");
+}
+
+/* ═══════════ Saisie manuelle ═══════════ */
+$("btnManual").addEventListener("click", () => {
+  const box = $("manualBox");
+  box.style.display = box.style.display === "none" ? "block" : "none";
+});
+
+$("addr").addEventListener("input", () => {
+  const v = $("addr").value.trim();
+  if (!v) return hint("addrHint", "");
+  if (!validAddr(v)) return hint("addrHint", "✗ Adresse invalide : 0x + 40 caractères hexadécimaux.", "err");
+  hint("addrHint", "✓ Format valide", "ok");
+});
+
+$("node").addEventListener("input", () => {
+  const v = $("node").value.trim();
+  const ok = /^\d{3}$/.test(v);
+  hint("nodeHint", !v ? "" : ok ? "✓ Nœud sur 3 chiffres" : "✗ 3 chiffres exactement", !v ? "" : ok ? "ok" : "err");
+  session.node = ok ? v : null;
+});
+
+/* Préremplissage : nœud 33-001 (France) par défaut */
+$("node").dispatchEvent(new Event("input"));
+
+/* ═══════════ Bouton CONNEXION : adresse 0x + signature du défi ═══════════ */
+function buildChallenge(address, env) {
+  return "OSNIAS — Node Manager\n" +
+    "Authentification : " + new Date().toISOString() + "\n" +
+    "Adresse : " + address + "\n" +
+    "Environnement : " + env + "\n" +
+    "Nœud : " + session.node + "\n\n" +
+    "En signant, vous prouvez la détention de cette adresse.";
+}
+function toHex(s) {
+  return "0x" + Array.from(new TextEncoder().encode(s))
+    .map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+$("btnConnect").addEventListener("click", async () => {
+  const env = $("env").value;
+  if (!session.node) { status("statusLogin", "err", "Renseignez le nœud (3 chiffres) avant la connexion."); return; }
+  if (!ethereum) { status("statusLogin", "err", "Aucun portefeuille dans ce navigateur. Installez MetaMask, ou utilisez la saisie manuelle."); return; }
+  try {
+    $("btnConnect").disabled = true;
+    status("statusLogin", "info", "1/2 — Récupération de l'adresse 0x auprès du portefeuille…");
+    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    if (!accounts || !accounts.length) throw new Error("aucun compte retourné");
+    const address = accounts[0];
+    const live = $("addrLive");
+    live.style.display = "block";
+    live.textContent = "✓ Portefeuille connecté : " + shortAddr(address);
+
+    status("statusLogin", "info", "2/2 — Signature du défi (personal_sign)…");
+    const challenge = buildChallenge(address, env);
+    const sig = await ethereum.request({ method: "personal_sign", params: [toHex(challenge), address] });
+
+    session.address = address;
+    session.env = env;
+    session.proof = { type: "personal_sign", challenge, signature: sig, ts: new Date().toISOString() };
+    status("statusLogin", "ok", "✓ Signature obtenue — session authentifiée.\n" + sig.slice(0, 22) + "…");
+    setTimeout(openActions, 500);
+  } catch (e) {
+    status("statusLogin", "err", "Connexion échouée : " + (e.message || e));
+    $("btnConnect").disabled = false;
+  }
+});
+
+/* ═══════════ Session déclarative (sans portefeuille) ═══════════ */
+$("btnManualGo").addEventListener("click", () => {
+  const v = $("addr").value.trim();
+  const env = $("env").value;
+  if (!session.node) { status("statusLogin", "err", "Renseignez le nœud (3 chiffres)."); return; }
+  if (!validAddr(v)) { status("statusLogin", "err", "Adresse 0x invalide (0x + 40 caractères hexadécimaux)."); return; }
+  session.address = v;
+  session.env = env;
+  session.proof = { type: "adresse-declarative", ts: new Date().toISOString() };
+  status("statusLogin", "info", "Session ouverte en mode déclaratif — détention non prouvée.");
+  openActions();
+});
+
+function openActions() {
+  $("screen-login").style.display = "none";
+  $("screen-actions").style.display = "block";
+  $("addrShown").textContent = shortAddr(session.address);
+  $("envBadge").textContent = session.env + " · nœud " + session.node;
+  status("statusActions", "info", "Session ouverte. Renseignez l'adresse du Node Manager puis agissez.");
+}
+
+/* ═══════════ Écran actions ═══════════ */
+$("url").addEventListener("input", () => {
+  const v = $("url").value.trim();
+  let ok = false; try { ok = new URL(v).protocol === "https:"; } catch (e) {}
+  hint("urlHint", !v ? "" : ok ? "✓ URL HTTPS valide" : "✗ URL HTTPS requise", !v ? "" : ok ? "ok" : "err");
+});
+
+$("osniasId").addEventListener("input", () => {
+  const v = $("osniasId").value.trim();
+  if (!v) return hint("idHint", "");
+  const ok = validateOsniasID(v);
+  hint("idHint", ok ? "✓ Osnias-ID valide (Livre I v3.0)" : "✗ ID invalide (19 chiffres, checksum)", ok ? "ok" : "err");
+});
+
+async function api(path, options) {
+  const base = $("url").value.trim().replace(/\/+$/, "");
+  if (!/^https:\/\//.test(base)) throw new Error("Adresse du Node Manager manquante ou non HTTPS.");
+  const headers = Object.assign({
+    "X-Osnias-Env": session.env,
+    "X-Osnias-Node": session.node,
+    "X-Osnias-Wallet": session.address
+  }, options && options.headers ? options.headers : {});
+  if (session.proof && session.proof.signature) headers["X-Osnias-Signature"] = session.proof.signature;
+  const res = await fetch(base + path, Object.assign({}, options, { headers }));
+  const body = await res.text();
+  if (!res.ok) throw new Error("HTTP " + res.status + " — " + body);
+  return body;
+}
+
+function act(fn) {
+  return async () => {
+    try {
+      status("statusActions", "info", "Appel en cours…");
+      const body = await fn();
+      status("statusActions", "ok", "✓ Réponse du Node Manager :\n\n" + body);
+    } catch (e) {
+      status("statusActions", "err", "Échec : " + e.message +
+        "\n\nVérifiez l'URL, le démarrage du service et le CORS.");
+    }
+  };
+}
+
+/* ═══════════ Rendu des tables (base entreprises / demandes) ═══════════ */
+function stBadge(st) {
+  const s = String(st || "").toLowerCase();
+  const cls = (s.includes("actif") && !s.includes("inactif")) ? "actif"
+    : (s.includes("attente") || s.includes("pend") || s.includes("pending")) ? "attente"
+    : (s.includes("bloq") || s.includes("rejet") || s.includes("révoq") || s.includes("revog")) ? "bloque" : "";
+  return '<span class="st ' + cls + '">' + (st || "—") + "</span>";
+}
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+/* Normalise un JSON retourné par le Node Manager en tableau d'objets */
+function toRows(json) {
+  if (Array.isArray(json)) return json;
+  if (json && typeof json === "object") {
+    for (const k of ["companies", "items", "requests", "data", "result"]) {
+      if (Array.isArray(json[k])) return json[k];
+    }
+    return [json];
+  }
+  return null;
+}
+
+function renderTable(rows, cols) {
+  const box = $("tableBox");
+  if (!rows || !rows.length) { box.innerHTML = '<div class="status info" style="display:block">Aucune ligne retournée.</div>'; return; }
+  let html = '<table class="tbl"><tr>';
+  for (const c of cols) html += "<th>" + esc(c.label) + "</th>";
+  html += "</tr>";
+  for (const r of rows) {
+    html += "<tr>";
+    for (const c of cols) {
+      const v = r[c.key];
+      html += "<td>" + (c.badge ? stBadge(v) : esc(v)) + "</td>";
+    }
+    html += "</tr>";
+  }
+  box.innerHTML = html + "</table>";
+}
+
+/* ═══════════ Base entreprises ═══════════ */
+$("btnCompanies").addEventListener("click", act(async () => {
+  const body = await api("/companies", { method: "GET" });
+  let json = null; try { json = JSON.parse(body); } catch (e) {}
+  const rows = toRows(json);
+  if (rows) renderTable(rows, [
+    { key: "registry_number", label: "N°" },
+    { key: "company_id", label: "company.id" },
+    { key: "company_name", label: "Nom" },
+    { key: "reg_no", label: "reg_no (SIREN)" },
+    { key: "osnias_id", label: "Osnias-ID" },
+    { key: "status", label: "Statut", badge: true }
+  ]);
+  status("statusActions", "ok", "✓ " + rows.length + " entreprise(s) chargée(s) depuis la base du Node Manager.");
+}));
+
+/* ═══════════ Demandes en cours (pendantes) ═══════════ */
+$("btnPending").addEventListener("click", act(async () => {
+  const body = await api("/requests?status=pending", { method: "GET" });
+  let json = null; try { json = JSON.parse(body); } catch (e) {}
+  const rows = toRows(json);
+  if (rows) renderTable(rows, [
+    { key: "id", label: "Demande" },
+    { key: "osnias_id", label: "Osnias-ID" },
+    { key: "subject", label: "Objet" },
+    { key: "status", label: "Statut", badge: true }
+  ]);
+  const pend = rows ? rows.length : "?";
+  status("statusActions", "ok", "✓ " + pend + " demande(s) en cours.");
+}));
+
+/* ═══════════ Choix monnaie + cycle → aperçu de l'OID ═══════════
+   OID = JJ(33) NNN(001) CCC(monnaie) WW(cycle) AAAAAAA(compteur node) CC(clé 97).
+   Le compteur incrémentiel et la clé 97 sont calculés par le Node Manager. */
+function oidPrefix() {
+  return "33-001-" + $("currency").value + "-" + $("cycle").value;
+}
+function refreshOidHint() {
+  hint("oidHint",
+    "OID : " + oidPrefix() + "-SSSSSSS-XX  ·  KK=33 juridiction France · NNN=001 nœud · MMM=monnaie · WW=cycle · SSSSSSS=compteur du serveur · XX=clé MOD-97",
+    "");
+}
+$("currency").addEventListener("change", refreshOidHint);
+$("cycle").addEventListener("change", refreshOidHint);
+refreshOidHint();
+
+/* ═══════════ Écrire avec son OID (client) ═══════════ */
+$("btnRequest").addEventListener("click", act(() => {
+  const id = $("osniasId").value.trim().replace(/-/g, "");
+  if (!validateOsniasID(id)) throw new Error("Osnias-ID invalide (19 chiffres, checksum Livre I v3.0).");
+  return api("/requests", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      osniasId: id,
+      subject: $("subject").value.trim(),
+      currency: $("currency").value,
+      cycleWeeks: $("cycle").value,
+      wallet: session.address,
+      environment: session.env,
+      node: session.node
+    })
+  });
+}));
+
+$("btnMyRequests").addEventListener("click", act(async () => {
+  const id = $("osniasId").value.trim().replace(/-/g, "");
+  if (!validateOsniasID(id)) throw new Error("Osnias-ID invalide (19 chiffres, checksum Livre I v3.0).");
+  return api("/requests?osniasId=" + id, { method: "GET" });
+}));
+
+$("btnLogout").addEventListener("click", () => {
+  session.address = null; session.proof = null;
+  $("screen-actions").style.display = "none";
+  $("screen-login").style.display = "block";
+  $("addr").value = ""; $("btnConnect").disabled = false; $("addrLive").style.display = "none";
+  status("statusLogin", "info", "Session verrouillée. Reconnectez-vous.");
+});
+</script>
+</body>
+</html>
