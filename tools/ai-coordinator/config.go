@@ -47,7 +47,12 @@ type Config struct {
 	MistralMaxIter     int           // AIC_MISTRAL_MAX_ITER (défaut 40 itérations CLI)
 	MistralBudgetSteps int           // AIC_MISTRAL_BUDGET_STEPS (défaut 50 passages d'outils)
 	// OpenAI
-	OpenAIMode string // AIC_OPENAI_MODE : simulated | api
+	OpenAIMode    string        // AIC_OPENAI_MODE : simulated | api (M-AIC-04)
+	OpenAIKey     string        // AIC_OPENAI_APIKEY : clé d'API, mémoire uniquement, jamais journalisée
+	OpenAIAPIURL  string        // AIC_OPENAI_APIURL : racine complète de l'API (tests ; défaut https://api.openai.com/v1)
+	OpenAIModel   string        // AIC_OPENAI_MODEL (défaut gpt-4o-mini)
+	OpenAITimeout time.Duration // AIC_OPENAI_TIMEOUT (défaut 60s)
+	OpenAIMaxTok  int           // AIC_OPENAI_MAX_TOKENS (défaut 400, plafond de réponse)
 	// Divers
 	DBPath               string        // AIC_DB_PATH (défaut ai-coordinator.sqlite)
 	WorkRoot             string        // AIC_WORK_ROOT (défaut /tmp/aic-work)
@@ -136,6 +141,11 @@ func ConfigFromEnv() Config {
 		MistralMaxIter:       fromEnvInt("AIC_MISTRAL_MAX_ITER", 40),
 		MistralBudgetSteps:   fromEnvInt("AIC_MISTRAL_BUDGET_STEPS", 50),
 		OpenAIMode:           fromEnvStr("AIC_OPENAI_MODE", ModeSimulated),
+		OpenAIKey:            os.Getenv("AIC_OPENAI_APIKEY"), // jamais journalisé ni persisté
+		OpenAIAPIURL:         os.Getenv("AIC_OPENAI_APIURL"),
+		OpenAIModel:          fromEnvStr("AIC_OPENAI_MODEL", "gpt-4o-mini"),
+		OpenAITimeout:        fromEnvDur("AIC_OPENAI_TIMEOUT", 60*time.Second),
+		OpenAIMaxTok:         fromEnvInt("AIC_OPENAI_MAX_TOKENS", 400),
 		DBPath:               fromEnvStr("AIC_DB_PATH", "ai-coordinator.sqlite"),
 		WorkRoot:             fromEnvStr("AIC_WORK_ROOT", "/tmp/aic-work"),
 		MaxCorrections:       fromEnvInt("AIC_MAX_CORRECTIONS", 3),
