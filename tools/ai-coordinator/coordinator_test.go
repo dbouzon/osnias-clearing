@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -969,5 +970,197 @@ func TestT02R4IdempotenceAfterRestart(t *testing.T) {
 	}
 	if st, _ := store2.GitHubOpState(key); st != "done" {
 		t.Fatalf("opération restée %s après renvoi", st)
+	}
+}
+
+// failingKeyStore est un KeyStore d'injection de panne (T02-R5) : il délègue
+// à un KeyStore sain mais fait échouer à la demande les lectures (seen) et
+// les écritures (mark) de clés.
+type failingKeyStore struct {
+	inner     KeyStore
+	failSeen  bool
+	failMark  bool
+	markCalls int
+}
+
+func (f *failingKeyStore) GitHubSeenKey(idemKey string) (bool, error) {
+	if f.failSeen {
+		return false, errors.New("injection : échec de lecture du registre github_sent")
+	}
+	return f.inner.GitHubSeenKey(idemKey)
+}
+
+func (f *failingKeyStore) GitHubMarkKey(idemKey string) error {
+	f.markCalls++
+	if f.failMark {
+		return errors.New("injection : échec d'écriture dans github_sent")
+	}
+	return f.inner.GitHubMarkKey(idemKey)
+}
+
+// TestT02R5PersistFailureNoEffect vérifie (T02-R5, point 2) qu'un échec de
+// persistance de la clé n'est jamais assimilé à une exécution : le commentaire
+// n'est pas produit, la mémoire n'est pas marquée, l'erreur est propagée ; le
+// rejeu une fois la persistance revenue produit exactement un commentaire.
+func TestT02R5PersistFailureNoEffect(t *testing.T) {
+	dir := t.TempDir()
+	dbp := filepath.Join(dir, "t.sqlite")
+	store, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("ouvrir store : %v", err)
+	}
+	defer store.Close()
+	fks := &failingKeyStore{inner: store, failMark: true}
+	gh := &SimulatedGitHub{}
+	gh.UseKeyStore(fks)
+	if err := gh.PostCommentIdem("AIC-900:comment", "AIC-900", "réception"); err == nil {
+		t.Fatal("un échec de persistance doit produire une erreur")
+	}
+	if n := len(gh.Comments); n != 0 {
+		t.Fatalf("aucun effet ne doit être produit : %d commentaire(s)", n)
+	}
+	seen, err := gh.seenKey("c:AIC-900:comment")
+	if err != nil || seen {
+		t.Fatalf("la clé mémoire ne doit pas être marquée après échec : seen=%v err=%v", seen, err)
+	}
+	// rejeu persistance saine : un seul commentaire au total.
+	fks.failMark = false
+	if err := gh.PostCommentIdem("AIC-900:comment", "AIC-900", "réception"); err != nil {
+		t.Fatalf("rejeu : %v", err)
+	}
+	if err := gh.PostCommentIdem("AIC-900:comment", "AIC-900", "réception"); err != nil {
+		t.Fatalf("renvoi : %v", err)
+	}
+	if n := len(gh.Comments); n != 1 {
+		t.Fatalf("non-duplication attendue : %d commentaire(s)", n)
+	}
+}
+
+// TestT02R5SeenKeyErrorPropagated vérifie (T02-R5, point 1) qu'une erreur
+// SQLite en lecture du registre durable est propagée par les opérations
+// idempotentes, sans produire d'effet.
+func TestT02R5SeenKeyErrorPropagated(t *testing.T) {
+	dir := t.TempDir()
+	dbp := filepath.Join(dir, "t.sqlite")
+	store, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("ouvrir store : %v", err)
+	}
+	defer store.Close()
+	fks := &failingKeyStore{inner: store, failSeen: true}
+	gh := &SimulatedGitHub{}
+	gh.UseKeyStore(fks)
+	if err := gh.PostCommentIdem("AIC-901:comment", "AIC-901", "réception"); err == nil {
+		t.Fatal("une erreur de lecture du registre doit être propagée")
+	}
+	if _, err := gh.CreateDraftPRIdem("AIC-901:draft", "AIC-901", "Livraison", "rapport"); err == nil {
+		t.Fatal("une erreur de lecture du registre doit être propagée (draft)")
+	}
+	if err := gh.RequestChangesIdem("AIC-901:review", "PR-1", "à corriger"); err == nil {
+		t.Fatal("une erreur de lecture du registre doit être propagée (review)")
+	}
+	if n := len(gh.Comments) + len(gh.DraftPRs) + len(gh.ChangeRequests); n != 0 {
+		t.Fatalf("aucun effet ne doit être produit : %d", n)
+	}
+}
+
+// TestT02R5DraftPersistFailureNoCreation vérifie (T02-R5, point 2) qu'un
+// échec de persistance lors d'une PR Draft n'a jamais pour effet une PR
+// simulée déjà créée mais non enregistrée : aucune duplication n'est possible
+// au rejeu, même après redémarrage complet.
+func TestT02R5DraftPersistFailureNoCreation(t *testing.T) {
+	dir := t.TempDir()
+	dbp := filepath.Join(dir, "t.sqlite")
+	store, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("ouvrir store : %v", err)
+	}
+	fks := &failingKeyStore{inner: store, failMark: true}
+	gh := &SimulatedGitHub{}
+	gh.UseKeyStore(fks)
+	if _, err := gh.CreateDraftPRIdem("AIC-902:draft", "AIC-902", "Livraison", "rapport"); err == nil {
+		t.Fatal("un échec de persistance doit produire une erreur (draft)")
+	}
+	if n := len(gh.DraftPRs); n != 0 {
+		t.Fatalf("aucune PR simulée ne doit exister après échec de persistance : %d", n)
+	}
+	store.Close()
+
+	// redémarrage complet : persistance saine, adaptateur recréé vierge.
+	store2, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("réouvrir store : %v", err)
+	}
+	defer store2.Close()
+	gh2 := &SimulatedGitHub{}
+	gh2.UseKeyStore(store2)
+	ref, err := gh2.CreateDraftPRIdem("AIC-902:draft", "AIC-902", "Livraison", "rapport")
+	if err != nil || ref == "" {
+		t.Fatalf("rejeu : ref=%q err=%v", ref, err)
+	}
+	if _, err := gh2.CreateDraftPRIdem("AIC-902:draft", "AIC-902", "Livraison", "rapport"); err != nil {
+		t.Fatalf("renvoi : %v", err)
+	}
+	if n := len(gh2.DraftPRs); n != 1 {
+		t.Fatalf("non-duplication attendue : %d PR Draft(s)", n)
+	}
+}
+
+// TestT02R5RestartNoDuplicationAnyOp vérifie (T02-R5, point 4) la
+// non-duplication après redémarrage complet pour les trois types
+// d'opérations, y compris le rejeu d'opérations interrompues entre la
+// persistance de la clé et le marquage 'done' du registre github_ops.
+func TestT02R5RestartNoDuplicationAnyOp(t *testing.T) {
+	dir := t.TempDir()
+	dbp := filepath.Join(dir, "t.sqlite")
+	store1, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("ouvrir store : %v", err)
+	}
+	gh1 := &SimulatedGitHub{}
+	gh1.UseKeyStore(store1)
+	c1 := &Coordinator{Store: store1, Config: ConfigFromEnv(), Mistral: &SimulatedMistral{}, Reviewer: &SimulatedOpenAI{}, GitHub: gh1}
+	c1.Config.WebhookSecret = "test-secret"
+	c1.Config.AuthorizedLogins = []string{"dbouzon"}
+	if _, err := store1.CreateMission("AIC-903", 903, "mission t02-r5"); err != nil {
+		t.Fatalf("créer mission : %v", err)
+	}
+	kc := "AIC-903:comment:r5"
+	kr := "AIC-903:review:r5"
+	if err := c1.githubPostComment(kc, "AIC-903", "réception"); err != nil {
+		t.Fatalf("commentaire : %v", err)
+	}
+	if _, err := c1.githubApply(kr, "AIC-903", "review", func() (string, error) {
+		return "", gh1.RequestChangesIdem(kr, "PR-903", "corriger")
+	}); err != nil {
+		t.Fatalf("review : %v", err)
+	}
+	// opération interrompue : clé durable mais état non 'done'.
+	if err := store1.MarkGitHubOpState(kc, "sending"); err != nil {
+		t.Fatalf("réarmer : %v", err)
+	}
+	store1.Close()
+
+	store2, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("réouvrir store : %v", err)
+	}
+	defer store2.Close()
+	gh2 := &SimulatedGitHub{}
+	gh2.UseKeyStore(store2)
+	c2 := &Coordinator{Store: store2, Config: c1.Config, Mistral: &SimulatedMistral{}, Reviewer: &SimulatedOpenAI{}, GitHub: gh2}
+	if err := c2.githubPostComment(kc, "AIC-903", "réception"); err != nil {
+		t.Fatalf("renvoi commentaire après redémarrage : %v", err)
+	}
+	if _, err := c2.githubApply(kr, "AIC-903", "review", func() (string, error) {
+		return "", gh2.RequestChangesIdem(kr, "PR-903", "corriger")
+	}); err != nil {
+		t.Fatalf("renvoi review après redémarrage : %v", err)
+	}
+	if n := len(gh2.Comments) + len(gh2.ChangeRequests); n != 0 {
+		t.Fatalf("doublon après redémarrage : %d effet(s) de l'adaptateur vierge", n)
+	}
+	if st, _ := store2.GitHubOpState(kc); st != "done" {
+		t.Fatalf("opération interrompue restée %s après renvoi", st)
 	}
 }
