@@ -24,6 +24,7 @@ Copier `env.example` vers l'environnement du service (jamais dans le dépôt). V
 - `AIC_WEBHOOK_SECRET` (obligatoire) : secret HMAC des webhooks GitHub.
 - `AIC_LISTEN_ADDR` : écoute locale uniquement en T02 (127.0.0.1:8080).
 - `AIC_COORDINATOR_LOGIN` : compte bot, ses écritures sont ignorées (anti-boucle).
+- `AIC_AUTHORIZED_LOGINS` : identités habilitées à émettre les commandes /aic (séparées par des virgules ; liste vide = refus de toute commande).
 - `AIC_MISTRAL_MODE=simulated`, `AIC_OPENAI_MODE=simulated` : seuls modes autorisés en T02.
 - `AIC_MAX_CORRECTIONS` (défaut 3), `AIC_MISTRAL_TIMEOUT` (défaut 600 s), `AIC_MISTRAL_MAX_ITER` (défaut 40), `AIC_MISTRAL_BUDGET_STEPS` (défaut 50).
 - `AIC_DB_PATH`, `AIC_WORK_ROOT` : SQLite et répertoires de travail isolés.
