@@ -1,16 +1,9 @@
-// Package aic implémente le coordinateur multi-agents Osnias (M-AIC-01 / T02).
-//
-// Le coordinateur relie GitHub (Issues = missions, PR Draft = livraisons),
-// un agent développeur Mistral (Vibe CLI en mode non interactif) et un agent
-// chef de projet OpenAI. Il est indépendant du Core Osnias et portable Linux.
-//
-// En T02, tous les adaptateurs externes sont simulés : aucun secret réel,
-// aucun appel d'API payant, aucune ressource cloud n'est requis.
 package aic
 
 import (
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -44,9 +37,10 @@ type Config struct {
 	// HTTP
 	ListenAddr string // AIC_LISTEN_ADDR (défaut 127.0.0.1:8080)
 	// GitHub
-	WebhookSecret    string // AIC_WEBHOOK_SECRET (obligatoire en production)
-	CoordinatorLogin string // AIC_COORDINATOR_LOGIN, compte bot émetteur (anti-boucle)
-	GitHubRepo       string // AIC_GITHUB_REPO (défaut dbouzon/osnias-clearing)
+	WebhookSecret    string   // AIC_WEBHOOK_SECRET (obligatoire en production)
+	CoordinatorLogin string   // AIC_COORDINATOR_LOGIN, compte bot émetteur (anti-boucle)
+	AuthorizedLogins []string // AIC_AUTHORIZED_LOGINS, seules identités habilitées à commander (fail closed)
+	GitHubRepo       string   // AIC_GITHUB_REPO (défaut dbouzon/osnias-clearing)
 	// Mistral
 	MistralMode        string        // AIC_MISTRAL_MODE : simulated | api
 	MistralTimeout     time.Duration // AIC_MISTRAL_TIMEOUT (défaut 600s)
@@ -59,6 +53,24 @@ type Config struct {
 	WorkRoot         string        // AIC_WORK_ROOT (défaut /tmp/aic-work)
 	MaxCorrections   int           // AIC_MAX_CORRECTIONS (défaut 3)
 	RunStaleInterval time.Duration // AIC_RUN_STALE_INTERVAL (défaut 86400s)
+}
+
+// IsAuthorized applique la politique d'habilitation des commandes /aic :
+// seule une identité explicitement listée dans AIC_AUTHORIZED_LOGINS est
+// autorisée. La liste vide refuse tout le monde (fail closed). L'auteur est
+// l'identité authentifiée par GitHub dans le webhook (sender), distincte de la
+// vérification HMAC qui authentifie le webhook lui-même.
+func (c Config) IsAuthorized(login string) bool {
+	login = strings.ToLower(strings.TrimSpace(login))
+	if login == "" {
+		return false
+	}
+	for _, a := range c.AuthorizedLogins {
+		if strings.EqualFold(strings.TrimSpace(a), login) {
+			return true
+		}
+	}
+	return false
 }
 
 // fromEnvInt lit un entier depuis l'environnement avec valeur par défaut.
@@ -89,12 +101,29 @@ func fromEnvStr(key, def string) string {
 	return def
 }
 
+// fromEnvList lit une liste séparée par des virgules (espaces ignorés).
+func fromEnvList(key string) []string {
+	v := os.Getenv(key)
+	if v == "" {
+		return nil
+	}
+	var out []string
+	for _, item := range strings.Split(v, ",") {
+		item = strings.TrimSpace(item)
+		if item != "" {
+			out = append(out, item)
+		}
+	}
+	return out
+}
+
 // ConfigFromEnv construit la configuration depuis l'environnement.
 func ConfigFromEnv() Config {
 	return Config{
 		ListenAddr:         fromEnvStr("AIC_LISTEN_ADDR", "127.0.0.1:8080"),
 		WebhookSecret:      os.Getenv("AIC_WEBHOOK_SECRET"),
 		CoordinatorLogin:   fromEnvStr("AIC_COORDINATOR_LOGIN", "osnias-aic-bot"),
+		AuthorizedLogins:   fromEnvList("AIC_AUTHORIZED_LOGINS"),
 		GitHubRepo:         fromEnvStr("AIC_GITHUB_REPO", "dbouzon/osnias-clearing"),
 		MistralMode:        fromEnvStr("AIC_MISTRAL_MODE", ModeSimulated),
 		MistralTimeout:     fromEnvDur("AIC_MISTRAL_TIMEOUT", 600*time.Second),
