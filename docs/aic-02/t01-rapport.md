@@ -63,4 +63,5 @@ Nouveaux tests M-AIC-02 (CLI substituée par un binaire de test local, sans rés
 
 - Branche de mission : `mission/aic-02-mistral-cli` (créée depuis `mission/ai-coordinator-v01` @ ca4150f7).
 - Livraison : PR Draft vers `mission/ai-coordinator-v01`. Fusion suspendue à validation et autorisation explicite.
-- SHA du HEAD publié : à vérifier dans le rapport de réception après publication (section complétée au moment de la publication).
+- SHA du HEAD publié et vérifié : 94828dc8c7076c3a862e633a68588e1be16fbc78 (8 fichiers confirmés par l'API : 2 ajoutés, 6 modifiés, contenu distant vérifié identique). Amendement (complétion du SHA) publié sous le SHA vérifié dans le commit suivant.
+- PR Draft : https://github.com/dbouzon/osnias-clearing/pull/5 (M-AIC-02 T01 : adaptateur CLI Mistral Code).
