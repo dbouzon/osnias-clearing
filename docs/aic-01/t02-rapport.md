@@ -1,6 +1,6 @@
 # Rapport de réception — M-AIC-01 / T02 : coordinateur multi-agents (prototype local)
 
-Version 1.3 — 22 novembre 2026 (T02-R1, T02-R2 ; T02-R3 : traitement des deux risques résiduels) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
+Version 1.4 — 22 novembre 2026 (T02-R1 à T02-R4 ; T02-R4 : reprise des références de livraison et déduplication durable) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
 
 ## 1. Objectif
 
@@ -47,8 +47,8 @@ Commandes exécutées dans l'environnement de développement (Go 1.24) :
 - `go build ./...` : OK
 - `go vet ./...` : OK
 - `gofmt -l .` : aucun écart
-- `go test -count=1 ./...` : OK, 22/22 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1 + 4 tests T02-R2 + 4 tests T02-R3)
-- `go test -count=3 ./...` : OK, 22/22 PASS trois exécutions successives (stabilité)
+- `go test -count=1 ./...` : OK, 24/24 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1 + 4 tests T02-R2 + 4 tests T02-R3 + 2 tests T02-R4)
+- `go test -count=3 ./...` : OK, 24/24 PASS trois exécutions successives (stabilité)
 
 Tests T02-R1 ajoutés :
 
@@ -88,6 +88,8 @@ Tests T02-R2 ajoutés : TestT02R2ReclaimThenClaim (verrou périmé supprimé pui
 
 Tests T02-R3 ajoutés : TestT02R3GitHubOpStates (états pending/sending/done de la table d'idempotence), TestT02R3NoDuplicateComment (commentaire renvoyé après fenêtre de crash : jamais dupliqué), TestT02R3DraftReused (livraison Draft interrompue : même référence, jamais dupliquée, livraison persistée réutilisée), TestT02R3PendingRetryLoop (relance à chaud : un événement bloqué par verrou est retraité en fonctionnement normal après libération du verrou).
 
+Tests T02-R4 ajoutés : TestT02R4DraftRefRecoveredAfterCrash (référence de PR restituée depuis la base après interruption entre création et enregistrement, sans rappel de GitHub, y compris après redémarrage complet avec adaptateur vierge), TestT02R4IdempotenceAfterRestart (déduplication résistante au redémarrage complet : aucun doublon malgré un registre mémoire vierge).
+
 ## 6 quater. T02-R3 — Traitement des deux risques résiduels
 
 Ordre du responsable du 22/11/2026 : traiter les deux réserves de la revue de réception et exécuter go test -race, en tranche corrective distincte, avant toute intégration aux API réelles (T03).
@@ -96,10 +98,18 @@ Ordre du responsable du 22/11/2026 : traiter les deux réserves de la revue de r
 2. Risque résiduel 2 (duplication des écritures GitHub) : chaque écriture sortante porte une clé d'idempotence déterministe enregistrée en base avant l'envoi (table github_ops, états pending/sending/done) ; une opération 'done' n'est jamais renvoyée ; une opération interrompue entre l'envoi et le marquage est renvoyée sous la même clé et dédupliquée par l'adaptateur (interface IdempotentGitHub, réalisée par SimulatedGitHub en T02) ; une livraison Draft déjà persistée est réutilisée (DraftForMission) sans nouvelle création. Les adaptateurs API réels devront réaliser IdempotentGitHub sur ce modèle en T03.
 3. go test -race : non exécutable dans l'environnement de développement — le détecteur exige cgo et un compilateur C (rejet explicite : « -race requires cgo; enable cgo by setting CGO_ENABLED=1 »), aucun compilateur C n'est disponible et l'installation de paquets y est interdite. Tentative CGO_ENABLED=0 refusée. Mesures compensatoires inchangées (verrou persistant, connexion SQLite unique, tests fonctionnels de concurrence) ; exécution requise en T03 sur machine complète.
 
+## 6 quinquies. T02-R4 — Reprise des références de livraison et déduplication durable
+
+Ordre du 22/11/2026 (revue T02-R3, validation partielle) : corriger la restitution de la référence de PR après interruption entre création et enregistrement dans deliveries, et démontrer l'idempotence après un redémarrage complet du processus, sans API réelle.
+
+1. Référence de livraison récupérable : la référence de chaque PR Draft est persistée avec l'opération (colonne detail de github_ops, écrite au moment du marquage 'done') ; une opération 'done' restitue sa référence depuis la base sans rappeler l'adaptateur ; une opération 'pending' ou 'sending' est renvoyée sous la même clé. La fenêtre de crash « création PR effectuée, deliveries non renseigné » ne perd plus la référence.
+2. Déduplication durable : l'adaptateur simulé branche sa déduplication sur le Store (interface KeyStore, table github_sent, table persistée) — la déduplication survit à un arrêt complet et reprise du processus ; le démon câble automatiquement ce registre à l'ouverture de la base. Les adaptateurs réels T03 devront réaliser la même vérification effective côté GitHub.
+3. Résultat : la garantie « au plus une écriture GitHub par clé » est démontrée par des tests simulant le redémarrage complet (nouveau Store, adaptateur recréé vierge), l'absence de doublon n'étant couverte que par le registre durable.
+
 ## 7. Réserves et suite
 
 - `go test -race` à exécuter en T03 sur machine complète (non exécutable dans la sandbox : cgo/compilateur C requis, installation de paquets interdite ; rejet documenté en section 6 quater).
 - Interopérabilité réelle non démontrée en T02 : les adaptateurs Mistral, OpenAI et GitHub sont simulés ; l'ouverture des accès API et la démonstration de bout en bout relèvent de T03, le déploiement de T04 ; les adaptateurs API réels devront réaliser IdempotentGitHub (recherche avant création) pour garantir l'absence de doublon côté GitHub.
 - Risque résiduel 1 (relance à chaud) : traité en T02-R3 (boucle AIC_PENDING_RETRY_INTERVAL, testée).
-- Risque résiduel 2 (duplication GitHub) : traité en T02-R3 (clés d'idempotence persistées + déduplication adaptateur + réutilisation des livraisons Draft, testés) ; la garantie complète repose en T03 sur la réalisation d'IdempotentGitHub par les adaptateurs réels.
-- Statut : T02, T02-R1, T02-R2 et T02-R3 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour. Fusion suspendue à l'autorisation explicite du responsable.
+- Risque résiduel 2 (duplication GitHub) : traité en T02-R3 (clés d'idempotence persistées + déduplication adaptateur + réutilisation des livraisons Draft, testés), puis consolidé en T02-R4 (référence de PR restituée depuis la base, déduplication résistante au redémarrage complet, testés) ; la garantie complète repose en T03 sur la réalisation d'IdempotentGitHub par les adaptateurs réels.
+- Statut : T02, T02-R1, T02-R2, T02-R3 et T02-R4 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour. Fusion suspendue à l'autorisation explicite du responsable.
