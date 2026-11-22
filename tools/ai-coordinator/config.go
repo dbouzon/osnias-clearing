@@ -62,6 +62,8 @@ type Config struct {
 	WorkRoot             string        // AIC_WORK_ROOT (défaut /tmp/aic-work)
 	MaxCorrections       int           // AIC_MAX_CORRECTIONS (défaut 3)
 	MessageToken         string        // AIC_MESSAGE_TOKEN : jeton du relais /aic/message (M-AIC-05), jamais journalisé
+	SessionMaxTurns      int           // AIC_SESSION_MAX_TURNS : plafond de tours par session interactive (M-AIC-06, défaut 20)
+	SessionTokenBudget   int           // AIC_SESSION_TOKEN_BUDGET : budget de jetons pire cas par session (M-AIC-06, défaut 20000)
 	RunStaleInterval     time.Duration // AIC_RUN_STALE_INTERVAL (défaut 86400s)
 	PendingRetryInterval time.Duration // AIC_PENDING_RETRY_INTERVAL (défaut 60s, relance à chaud de la file T02-R3)
 
@@ -156,6 +158,8 @@ func ConfigFromEnv() Config {
 		OpenAITimeout:        fromEnvDur("AIC_OPENAI_TIMEOUT", 60*time.Second),
 		OpenAIMaxTok:         fromEnvInt("AIC_OPENAI_MAX_TOKENS", 400),
 		MessageToken:         os.Getenv("AIC_MESSAGE_TOKEN"), // jamais journalisé ni persisté
+		SessionMaxTurns:      fromEnvInt("AIC_SESSION_MAX_TURNS", 20),
+		SessionTokenBudget:   fromEnvInt("AIC_SESSION_TOKEN_BUDGET", 20000),
 		DBPath:               fromEnvStr("AIC_DB_PATH", "ai-coordinator.sqlite"),
 		WorkRoot:             fromEnvStr("AIC_WORK_ROOT", "/tmp/aic-work"),
 		MaxCorrections:       fromEnvInt("AIC_MAX_CORRECTIONS", 3),
