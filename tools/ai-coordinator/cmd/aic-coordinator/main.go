@@ -59,6 +59,10 @@ func main() {
 		Store: store, Config: cfg,
 		Mistral: mistral, Reviewer: reviewer, GitHub: github,
 	}
+	// T02-R2 : reprise des événements acquittés mais non traités (arrêt
+	// entre réponse 2xx et traitement asynchrone), avant la reprise des
+	// missions : les commandes humaines ne sont jamais perdues.
+	aic.DrainPendingEvents(context.Background(), coord, logger)
 	if err := coord.Resume(context.Background()); err != nil {
 		logger.Error("reprise des missions", "err", err.Error())
 		os.Exit(1)
