@@ -57,30 +57,45 @@ func (g *SimulatedGitHub) UseKeyStore(ks KeyStore) { g.keyStore = ks }
 
 // seenKey consulte la mémoire de l'adaptateur puis, si branché, le registre
 // durable : la déduplication résiste au redémarrage complet du processus.
-func (g *SimulatedGitHub) seenKey(key string) bool {
+// T02-R5 : une erreur SQLite du registre durable est propagée ; on ne
+// conclut jamais à l'absence d'une clé sur une erreur de lecture.
+func (g *SimulatedGitHub) seenKey(key string) (bool, error) {
 	if g.sentKeys == nil {
 		g.sentKeys = map[string]bool{}
 	}
 	if g.sentKeys[key] {
-		return true
+		return true, nil
 	}
 	if g.keyStore != nil {
-		if seen, err := g.keyStore.GitHubSeenKey(key); err == nil && seen {
+		seen, err := g.keyStore.GitHubSeenKey(key)
+		if err != nil {
+			return false, err
+		}
+		if seen {
 			g.sentKeys[key] = true // cache mémoire
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }
 
-func (g *SimulatedGitHub) markSeenKey(key string) {
+// markSeenKey enregistre la clé durablement AVANT de la marquer en mémoire
+// et AVANT que l'opération simulée ne produise son effet (mécanisme
+// write-ahead équivalent à une transaction pour le couple cache/registre) :
+// si la persistance échoue, l'opération n'est jamais considérée comme
+// exécutée — ni en mémoire (non marquée), ni pour l'effet (non produit) —
+// et l'erreur SQLite est propagée à l'appelant (T02-R5, points 1 et 2).
+func (g *SimulatedGitHub) markSeenKey(key string) error {
 	if g.sentKeys == nil {
 		g.sentKeys = map[string]bool{}
 	}
-	g.sentKeys[key] = true
 	if g.keyStore != nil {
-		_ = g.keyStore.GitHubMarkKey(key)
+		if err := g.keyStore.GitHubMarkKey(key); err != nil {
+			return err
+		}
 	}
+	g.sentKeys[key] = true
+	return nil
 }
 
 // PostComment simule la publication d'un commentaire.
@@ -93,10 +108,18 @@ func (g *SimulatedGitHub) PostComment(missionID, body string) error {
 // qu'un seul commentaire, même après un renvoi (fenêtre de crash) ou un
 // redémarrage complet du processus (registre durable, T02-R4).
 func (g *SimulatedGitHub) PostCommentIdem(idemKey, missionID, body string) error {
-	if g.seenKey("c:" + idemKey) {
+	seen, err := g.seenKey("c:" + idemKey)
+	if err != nil {
+		return err
+	}
+	if seen {
 		return nil
 	}
-	g.markSeenKey("c:" + idemKey)
+	// persistance de la clé avant l'effet : en cas d'échec SQLite, aucun
+	// commentaire simulé n'est produit et l'opération sera rejouée (T02-R5).
+	if err := g.markSeenKey("c:" + idemKey); err != nil {
+		return err
+	}
 	return g.PostComment(missionID, body)
 }
 
@@ -117,7 +140,11 @@ func (g *SimulatedGitHub) CreateDraftPRIdem(idemKey, missionID, title, body stri
 	if ref, ok := g.draftRefs[idemKey]; ok {
 		return ref, nil
 	}
-	if g.seenKey("d:" + idemKey) {
+	seen, err := g.seenKey("d:" + idemKey)
+	if err != nil {
+		return "", err
+	}
+	if seen {
 		// déjà créée de façon durable mais référence non restituée en
 		// mémoire (redémarrage) : la référence est reconstruite selon la
 		// convention déterministe du simulateur ; l'adaptateur réel T03
@@ -126,12 +153,17 @@ func (g *SimulatedGitHub) CreateDraftPRIdem(idemKey, missionID, title, body stri
 		g.draftRefs[idemKey] = ref
 		return ref, nil
 	}
-	ref, err := g.CreateDraftPR(missionID, title, body)
-	if err == nil {
-		g.draftRefs[idemKey] = ref
-		g.markSeenKey("d:" + idemKey)
+	// persistance de la clé avant l'effet : en cas d'échec SQLite, aucune
+	// PR Draft simulée n'est créée et l'opération sera rejouée (T02-R5).
+	if err := g.markSeenKey("d:" + idemKey); err != nil {
+		return "", err
 	}
-	return ref, err
+	ref, err := g.CreateDraftPR(missionID, title, body)
+	if err != nil {
+		return ref, err
+	}
+	g.draftRefs[idemKey] = ref
+	return ref, nil
 }
 
 // RequestChanges simule l'attachement d'une demande de correction.
@@ -142,10 +174,17 @@ func (g *SimulatedGitHub) RequestChanges(prRef, body string) error {
 
 // RequestChangesIdem simule une demande de correction idempotente.
 func (g *SimulatedGitHub) RequestChangesIdem(idemKey, prRef, body string) error {
-	if g.seenKey("r:" + idemKey) {
+	seen, err := g.seenKey("r:" + idemKey)
+	if err != nil {
+		return err
+	}
+	if seen {
 		return nil
 	}
-	g.markSeenKey("r:" + idemKey)
+	// persistance de la clé avant l'effet (T02-R5).
+	if err := g.markSeenKey("r:" + idemKey); err != nil {
+		return err
+	}
 	return g.RequestChanges(prRef, body)
 }
 
