@@ -48,10 +48,10 @@ Examen du dépôt au HEAD main e3d20118 (22/11/2026) : le dépôt contient le si
 
 | Option | Forces | Faiblesses |
 | --- | --- | --- |
-| GitHub Actions comme orchestrateur (workflow_dispatch/repository_dispatch appelant la Vibe CLI) | Sans serveur permanent, secrets gérés par Actions | Durée de tâche limitée, passerelles d'approbation humaine peu pratiques, drainage du contexte de la sandbox |
+| GitHub Actions comme orchestrateur (workflow_dispatch/repository_dispatch appelant la Vibe CLI) | Sans serveur permanent, secrets gérés par Actions | Durée de tâche limitée, passerelles d'approbation humaine peu pratiques |
 | Mistral Studio Workflows (déclencheurs d'événements) | Managé, observabilité intégrée | Logique de coordination hors du code du projet, contrôles fins et garde-fous Osnias plus difficiles à exprimer |
 | Orchestrateurs tiers (n8n, Temporal, LangGraph) | Riche | Dépendances opérationnelles supplémentaires disproportionnées pour deux agents |
-| Démon Go minimal (coordinateur) + Vibe CLI headless + API OpenAI | Simple, maintenable, cohérent avec la stack Go Osnias, contrôle total des garde-fous | Gérer soi-même l'écoute web et la reprise (faible : un récepteur HTTP + file SQLite) |
+| Démon Go minimal (coordinateur) + Vibe CLI headless + API OpenAI | Simple, maintenable, cohérent avec la stack Go Osnias, contrôle total des garde-fous | Gérer soi-même l'écoute des webhooks et la reprise (faible : un récepteur HTTP + file SQLite) |
 
 Recommandation : démon Go minimal. C'est l'option la plus simple et la plus maintenable ; elle place tous les garde-fous de sécurité exigés par la direction dans un code court, auditable et versionné dans le dépôt de mission.
 
@@ -61,8 +61,8 @@ Recommandation : démon Go minimal. C'est l'option la plus simple et la plus mai
 - Machine d'états par mission : une Issue étiquetée « mission » traverse les états ouverte -> assignée -> en cours -> livrée -> révisée -> à valider -> publiée / rejetée. Chaque transition générée par un agent est journalisée (horodatage, émetteur, SHA).
 - Agent développeur Mistral : Vibe CLI en mode programmatique dans un clone éphémère, utilisateur UNIX dédié sans autre privilège, agent CLI avec outils limités (interdiction de git push dans la configuration du coordinateur : le CLI écrit, le coordinateur décide).
 - Agent chef de projet OpenAI : convoqué par le coordinateur sur les événements de revue et de réception ; ses sorties sont déposées comme commentaires rédigés au nom du coordinateur (bot), jamais exécutées directement.
-- Validation humaine obligatoire : aucune fusion, aucun push, aucune action destructrice sans commentaire d'autorisation explicite du responsable ou intervention dans GitHub ; les action AIC-001 à AIC-00X seront formellement ordonnées avant tout développement — rien n'est lancé automatiquement par défaut.
-- Isolation des exécutions : exécutions en conteneurs jetables (une tranche = un conteneur), timeout et max-turns bornés, revocation quenoue des branches de mission.
+- Validation humaine obligatoire : aucune fusion, aucun push, aucune action destructrice sans commentaire d'autorisation explicite du responsable ou intervention dans GitHub ; les actions automatisées devront être formellement ordonnées avant tout développement, rien n'est lancé automatiquement par défaut.
+- Isolation des exécutions : exécutions en conteneurs jetables (une tranche = un conteneur), timeout et max-turns bornés, suppression contrôlée des branches de mission.
 - Contrôle des coûts : quotas par exécution et par jour ; capture de l'usage et du coût de chaque passage CLI (export.json) dans le journal.
 - Reprise après incident : file SQLite idempotente (clé d'événement), redémarrage propre du démon sans perte, reprise depuis le dernier état publié.
 - Garde-fous anti-boucle : ignorance des écritures du compte du coordinateur lui-même, idempotence par identifiant d'événement, plafond de passages par Issue et par heure, étiquette « run-en-cours » verrouillante.
@@ -109,4 +109,4 @@ Recommandation : démon Go minimal. C'est l'option la plus simple et la plus mai
 
 ## 10. Séparation constats / hypothèses
 
-Constats (sources ci-dessus) : absence d'API de pilotage des applications Vibe ; existence et périmètre du mode programmatique de la Vibe CLI ; disponibilité des agents et réponses programmatiques OpenAI ; mécanismes GitHub cités. Hypothèses à confirmer en T02 : ordres de grandeur de coût réels ; tenue des garde-fous anti-boucle en conditions réelles ; qualité des livrables de la CLI sur le code Go du projet (le seul test interne antérieur documenté dans la conversation de mission, non retesté ici, ne vaut pas preuve).
+Constats (sources ci-dessus) : absence d'API de pilotage des applications Vibe ; existence et périmètre du mode programmatique de la Vibe CLI ; disponibilité des agents et réponses programmatiques OpenAI ; mécanismes GitHub cités. Hypothèses à confirmer en T02 : ordres de grandeur de coût réels ; tenue des garde-fous anti-boucle en conditions réelles ; qualité des livrables de la CLI sur le code Go du projet (aucun test interne n'a été exécuté dans le cadre de cette tranche documentaire ; seule une exécution réelle en T02 constituera une preuve).
