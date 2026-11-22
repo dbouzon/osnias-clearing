@@ -48,6 +48,12 @@ func main() {
 		logger.Error("AIC_OPENAI_MODE=api n'est pas autorisé en T02 : aucun appel payant")
 		os.Exit(2)
 	}
+	// Habilitation (T02-R1) : sans identité autorisée, aucune commande /aic
+	// ne sera acceptée. Refus explicite au démarrage plutôt qu'un échec muet.
+	if len(cfg.AuthorizedLogins) == 0 {
+		logger.Error("AIC_AUTHORIZED_LOGINS est vide : aucune identité habilitée (politique fail closed)")
+		os.Exit(2)
+	}
 
 	coord := &aic.Coordinator{
 		Store: store, Config: cfg,
