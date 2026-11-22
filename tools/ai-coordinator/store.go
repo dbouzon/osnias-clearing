@@ -35,6 +35,13 @@ type Event struct {
 	Received   time.Time
 }
 
+// PendingEvent est un événement persisté mais non traité (T02-R2).
+type PendingEvent struct {
+	DeliveryID string
+	EventType  string
+	Payload    string
+}
+
 // ErrMissionLocked signale qu'une exécution est déjà en cours pour une
 // mission : l'appelant doit s'abstenir (exclusivité d'exécution T02-R1/R3).
 var ErrMissionLocked = errors.New("mission déjà en cours d'exécution (verrou actif)")
@@ -53,7 +60,9 @@ CREATE TABLE IF NOT EXISTS missions (
 CREATE TABLE IF NOT EXISTS events (
     delivery_id TEXT PRIMARY KEY,
     event_type  TEXT NOT NULL,
-    received_at TEXT NOT NULL
+    payload     TEXT NOT NULL DEFAULT '',
+    received_at TEXT NOT NULL,
+    processed_at TEXT NOT NULL DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS transitions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -97,22 +106,29 @@ func OpenStore(path string) (*Store, error) {
 	if _, err := db.Exec(schema); err != nil {
 		return nil, fmt.Errorf("appliquer le schéma: %w", err)
 	}
+	// Migration T02-R2 des bases existantes : ajout du payload et de la date
+	// de traitement à la table events (file d'attente persistante). Les
+	// erreurs de colonne déjà présente sont ignorées (base déjà à jour).
+	_, _ = db.Exec(`ALTER TABLE events ADD COLUMN payload TEXT NOT NULL DEFAULT ''`)
+	_, _ = db.Exec(`ALTER TABLE events ADD COLUMN processed_at TEXT NOT NULL DEFAULT ''`)
 	return &Store{db: db}, nil
 }
 
 // Close referme la base.
 func (s *Store) Close() error { return s.db.Close() }
 
-// SaveEvent enregistre durablement un événement avant tout acquittement
-// HTTP. Retourne (false, nil) si l'identifiant de livraison est déjà connu
-// (rejou, déduplication), et (false, err) en cas d'échec réel de stockage :
-// l'erreur n'est jamais assimilée à un doublon (T02-R1/R2).
-func (s *Store) SaveEvent(deliveryID, eventType string) (bool, error) {
+// SaveEvent enregistre durablement un événement, avec son payload brut,
+// avant tout acquittement HTTP. Retourne (false, nil) si l'identifiant de
+// livraison est déjà connu (rejou, déduplication), et (false, err) en cas
+// d'échec réel de stockage : l'erreur n'est jamais assimilée à un doublon
+// (T02-R1/R2). Le payload persisté permet de reprendre le traitement après
+// un arrêt survenu entre l'acquittement 2xx et le traitement asynchrone.
+func (s *Store) SaveEvent(deliveryID, eventType, payload string) (bool, error) {
 	if deliveryID == "" {
 		return false, fmt.Errorf("identifiant de livraison vide : événement non persistance")
 	}
-	res, err := s.db.Exec(`INSERT OR IGNORE INTO events (delivery_id, event_type, received_at) VALUES (?,?,?)`,
-		deliveryID, eventType, nowISO())
+	res, err := s.db.Exec(`INSERT OR IGNORE INTO events (delivery_id, event_type, payload, received_at) VALUES (?,?,?,?)`,
+		deliveryID, eventType, payload, nowISO())
 	if err != nil {
 		return false, fmt.Errorf("enregistrer événement %s: %w", deliveryID, err)
 	}
@@ -121,6 +137,32 @@ func (s *Store) SaveEvent(deliveryID, eventType string) (bool, error) {
 		return false, fmt.Errorf("compter lignes événement %s: %w", deliveryID, err)
 	}
 	return n == 1, nil
+}
+
+// MarkEventProcessed marque un événement comme définitivement traité : il ne
+// sera pas rejoué au redémarrage (T02-R2).
+func (s *Store) MarkEventProcessed(deliveryID string) error {
+	_, err := s.db.Exec(`UPDATE events SET processed_at = ? WHERE delivery_id = ?`, nowISO(), deliveryID)
+	return err
+}
+
+// PendingEvents retourne les événements persistés non traités : file
+// d'attente durable reprise après redémarrage (T02-R2).
+func (s *Store) PendingEvents() ([]PendingEvent, error) {
+	rows, err := s.db.Query(`SELECT delivery_id, event_type, payload FROM events WHERE processed_at = '' ORDER BY received_at, delivery_id`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []PendingEvent
+	for rows.Next() {
+		var e PendingEvent
+		if err := rows.Scan(&e.DeliveryID, &e.EventType, &e.Payload); err != nil {
+			return nil, err
+		}
+		out = append(out, e)
+	}
+	return out, rows.Err()
 }
 
 // MissionByID retourne une mission, ou nil si absente.
@@ -229,10 +271,13 @@ func (s *Store) ReleaseClaim(id string) error {
 // ReclaimStaleClaim reprend un verrou abandonné (crash du coordinateur pendant
 // l'exécution) si son âge dépasse l'intervalle de péremption. Un verrou
 // récent est respecté : une exécution vivante n'est jamais doublée.
+// T02-R2 : le verrou périmé est supprimé, et non actualisé, afin que le
+// ClaimMission suivant puisse réinsérer la ligne (INSERT OR IGNORE) ; la
+// version antérieure laissait la ligne en place et bloquait la mission.
+// Les horodatages des verrous sont homogènes (nowNano, RFC3339Nano).
 func (s *Store) ReclaimStaleClaim(id string, maxAge time.Duration) (bool, error) {
 	cutoff := time.Now().UTC().Add(-maxAge).Format(time.RFC3339Nano)
-	res, err := s.db.Exec(`UPDATE mission_locks SET claimed_at = ? WHERE mission_id = ? AND claimed_at < ?`,
-		nowISO(), id, cutoff)
+	res, err := s.db.Exec(`DELETE FROM mission_locks WHERE mission_id = ? AND claimed_at < ?`, id, cutoff)
 	if err != nil {
 		return false, err
 	}
