@@ -30,10 +30,12 @@ func main() {
 	defer store.Close()
 
 	// Adaptateurs T02 : simulés uniquement. Les adaptateurs API refusent
-	// toute exécution tant que T03 n'est pas autorisé.
+	// toute exécution tant que T03 n'est pas autorisé. La déduplication de
+	// l'adaptateur GitHub simulé est rendue durable (T02-R4).
 	var mistral aic.MistralAdapter = &aic.SimulatedMistral{}
 	var reviewer aic.Reviewer = &aic.SimulatedOpenAI{}
-	var github aic.GitHubClient = &aic.SimulatedGitHub{}
+	githubSim := &aic.SimulatedGitHub{}
+	githubSim.UseKeyStore(store)
 	switch cfg.MistralMode {
 	case aic.ModeSimulated:
 		// simulé (défaut)
@@ -57,7 +59,7 @@ func main() {
 
 	coord := &aic.Coordinator{
 		Store: store, Config: cfg,
-		Mistral: mistral, Reviewer: reviewer, GitHub: github,
+		Mistral: mistral, Reviewer: reviewer, GitHub: githubSim,
 	}
 	// Contexte d'exploitation : annulé proprement à l'arrêt.
 	ctx, cancel := context.WithCancel(context.Background())
