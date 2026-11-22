@@ -1,6 +1,6 @@
 # Rapport de réception — M-AIC-01 / T02 : coordinateur multi-agents (prototype local)
 
-Version 1.0 — 22 novembre 2026 · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
+Version 1.1 — 22 novembre 2026 (T02-R1 : levée des réserves de revue) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
 
 ## 1. Objectif
 
@@ -47,21 +47,40 @@ Commandes exécutées dans l'environnement de développement (Go 1.24) :
 - `go build ./...` : OK
 - `go vet ./...` : OK
 - `gofmt -l .` : aucun écart
-- `go test -count=1 ./...` : OK, 10/10 PASS
+- `go test -count=1 ./...` : OK, 14/14 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1)
+- `go test -count=3 ./...` : OK, 14/14 PASS trois exécutions successives (stabilité)
+
+Tests T02-R1 ajoutés :
+
+- TestT02R1AuthorizationRefusal : un auteur non habilité ne peut démarrer, corriger, valider ni bloquer une mission ; politique fail closed (liste vide = tout refusé) ; approbation non habilitée inefficace.
+- TestT02R1DeliveryIDAndStorageAck : identifiant de livraison absent refusé (400) ; échec réel de stockage répondu 503 sans assimilation à un doublon ; rejou de l'événement traité après rétablissement du stockage.
+- TestT02R1ConcurrentExecutionExclusive : 8 exécutions simultanées d'une même mission ; exactement 1 passage Mistral, 1 livraison, 7 refus ErrMissionLocked ; verrou relâché en fin d'exécution.
+- TestT02R1TransitionAtomicity : déclenchement d'un échec d'insertion au journal ; transaction annulée, état inchangé, aucune écriture partielle ; verrou atomique exclusif et reprise du verrou périmé.
 
 Remarques et limites :
 
-- `go test -race` n'a pas pu être exécuté : le détecteur de courses nécessite cgo et un compilateur C, non installable dans cet environnement ; à exécuter en T03. L'accès concurrentiel au stockage est restreint par conception (une connexion SQLite, traitement asynchrone séquentiel par événement).
+- `go test -race` n'a pas pu être exécuté : cgo et compilateur C indisponibles dans l'environnement T02 (tentative CGO_ENABLED=1 : « gcc not found ») ; à exécuter en T03. Un test de concurrence fonctionnel (8 exécutants simultanés) et un verrou d'exclusivité persistant couvrent la réserve en attendant.
 - Tous les adaptateurs sont simulés (SimulatedMistral, SimulatedOpenAI, SimulatedGitHub) ; aucun appel réseau, aucune API payante, aucune ressource cloud.
 
 ## 6. Limites impératives respectées
 
 Aucune modification du Core EVM ni des composants bancaires, des registres Manager, des connecteurs ERP, du site internet et du projet Eau-Énergie. Aucun serveur ni ressource cloud réservés. Aucune API payante consommée. Aucun secret installé. Aucune fusion dans `main` ni intervention sur le Core.
 
+## 6 bis. T02-R1 — Levée des réserves de revue
+
+Les quatre réserves de la revue T02-R1 (commentaire PR #4 du 22/11/2026) sont levées :
+
+1. Autorisation GitHub : politique explicite d'identités habilitées (AIC_AUTHORIZED_LOGINS, fail closed), contrôle du sender authentifié GitHub, distinct du HMAC du webhook ; refus des commandes pour tout auteur non listé.
+2. Acquittement et persistance : événement enregistré durablement AVANT la réponse 2xx ; X-GitHub-Delivery obligatoire (400 sinon) ; échec réel de stockage → 503 pour rejou GitHub ; aucune erreur SQL n'est assimilée à un doublon.
+3. Exclusivité d'exécution : verrou atomique persistant (mission_locks) ; jamais deux passages Mistral ni deux livraisons pour une même mission ; reprise après crash documentée et réservée au démarrage (verrou périmé selon AIC_RUN_STALE_INTERVAL).
+4. Atomicité des transitions : état et journal en une même transaction SQL, avec contrôle de concurrence sur l'état observé ; aucun état modifié sans journal.
+
+Correction connexe : les fichiers github.go et mistral.go présentaient dans la version publiée initiale des caractères altérés lors de la publication (motif antérieur à la publication : une séquence d'échappement). Ils sont corrigés et republiés ; l'intégrité de tous les fichiers a été re-vérifiée par construction et tests complets depuis la source distante.
+
 ## 7. Réserves et suite
 
 - `go test -race` à exécuter en T03 sur machine complète.
 - Interopérabilité réelle non démontrée en T02 : les adaptateurs Mistral, OpenAI et GitHub sont simulés ; l'ouverture des accès API et la démonstration de bout en bout relèvent de T03, le déploiement de T04.
-- Statut : T02 développée, testée et publiée sur `mission/ai-coordinator-v01` ; PR Draft ouverte vers `main` en attente de réception formelle et d'autorisation de fusion.
+- Statut : T02 et T02-R1 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour, en attente de la nouvelle revue.
 
 Décisions attendues du responsable : validation de T02, puis autorisation éventuelle de fusion de la PR Draft.
