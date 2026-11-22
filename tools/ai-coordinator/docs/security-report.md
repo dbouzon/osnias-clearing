@@ -1,0 +1,36 @@
+# Rapport de sécurité — M-AIC-01 / T02
+
+Établi le 22 novembre 2026. Périmètre : prototype local du coordinateur (tranche T02, adaptateurs simulés).
+
+## Mesures implémentées
+
+1. Vérification HMAC-SHA256 obligatoire de chaque webhook (comparaison à temps constant via hmac.Equal) ; sans secret configuré, tout est refusé ; signature invalide → 401.
+2. Déduplication persistante des livraisons GitHub (X-GitHub-Delivery, clé primaire SQLite) : protection contre les rejouements et le double traitement, y compris après redémarrage.
+3. Anti-boucle : les commentaires émis par le compte du coordinateur sont ignorés avant tout traitement.
+4. Aucune commande arbitraire depuis GitHub : le contenu des Issues et commentaires passe un garde-fou (github.go, AgentCommandGuard) ; le coordinateur n'exécute aucun shell.
+5. Garde-boucle de mission : occurrences limitées à AIC_MAX_CORRECTIONS (défaut 3, dépassement → BLOCKED) ; durée bornée (AIC_MISTRAL_TIMEOUT) ; itérations et budget de passages d'outils bornés (dépassement → BLOCKED).
+6. Isolation des exécutions : répertoire de travail dédié par mission (AIC_WORK_ROOT), aucun accès à des ressources hors de ce répertoire en T02 ; exécutions et incidents journalisés (table agent_logs).
+7. Aucun secret dans le dépôt : configuration exclusivement par variables d'environnement (env.example sans valeur réelle) ; aucun secret journalisé.
+8. Droits GitHub minimaux prévus (T03) : lecture Issues et webhooks, écriture commentaires et PR Draft, jamais la permission de fusion ; la fusion reste une opération humaine hors du périmètre du compte bot.
+9. Adaptateurs API verrouillés : en T02, AIC_MISTRAL_MODE=api ou AIC_OPENAI_MODE=api provoquent un arrêt en erreur explicite ; aucune consommation d'API payante possible depuis ce code.
+10. Identités logiques distinctes : chaque action journalisée porte son émetteur (system, coordinator, mistral, openai, human).
+
+## Limites et réserves T02
+
+- Le garde-fou lexical n'est pas une sandbox : en T03, l'exécution réelle de la Vibe CLI devra se faire en conteneur jetable, utilisateur dédié, sans réseau sortant autre que les API autorisées.
+- Le webhook n'accepte en T02 que des connexions locales ; l'exposition publique (TLS, rate limiting du récepteur) relève de T04.
+- Tests exécutés sans détecteur de courses (`go test -race`) : le détecteur nécessite cgo et un compilateur C, indisponible dans l'environnement de développement T02 ; à exécuter en T03 sur une machine complète. Les accès concurrents au stockage sont néanmoins restreints (SQLite en une connexion, traitement asynchrone séquentiel par événement).
+
+## Conformité aux exigences de la direction
+
+| Exigence T02-D | Statut |
+| --- | --- |
+| Aucun secret dans le dépôt | Conforme (env.example sans valeur réelle) |
+| Droits GitHub limités au dépôt Osnias | Prévu par conception, applicable en T03 |
+| Identités logiques distinctes | Conforme (journal par émetteur) |
+| Aucune commande arbitraire depuis un commentaire | Conforme (garde-fou + aucun shell) |
+| Limitation des corrections à trois | Conforme (défaut 3, configurable) |
+| Arrêt sur dépassement de durée ou budget | Conforme (timeout, itérations, budget) |
+| Protection contre les événements rejoués | Conforme (déduplication persistante) |
+| Exécutions isolées et journalisées | Conforme (T02) ; conteneur à ajouter en T03 |
+| Validation humaine obligatoire avant fusion | Conforme (AWAITING_APPROVAL, fusion hors périmètre du bot) |
