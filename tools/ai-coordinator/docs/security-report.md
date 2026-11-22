@@ -15,11 +15,19 @@
 9. Adaptateurs API verrouillés : en T02, AIC_MISTRAL_MODE=api ou AIC_OPENAI_MODE=api provoquent un arrêt en erreur explicite ; aucune consommation d'API payante possible depuis ce code.
 10. Identités logiques distinctes : chaque action journalisée porte son émetteur (system, coordinator, mistral, openai, human).
 
+
+## Mesures complémentaires T02-R1 (réserves de revue)
+
+11. Habilitation explicite des auteurs : seules les identités listées dans AIC_AUTHORIZED_LOGINS peuvent émettre /aic start, /aic correction, /aic approve et /aic block ; politique fail closed (liste vide = refus de toute commande) ; vérification sur le sender authentifié GitHub, distincte du HMAC qui authentifie le webhook ; refus journalisés.
+12. Acquittement durable : l'événement (X-GitHub-Delivery, obligatoire, sinon 400) est enregistré dans SQLite avant toute réponse 2xx ; en cas d'échec réel de stockage, réponse 503 afin que GitHub rejoue la livraison ; une erreur SQL n'est jamais assimilée à un doublon (INSERT OR IGNORE + comptage de lignes).
+13. Exclusivité d'exécution : verrou atomique persistant (table mission_locks, INSERT OR IGNORE) ; une seule exécution Mistral et une seule livraison par mission à la fois ; les autres appels reçoivent ErrMissionLocked et s'abstiennent ; verrou relâché en fin d'exécution ; après crash, un verrou périmé (âge > AIC_RUN_STALE_INTERVAL) est repris uniquement au redémarrage (Resume, ReclaimStaleClaim).
+14. Atomicité des transitions : mise à jour d'état et insertion au journal dans une même transaction SQL, avec relecture conflit (WHERE state = état observé) ; en cas d'échec, retour en arrière complet : aucun état modifié sans journal, aucune écriture partielle (testé par déclencheur d'échec).
+
 ## Limites et réserves T02
 
 - Le garde-fou lexical n'est pas une sandbox : en T03, l'exécution réelle de la Vibe CLI devra se faire en conteneur jetable, utilisateur dédié, sans réseau sortant autre que les API autorisées.
 - Le webhook n'accepte en T02 que des connexions locales ; l'exposition publique (TLS, rate limiting du récepteur) relève de T04.
-- Tests exécutés sans détecteur de courses (`go test -race`) : le détecteur nécessite cgo et un compilateur C, indisponible dans l'environnement de développement T02 ; à exécuter en T03 sur une machine complète. Les accès concurrents au stockage sont néanmoins restreints (SQLite en une connexion, traitement asynchrone séquentiel par événement).
+- Tests toujours exécutés sans détecteur de courses (`go test -race`) : cgo et un compilateur C demeurent indisponibles dans l'environnement de développement (tentative CGO_ENABLED=1 : « gcc not found ») ; à exécuter en T03. Les accès concurrents au stockage sont restreints par ailleurs (une connexion SQLite, verrou d'exclusivité persistant, traitement asynchrone séquentiel par événement, tests de concurrence fonctionnels 8 exécutants).
 
 ## Conformité aux exigences de la direction
 
