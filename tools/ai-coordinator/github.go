@@ -54,7 +54,7 @@ var ErrNoPushByAgent = errors.New("aucun push n'est effectué par l'agent : livr
 // mots-clés du vocabulaire du coordinateur sont acceptés.
 func AgentCommandGuard(body string) error {
 	// refus grossier des tentatives classiques d'injection de commandes.
-	for _, pat := range []string{"rm -rf", "$(", "${", "; curl", "&& curl", "| curl", `, "sudo ", "eval "} {
+	for _, pat := range []string{"rm -rf", "$(", "${", "; curl", "&& curl", "| curl", "`curl", "sudo ", "eval "} {
 		if strings.Contains(body, pat) {
 			return errors.New("commande arbitraire refusée dans le contenu GitHub (garde-fou T02-D)")
 		}
