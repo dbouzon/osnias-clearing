@@ -49,10 +49,11 @@ type Config struct {
 	// OpenAI
 	OpenAIMode string // AIC_OPENAI_MODE : simulated | api
 	// Divers
-	DBPath           string        // AIC_DB_PATH (défaut ai-coordinator.sqlite)
-	WorkRoot         string        // AIC_WORK_ROOT (défaut /tmp/aic-work)
-	MaxCorrections   int           // AIC_MAX_CORRECTIONS (défaut 3)
-	RunStaleInterval time.Duration // AIC_RUN_STALE_INTERVAL (défaut 86400s)
+	DBPath               string        // AIC_DB_PATH (défaut ai-coordinator.sqlite)
+	WorkRoot             string        // AIC_WORK_ROOT (défaut /tmp/aic-work)
+	MaxCorrections       int           // AIC_MAX_CORRECTIONS (défaut 3)
+	RunStaleInterval     time.Duration // AIC_RUN_STALE_INTERVAL (défaut 86400s)
+	PendingRetryInterval time.Duration // AIC_PENDING_RETRY_INTERVAL (défaut 60s, relance à chaud de la file T02-R3)
 }
 
 // IsAuthorized applique la politique d'habilitation des commandes /aic :
@@ -120,19 +121,20 @@ func fromEnvList(key string) []string {
 // ConfigFromEnv construit la configuration depuis l'environnement.
 func ConfigFromEnv() Config {
 	return Config{
-		ListenAddr:         fromEnvStr("AIC_LISTEN_ADDR", "127.0.0.1:8080"),
-		WebhookSecret:      os.Getenv("AIC_WEBHOOK_SECRET"),
-		CoordinatorLogin:   fromEnvStr("AIC_COORDINATOR_LOGIN", "osnias-aic-bot"),
-		AuthorizedLogins:   fromEnvList("AIC_AUTHORIZED_LOGINS"),
-		GitHubRepo:         fromEnvStr("AIC_GITHUB_REPO", "dbouzon/osnias-clearing"),
-		MistralMode:        fromEnvStr("AIC_MISTRAL_MODE", ModeSimulated),
-		MistralTimeout:     fromEnvDur("AIC_MISTRAL_TIMEOUT", 600*time.Second),
-		MistralMaxIter:     fromEnvInt("AIC_MISTRAL_MAX_ITER", 40),
-		MistralBudgetSteps: fromEnvInt("AIC_MISTRAL_BUDGET_STEPS", 50),
-		OpenAIMode:         fromEnvStr("AIC_OPENAI_MODE", ModeSimulated),
-		DBPath:             fromEnvStr("AIC_DB_PATH", "ai-coordinator.sqlite"),
-		WorkRoot:           fromEnvStr("AIC_WORK_ROOT", "/tmp/aic-work"),
-		MaxCorrections:     fromEnvInt("AIC_MAX_CORRECTIONS", 3),
-		RunStaleInterval:   fromEnvDur("AIC_RUN_STALE_INTERVAL", 86400*time.Second),
+		ListenAddr:           fromEnvStr("AIC_LISTEN_ADDR", "127.0.0.1:8080"),
+		WebhookSecret:        os.Getenv("AIC_WEBHOOK_SECRET"),
+		CoordinatorLogin:     fromEnvStr("AIC_COORDINATOR_LOGIN", "osnias-aic-bot"),
+		AuthorizedLogins:     fromEnvList("AIC_AUTHORIZED_LOGINS"),
+		GitHubRepo:           fromEnvStr("AIC_GITHUB_REPO", "dbouzon/osnias-clearing"),
+		MistralMode:          fromEnvStr("AIC_MISTRAL_MODE", ModeSimulated),
+		MistralTimeout:       fromEnvDur("AIC_MISTRAL_TIMEOUT", 600*time.Second),
+		MistralMaxIter:       fromEnvInt("AIC_MISTRAL_MAX_ITER", 40),
+		MistralBudgetSteps:   fromEnvInt("AIC_MISTRAL_BUDGET_STEPS", 50),
+		OpenAIMode:           fromEnvStr("AIC_OPENAI_MODE", ModeSimulated),
+		DBPath:               fromEnvStr("AIC_DB_PATH", "ai-coordinator.sqlite"),
+		WorkRoot:             fromEnvStr("AIC_WORK_ROOT", "/tmp/aic-work"),
+		MaxCorrections:       fromEnvInt("AIC_MAX_CORRECTIONS", 3),
+		RunStaleInterval:     fromEnvDur("AIC_RUN_STALE_INTERVAL", 86400*time.Second),
+		PendingRetryInterval: fromEnvDur("AIC_PENDING_RETRY_INTERVAL", 60*time.Second),
 	}
 }
