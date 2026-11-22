@@ -277,11 +277,11 @@ func TestModeAPIRefuse(t *testing.T) {
 // TestStoreEvents vérifie la déduplication des événements directement.
 func TestStoreEvents(t *testing.T) {
 	store := newTestStore(t)
-	fresh, err := store.SaveEvent("abc", "issue_comment")
+	fresh, err := store.SaveEvent("abc", "issue_comment", "{}")
 	if err != nil || !fresh {
 		t.Fatalf("premier enregistrement : fresh=%v err=%v", fresh, err)
 	}
-	fresh, _ = store.SaveEvent("abc", "issue_comment")
+	fresh, _ = store.SaveEvent("abc", "issue_comment", "{}")
 	if fresh {
 		t.Fatal("rejou non détecté : la déduplication est défaillante")
 	}
@@ -295,7 +295,7 @@ func TestReplayAfterRestart(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ouvrir store : %v", err)
 	}
-	f, _ := store.SaveEvent("d-ro", "issue_comment")
+	f, _ := store.SaveEvent("d-ro", "issue_comment", "{}")
 	if !f {
 		t.Fatal("premier enregistrement attendu")
 	}
@@ -305,7 +305,7 @@ func TestReplayAfterRestart(t *testing.T) {
 		t.Fatalf("réouvrir store : %v", err)
 	}
 	defer store2.Close()
-	f2, _ := store2.SaveEvent("d-ro", "issue_comment")
+	f2, _ := store2.SaveEvent("d-ro", "issue_comment", "{}")
 	if f2 {
 		t.Fatal("rejou non détecté après redémarrage : la déduplication n'est pas persistante")
 	}
@@ -453,7 +453,7 @@ func TestT02R1DeliveryIDAndStorageAck(t *testing.T) {
 	}
 	c.Store = store2
 	defer store2.Close()
-	fresh, err := store2.SaveEvent("st1", "issue_comment")
+	fresh, err := store2.SaveEvent("st1", "issue_comment", "{}")
 	if err != nil || !fresh {
 		t.Fatalf("l'échec de stockage a été assimilé à un doublon : fresh=%v err=%v", fresh, err)
 	}
@@ -556,5 +556,160 @@ func TestT02R1TransitionAtomicity(t *testing.T) {
 	// verrou périmé (âge > intervalle) : reprise possible après crash.
 	if ok, err := store.ReclaimStaleClaim("AIC-500", time.Nanosecond); err != nil || !ok {
 		t.Fatalf("verrou périmé doit être repris : ok=%v err=%v", ok, err)
+	}
+}
+
+// TestT02R2ReclaimThenClaim vérifie (anomalie A de la revue T02-R2) que la
+// reprise d'un verrou périmé supprime la ligne du verrou : le ClaimMission
+// suivant doit réussir. La version antérieure actualisait claimed_at et
+// l'INSERT OR IGNORE échouait ensuite silencieusement : mission bloquée.
+func TestT02R2ReclaimThenClaim(t *testing.T) {
+	store := newTestStore(t)
+	ok, err := store.ClaimMission("AIC-600")
+	if err != nil || !ok {
+		t.Fatalf("premier claim : ok=%v err=%v", ok, err)
+	}
+	// verrou vivant : jamais repris.
+	if ok, _ := store.ReclaimStaleClaim("AIC-600", 24*time.Hour); ok {
+		t.Fatal("verrou vivant repris")
+	}
+	time.Sleep(2 * time.Millisecond)
+	// verrou périmé : supprimé, puis re-claimable (le correctif).
+	if ok, err := store.ReclaimStaleClaim("AIC-600", time.Millisecond); err != nil || !ok {
+		t.Fatalf("verrou périmé doit être repris : ok=%v err=%v", ok, err)
+	}
+	ok, err = store.ClaimMission("AIC-600")
+	if err != nil || !ok {
+		t.Fatalf("claim après reprise impossible : mission resterait bloquée (ok=%v err=%v)", ok, err)
+	}
+}
+
+// TestT02R2ResumeAfterCrash vérifie (anomalie A, bout en bout) qu'un crash
+// pendant l'exécution laisse la mission RUNNING avec un verrou périmé, et
+// que Resume au redémarrage débloque réellement la mission : elle progresse
+// au lieu de rester RUNNING avec verrou éternellement actif.
+func TestT02R2ResumeAfterCrash(t *testing.T) {
+	dir := t.TempDir()
+	dbp := filepath.Join(dir, "t.sqlite")
+	store, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("ouvrir store : %v", err)
+	}
+	m, err := store.CreateMission("AIC-601", 601, "mission crash")
+	if err != nil {
+		t.Fatalf("créer mission : %v", err)
+	}
+	if err := store.Transition(m, StateRunning, "coordinator", "exécution interrompue (crash simulé)"); err != nil {
+		t.Fatalf("passer en RUNNING : %v", err)
+	}
+	if ok, err := store.ClaimMission("AIC-601"); err != nil || !ok {
+		t.Fatalf("claim : ok=%v err=%v", ok, err)
+	}
+	store.Close()
+
+	// redémarrage : nouvelle base, même fichier.
+	store2, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("réouvrir store : %v", err)
+	}
+	defer store2.Close()
+	cfg := ConfigFromEnv()
+	cfg.DBPath = dbp
+	cfg.WorkRoot = filepath.Join(dir, "work")
+	cfg.WebhookSecret = "test-secret"
+	cfg.AuthorizedLogins = []string{"dbouzon"}
+	cfg.RunStaleInterval = time.Nanosecond // verrou immédiatement périmé
+	cfg.MistralTimeout = 20 * time.Second
+	c := &Coordinator{Store: store2, Config: cfg, Mistral: &SimulatedMistral{}, Reviewer: &SimulatedOpenAI{}, GitHub: &SimulatedGitHub{}}
+	if err := c.Resume(context.Background()); err != nil {
+		t.Fatalf("resume : %v", err)
+	}
+	m2, err := store2.MissionByID("AIC-601")
+	if err != nil || m2 == nil {
+		t.Fatalf("relire mission : %v", err)
+	}
+	if m2.State == StateRunning {
+		t.Fatal("mission encore RUNNING après reprise : le verrou actualisé bloquait la reprise (anomalie A)")
+	}
+	if m2.State == StateOpen || m2.State == StateBlocked {
+		t.Fatalf("état inattendu après reprise : %s", m2.State)
+	}
+	_ = m // silence
+}
+
+// TestT02R2PendingEventQueue vérifie (anomalie B) qu'un événement acquitté
+// (2xx) mais non traité au moment du crash est conservé avec son payload et
+// retraité au redémarrage : la commande humaine n'est jamais perdue.
+func TestT02R2PendingEventQueue(t *testing.T) {
+	dir := t.TempDir()
+	dbp := filepath.Join(dir, "t.sqlite")
+	store, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("ouvrir store : %v", err)
+	}
+	payload := `{"action":"created","issue":{"number":602,"title":"mission file"},"comment":{"body":"/aic start","user":{"login":"dbouzon"}},"sender":{"login":"dbouzon"}}`
+	// crash simulé entre l'acquittement 2xx et le traitement asynchrone :
+	// SaveEvent a eu lieu, MarkEventProcessed non.
+	fresh, err := store.SaveEvent("d-t02r2", "issue_comment", payload)
+	if err != nil || !fresh {
+		t.Fatalf("save event : fresh=%v err=%v", fresh, err)
+	}
+	store.Close()
+
+	// redémarrage : l'événement est bien dans la file d'attente persistante.
+	store2, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("réouvrir store : %v", err)
+	}
+	defer store2.Close()
+	pending, err := store2.PendingEvents()
+	if err != nil || len(pending) != 1 {
+		t.Fatalf("file d'attente : %d événement(s), err=%v", len(pending), err)
+	}
+	if pending[0].DeliveryID != "d-t02r2" || pending[0].Payload != payload {
+		t.Fatal("payload non restitué : la reprise serait impossible")
+	}
+
+	// dévidage au démarrage : la mission est créée puis exécutée.
+	cfg := ConfigFromEnv()
+	cfg.DBPath = dbp
+	cfg.WorkRoot = filepath.Join(dir, "work")
+	cfg.WebhookSecret = "test-secret"
+	cfg.AuthorizedLogins = []string{"dbouzon"}
+	cfg.MistralTimeout = 20 * time.Second
+	c := &Coordinator{Store: store2, Config: cfg, Mistral: &SimulatedMistral{}, Reviewer: &SimulatedOpenAI{}, GitHub: &SimulatedGitHub{}}
+	DrainPendingEvents(context.Background(), c, slog.New(slog.NewTextHandler(&bytes.Buffer{}, nil)))
+
+	m, err := store2.MissionByID("AIC-602")
+	if err != nil || m == nil {
+		t.Fatalf("mission perdue après redémarrage : %v (anomalie B)", err)
+	}
+	if m.State == StateOpen {
+		t.Fatal("commande /aic start rejouée sans effet : mission toujours OPEN")
+	}
+	if m.State != StateReview && m.State != StateCorrection && m.State != StateAwaitingApproval && m.State != StateBlocked {
+		t.Fatalf("état inattendu : %s", m.State)
+	}
+	// file vidée et cloturée : l'événement ne sera pas rejoué deux fois.
+	pending, err = store2.PendingEvents()
+	if err != nil || len(pending) != 0 {
+		t.Fatalf("file d'attente non vidée : %d, err=%v", len(pending), err)
+	}
+}
+
+// TestT02R2NoLossWhenEventNotCommand vérifie que la file d'attente ne
+// s'engorge pas : un événement sans commande restante (action ignorée) est
+// clos et marqué traité, pas conservé indéfiniment.
+func TestT02R2NoLossWhenEventNotCommand(t *testing.T) {
+	c, _, _, _, _ := newTestCoordinator(t)
+	payload := `{"action":"edited","issue":{"number":603,"title":"x"},"comment":{"body":"hello","user":{"login":"dbouzon"}},"sender":{"login":"dbouzon"}}`
+	fresh, err := c.Store.SaveEvent("d-ed", "issue_comment", payload)
+	if err != nil || !fresh {
+		t.Fatalf("save event : fresh=%v err=%v", fresh, err)
+	}
+	DrainPendingEvents(context.Background(), c, slog.New(slog.NewTextHandler(&bytes.Buffer{}, nil)))
+	pending, err := c.Store.PendingEvents()
+	if err != nil || len(pending) != 0 {
+		t.Fatalf("événement non commandé doit être clos : %d, err=%v", len(pending), err)
 	}
 }
