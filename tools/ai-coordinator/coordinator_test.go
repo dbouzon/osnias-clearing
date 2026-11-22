@@ -861,3 +861,113 @@ func TestT02R3PendingRetryLoop(t *testing.T) {
 		t.Fatalf("la mission doit avoir progressé à chaud, état : %s", m.State)
 	}
 }
+
+// TestT02R4DraftRefRecoveredAfterCrash vérifie (réserve T02-R4) qu'une
+// interruption survenue après la création de la PR Draft mais avant son
+// enregistrement dans deliveries ne perd pas la référence : la reprise (y
+// compris après redémarrage complet, nouvel adaptateur vierge) restitue la
+// référence depuis le détail durable de l'opération, sans rappeler GitHub.
+func TestT02R4DraftRefRecoveredAfterCrash(t *testing.T) {
+	dir := t.TempDir()
+	dbp := filepath.Join(dir, "t.sqlite")
+	store1, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("ouvrir store : %v", err)
+	}
+	gh1 := &SimulatedGitHub{}
+	c1 := &Coordinator{Store: store1, Config: ConfigFromEnv(), Mistral: &SimulatedMistral{}, Reviewer: &SimulatedOpenAI{}, GitHub: gh1}
+	c1.Config.WebhookSecret = "test-secret"
+	c1.Config.AuthorizedLogins = []string{"dbouzon"}
+	if _, err := store1.CreateMission("AIC-800", 800, "mission reprise"); err != nil {
+		t.Fatalf("créer mission : %v", err)
+	}
+	// exécution interrompue : PR créée (opération done), SaveDraft non exécuté.
+	ref1, err := c1.githubDraft("AIC-800:draft", "AIC-800", "Livraison AIC-800", "rapport")
+	if err != nil || ref1 == "" {
+		t.Fatalf("première livraison : ref=%q err=%v", ref1, err)
+	}
+	if ref, _ := store1.DraftForMission("AIC-800"); ref != "" {
+		t.Fatal("pré-condition : la livraison ne doit pas encore être enregistrée")
+	}
+	store1.Close()
+
+	// redémarrage complet : nouvelle base, même fichier, adaptateur vierge.
+	store2, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("réouvrir store : %v", err)
+	}
+	defer store2.Close()
+	gh2 := &SimulatedGitHub{}
+	gh2.UseKeyStore(store2)
+	c2 := &Coordinator{Store: store2, Config: c1.Config, Mistral: &SimulatedMistral{}, Reviewer: &SimulatedOpenAI{}, GitHub: gh2}
+	ref2, err := c2.githubDraft("AIC-800:draft", "AIC-800", "Livraison AIC-800", "rapport")
+	if err != nil {
+		t.Fatalf("reprise : %v", err)
+	}
+	if ref2 != ref1 || ref2 == "" {
+		t.Fatalf("référence non restituée après interruption : %q vs %q", ref2, ref1)
+	}
+	if n := len(gh2.DraftPRs); n != 0 {
+		t.Fatalf("la reprise ne doit jamais rappeler GitHub : %d création(s)", n)
+	}
+	// la référence récupérée s'enregistre ensuite normalement.
+	if err := store2.SaveDraft("AIC-800", ref2, "draft"); err != nil {
+		t.Fatalf("save draft : %v", err)
+	}
+	if ref, _ := store2.DraftForMission("AIC-800"); ref != ref1 {
+		t.Fatal("livraison enregistrée incohérente")
+	}
+}
+
+// TestT02R4IdempotenceAfterRestart vérifie (réserve T02-R4) que la
+// déduplication de l'adaptateur survit à un redémarrage complet du
+// processus : un renvoi de commentaire sur une opération interrompue entre
+// l'envoi et le marquage 'done' ne produit aucun doublon, l'adaptateur
+// étant recréé vide et ne connaissant que le registre durable.
+func TestT02R4IdempotenceAfterRestart(t *testing.T) {
+	dir := t.TempDir()
+	dbp := filepath.Join(dir, "t.sqlite")
+	store1, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("ouvrir store : %v", err)
+	}
+	gh1 := &SimulatedGitHub{}
+	gh1.UseKeyStore(store1)
+	c1 := &Coordinator{Store: store1, Config: ConfigFromEnv(), Mistral: &SimulatedMistral{}, Reviewer: &SimulatedOpenAI{}, GitHub: gh1}
+	c1.Config.WebhookSecret = "test-secret"
+	c1.Config.AuthorizedLogins = []string{"dbouzon"}
+	if _, err := store1.CreateMission("AIC-801", 801, "mission redémarrage"); err != nil {
+		t.Fatalf("créer mission : %v", err)
+	}
+	key := "AIC-801:comment:review-ok"
+	if err := c1.githubPostComment(key, "AIC-801", "réception favorable"); err != nil {
+		t.Fatalf("premier envoi : %v", err)
+	}
+	if n := len(gh1.Comments); n != 1 {
+		t.Fatalf("pré-condition : 1 commentaire attendu, %d", n)
+	}
+	// crash simulé entre l'envoi et le marquage 'done'.
+	if err := store1.MarkGitHubOpState(key, "sending"); err != nil {
+		t.Fatalf("réarmer : %v", err)
+	}
+	store1.Close()
+
+	// redémarrage complet : registre mémoire vierge, seul le durable parle.
+	store2, err := OpenStore(dbp)
+	if err != nil {
+		t.Fatalf("réouvrir store : %v", err)
+	}
+	defer store2.Close()
+	gh2 := &SimulatedGitHub{}
+	gh2.UseKeyStore(store2)
+	c2 := &Coordinator{Store: store2, Config: c1.Config, Mistral: &SimulatedMistral{}, Reviewer: &SimulatedOpenAI{}, GitHub: gh2}
+	if err := c2.githubPostComment(key, "AIC-801", "réception favorable"); err != nil {
+		t.Fatalf("renvoi après redémarrage : %v", err)
+	}
+	if n := len(gh2.Comments); n != 0 {
+		t.Fatalf("doublon après redémarrage : %d commentaire(s) de l'adaptateur vierge", n)
+	}
+	if st, _ := store2.GitHubOpState(key); st != "done" {
+		t.Fatalf("opération restée %s après renvoi", st)
+	}
+}
