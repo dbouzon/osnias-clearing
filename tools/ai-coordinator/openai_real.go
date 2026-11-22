@@ -24,9 +24,6 @@ import (
 //   - aucune re-soumission automatique : un statut défavorable ou une
 //     réponse ambiguë est une erreur, rejouée par la file d'événements si le
 //     coordinateur le décide, jamais en boucle dans l'adaptateur ;
-//   - la réponse distante doit être structurée (decision ACCEPTED |
-//     CORRECTION | BLOCKED, summary) ; une réponse non structurée est une
-//     erreur explicite, jamais transformée en verdict par défaut ;
 //   - chaque appel journalise phase, modèle, statut, tokens, identifiant de
 //     corrélation (en-tête x-request-id) et extrait borné de la réponse ;
 //     jamais la clé, jamais les en-têtes d'authentification.
@@ -125,9 +122,49 @@ Réponds STRICTEMENT en JSON valide, sans texte hors JSON, avec les champs :
 {"decision":"ACCEPTED|CORRECTION|BLOCKED","summary":"réponse en une phrase adressée à Mistral Code","comments":[{"ref":"référence","note":"remarque"}]}
 Le champ summary est ta réponse directe à Mistral Code.`
 
+// openAIFreePrompt est l'instruction du canal bidirectionnel M-AIC-10 : la
+// réponse est LIBRE, aucun verdict n'est exigé.
+const openAIFreePrompt = `Tu es l'interlocuteur ChatGPT du canal de discussion Osnias AI Coordinator.
+Réponds librement, de façon brève et naturelle. Aucun format imposé, aucun verdict.`
+
 // Review implémente Reviewer par un appel réel à l'API OpenAI.
 func (r *RealOpenAI) Review(in ReviewInput) (ReviewOutput, error) {
-	return r.Call(in.MissionID, promptForReview(in))
+	return r.verdictFrom(in.MissionID, promptForReview(in))
+}
+
+// Call transmet un message à l'agent OpenAI (voie relais M-AIC-05) et
+// retourne sa réponse structurée (verdict).
+func (r *RealOpenAI) Call(missionID, userMessage string) (ReviewOutput, error) {
+	return r.verdictFrom(missionID, userMessage)
+}
+
+// verdictFrom exécute l'appel avec l'instruction de verdict puis valide la
+// réponse structurée.
+func (r *RealOpenAI) verdictFrom(missionID, userMessage string) (ReviewOutput, error) {
+	content, err := r.postChat(missionID, openAISystemPrompt, userMessage)
+	if err != nil {
+		return ReviewOutput{}, err
+	}
+	var verdict openAIVerdict
+	if err := json.Unmarshal([]byte(stripCodeFence(content)), &verdict); err != nil {
+		msg := fmt.Sprintf("réponse OpenAI non structurée : %s", excerptStr(content, 300))
+		r.logf(missionID, "error", msg)
+		return ReviewOutput{}, errors.New(msg)
+	}
+	switch verdict.Decision {
+	case VerdictAccepted, VerdictCorrection, VerdictBlocked:
+	default:
+		msg := fmt.Sprintf("verdict OpenAI inconnu : %s", verdict.Decision)
+		r.logf(missionID, "error", msg)
+		return ReviewOutput{}, errors.New(msg)
+	}
+	res := ReviewOutput{Decision: verdict.Decision, Summary: strings.TrimSpace(verdict.Summary)}
+	for _, c := range verdict.Comments {
+		if strings.TrimSpace(c.Ref) != "" || strings.TrimSpace(c.Note) != "" {
+			res.Comments = append(res.Comments, ReviewComment{Ref: c.Ref, Note: c.Note})
+		}
+	}
+	return res, nil
 }
 
 // promptForReview construit le message utilisateur : mission, rapport, diff.
@@ -141,26 +178,32 @@ func promptForReview(in ReviewInput) string {
 	return b.String()
 }
 
-// Call transmet un message à l'agent OpenAI et retourne sa réponse structurée.
-// C'est le point d'appel unique : journalisation, bornage et contrôles.
-func (r *RealOpenAI) Call(missionID, userMessage string) (ReviewOutput, error) {
-	started := time.Now()
+// Reply transmet un message dans le cadre du canal bidirectionnel (M-AIC-10)
+// et retourne la réponse LIBRE de l'agent : aucun verdict, aucune structure.
+// Réutilise le même point d'appel HTTP que Review (postChat).
+func (r *RealOpenAI) Reply(missionID, userMessage string) (string, error) {
+	return r.postChat(missionID, openAIFreePrompt, userMessage)
+}
+
+// postChat est le point d'appel unique : bornage, journalisation, contrôles.
+// Retourne la réponse libre (contenu brut) de l'agent.
+func (r *RealOpenAI) postChat(missionID, systemPrompt, userMessage string) (string, error) {
 	body, err := json.Marshal(openAIRequest{
 		Model:     r.model,
 		MaxTokens: r.maxTokens,
 		Messages: []openAIMessage{
-			{Role: "system", Content: openAISystemPrompt},
+			{Role: "system", Content: systemPrompt},
 			{Role: "user", Content: userMessage},
 		},
 	})
 	if err != nil {
-		return ReviewOutput{}, err
+		return "", err
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), r.client.Timeout)
 	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, r.apiURL+"/chat/completions", bytes.NewReader(body))
 	if err != nil {
-		return ReviewOutput{}, err
+		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+r.apiKey) // jamais journalisé
@@ -170,7 +213,7 @@ func (r *RealOpenAI) Call(missionID, userMessage string) (ReviewOutput, error) {
 	if err != nil {
 		msg := fmt.Sprintf("échec d'appel API OpenAI : %v", err)
 		r.logf(missionID, "error", msg)
-		return ReviewOutput{}, errors.New(msg)
+		return "", errors.New(msg)
 	}
 	defer resp.Body.Close()
 	raw, _ := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
@@ -178,38 +221,23 @@ func (r *RealOpenAI) Call(missionID, userMessage string) (ReviewOutput, error) {
 	if resp.StatusCode != http.StatusOK {
 		msg := fmt.Sprintf("statut HTTP %d de l'API OpenAI (corrélation=%s) : %s", resp.StatusCode, correlation, excerpt(raw, 300))
 		r.logf(missionID, "error", msg)
-		return ReviewOutput{}, errors.New(msg)
+		return "", errors.New(msg)
 	}
 	var out openAIResponse
 	if err := json.Unmarshal(raw, &out); err != nil || len(out.Choices) == 0 {
 		msg := fmt.Sprintf("réponse OpenAI illisible ou vide (corrélation=%s) : %s", correlation, excerpt(raw, 300))
 		r.logf(missionID, "error", msg)
-		return ReviewOutput{}, errors.New(msg)
+		return "", errors.New(msg)
 	}
 	content := strings.TrimSpace(out.Choices[0].Message.Content)
-	var verdict openAIVerdict
-	if err := json.Unmarshal([]byte(stripCodeFence(content)), &verdict); err != nil {
-		msg := fmt.Sprintf("réponse OpenAI non structurée (corrélation=%s) : %s", correlation, excerptStr(content, 300))
+	if content == "" {
+		msg := fmt.Sprintf("réponse OpenAI vide (corrélation=%s)", correlation)
 		r.logf(missionID, "error", msg)
-		return ReviewOutput{}, errors.New(msg)
+		return "", errors.New(msg)
 	}
-	switch verdict.Decision {
-	case VerdictAccepted, VerdictCorrection, VerdictBlocked:
-	default:
-		msg := fmt.Sprintf("verdict OpenAI inconnu (corrélation=%s) : %s", correlation, verdict.Decision)
-		r.logf(missionID, "error", msg)
-		return ReviewOutput{}, errors.New(msg)
-	}
-	res := ReviewOutput{Decision: verdict.Decision, Summary: strings.TrimSpace(verdict.Summary)}
-	for _, c := range verdict.Comments {
-		if strings.TrimSpace(c.Ref) != "" || strings.TrimSpace(c.Note) != "" {
-			res.Comments = append(res.Comments, ReviewComment{Ref: c.Ref, Note: c.Note})
-		}
-	}
-	r.logf(missionID, "response", fmt.Sprintf("statut=200 corrélation=%s tokens=%d décision=%s réponse=%s",
-		correlation, out.Usage.TotalTokens, verdict.Decision, excerptStr(content, 300)))
-	_ = started
-	return res, nil
+	r.logf(missionID, "response", fmt.Sprintf("statut=200 corrélation=%s tokens=%d réponse=%s",
+		correlation, out.Usage.TotalTokens, excerptStr(content, 300)))
+	return content, nil
 }
 
 // stripCodeFence enlève une clôture markdown éventuelle autour du JSON.
