@@ -14,6 +14,7 @@ Le module est autonome (module Go distinct), indépendant du Core Osnias, portab
 | webhook.go | Récepteur HTTP des webhooks GitHub : HMAC-SHA256 à temps constant, déduplication de livraison, traitement asynchrone |
 | coordinator.go | Orchestration du cycle : exécution Mistral bornée, livraison Draft, revue OpenAI, verdicts, reprise, anti-boucle |
 | mistral.go | Adaptateur agent développeur (simulé en T02) ; l'adaptateur API refuse toute exécution tant que T03 n'est pas autorisé |
+| mistral_cli.go | Adaptateur CLI Mistral Code (M-AIC-02) : invocation non interactive, répertoire isolé, clé d'API en mémoire, journalisation SQLite |
 | openai.go | Adaptateur agent chef de projet (simulé en T02), verdicts structurés ACCEPTED / CORRECTION / BLOCKED |
 | github.go | Interface GitHub du coordinateur (simulée en T02) + garde-fou contre les commandes arbitraires |
 | cmd/aic-coordinator | Point d'entrée du démon |
@@ -36,4 +37,4 @@ go test -count=1 ./...
 
 ## Limites T02
 
-Commandes réservées aux identités habilitées (AIC_AUTHORIZED_LOGINS, politique fail closed : liste vide = aucune commande acceptée). Adaptateurs Mistral, OpenAI et GitHub simulés uniquement ; l'adaptateur d'API refuse explicitement toute exécution (`AIC_MISTRAL_MODE=api` ou `AIC_OPENAI_MODE=api` provoque un arrêt en erreur). Fiabilité (T02-R2/T02-R3) : file d'événements persistée avec relance périodique à chaud (`AIC_PENDING_RETRY_INTERVAL`) et écritures GitHub idempotentes par clé (interface IdempotentGitHub). Le passage aux API réelles (T03) et au déploiement cloud (T04) requiert une autorisation distincte. Voir docs/deployment-linux.md et docs/security-report.md.
+Commandes réservées aux identités habilitées (AIC_AUTHORIZED_LOGINS, politique fail closed : liste vide = aucune commande acceptée). Adaptateurs Mistral, OpenAI et GitHub simulés uniquement ; l'adaptateur d'API refuse explicitement toute exécution (`AIC_MISTRAL_MODE=api` ou `AIC_OPENAI_MODE=api` provoque un arrêt en erreur). Fiabilité (T02-R2/T02-R3) : file d'événements persistée avec relance périodique à chaud (`AIC_PENDING_RETRY_INTERVAL`) et écritures GitHub idempotentes par clé (interface IdempotentGitHub). Le raccordement Mistral Code (M-AIC-02) s'effectue par adaptateur CLI (`AIC_MISTRAL_MODE=cli`), sélectionné de préférence à un serveur MCP : le coordinateur démarre des tâches bornées et isolées, il n'expose pas de service persistant interrogé par l'agent. Le passage aux API réelles (T03) et au déploiement cloud (T04) requiert une autorisation distincte. Voir docs/deployment-linux.md et docs/security-report.md.
