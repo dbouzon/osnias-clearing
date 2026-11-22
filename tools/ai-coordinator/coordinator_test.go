@@ -30,6 +30,7 @@ func newTestCoordinator(t *testing.T) (*Coordinator, *SimulatedMistral, *Simulat
 	cfg.DBPath = filepath.Join(dir, "test.sqlite")
 	cfg.WorkRoot = filepath.Join(dir, "work")
 	cfg.WebhookSecret = "test-secret"
+	cfg.AuthorizedLogins = []string{"dbouzon"}
 	cfg.MistralTimeout = 20 * time.Second
 	mistral := &SimulatedMistral{}
 	openai := &SimulatedOpenAI{}
@@ -363,5 +364,197 @@ func TestWorkDirIsolation(t *testing.T) {
 	}
 	if mistral.Runs != 1 {
 		t.Fatalf("runs=%d", mistral.Runs)
+	}
+}
+
+// --- Tranche T02-R1 : levée des réserves de robustesse et sécurité ---
+
+// TestT02R1AuthorizationRefusal vérifie (réserve 1) qu'un auteur non habilité
+// ne peut démarrer, corriger, valider ni bloquer une mission, même avec un
+// webhook authentique (HMAC valide) : l'habilitation porte sur l'identité du
+// sender authentifiée GitHub, distincte du HMAC.
+func TestT02R1AuthorizationRefusal(t *testing.T) {
+	c, mistral, _, gh, srv := newTestCoordinator(t)
+	c.Config.AuthorizedLogins = []string{"alice"} // seul alice est habilité
+
+	// non habilité : aucune mission créée, aucune exécution.
+	rec := postComment(t, srv, c.Config.WebhookSecret, "a1", 200, "mallory", "/aic start", true)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("webhook accepté attendu côté HTTP, code %d", rec.Code)
+	}
+	time.Sleep(200 * time.Millisecond)
+	if m, _ := c.Store.MissionByID("AIC-200"); m != nil {
+		t.Fatal("un auteur non habilité a créé une mission")
+	}
+	if mistral.Runs != 0 || len(gh.DraftPRs) != 0 {
+		t.Fatalf("un auteur non habilité a déclenché une exécution : runs=%d drafts=%d", mistral.Runs, len(gh.DraftPRs))
+	}
+
+	// liste vide (fail closed) : même alice est refusée.
+	c.Config.AuthorizedLogins = nil
+	postComment(t, srv, c.Config.WebhookSecret, "a2", 201, "alice", "/aic start", true)
+	time.Sleep(200 * time.Millisecond)
+	if m, _ := c.Store.MissionByID("AIC-201"); m != nil {
+		t.Fatal("politique fail closed contournée : mission créée sans habilitation listée")
+	}
+
+	// un auteur non habilité ne peut pas valider une mission en attente.
+	c.Config.AuthorizedLogins = []string{"alice"}
+	if err := newAuthorizedMission(t, c, "AIC-202"); err != nil {
+		t.Fatalf("mission témoin : %v", err)
+	}
+	postComment(t, srv, c.Config.WebhookSecret, "a3", 202, "mallory", "/aic approve", true)
+	time.Sleep(200 * time.Millisecond)
+	m, _ := c.Store.MissionByID("AIC-202")
+	if m.State != StateAwaitingApproval {
+		t.Fatalf("approbation non habilitée acceptée : état %s", m.State)
+	}
+}
+
+// newAuthorizedMission pousse une mission simulée jusqu'à AWAITING_APPROVAL.
+func newAuthorizedMission(t *testing.T, c *Coordinator, id string) error {
+	t.Helper()
+	m, err := c.Store.CreateMission(id, 1, "mission témoin")
+	if err != nil {
+		return err
+	}
+	return c.RunToReview(context.Background(), m)
+}
+
+// TestT02R1DeliveryIDAndStorageAck vérifie (réserve 2) : identifiant de
+// livraison vérifié, persistance AVANT acquittement, 503 sur échec réel de
+// stockage sans assimilation à un doublon, reprise par rejou.
+func TestT02R1DeliveryIDAndStorageAck(t *testing.T) {
+	_, _, _, _, srv := newTestCoordinator(t) // srv partagé ci-dessous
+	c := srv.Coordinator
+	s := srv
+
+	// identifiant de livraison absent : refus 400.
+	req := httptest.NewRequest(http.MethodPost, "/webhook", bytes.NewReader([]byte(`{}`)))
+	req.Header.Set("X-Hub-Signature-256", "sha256="+hex.EncodeToString(signBody(t, c.Config.WebhookSecret, []byte(`{}`))))
+	req.Header.Set("X-GitHub-Event", "issue_comment")
+	rec := httptest.NewRecorder()
+	s.HandleWebhook(rec, req)
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("delivery ID absent : code %d, attendu 400", rec.Code)
+	}
+
+	// échec réel de stockage : 503, non assimilé à un doublon.
+	dbPath := c.Config.DBPath
+	_ = c.Store.Close()
+	rec = postComment(t, s, c.Config.WebhookSecret, "st1", 300, "dbouzon", "/aic start", true)
+	if rec.Code != http.StatusServiceUnavailable {
+		t.Fatalf("échec de stockage : code %d, attendu 503", rec.Code)
+	}
+	// reprise : même identifiant rejoué une fois le stockage rétabli.
+	store2, err := OpenStore(dbPath)
+	if err != nil {
+		t.Fatalf("réouvrir store : %v", err)
+	}
+	c.Store = store2
+	defer store2.Close()
+	fresh, err := store2.SaveEvent("st1", "issue_comment")
+	if err != nil || !fresh {
+		t.Fatalf("l'échec de stockage a été assimilé à un doublon : fresh=%v err=%v", fresh, err)
+	}
+}
+
+// signBody est un utilitaire de signature HMAC pour les payloads bruts.
+func signBody(t *testing.T, secret string, body []byte) []byte {
+	t.Helper()
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write(body)
+	return mac.Sum(nil)
+}
+
+// TestT02R1ConcurrentExecutionExclusive vérifie (réserve 3) que deux webhooks
+// simultanés visant la même mission ne provoquent ni double passage Mistral,
+// ni double livraison : le verrou atomique persistant l'exclut formellement.
+func TestT02R1ConcurrentExecutionExclusive(t *testing.T) {
+	c, mistral, _, gh, _ := newTestCoordinator(t)
+	m, err := c.Store.CreateMission("AIC-400", 400, "mission concurrence")
+	if err != nil {
+		t.Fatalf("créer mission : %v", err)
+	}
+	const n = 8
+	errs := make(chan error, n)
+	for i := 0; i < n; i++ {
+		go func() {
+			errs <- c.RunToReview(context.Background(), m)
+		}()
+	}
+	locked, ok := 0, 0
+	for i := 0; i < n; i++ {
+		if err := <-errs; err == ErrMissionLocked {
+			locked++
+		} else if err == nil {
+			ok++
+		} else {
+			t.Fatalf("exécution concurrente : erreur inattendue %v", err)
+		}
+	}
+	if ok != 1 {
+		t.Fatalf("exécutions effectives=%d, attendu exactement 1", ok)
+	}
+	if locked != n-1 {
+		t.Fatalf("verrou non exclusif : %d appels non rejetés", locked)
+	}
+	if mistral.Runs != 1 {
+		t.Fatalf("agent Mistral exécuté %d fois, attendu 1", mistral.Runs)
+	}
+	if len(gh.DraftPRs) != 1 {
+		t.Fatalf("livraisons=%d, attendu 1", len(gh.DraftPRs))
+	}
+	// une fois l'exécution terminée, le verrou est libéré : relance possible.
+	if claim, err := c.Store.ClaimMission("AIC-400"); err != nil || !claim {
+		t.Fatalf("verrou non relâché en fin d'exécution : claim=%v err=%v", claim, err)
+	}
+	_ = c.Store.ReleaseClaim("AIC-400")
+}
+
+// TestT02R1TransitionAtomicity vérifie (réserve 4) l'atomicité état/journal :
+// en cas d'échec d'insertion du journal, la transaction est annulée et aucun
+// état modifié ni écriture partielle ne subsiste.
+func TestT02R1TransitionAtomicity(t *testing.T) {
+	store := newTestStore(t)
+	m, err := store.CreateMission("AIC-500", 500, "mission atomicité")
+	if err != nil {
+		t.Fatalf("créer mission : %v", err)
+	}
+	// déclencheur qui fait échouer toute insertion dans transitions.
+	if _, err := store.db.Exec(`CREATE TRIGGER fail_transitions BEFORE INSERT ON transitions BEGIN SELECT RAISE(FAIL, 'journal indisponible'); END`); err != nil {
+		t.Fatalf("créer déclencheur : %v", err)
+	}
+	if err := store.Transition(m, StateRunning, "coordinator", "exécution"); err == nil {
+		t.Fatal("transition réussie alors que le journal est indisponible : atomicité défaillante")
+	}
+	// aucun état modifié : la mission est inchangée dans la base.
+	m2, err := store.MissionByID("AIC-500")
+	if err != nil || m2 == nil {
+		t.Fatalf("relire mission : %v", err)
+	}
+	if m2.State != StateOpen {
+		t.Fatalf("transition partielle : état %s au lieu de OPEN", m2.State)
+	}
+	tr, _, _ := store.Counts("AIC-500") // la ligne de création est là, rien d'autre.
+	if tr != 1 {
+		t.Fatalf("journal incohérent : %d transitions au lieu de 1 (création)", tr)
+	}
+	// le vérrou d'exclusivité est lui aussi atomique et rejouable.
+	fresh, err := store.ClaimMission("AIC-500")
+	if err != nil || !fresh {
+		t.Fatalf("premier claim : fresh=%v err=%v", fresh, err)
+	}
+	fresh, _ = store.ClaimMission("AIC-500")
+	if fresh {
+		t.Fatal("claim non exclusif")
+	}
+	// verrou récent : jamais repris tant qu'une exécution vivante le tient.
+	if ok, err := store.ReclaimStaleClaim("AIC-500", 24*time.Hour); err != nil || ok {
+		t.Fatalf("verrou récent ne doit pas être repris : ok=%v err=%v", ok, err)
+	}
+	// verrou périmé (âge > intervalle) : reprise possible après crash.
+	if ok, err := store.ReclaimStaleClaim("AIC-500", time.Nanosecond); err != nil || !ok {
+		t.Fatalf("verrou périmé doit être repris : ok=%v err=%v", ok, err)
 	}
 }
