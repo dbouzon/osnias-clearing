@@ -28,6 +28,8 @@ Copier `env.example` vers l'environnement du service (jamais dans le dépôt). V
 - `AIC_MISTRAL_MODE=simulated`, `AIC_OPENAI_MODE=simulated` : seuls modes autorisés en T02.
 - `AIC_MAX_CORRECTIONS` (défaut 3), `AIC_MISTRAL_TIMEOUT` (défaut 600 s), `AIC_MISTRAL_MAX_ITER` (défaut 40), `AIC_MISTRAL_BUDGET_STEPS` (défaut 50).
 - `AIC_DB_PATH`, `AIC_WORK_ROOT` : SQLite et répertoires de travail isolés.
+- `AIC_RUN_STALE_INTERVAL` (défaut 86400 s) : péremption des verrous d'exécution abandonnés, repris au redémarrage.
+- `AIC_PENDING_RETRY_INTERVAL` (défaut 60 s) : relance périodique de la file d'événements en attente pendant le fonctionnement normal (T02-R3).
 
 ## Exécution en service (systemd, modèle)
 
