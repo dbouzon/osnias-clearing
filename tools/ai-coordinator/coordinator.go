@@ -102,54 +102,62 @@ func (c *Coordinator) HandleIssueComment(ctx context.Context, issueNumber int64,
 // l'adaptateur, qui déduplique ; une opération déjà 'done' n'est jamais
 // renvoyée. Sans IdempotentGitHub, la protection se limite à l'état 'done'.
 func (c *Coordinator) githubPostComment(idemKey, missionID, body string) error {
-	return c.githubApply(idemKey, missionID, "comment", func() error {
+	_, err := c.githubApply(idemKey, missionID, "comment", func() (string, error) {
 		if ig, ok := c.GitHub.(IdempotentGitHub); ok {
-			return ig.PostCommentIdem(idemKey, missionID, body)
+			return "", ig.PostCommentIdem(idemKey, missionID, body)
 		}
-		return c.GitHub.PostComment(missionID, body)
+		return "", c.GitHub.PostComment(missionID, body)
 	})
+	return err
 }
 
 // githubDraft réalise une livraison Draft idempotente (T02-R3, risque 2).
+// T02-R4 : la référence de livraison est persistée avec l'opération (détail
+// github_ops) ; une opération déjà 'done' restitue sa référence sans
+// rappeler GitHub, y compris si l'interruption est survenue entre la création
+// de la PR et l'enregistrement dans deliveries.
 func (c *Coordinator) githubDraft(idemKey, missionID, title, body string) (string, error) {
-	var ref string
-	err := c.githubApply(idemKey, missionID, "draft_pr", func() error {
-		var e error
+	return c.githubApply(idemKey, missionID, "draft_pr", func() (string, error) {
 		if ig, ok := c.GitHub.(IdempotentGitHub); ok {
-			ref, e = ig.CreateDraftPRIdem(idemKey, missionID, title, body)
-		} else {
-			ref, e = c.GitHub.CreateDraftPR(missionID, title, body)
+			return ig.CreateDraftPRIdem(idemKey, missionID, title, body)
 		}
-		return e
+		return c.GitHub.CreateDraftPR(missionID, title, body)
 	})
-	return ref, err
 }
 
-// githubApply exécute une écriture GitHub sous clé d'idempotence :
-// enregistrement en base, envoi, puis marquage 'done'. Une clé déjà 'done'
-// est ignorée ; une clé 'pending' ou 'sending' (fenêtre de crash entre
-// l'envoi et le marquage) est renvoyée : l'adaptateur déduplique par clé.
-func (c *Coordinator) githubApply(idemKey, missionID, opType string, send func() error) error {
+// githubApply exécute une écriture GitHub sous clé d'idempotence et
+// retourne le détail persisté de l'opération (référence de livraison pour
+// une PR Draft). Une clé déjà 'done' n'est jamais renvoyée : son détail
+// est restitué depuis la base. Une clé 'pending' ou 'sending' (fenêtre de
+// crash entre l'envoi et le marquage) est renvoyée : l'adaptateur
+// déduplique par clé.
+func (c *Coordinator) githubApply(idemKey, missionID, opType string, send func() (string, error)) (string, error) {
 	fresh, err := c.Store.EnqueueGitHubOp(idemKey, missionID, opType)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if !fresh {
 		st, err := c.Store.GitHubOpState(idemKey)
 		if err != nil {
-			return err
+			return "", err
 		}
 		if st == "done" {
-			return nil
+			// opération déjà réalisée : le détail durable remplace tout
+			// rappel de l'adaptateur (T02-R4).
+			return c.Store.GitHubOpDetail(idemKey)
 		}
 	}
 	if err := c.Store.MarkGitHubOpState(idemKey, "sending"); err != nil {
-		return err
+		return "", err
 	}
-	if err := send(); err != nil {
-		return err
+	detail, err := send()
+	if err != nil {
+		return "", err
 	}
-	return c.Store.MarkGitHubOpState(idemKey, "done")
+	if err := c.Store.MarkGitHubOpDone(idemKey, detail); err != nil {
+		return "", err
+	}
+	return detail, nil
 }
 
 // ProcessEvent traite un événement GitHub persisté à partir de son type et
@@ -285,8 +293,8 @@ func (c *Coordinator) ReviewDelivery(m *Mission, prRef string, res MistralResult
 		}
 		corrKey := m.ID + ":changes:" + strconv.Itoa(m.Corrections)
 		if ig, ok := c.GitHub.(IdempotentGitHub); ok {
-			if err := c.githubApply(corrKey, m.ID, "request_changes", func() error {
-				return ig.RequestChangesIdem(corrKey, prRef, joinComments(out.Comments))
+			if _, err := c.githubApply(corrKey, m.ID, "request_changes", func() (string, error) {
+				return "", ig.RequestChangesIdem(corrKey, prRef, joinComments(out.Comments))
 			}); err != nil {
 				return err
 			}
