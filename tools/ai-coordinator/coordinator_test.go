@@ -713,3 +713,151 @@ func TestT02R2NoLossWhenEventNotCommand(t *testing.T) {
 		t.Fatalf("événement non commandé doit être clos : %d, err=%v", len(pending), err)
 	}
 }
+
+// TestT02R3GitHubOpStates vérifie les états de la table d'idempotence des
+// écritures GitHub (risque 2) : pending, sending, done.
+func TestT02R3GitHubOpStates(t *testing.T) {
+	store := newTestStore(t)
+	fresh, err := store.EnqueueGitHubOp("k1", "AIC-700", "comment")
+	if err != nil || !fresh {
+		t.Fatalf("enregistrement initial : fresh=%v err=%v", fresh, err)
+	}
+	if fresh, _ = store.EnqueueGitHubOp("k1", "AIC-700", "comment"); fresh {
+		t.Fatal("clé d'idempotence non dédupliquée")
+	}
+	if st, _ := store.GitHubOpState("k1"); st != "pending" {
+		t.Fatalf("état initial attendu pending, obtenu %s", st)
+	}
+	if err := store.MarkGitHubOpState("k1", "sending"); err != nil {
+		t.Fatalf("mark sending : %v", err)
+	}
+	if st, _ := store.GitHubOpState("k1"); st != "sending" {
+		t.Fatalf("état attendu sending, obtenu %s", st)
+	}
+	if err := store.MarkGitHubOpState("k1", "done"); err != nil {
+		t.Fatalf("mark done : %v", err)
+	}
+	if st, _ := store.GitHubOpState("k1"); st != "done" {
+		t.Fatalf("état attendu done, obtenu %s", st)
+	}
+	if st, _ := store.GitHubOpState("inconnue"); st != "" {
+		t.Fatalf("clé inconnue doit retourner une chaîne vide, obtenu %s", st)
+	}
+}
+
+// TestT02R3NoDuplicateComment vérifie (risque 2) qu'un commentaire GitHub
+// réenvoyé après une interruption entre l'envoi et le marquage 'done' n'est
+// jamais dupliqué : la même clé déduplique côté adaptateur.
+func TestT02R3NoDuplicateComment(t *testing.T) {
+	c, _, _, gh, _ := newTestCoordinator(t)
+	key := "AIC-701:comment:review-ok"
+	// premier envoi normal.
+	if err := c.githubPostComment(key, "AIC-701", "réception favorable"); err != nil {
+		t.Fatalf("premier envoi : %v", err)
+	}
+	// fenêtre de crash simulée : l'opération reste en état 'sending'.
+	if err := c.Store.MarkGitHubOpState(key, "sending"); err != nil {
+		t.Fatalf("réarmer état sending : %v", err)
+	}
+	// renvoi après interruption : même clé, l'adaptateur déduplique.
+	if err := c.githubPostComment(key, "AIC-701", "réception favorable"); err != nil {
+		t.Fatalf("renvoi : %v", err)
+	}
+	if n := len(gh.Comments); n != 1 {
+		t.Fatalf("commentaire dupliqué : %d au lieu de 1", n)
+	}
+	if st, _ := c.Store.GitHubOpState(key); st != "done" {
+		t.Fatalf("état final attendu done, obtenu %s", st)
+	}
+}
+
+// TestT02R3DraftReused vérifie (risque 2) qu'une livraison Draft interrompue
+// n'est jamais dupliquée : même clé, même référence, et une livraison déjà
+// persistée est réutilisée sans nouveauPR.
+func TestT02R3DraftReused(t *testing.T) {
+	c, _, _, gh, _ := newTestCoordinator(t)
+	m, err := c.Store.CreateMission("AIC-702", 702, "mission draft")
+	if err != nil {
+		t.Fatalf("créer mission : %v", err)
+	}
+	ref1, err := c.githubDraft(m.ID+":draft", m.ID, "Livraison "+m.ID, "rapport")
+	if err != nil || ref1 == "" {
+		t.Fatalf("première livraison : ref=%q err=%v", ref1, err)
+	}
+	// fenêtre de crash : opération laissée en 'sending', puis renvoi.
+	if err := c.Store.MarkGitHubOpState(m.ID+":draft", "sending"); err != nil {
+		t.Fatalf("réarmer : %v", err)
+	}
+	ref2, err := c.githubDraft(m.ID+":draft", m.ID, "Livraison "+m.ID, "rapport")
+	if err != nil || ref2 != ref1 {
+		t.Fatalf("renvoi doit réutiliser la référence : %q vs %q, err=%v", ref2, ref1, err)
+	}
+	if n := len(gh.DraftPRs); n != 1 {
+		t.Fatalf("livraison dupliquée : %d au lieu de 1", n)
+	}
+	// livraison persistée : réutilisée, aucune nouvelle création.
+	if err := c.Store.SaveDraft(m.ID, ref1, "draft"); err != nil {
+		t.Fatalf("save draft : %v", err)
+	}
+	ref3, err := c.Store.DraftForMission(m.ID)
+	if err != nil || ref3 != ref1 {
+		t.Fatalf("livraison persistée non restituée : %q vs %q, err=%v", ref3, ref1, err)
+	}
+}
+
+// TestT02R3PendingRetryLoop vérifie (risque 1) que la boucle de relance
+// périodique rejoue les événements en attente pendant le fonctionnement
+// normal : un événement bloqué par un verrou n'attend plus le redémarrage.
+func TestT02R3PendingRetryLoop(t *testing.T) {
+	c, _, _, _, _ := newTestCoordinator(t)
+	c.Config.PendingRetryInterval = 10 * time.Millisecond
+	payload := `{"action":"created","issue":{"number":703,"title":"mission relance"},"comment":{"body":"/aic start","user":{"login":"dbouzon"}},"sender":{"login":"dbouzon"}}`
+	if _, err := c.Store.SaveEvent("d-t02r3", "issue_comment", payload); err != nil {
+		t.Fatalf("save event : %v", err)
+	}
+	// verrou détenu : les premiers passages de la boucle échouent
+	// (ErrMissionLocked), l'événement reste en file d'attente.
+	if ok, err := c.Store.ClaimMission("AIC-703"); err != nil || !ok {
+		t.Fatalf("claim : ok=%v err=%v", ok, err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go StartPendingRetryLoop(ctx, c, slog.New(slog.NewTextHandler(&bytes.Buffer{}, nil)))
+	time.Sleep(60 * time.Millisecond)
+	pending, err := c.Store.PendingEvents()
+	if err != nil || len(pending) != 1 {
+		t.Fatalf("l'événement doit rester en attente pendant le verrou : %d, err=%v", len(pending), err)
+	}
+	m, err := c.Store.MissionByID("AIC-703")
+	if err != nil || m == nil {
+		t.Fatalf("mission absente malgré l'événement : %v", err)
+	}
+	if m.State != StateOpen && m.State != StateRunning {
+		t.Fatalf("état inattendu sous verrou : %s", m.State)
+	}
+	// libération du verrou : la boucle doit finir le travail à chaud.
+	if err := c.Store.ReleaseClaim("AIC-703"); err != nil {
+		t.Fatalf("release : %v", err)
+	}
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		pending, err = c.Store.PendingEvents()
+		if err != nil {
+			t.Fatalf("pending : %v", err)
+		}
+		if len(pending) == 0 {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("la boucle de relance n'a pas retraité l'événement après libération du verrou")
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	m, err = c.Store.MissionByID("AIC-703")
+	if err != nil || m == nil {
+		t.Fatalf("relire mission : %v", err)
+	}
+	if m.State == StateOpen || m.State == StateRunning {
+		t.Fatalf("la mission doit avoir progressé à chaud, état : %s", m.State)
+	}
+}
