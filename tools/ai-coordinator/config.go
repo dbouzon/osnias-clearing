@@ -47,8 +47,8 @@ type Config struct {
 	MistralTimeout     time.Duration // AIC_MISTRAL_TIMEOUT (défaut 600s)
 	MistralMaxIter     int           // AIC_MISTRAL_MAX_ITER (défaut 40 itérations CLI)
 	MistralBudgetSteps int           // AIC_MISTRAL_BUDGET_STEPS (défaut 50 passages d'outils)
-	MistralBin         string        // AIC_MISTRAL_BIN (défaut mistral-code) : binaire Mistral Code
-	MistralArgs        []string      // AIC_MISTRAL_ARGS (défaut exec) : arguments du mode non interactif
+	MistralBin         string        // AIC_MISTRAL_BIN (défaut vibe) : binaire Mistral Code
+	MistralArgs        []string      // AIC_MISTRAL_ARGS (défaut --prompt --trust) : mode non interactif
 	MistralAPIKey      string        // AIC_MISTRAL_API_KEY : clé d'API, mémoire uniquement, jamais journalisée
 	// OpenAI
 	OpenAIMode string // AIC_OPENAI_MODE : simulated | api
@@ -139,7 +139,7 @@ func ConfigFromEnv() Config {
 		MistralTimeout:       fromEnvDur("AIC_MISTRAL_TIMEOUT", 600*time.Second),
 		MistralMaxIter:       fromEnvInt("AIC_MISTRAL_MAX_ITER", 40),
 		MistralBudgetSteps:   fromEnvInt("AIC_MISTRAL_BUDGET_STEPS", 50),
-		MistralBin:           fromEnvStr("AIC_MISTRAL_BIN", "mistral-code"),
+		MistralBin:           fromEnvStr("AIC_MISTRAL_BIN", "vibe"),
 		MistralArgs:          defaultMistralArgs(fromEnvList("AIC_MISTRAL_ARGS")),
 		MistralAPIKey:        os.Getenv("AIC_MISTRAL_API_KEY"), // jamais journalisé ni persisté
 		OpenAIMode:           fromEnvStr("AIC_OPENAI_MODE", ModeSimulated),
@@ -159,7 +159,10 @@ func ConfigFromEnv() Config {
 // lorsque aucun argument n'est fourni.
 func defaultMistralArgs(args []string) []string {
 	if len(args) == 0 {
-		return []string{"exec"}
+		// Contrat vérifié avec la CLI Mistral Code (vibe) : mode programmatique
+		// -p lisant le prompt sur stdin sans texte l'accompagnant, confiance
+		// accordée au répertoire isolé pour la seule invocation.
+		return []string{"--prompt", "--trust"}
 	}
 	return args
 }

@@ -73,10 +73,11 @@ func main() {
 		}
 		logger.Info("adaptateur CLI Mistral Code activé (M-AIC-02)", "bin", cfg.MistralBin)
 		mistral = &aic.CLIMistral{
-			Bin:    cfg.MistralBin,
-			Args:   cfg.MistralArgs,
-			APIKey: cfg.MistralAPIKey,
-			Log:    func(missionID, phase, message string) { _ = store.Log(missionID, "mistral-code", phase, message) },
+			Bin:      cfg.MistralBin,
+			Args:     cfg.MistralArgs,
+			APIKey:   cfg.MistralAPIKey,
+			MaxTurns: cfg.MistralMaxIter,
+			Log:      func(missionID, phase, message string) { _ = store.Log(missionID, "mistral-code", phase, message) },
 		}
 	default:
 		logger.Error("AIC_MISTRAL_MODE inconnu ou non autorisé", "mode", cfg.MistralMode)

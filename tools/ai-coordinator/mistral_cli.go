@@ -8,9 +8,20 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
+
+// containsArg indique si un argument exact est déjà présent (sans doublon).
+func containsArg(args []string, name string) bool {
+	for _, a := range args {
+		if a == name {
+			return true
+		}
+	}
+	return false
+}
 
 // CLIMistral est l'adaptateur de l'agent développeur Mistral Code (M-AIC-02).
 //
@@ -35,9 +46,10 @@ import (
 // (MISTRAL_API_KEY). Elle n'est jamais journalisée ni persistée. Sans clé,
 // l'adaptateur refuse toute exécution (fail closed).
 type CLIMistral struct {
-	Bin    string   // binaire de la CLI (AIC_MISTRAL_BIN, défaut mistral-code)
-	Args   []string // arguments fixes sélectionnant le mode non interactif (AIC_MISTRAL_ARGS, défaut exec)
-	APIKey string   // clé d'API, mémoire uniquement (AIC_MISTRAL_API_KEY)
+	Bin      string   // binaire de la CLI (AIC_MISTRAL_BIN, défaut vibe : binaire de Mistral Code)
+	Args     []string // arguments fixes sélectionnant le mode non interactif (AIC_MISTRAL_ARGS, défaut --prompt --trust)
+	APIKey   string   // clé d'API, mémoire uniquement (AIC_MISTRAL_API_KEY)
+	MaxTurns int      // plafond --max-turns transmis à la CLI si >0 (AIC_MISTRAL_MAX_ITER)
 
 	// Log journalist optionnel (branché sur le Store SQLite du coordinateur
 	// dans le démon) : missionID, phase, message.
@@ -58,7 +70,7 @@ type cliResult struct {
 func (c *CLIMistral) Run(ctx context.Context, m *Mission, workDir string) (MistralResult, error) {
 	started := time.Now()
 	if c.Bin == "" {
-		c.Bin = "mistral-code"
+		c.Bin = "vibe"
 	}
 	if c.APIKey == "" {
 		c.logf(m.ID, "auth", "refus : clé d'API absente (AIC_MISTRAL_API_KEY), exécution non autorisée")
@@ -87,7 +99,21 @@ func (c *CLIMistral) Run(ctx context.Context, m *Mission, workDir string) (Mistr
 	}
 	env = append(env, "MISTRAL_API_KEY="+c.APIKey)
 
-	cmd := exec.CommandContext(ctx, c.Bin, c.Args...)
+	// T02 : contrat vérifié avec la CLI Mistral Code (binaire vibe) — le mode
+	// programmatique -p lit le prompt sur l'entrée standard quand aucun texte
+	// ne l'accompagne ; --trust accorde la confiance limitée au répertoire
+	// isolé pour cette invocation ; --max-turns borne le nombre de tours.
+	args := append([]string{}, c.Args...)
+	if len(args) == 0 {
+		// Défauts de l'adaptateur, alignés sur defaultMistralArgs : le mode
+		// programmatique de Mistral Code lit le prompt sur stdin (-p sans
+		// texte), la confiance est limitée au répertoire isolé (--trust).
+		args = []string{"--prompt", "--trust"}
+	}
+	if c.MaxTurns > 0 && !containsArg(args, "--max-turns") {
+		args = append(args, "--max-turns", strconv.Itoa(c.MaxTurns))
+	}
+	cmd := exec.CommandContext(ctx, c.Bin, args...)
 	cmd.Dir = workDir
 	cmd.Env = env
 	cmd.Stdin = strings.NewReader(prompt)
@@ -96,7 +122,11 @@ func (c *CLIMistral) Run(ctx context.Context, m *Mission, workDir string) (Mistr
 	cmd.Stderr = &errb
 	c.logf(m.ID, "start", fmt.Sprintf("invocation %s %s (répertoire isolé)", c.Bin, strings.Join(c.Args, " ")))
 	if err := cmd.Run(); err != nil {
-		msg := fmt.Sprintf("échec de la CLI Mistral : %v", err)
+		// Codes de sortie de la CLI Mistral Code : 0 exécution achevée,
+		// 1 démarrage impossible (argument/config), 2 échec API runtime,
+		// 3 arrêt avant achèvement (limite atteinte, interruption). Tout
+		// code non nul est un incident : la mission est bloquée.
+		msg := fmt.Sprintf("échec de la CLI Mistral Code (exit=%d) : %v", cmd.ProcessState.ExitCode(), err)
 		if snippet := strings.TrimSpace(errb.String()); snippet != "" {
 			if len(snippet) > 400 {
 				snippet = snippet[:400] + "…"

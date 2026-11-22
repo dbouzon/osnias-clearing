@@ -34,7 +34,7 @@ func TestMAIC02RunContract(t *testing.T) {
 	bin := newStubCLI(t, `cat > prompt-received.txt
 printf '%s' '{"report":"tranche exécutée via CLI","diff":"+5 -1","steps":7,"iters":2}'`)
 	logs := map[string]bool{}
-	adapter := &CLIMistral{Bin: bin, Args: []string{"exec"}, APIKey: "test-key", Log: func(missionID, phase, message string) {
+	adapter := &CLIMistral{Bin: bin, Args: []string{"--prompt"}, APIKey: "test-key", Log: func(missionID, phase, message string) {
 		logs[phase] = true
 		if strings.Contains(message, "test-key") {
 			t.Errorf("la clé d'API est exposée dans le journal : %s", message)
@@ -58,7 +58,7 @@ printf '%s' '{"report":"tranche exécutée via CLI","diff":"+5 -1","steps":7,"it
 	}
 	trace, err := os.ReadFile(filepath.Join(work, "run-output.txt"))
 	if err != nil || !strings.Contains(string(trace), "tranche exécutée via CLI") {
-		t.Fatalf("trace de sortie manquante : %v", err)
+		t.Fatalf("trace de sortie manquante : %v %s", err, trace)
 	}
 	if !logs["start"] || !logs["done"] {
 		t.Fatalf("journalisation incomplète : %v", logs)
@@ -69,7 +69,7 @@ printf '%s' '{"report":"tranche exécutée via CLI","diff":"+5 -1","steps":7,"it
 // exécution (fail closed) et bloque la mission.
 func TestMAIC02AuthFailClosed(t *testing.T) {
 	c, _, _, _, _ := newTestCoordinator(t)
-	c.Mistral = &CLIMistral{Bin: "mistral-code", APIKey: ""}
+	c.Mistral = &CLIMistral{Bin: "vibe", APIKey: ""}
 	if err := c.HandleIssueComment(context.Background(), 702, "mission sans clé", "dbouzon", "/aic start"); err != nil {
 		t.Fatalf("commande : %v", err)
 	}
@@ -93,7 +93,7 @@ exit 3`)
 	cfg.WorkRoot = filepath.Join(t.TempDir(), "work")
 	cfg.MistralTimeout = 20 * time.Second
 	c := &Coordinator{Store: store, Config: cfg, Mistral: &CLIMistral{
-		Bin: bin, Args: []string{"exec"}, APIKey: "test-key",
+		Bin: bin, Args: []string{"--prompt"}, APIKey: "test-key",
 		Log: func(missionID, phase, message string) { _ = store.Log(missionID, "mistral-code", phase, message) },
 	}, Reviewer: &SimulatedOpenAI{}, GitHub: &SimulatedGitHub{}}
 	if err := c.HandleIssueComment(context.Background(), 703, "mission échec CLI", "dbouzon", "/aic start"); err != nil {
@@ -108,7 +108,7 @@ exit 3`)
 // TestMAIC02FullCycle vérifie le critère de réception : une commande humaine
 // déclenche l'exécution par l'adaptateur CLI, le rapport est enregistré de
 // façon durable (livraison Draft persistée + journal SQLite) et la mission
-// atteint REVIEW puis AWAITING_APPROVAL.
+// atteint AWAITING_APPROVAL.
 func TestMAIC02FullCycle(t *testing.T) {
 	bin := newStubCLI(t, `cat > prompt-received.txt
 printf '%s' '{"report":"rapport de tranche : tests passés, aucun push","diff":"+12 -0","steps":4,"iters":1}'`)
@@ -126,7 +126,7 @@ printf '%s' '{"report":"rapport de tranche : tests passés, aucun push","diff":"
 	cfg.AuthorizedLogins = []string{"dbouzon"}
 	cfg.MistralTimeout = 30 * time.Second
 	c := &Coordinator{Store: store, Config: cfg, Mistral: &CLIMistral{
-		Bin: bin, Args: []string{"exec"}, APIKey: "test-key",
+		Bin: bin, Args: []string{"--prompt"}, APIKey: "test-key",
 		Log: func(missionID, phase, message string) { _ = store.Log(missionID, "mistral-code", phase, message) },
 	}, Reviewer: &SimulatedOpenAI{}, GitHub: &SimulatedGitHub{}}
 	if err := c.HandleIssueComment(context.Background(), 704, "mission complète CLI", "dbouzon", "/aic start"); err != nil {
@@ -139,7 +139,6 @@ printf '%s' '{"report":"rapport de tranche : tests passés, aucun push","diff":"
 	if m.State != StateAwaitingApproval {
 		t.Fatalf("état attendu AWAITING_APPROVAL : %v %s", err, m.State)
 	}
-	// résultat enregistré durablement : la référence de PR Draft persiste.
 	prRef, err := store.DraftForMission("AIC-704")
 	if err != nil || prRef == "" {
 		t.Fatalf("livraison durable manquante : %v %q", err, prRef)
@@ -186,7 +185,7 @@ printf '%s' '{"report":"rapport après reprise","steps":3,"iters":1}'`)
 	cfg.RunStaleInterval = time.Nanosecond // verrou immédiatement périmé
 	cfg.MistralTimeout = 30 * time.Second
 	c := &Coordinator{Store: store2, Config: cfg, Mistral: &CLIMistral{
-		Bin: bin, Args: []string{"exec"}, APIKey: "test-key",
+		Bin: bin, Args: []string{"--prompt"}, APIKey: "test-key",
 		Log: func(missionID, phase, message string) { _ = store2.Log(missionID, "mistral-code", phase, message) },
 	}, Reviewer: &SimulatedOpenAI{}, GitHub: &SimulatedGitHub{}}
 	if err := c.Resume(context.Background()); err != nil {
@@ -214,24 +213,81 @@ printf '%s' '{"report":"rapport après reprise","steps":3,"iters":1}'`)
 }
 
 // TestMAIC02EnvConfig vérifie la lecture des variables dédiées à l'adaptateur
-// CLI, dont l'argument par défaut sélectionnant le mode non interactif.
+// CLI, dont les arguments par défaut du mode programmatique de Mistral Code.
 func TestMAIC02EnvConfig(t *testing.T) {
-	t.Setenv("AIC_MISTRAL_BIN", "/opt/mistral-code")
-	t.Setenv("AIC_MISTRAL_ARGS", "exec, --sandbox, read-only")
+	t.Setenv("AIC_MISTRAL_BIN", "/opt/vibe")
+	t.Setenv("AIC_MISTRAL_ARGS", "--prompt, --trust, --max-turns, 5")
 	t.Setenv("AIC_MISTRAL_API_KEY", "k-test")
 	cfg := ConfigFromEnv()
-	if cfg.MistralBin != "/opt/mistral-code" {
+	if cfg.MistralBin != "/opt/vibe" {
 		t.Fatalf("AIC_MISTRAL_BIN non lu : %s", cfg.MistralBin)
 	}
-	if strings.Join(cfg.MistralArgs, ",") != "exec,--sandbox,read-only" {
+	if strings.Join(cfg.MistralArgs, ",") != "--prompt,--trust,--max-turns,5" {
 		t.Fatalf("AIC_MISTRAL_ARGS non lu : %v", cfg.MistralArgs)
 	}
 	if cfg.MistralAPIKey != "k-test" {
 		t.Fatal("AIC_MISTRAL_API_KEY non lu")
 	}
 	os.Unsetenv("AIC_MISTRAL_ARGS")
+	os.Unsetenv("AIC_MISTRAL_BIN")
 	cfg = ConfigFromEnv()
-	if len(cfg.MistralArgs) != 1 || cfg.MistralArgs[0] != "exec" {
-		t.Fatalf("arguments par défaut attendus [exec] : %v", cfg.MistralArgs)
+	if strings.Join(cfg.MistralArgs, ",") != "--prompt,--trust" {
+		t.Fatalf("arguments par défaut attendus [--prompt --trust] : %v", cfg.MistralArgs)
+	}
+	if cfg.MistralBin != "vibe" {
+		t.Fatalf("binaire par défaut attendu vibe : %s", cfg.MistralBin)
+	}
+}
+
+// TestMAIC02CompatRealCLI vérifie la compatibilité T02 avec le mode
+// programmatique de la CLI officielle Mistral Code (binaire vibe) : le shim
+// enregistre ses arguments, le plafond --max-turns est ajouté depuis la
+// configuration, le prompt transite sur stdin et le rapport est décodé.
+func TestMAIC02CompatRealCLI(t *testing.T) {
+	if bin := ConfigFromEnv().MistralBin; bin != "vibe" {
+		t.Fatalf("binaire par défaut attendu vibe : %s", bin)
+	}
+	out := filepath.Join(t.TempDir(), "received-args.txt")
+	shimDir := t.TempDir()
+	shim := "#!/bin/sh\nprintf '%s\\n' \"$@\" > " + out + "\ncat > /dev/null\nprintf '%s' '{\"report\":\"ok\"}'\n"
+	if err := os.WriteFile(filepath.Join(shimDir, "vibe"), []byte(shim), 0o750); err != nil {
+		t.Fatalf("écrire shim vibe : %v", err)
+	}
+	old := os.Getenv("PATH")
+	t.Setenv("PATH", shimDir+string(os.PathListSeparator)+old)
+	adapter := &CLIMistral{APIKey: "test-key", MaxTurns: 40} // Bin/Args vides : valeurs par défaut de l'adaptateur
+	res, err := adapter.Run(context.Background(), &Mission{ID: "AIC-706", IssueNumber: 706, Title: "compat"}, filepath.Join(t.TempDir(), "w"))
+	if err != nil {
+		t.Fatalf("run : %v", err)
+	}
+	if res.Report != "ok" {
+		t.Fatalf("rapport inattendu : %q", res.Report)
+	}
+	raw, err := os.ReadFile(out)
+	if err != nil {
+		t.Fatalf("arguments reçus introuvables : %v", err)
+	}
+	got := strings.Fields(string(raw))
+	want := []string{"--prompt", "--trust", "--max-turns", "40"}
+	if strings.Join(got, " ") != strings.Join(want, " ") {
+		t.Fatalf("arguments attendus %v, reçus %v", want, got)
+	}
+}
+
+// TestMAIC02ExitCodeInError vérifie que le code de sortie réel de la CLI est
+// restitué dans le message d'incident (sémantique 0-3 de Mistral Code : 3 =
+// arrêt avant achèvement, limite atteinte).
+func TestMAIC02ExitCodeInError(t *testing.T) {
+	bin := newStubCLI(t, `cat > /dev/null
+printf '%s' 'limite atteinte' >&2
+exit 3`)
+	var logged string
+	adapter := &CLIMistral{Bin: bin, Args: []string{"--prompt"}, APIKey: "k", Log: func(missionID, phase, message string) { logged = message }}
+	_, err := adapter.Run(context.Background(), &Mission{ID: "AIC-707", IssueNumber: 707, Title: "exit"}, t.TempDir())
+	if err == nil {
+		t.Fatal("un échec était attendu")
+	}
+	if !strings.Contains(err.Error(), "exit=3") || !strings.Contains(logged, "exit=3") {
+		t.Fatalf("code de sortie absent du message : %v / %s", err, logged)
 	}
 }
