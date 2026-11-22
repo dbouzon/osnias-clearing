@@ -16,6 +16,7 @@ import (
 type Server struct {
 	Coordinator *Coordinator
 	Logger      *slog.Logger
+	Relay       *Relay // voie de messagerie authentifiée M-AIC-05 (nil = désactivée)
 }
 
 // signatureHeader est l'en-tête utilisé par GitHub pour la signature HMAC.
@@ -177,11 +178,19 @@ func StartPendingRetryLoop(ctx context.Context, c *Coordinator, logger *slog.Log
 	}
 }
 
-// NewServer construit le récepteur HTTP avec son journal horodaté.
-func NewServer(c *Coordinator, logger *slog.Logger) *http.Server {
+// NewServer construit le récepteur HTTP avec son journal horodaté. Le relais
+// authentifié M-AIC-05 est optionnel : sans lui, /aic/message répond 501.
+func NewServer(c *Coordinator, logger *slog.Logger, relay ...*Relay) *http.Server {
 	mux := http.NewServeMux()
 	s := &Server{Coordinator: c, Logger: logger}
+	if len(relay) > 0 {
+		s.Relay = relay[0]
+	}
 	mux.HandleFunc("/webhook", s.HandleWebhook)
+	// M-AIC-05 : voie de messagerie authentifiée, distincte du webhook GitHub.
+	// Sans relais construit (jeton ou clés absents), la route répond 501 :
+	// aucun accès non authentifié n'est possible par construction.
+	mux.HandleFunc("/aic/message", s.handleAICMessage)
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))

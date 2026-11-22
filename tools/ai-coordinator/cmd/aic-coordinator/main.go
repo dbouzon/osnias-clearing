@@ -1,13 +1,15 @@
 // Command aic-coordinator démarre le coordinateur multi-agents Osnias.
 //
-// T02 : mode strictement local et simulé. Aucune clé d'API n'est requise ;
-// si un mode api est demandé sans autorisation T03, le coordinateur refuse
-// toute exécution (échec explicite, jamais silencieux).
+// Modes simulés par défaut (aucune clé requise). Les modes api (M-AIC-04 /
+// M-AIC-05) exigent une configuration explicite : clé fournie par
+// l'environnement, jamais journalisée ; à défaut, refus de démarrage
+// (fail closed, échec explicite jamais silencieux).
 package main
 
 import (
 	"context"
 	"log/slog"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -60,18 +62,40 @@ func main() {
 		logger.Error("AIC_GITHUB_MODE inconnu", "mode", cfg.GitHubMode)
 		os.Exit(2)
 	}
+	// M-AIC-05 : adaptateur réel Mistral, clé d'API en mémoire uniquement.
+	// Aucun appel payant n'est possible sans configuration explicite
+	// (AIC_MISTRAL_MODE=api ET AIC_MISTRAL_APIKEY fournie : fail closed).
+	var realMistral *aic.RealMistral
 	switch cfg.MistralMode {
 	case aic.ModeSimulated:
 		// simulé (défaut)
 	case aic.ModeAPI:
-		logger.Error("AIC_MISTRAL_MODE=api n'est pas autorisé en T03 : raccordement Mistral hors périmètre")
-		os.Exit(2)
+		if cfg.MistralAPIKey == "" {
+			logger.Error("AIC_MISTRAL_APIKEY est requis en mode api : refus de démarrer sans clé (fail closed)")
+			os.Exit(2)
+		}
+		rm, err := aic.NewRealMistral(aic.RealMistralOptions{
+			APIKey:    cfg.MistralAPIKey,
+			APIURL:    cfg.MistralAPIURL,
+			Model:     cfg.MistralModel,
+			Timeout:   cfg.MistralTimeout,
+			MaxTokens: cfg.MistralMaxTok,
+			Log:       func(missionID, phase, message string) { _ = store.Log(missionID, "mistral", phase, message) },
+		})
+		if err != nil {
+			logger.Error("adaptateur API Mistral invalide", "err", err.Error())
+			os.Exit(2)
+		}
+		logger.Info("adaptateur API Mistral activé (M-AIC-05)", "model", cfg.MistralModel)
+		realMistral = rm
+		mistral = rm
 	default:
 		logger.Error("AIC_MISTRAL_MODE inconnu", "mode", cfg.MistralMode)
 		os.Exit(2)
 	}
 	// M-AIC-04 : adaptateur réel OpenAI, clé d'API en mémoire uniquement,
 	// journalisation SQLite des appels et réponses. Fail closed sans clé.
+	var realReviewer *aic.RealOpenAI
 	switch cfg.OpenAIMode {
 	case aic.ModeSimulated:
 		// simulé (défaut)
@@ -80,7 +104,7 @@ func main() {
 			logger.Error("AIC_OPENAI_APIKEY est requis en mode api : refus de démarrer sans clé (fail closed)")
 			os.Exit(2)
 		}
-		realReviewer, err := aic.NewRealOpenAI(aic.RealOpenAIOptions{
+		rr, err := aic.NewRealOpenAI(aic.RealOpenAIOptions{
 			APIKey:    cfg.OpenAIKey,
 			APIURL:    cfg.OpenAIAPIURL,
 			Model:     cfg.OpenAIModel,
@@ -93,11 +117,30 @@ func main() {
 			os.Exit(2)
 		}
 		logger.Info("adaptateur API OpenAI activé (M-AIC-04)", "model", cfg.OpenAIModel)
-		reviewer = realReviewer
+		reviewer = rr
+		realReviewer = rr
 	default:
 		logger.Error("AIC_OPENAI_MODE inconnu", "mode", cfg.OpenAIMode)
 		os.Exit(2)
 	}
+	// M-AIC-05 : relais de messagerie authentifié. Actif seulement si les
+	// DEUX adaptateurs réels et le jeton dédié AIC_MESSAGE_TOKEN sont fournis ;
+	// sinon la route /aic/message répond 501 (aucune exposition non
+	// authentifiée, y compris à travers un tunnel public).
+	var relay *aic.Relay
+	if cfg.MessageToken != "" {
+		if realMistral == nil || realReviewer == nil {
+			logger.Error("AIC_MESSAGE_TOKEN fourni mais adaptateurs réels incomplets : relais refusé (fail closed)")
+			os.Exit(2)
+		}
+		relay, err = aic.NewRelay(store, realMistral, realReviewer, cfg.MessageToken)
+		if err != nil {
+			logger.Error("relais invalide", "err", err.Error())
+			os.Exit(2)
+		}
+		logger.Info("relais de messagerie activé (M-AIC-05)", "route", "/aic/message")
+	}
+
 	// Habilitation (T02-R1) : sans identité autorisée, aucune commande /aic
 	// ne sera acceptée. Refus explicite au démarrage plutôt qu'un échec muet.
 	if len(cfg.AuthorizedLogins) == 0 {
@@ -122,7 +165,12 @@ func main() {
 		logger.Error("reprise des missions", "err", err.Error())
 		os.Exit(1)
 	}
-	srv := aic.NewServer(coord, logger)
+	var srv *http.Server
+	if relay != nil {
+		srv = aic.NewServer(coord, logger, relay)
+	} else {
+		srv = aic.NewServer(coord, logger)
+	}
 	go aic.StartPendingRetryLoop(ctx, coord, logger)
 	go func() {
 		logger.Info("coordinateur démarré", "addr", cfg.ListenAddr, "repo", cfg.GitHubRepo)
