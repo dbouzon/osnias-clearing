@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -60,8 +61,11 @@ func (c *Coordinator) HandleIssueComment(ctx context.Context, issueNumber int64,
 	}
 	switch {
 	case strings.Contains(bodyNorm, CmdStart):
-		if m.State != StateOpen {
-			return nil // déjà démarrée ou terminée : idempotent
+		// T02-R3 : une mission RUNNING sans verrou vivant (interruption, ou
+		// contention résorbée) accepte un nouveau start : l'exclusivité
+		// reste garantie par le verrou persistant, ce n'est pas l'état.
+		if m.State != StateOpen && m.State != StateRunning {
+			return nil // terminée : idempotent
 		}
 		return c.RunToReview(ctx, m)
 	case strings.Contains(bodyNorm, CmdCorrection):
@@ -79,7 +83,7 @@ func (c *Coordinator) HandleIssueComment(ctx context.Context, issueNumber int64,
 		if err := c.Store.Transition(m, StateAccepted, "human", "validation humaine"); err != nil {
 			return err
 		}
-		return c.GitHub.PostComment(m.ID, "mission réceptionnée (ACCEPTED) après validation humaine")
+		return c.githubPostComment(m.ID+":comment:accepted", m.ID, "mission réceptionnée (ACCEPTED) après validation humaine")
 	case strings.Contains(bodyNorm, CmdBlock):
 		if Terminal(m.State) {
 			return nil
@@ -87,9 +91,65 @@ func (c *Coordinator) HandleIssueComment(ctx context.Context, issueNumber int64,
 		if err := c.Store.Transition(m, StateBlocked, "human", "blocage demandé"); err != nil {
 			return err
 		}
-		return c.GitHub.PostComment(m.ID, "mission bloquée par intervention humaine")
+		return c.githubPostComment(m.ID+":comment:blocked-human", m.ID, "mission bloquée par intervention humaine")
 	}
 	return nil
+}
+
+// githubPostComment réalise un commentaire GitHub avec idempotence par clé
+// (T02-R3, risque 2) : l'opération est d'abord enregistrée en base (états
+// pending/sending/done) ; un renvoi après interruption renvoie la même clé à
+// l'adaptateur, qui déduplique ; une opération déjà 'done' n'est jamais
+// renvoyée. Sans IdempotentGitHub, la protection se limite à l'état 'done'.
+func (c *Coordinator) githubPostComment(idemKey, missionID, body string) error {
+	return c.githubApply(idemKey, missionID, "comment", func() error {
+		if ig, ok := c.GitHub.(IdempotentGitHub); ok {
+			return ig.PostCommentIdem(idemKey, missionID, body)
+		}
+		return c.GitHub.PostComment(missionID, body)
+	})
+}
+
+// githubDraft réalise une livraison Draft idempotente (T02-R3, risque 2).
+func (c *Coordinator) githubDraft(idemKey, missionID, title, body string) (string, error) {
+	var ref string
+	err := c.githubApply(idemKey, missionID, "draft_pr", func() error {
+		var e error
+		if ig, ok := c.GitHub.(IdempotentGitHub); ok {
+			ref, e = ig.CreateDraftPRIdem(idemKey, missionID, title, body)
+		} else {
+			ref, e = c.GitHub.CreateDraftPR(missionID, title, body)
+		}
+		return e
+	})
+	return ref, err
+}
+
+// githubApply exécute une écriture GitHub sous clé d'idempotence :
+// enregistrement en base, envoi, puis marquage 'done'. Une clé déjà 'done'
+// est ignorée ; une clé 'pending' ou 'sending' (fenêtre de crash entre
+// l'envoi et le marquage) est renvoyée : l'adaptateur déduplique par clé.
+func (c *Coordinator) githubApply(idemKey, missionID, opType string, send func() error) error {
+	fresh, err := c.Store.EnqueueGitHubOp(idemKey, missionID, opType)
+	if err != nil {
+		return err
+	}
+	if !fresh {
+		st, err := c.Store.GitHubOpState(idemKey)
+		if err != nil {
+			return err
+		}
+		if st == "done" {
+			return nil
+		}
+	}
+	if err := c.Store.MarkGitHubOpState(idemKey, "sending"); err != nil {
+		return err
+	}
+	if err := send(); err != nil {
+		return err
+	}
+	return c.Store.MarkGitHubOpState(idemKey, "done")
 }
 
 // ProcessEvent traite un événement GitHub persisté à partir de son type et
@@ -158,7 +218,7 @@ func (c *Coordinator) RunToReview(ctx context.Context, m *Mission) error {
 		if err := c.Store.Transition(m, StateBlocked, "coordinator", "incident d'exécution agent"); err != nil {
 			return err
 		}
-		return c.GitHub.PostComment(m.ID, "mission bloquée : incident d'exécution de l'agent développeur")
+		return c.githubPostComment(m.ID+":comment:blocked-run", m.ID, "mission bloquée : incident d'exécution de l'agent développeur")
 	}
 	// contrôles de budget et d'itérations (T02-D)
 	if res.Steps > c.Config.MistralBudgetSteps {
@@ -166,19 +226,28 @@ func (c *Coordinator) RunToReview(ctx context.Context, m *Mission) error {
 		if err := c.Store.Transition(m, StateBlocked, "coordinator", "dépassement de budget"); err != nil {
 			return err
 		}
-		return c.GitHub.PostComment(m.ID, "mission bloquée : dépassement du budget d'exécution")
+		return c.githubPostComment(m.ID+":comment:blocked-budget", m.ID, "mission bloquée : dépassement du budget d'exécution")
 	}
 	if res.Iters > c.Config.MistralMaxIter {
 		if err := c.Store.Transition(m, StateBlocked, "coordinator", "dépassement d'itérations"); err != nil {
 			return err
 		}
-		return c.GitHub.PostComment(m.ID, "mission bloquée : dépassement du nombre d'itérations")
+		return c.githubPostComment(m.ID+":comment:blocked-iters", m.ID, "mission bloquée : dépassement du nombre d'itérations")
 	}
 	// Côté agent : aucun push. La livraison est une Draft, enregistrée ici.
+	// T02-R3 (risque 2) : une livraison déjà persistée est réutilisée ; une
+	// création interrompue est renvoyée sous la même clé, l'adaptateur
+	// déduplique : jamais deux livraisons pour une même mission.
 	_ = ErrNoPushByAgent
-	prRef, err := c.GitHub.CreateDraftPR(m.ID, "Livraison "+m.ID, res.Report)
+	prRef, err := c.Store.DraftForMission(m.ID)
 	if err != nil {
 		return err
+	}
+	if prRef == "" {
+		prRef, err = c.githubDraft(m.ID+":draft", m.ID, "Livraison "+m.ID, res.Report)
+		if err != nil {
+			return err
+		}
 	}
 	if err := c.Store.SaveDraft(m.ID, prRef, "draft"); err != nil {
 		return err
@@ -202,7 +271,7 @@ func (c *Coordinator) ReviewDelivery(m *Mission, prRef string, res MistralResult
 		if err := c.Store.Transition(m, StateAwaitingApproval, "openai", "réception favorable : "+out.Summary); err != nil {
 			return err
 		}
-		return c.GitHub.PostComment(m.ID, "réception favorable ; en attente de validation humaine (/aic approve)")
+		return c.githubPostComment(m.ID+":comment:review-ok", m.ID, "réception favorable ; en attente de validation humaine (/aic approve)")
 	case VerdictCorrection:
 		n, err := c.Store.BumpCorrections(m)
 		if err != nil {
@@ -212,15 +281,22 @@ func (c *Coordinator) ReviewDelivery(m *Mission, prRef string, res MistralResult
 			if err := c.Store.Transition(m, StateBlocked, "coordinator", "plafond de corrections atteint"); err != nil {
 				return err
 			}
-			return c.GitHub.PostComment(m.ID, "mission bloquée : plafond de corrections atteint")
+			return c.githubPostComment(m.ID+":comment:corrections-cap", m.ID, "mission bloquée : plafond de corrections atteint")
 		}
-		if err := c.GitHub.RequestChanges(prRef, joinComments(out.Comments)); err != nil {
+		corrKey := m.ID + ":changes:" + strconv.Itoa(m.Corrections)
+		if ig, ok := c.GitHub.(IdempotentGitHub); ok {
+			if err := c.githubApply(corrKey, m.ID, "request_changes", func() error {
+				return ig.RequestChangesIdem(corrKey, prRef, joinComments(out.Comments))
+			}); err != nil {
+				return err
+			}
+		} else if err := c.GitHub.RequestChanges(prRef, joinComments(out.Comments)); err != nil {
 			return err
 		}
 		if err := c.Store.Transition(m, StateCorrection, "openai", "correction demandée : "+out.Summary); err != nil {
 			return err
 		}
-		return c.GitHub.PostComment(m.ID, "correction demandée (attachée à "+prRef+")")
+		return c.githubPostComment(m.ID+":comment:correction:"+strconv.Itoa(m.Corrections), m.ID, "correction demandée (attachée à "+prRef+")")
 	case VerdictBlocked:
 		return c.Store.Transition(m, StateBlocked, "openai", "réserve bloquante")
 	}
