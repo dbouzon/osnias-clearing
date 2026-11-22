@@ -31,6 +31,16 @@ type IdempotentGitHub interface {
 	RequestChangesIdem(idemKey, prRef, body string) error
 }
 
+// KeyStore permet à l'adaptateur simulé de rendre sa déduplication durable :
+// les clés déjà envoyées sont persistées, la déduplication survit à un
+// redémarrage complet du processus (T02-R4). *Store réalise cette interface.
+type KeyStore interface {
+	// GitHubSeenKey indique si la clé a déjà été envoyée de façon durable.
+	GitHubSeenKey(idemKey string) (bool, error)
+	// GitHubMarkKey enregistre durablement l'envoi de la clé.
+	GitHubMarkKey(idemKey string) error
+}
+
 // SimulatedGitHub enregistre les écritures sans toucher au réseau. Utilisé
 // pour tous les tests T02.
 type SimulatedGitHub struct {
@@ -39,20 +49,38 @@ type SimulatedGitHub struct {
 	ChangeRequests []string
 	sentKeys       map[string]bool
 	draftRefs      map[string]string
+	keyStore       KeyStore // déduplication durable (T02-R4), optionnelle
 }
 
-func (g *SimulatedGitHub) seen(key string) bool {
+// UseKeyStore branche la déduplication durable de l'adaptateur simulé.
+func (g *SimulatedGitHub) UseKeyStore(ks KeyStore) { g.keyStore = ks }
+
+// seenKey consulte la mémoire de l'adaptateur puis, si branché, le registre
+// durable : la déduplication résiste au redémarrage complet du processus.
+func (g *SimulatedGitHub) seenKey(key string) bool {
 	if g.sentKeys == nil {
 		g.sentKeys = map[string]bool{}
 	}
-	return g.sentKeys[key]
+	if g.sentKeys[key] {
+		return true
+	}
+	if g.keyStore != nil {
+		if seen, err := g.keyStore.GitHubSeenKey(key); err == nil && seen {
+			g.sentKeys[key] = true // cache mémoire
+			return true
+		}
+	}
+	return false
 }
 
-func (g *SimulatedGitHub) markSeen(key string) {
+func (g *SimulatedGitHub) markSeenKey(key string) {
 	if g.sentKeys == nil {
 		g.sentKeys = map[string]bool{}
 	}
 	g.sentKeys[key] = true
+	if g.keyStore != nil {
+		_ = g.keyStore.GitHubMarkKey(key)
+	}
 }
 
 // PostComment simule la publication d'un commentaire.
@@ -62,12 +90,13 @@ func (g *SimulatedGitHub) PostComment(missionID, body string) error {
 }
 
 // PostCommentIdem simule un commentaire idempotent : une même clé ne produit
-// qu'un seul commentaire, même après un renvoi (fenêtre de crash).
+// qu'un seul commentaire, même après un renvoi (fenêtre de crash) ou un
+// redémarrage complet du processus (registre durable, T02-R4).
 func (g *SimulatedGitHub) PostCommentIdem(idemKey, missionID, body string) error {
-	if g.seen("c:" + idemKey) {
+	if g.seenKey("c:" + idemKey) {
 		return nil
 	}
-	g.markSeen("c:" + idemKey)
+	g.markSeenKey("c:" + idemKey)
 	return g.PostComment(missionID, body)
 }
 
@@ -79,7 +108,8 @@ func (g *SimulatedGitHub) CreateDraftPR(missionID, title, body string) (string, 
 }
 
 // CreateDraftPRIdem simule une PR Draft idempotente : une même clé retourne
-// toujours la même référence, sans dupliquer la livraison.
+// toujours la même référence, sans dupliquer la livraison, même après un
+// redémarrage complet du processus (T02-R4).
 func (g *SimulatedGitHub) CreateDraftPRIdem(idemKey, missionID, title, body string) (string, error) {
 	if g.draftRefs == nil {
 		g.draftRefs = map[string]string{}
@@ -87,10 +117,19 @@ func (g *SimulatedGitHub) CreateDraftPRIdem(idemKey, missionID, title, body stri
 	if ref, ok := g.draftRefs[idemKey]; ok {
 		return ref, nil
 	}
+	if g.seenKey("d:" + idemKey) {
+		// déjà créée de façon durable mais référence non restituée en
+		// mémoire (redémarrage) : la référence est reconstruite selon la
+		// convention déterministe du simulateur ; l'adaptateur réel T03
+		// fera une recherche avant création.
+		ref := "PR-DRAFT-" + missionID
+		g.draftRefs[idemKey] = ref
+		return ref, nil
+	}
 	ref, err := g.CreateDraftPR(missionID, title, body)
 	if err == nil {
 		g.draftRefs[idemKey] = ref
-		g.markSeen("d:" + idemKey)
+		g.markSeenKey("d:" + idemKey)
 	}
 	return ref, err
 }
@@ -103,10 +142,10 @@ func (g *SimulatedGitHub) RequestChanges(prRef, body string) error {
 
 // RequestChangesIdem simule une demande de correction idempotente.
 func (g *SimulatedGitHub) RequestChangesIdem(idemKey, prRef, body string) error {
-	if g.seen("r:" + idemKey) {
+	if g.seenKey("r:" + idemKey) {
 		return nil
 	}
-	g.markSeen("r:" + idemKey)
+	g.markSeenKey("r:" + idemKey)
 	return g.RequestChanges(prRef, body)
 }
 
