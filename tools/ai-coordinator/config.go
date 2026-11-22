@@ -54,6 +54,11 @@ type Config struct {
 	MaxCorrections       int           // AIC_MAX_CORRECTIONS (défaut 3)
 	RunStaleInterval     time.Duration // AIC_RUN_STALE_INTERVAL (défaut 86400s)
 	PendingRetryInterval time.Duration // AIC_PENDING_RETRY_INTERVAL (défaut 60s, relance à chaud de la file T02-R3)
+
+	GitHubMode    string        // AIC_GITHUB_MODE : off | real (défaut off, adaptateur réel désactivé par défaut)
+	GitHubToken   string        // AIC_GITHUB_TOKEN : jeton à permissions minimales (jamais journalisé)
+	GitHubAPIURL  string        // AIC_GITHUB_APIURL : racine complète de l'API alternative (tests ; GHE : https://hote/api/v3)
+	GitHubTimeout time.Duration // AIC_GITHUB_TIMEOUT (défaut 30s par requête)
 }
 
 // IsAuthorized applique la politique d'habilitation des commandes /aic :
@@ -136,5 +141,9 @@ func ConfigFromEnv() Config {
 		MaxCorrections:       fromEnvInt("AIC_MAX_CORRECTIONS", 3),
 		RunStaleInterval:     fromEnvDur("AIC_RUN_STALE_INTERVAL", 86400*time.Second),
 		PendingRetryInterval: fromEnvDur("AIC_PENDING_RETRY_INTERVAL", 60*time.Second),
+		GitHubMode:           fromEnvStr("AIC_GITHUB_MODE", "off"),
+		GitHubToken:          os.Getenv("AIC_GITHUB_TOKEN"), // jamais journalisé ni persisté
+		GitHubAPIURL:         os.Getenv("AIC_GITHUB_APIURL"),
+		GitHubTimeout:        fromEnvDur("AIC_GITHUB_TIMEOUT", 30*time.Second),
 	}
 }
