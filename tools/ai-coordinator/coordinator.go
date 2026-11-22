@@ -42,6 +42,15 @@ func (c *Coordinator) HandleIssueComment(ctx context.Context, issueNumber int64,
 	if err := AgentCommandGuard(body); err != nil {
 		return err
 	}
+	// Habilitation de l'auteur (T02-R1) : seule une identité explicite-
+	// ment autorisée (AIC_AUTHORIZED_LOGINS) peut démarrer, corriger,
+	// valider ou bloquer une mission. Cette vérification porte sur l'iden-
+	// tité authentifiée GitHub du sender, distincte du HMAC du webhook.
+	// Politique fail closed : liste vide = personne n'est habilité.
+	if !c.Config.IsAuthorized(sender) {
+		_ = c.Store.Log(MissionID(issueNumber), "coordinator", "authz", "commande refusée : auteur non habilité ("+sender+")")
+		return nil
+	}
 	bodyNorm := strings.ToLower(strings.TrimSpace(body))
 	id := MissionID(issueNumber)
 	m, err := c.Store.CreateMission(id, issueNumber, issueTitle)
@@ -84,16 +93,38 @@ func (c *Coordinator) HandleIssueComment(ctx context.Context, issueNumber int64,
 
 // RunToReview exécute l'agent Mistral (répertoire isolé, bornes appliquées),
 // enregistre la livraison Draft, puis soumet le résultat à l'agent OpenAI.
+// Exclusivité (T02-R1/R3) : un verrou atomique persistant (mission_locks)
+// interdit deux exécutions simultanées de la même mission ; si le verrou est
+// détenu, ErrMissionLocked est retourné et l'appelant s'abstient. Le verrou
+// est relâché à la fin de l'exécution, quel que soit le résultat ; après un
+// crash, un verrou périmé (âgé de plus de RunStaleInterval) est repris par
+// Resume lors du redémarrage, jamais pendant qu'une exécution vivante le tient.
 func (c *Coordinator) RunToReview(ctx context.Context, m *Mission) error {
 	workDir := fmt.Sprintf("%s/%s", strings.TrimRight(c.Config.WorkRoot, "/"), m.ID)
 	if m.State == StateOpen {
 		if err := c.Store.Transition(m, StateRunning, "coordinator", "exécution agent Mistral"); err != nil {
-			return err
+			// course concurrente : une autre exécution vient de faire passer
+			// la mission en RUNNING ; on la reprend telle quelle, le verrou
+			// d'exclusivité départage ensuite les exécutants.
+			st, reread := c.Store.MissionByID(m.ID)
+			if reread != nil || st == nil || st.State != StateRunning {
+				return err
+			}
+			m.State = st.State
 		}
 	}
 	if m.State != StateRunning {
 		return fmt.Errorf("mission %s : état %s inattendu pour exécution", m.ID, m.State)
 	}
+	claimed, err := c.Store.ClaimMission(m.ID)
+	if err != nil {
+		return err
+	}
+	if !claimed {
+		return ErrMissionLocked
+	}
+	defer func() { _ = c.Store.ReleaseClaim(m.ID) }()
+
 	runCtx, cancel := context.WithTimeout(ctx, c.Config.MistralTimeout)
 	defer cancel()
 
@@ -187,9 +218,18 @@ func (c *Coordinator) Resume(ctx context.Context) error {
 		case StateOpen:
 			// pas de démarrage automatique : le commandement est humain.
 		case StateRunning:
-			// exécution interrompue : relance depuis le début de l'exécution.
+			// exécution interrompue : reprise du verrou abandonné (un verrou
+			// vivant n'est jamais doublé), puis relance depuis le début de
+			// l'exécution. La persistance des verrous fait qu'un crash ne
+			// peut jamais produire deux exécutions concurrentes de la mission.
+			if ok, err := c.Store.ReclaimStaleClaim(m.ID, c.Config.RunStaleInterval); err == nil && ok {
+				_ = c.Store.Log(m.ID, "coordinator", "resume", "verrou périmé repris après crash")
+			}
 			if err := c.RunToReview(ctx, m); err != nil {
-				return err
+				if err != ErrMissionLocked {
+					return err
+				}
+				_ = c.Store.Log(m.ID, "coordinator", "resume", "exécution encore verrouillée : relance différée")
 			}
 		case StateReview, StateCorrection, StateAwaitingApproval:
 			// pas de relance automatique : en attente de la prochaine commande humaine.
