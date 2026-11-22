@@ -63,11 +63,24 @@ func main() {
 	switch cfg.MistralMode {
 	case aic.ModeSimulated:
 		// simulé (défaut)
-	case aic.ModeAPI:
-		logger.Error("AIC_MISTRAL_MODE=api n'est pas autorisé en T03 : raccordement Mistral hors périmètre")
-		os.Exit(2)
+	case aic.ModeCLI:
+		// M-AIC-02 : adaptateur CLI Mistral Code, clé d'API en mémoire
+		// uniquement, journalisation SQLite via le Store. Sans clé, échec
+		// explicite au démarrage plutôt qu'à la première mission.
+		if cfg.MistralAPIKey == "" {
+			logger.Error("AIC_MISTRAL_API_KEY est requis en mode cli : refus de démarrer sans clé (fail closed)")
+			os.Exit(2)
+		}
+		logger.Info("adaptateur CLI Mistral Code activé (M-AIC-02)", "bin", cfg.MistralBin)
+		mistral = &aic.CLIMistral{
+			Bin:      cfg.MistralBin,
+			Args:     cfg.MistralArgs,
+			APIKey:   cfg.MistralAPIKey,
+			MaxTurns: cfg.MistralMaxIter,
+			Log:      func(missionID, phase, message string) { _ = store.Log(missionID, "mistral-code", phase, message) },
+		}
 	default:
-		logger.Error("AIC_MISTRAL_MODE inconnu", "mode", cfg.MistralMode)
+		logger.Error("AIC_MISTRAL_MODE inconnu ou non autorisé", "mode", cfg.MistralMode)
 		os.Exit(2)
 	}
 	if cfg.OpenAIMode == aic.ModeAPI {
