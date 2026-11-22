@@ -12,9 +12,9 @@ import (
 type MistralResult struct {
 	Report string // rapport de tranche produit par l'agent
 	Diff   string // différences lues (résumé, sans push)
-	Steps  int     // passages d'outils (budget)
-	Iters  int     // itérations effectuées
-	Err    error   // incident d'exécution éventuel
+	Steps  int    // passages d'outils (budget)
+	Iters  int    // itérations effectuées
+	Err    error  // incident d'exécution éventuel
 }
 
 // MistralAdapter est l'interface de l'agent développeur Mistral.
@@ -54,8 +54,7 @@ func (s *SimulatedMistral) Run(ctx context.Context, m *Mission, workDir string) 
 		report = s.Reports[idx]
 	}
 	// Trace d'exécution dans le répertoire isolé (aucune commande arbitraire).
-	trace := fmt.Sprintf("mission=%s state=running runs=%d
-", m.ID, s.Runs)
+	trace := fmt.Sprintf("mission=%s state=running runs=%d\n", m.ID, s.Runs)
 	if err := os.WriteFile(filepath.Join(workDir, "trace.txt"), []byte(trace), 0o640); err != nil {
 		return MistralResult{}, err
 	}
