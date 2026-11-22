@@ -29,25 +29,49 @@ func main() {
 	}
 	defer store.Close()
 
-	// Adaptateurs T02 : simulés uniquement. Les adaptateurs API refusent
-	// toute exécution tant que T03 n'est pas autorisé. La déduplication de
-	// l'adaptateur GitHub simulé est rendue durable (T02-R4).
+	// Adaptateurs : Mistral et OpenAI restent simulés (hors périmètre T03) ;
+	// GitHub dispose d'un adaptateur réel (T03) désactivé par défaut :
+	// AIC_GITHUB_MODE=off (défaut) conserve le simulateur, seul
+	// AIC_GITHUB_MODE=real active l'intégration go-github.
 	var mistral aic.MistralAdapter = &aic.SimulatedMistral{}
 	var reviewer aic.Reviewer = &aic.SimulatedOpenAI{}
 	githubSim := &aic.SimulatedGitHub{}
 	githubSim.UseKeyStore(store)
+	var githubClient aic.GitHubClient = githubSim
+	switch cfg.GitHubMode {
+	case "off":
+		// simulé (défaut) : aucun accès réseau GitHub.
+	case "real":
+		// T03 : adaptateur réel go-github, déduplication durable sur le Store.
+		// Le jeton transite uniquement en mémoire, jamais dans les journaux.
+		real, err := aic.NewRealGitHub(aic.RealGitHubOptions{
+			Token:   cfg.GitHubToken,
+			APIURL:  cfg.GitHubAPIURL,
+			Repo:    cfg.GitHubRepo,
+			Timeout: cfg.GitHubTimeout,
+		}, store)
+		if err != nil {
+			logger.Error("adaptateur GitHub réel invalide", "err", err.Error())
+			os.Exit(2)
+		}
+		logger.Info("adaptateur GitHub réel activé (T03)", "repo", cfg.GitHubRepo)
+		githubClient = real
+	default:
+		logger.Error("AIC_GITHUB_MODE inconnu", "mode", cfg.GitHubMode)
+		os.Exit(2)
+	}
 	switch cfg.MistralMode {
 	case aic.ModeSimulated:
 		// simulé (défaut)
 	case aic.ModeAPI:
-		logger.Error("AIC_MISTRAL_MODE=api n'est pas autorisé en T02 : aucun appel payant")
+		logger.Error("AIC_MISTRAL_MODE=api n'est pas autorisé en T03 : raccordement Mistral hors périmètre")
 		os.Exit(2)
 	default:
 		logger.Error("AIC_MISTRAL_MODE inconnu", "mode", cfg.MistralMode)
 		os.Exit(2)
 	}
 	if cfg.OpenAIMode == aic.ModeAPI {
-		logger.Error("AIC_OPENAI_MODE=api n'est pas autorisé en T02 : aucun appel payant")
+		logger.Error("AIC_OPENAI_MODE=api n'est pas autorisé en T03 : raccordement OpenAI hors périmètre")
 		os.Exit(2)
 	}
 	// Habilitation (T02-R1) : sans identité autorisée, aucune commande /aic
@@ -59,7 +83,7 @@ func main() {
 
 	coord := &aic.Coordinator{
 		Store: store, Config: cfg,
-		Mistral: mistral, Reviewer: reviewer, GitHub: githubSim,
+		Mistral: mistral, Reviewer: reviewer, GitHub: githubClient,
 	}
 	// Contexte d'exploitation : annulé proprement à l'arrêt.
 	ctx, cancel := context.WithCancel(context.Background())
