@@ -17,7 +17,7 @@ Le module est autonome (module Go distinct), indépendant du Core Osnias, portab
 | openai.go | Adaptateur agent chef de projet (simulé en T02), verdicts structurés ACCEPTED / CORRECTION / BLOCKED |
 | github.go | Interface GitHub du coordinateur (simulée en T02) + garde-fou contre les commandes arbitraires |
 | cmd/aic-coordinator | Point d'entrée du démon |
-| env.example | Configuration d'exemple sans secrets |
+| env.example | Configuration d'exemple sans secrets (dont AIC_AUTHORIZED_LOGINS : identités habilitées, fail closed) |
 
 ## Cycle d'une mission
 
@@ -36,4 +36,4 @@ go test -count=1 ./...
 
 ## Limites T02
 
-Adaptateurs Mistral, OpenAI et GitHub simulés uniquement ; l'adaptateur d'API refuse explicitement toute exécution (`AIC_MISTRAL_MODE=api` ou `AIC_OPENAI_MODE=api` provoque un arrêt en erreur). Le passage aux API réelles (T03) et au déploiement cloud (T04) requiert une autorisation distincte. Voir docs/deployment-linux.md et docs/security-report.md.
+Commandes réservées aux identités habilitées (AIC_AUTHORIZED_LOGINS, politique fail closed : liste vide = aucune commande acceptée). Adaptateurs Mistral, OpenAI et GitHub simulés uniquement ; l'adaptateur d'API refuse explicitement toute exécution (`AIC_MISTRAL_MODE=api` ou `AIC_OPENAI_MODE=api` provoque un arrêt en erreur). Le passage aux API réelles (T03) et au déploiement cloud (T04) requiert une autorisation distincte. Voir docs/deployment-linux.md et docs/security-report.md.
