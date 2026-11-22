@@ -70,8 +70,32 @@ func main() {
 		logger.Error("AIC_MISTRAL_MODE inconnu", "mode", cfg.MistralMode)
 		os.Exit(2)
 	}
-	if cfg.OpenAIMode == aic.ModeAPI {
-		logger.Error("AIC_OPENAI_MODE=api n'est pas autorisé en T03 : raccordement OpenAI hors périmètre")
+	// M-AIC-04 : adaptateur réel OpenAI, clé d'API en mémoire uniquement,
+	// journalisation SQLite des appels et réponses. Fail closed sans clé.
+	switch cfg.OpenAIMode {
+	case aic.ModeSimulated:
+		// simulé (défaut)
+	case aic.ModeAPI:
+		if cfg.OpenAIKey == "" {
+			logger.Error("AIC_OPENAI_APIKEY est requis en mode api : refus de démarrer sans clé (fail closed)")
+			os.Exit(2)
+		}
+		realReviewer, err := aic.NewRealOpenAI(aic.RealOpenAIOptions{
+			APIKey:    cfg.OpenAIKey,
+			APIURL:    cfg.OpenAIAPIURL,
+			Model:     cfg.OpenAIModel,
+			Timeout:   cfg.OpenAITimeout,
+			MaxTokens: cfg.OpenAIMaxTok,
+			Log:       func(missionID, phase, message string) { _ = store.Log(missionID, "openai", phase, message) },
+		})
+		if err != nil {
+			logger.Error("adaptateur API OpenAI invalide", "err", err.Error())
+			os.Exit(2)
+		}
+		logger.Info("adaptateur API OpenAI activé (M-AIC-04)", "model", cfg.OpenAIModel)
+		reviewer = realReviewer
+	default:
+		logger.Error("AIC_OPENAI_MODE inconnu", "mode", cfg.OpenAIMode)
 		os.Exit(2)
 	}
 	// Habilitation (T02-R1) : sans identité autorisée, aucune commande /aic
