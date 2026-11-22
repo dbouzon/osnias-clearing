@@ -90,6 +90,6 @@ Tests T02-R2 ajoutés : TestT02R2ReclaimThenClaim (verrou périmé supprimé pui
 
 - `go test -race` à exécuter en T03 sur machine complète.
 - Interopérabilité réelle non démontrée en T02 : les adaptateurs Mistral, OpenAI et GitHub sont simulés ; l'ouverture des accès API et la démonstration de bout en bout relèvent de T03, le déploiement de T04.
-- Statut : T02, T02-R1 et T02-R2 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour, en attente de la nouvelle revue.
-
-Décisions attendues du responsable : validation de T02, puis autorisation éventuelle de fusion de la PR Draft.
+- Risque résiduel 1 (revue T02-R2) : les événements en file d'attente ne sont rejoués qu'au démarrage (DrainPendingEvents) ; il n'existe pas de boucle de relance automatique pendant le fonctionnement normal. À traiter en T03 (relance périodique de la file).
+- Risque résiduel 2 (revue T02-R2) : opérations GitHub et transitions SQLite hors transaction unique ; un arrêt entre les deux peut entraîner un double envoi GitHub au rejeu. Garantie effective : at-least-once avec idempotence des états, exactement-une-fois non garanti ; à traiter en T03 (mécanisme outbox ou identifiants d'idempotence).
+- Statut : T02, T02-R1 et T02-R2 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour. Revue du 22/11/2026 : réception du prototype T02 recommandée avec les deux risques résiduels ci-dessus documentés, leur traitement étant requis avant toute connexion réelle aux API (T03). Fusion suspendue à l'autorisation explicite du responsable.
