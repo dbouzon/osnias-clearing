@@ -97,7 +97,12 @@ CREATE TABLE IF NOT EXISTS github_ops (
     mission_id TEXT NOT NULL,
     op_type    TEXT NOT NULL,
     state      TEXT NOT NULL DEFAULT 'pending',
+    detail     TEXT NOT NULL DEFAULT '',
     updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS github_sent (
+    idem_key TEXT PRIMARY KEY,
+    at      TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_missions_state ON missions(state);
 CREATE INDEX IF NOT EXISTS idx_transitions_mission ON transitions(mission_id);
@@ -118,6 +123,8 @@ func OpenStore(path string) (*Store, error) {
 	// erreurs de colonne déjà présente sont ignorées (base déjà à jour).
 	_, _ = db.Exec(`ALTER TABLE events ADD COLUMN payload TEXT NOT NULL DEFAULT ''`)
 	_, _ = db.Exec(`ALTER TABLE events ADD COLUMN processed_at TEXT NOT NULL DEFAULT ''`)
+	// Migration T02-R4 : détail (référence de livraison) de l'opération GitHub.
+	_, _ = db.Exec(`ALTER TABLE github_ops ADD COLUMN detail TEXT NOT NULL DEFAULT ''`)
 	return &Store{db: db}, nil
 }
 
@@ -200,6 +207,43 @@ func (s *Store) GitHubOpState(idemKey string) (string, error) {
 // MarkGitHubOpState fait évoluer l'état d'une écriture GitHub.
 func (s *Store) MarkGitHubOpState(idemKey, state string) error {
 	_, err := s.db.Exec(`UPDATE github_ops SET state = ?, updated_at = ? WHERE idem_key = ?`, state, nowISO(), idemKey)
+	return err
+}
+
+// MarkGitHubOpDone marque l'opération 'done' en persistant son détail
+// (T02-R4 : la référence de la livraison Draft survit à la même transaction
+// de clôture ; la reprise retrouve la référence sans rappeler GitHub).
+func (s *Store) MarkGitHubOpDone(idemKey, detail string) error {
+	_, err := s.db.Exec(`UPDATE github_ops SET state = 'done', detail = ?, updated_at = ? WHERE idem_key = ?`, detail, nowISO(), idemKey)
+	return err
+}
+
+// GitHubOpDetail retourne le détail persisté d'une opération GitHub (” si
+// absent ou inconnu).
+func (s *Store) GitHubOpDetail(idemKey string) (string, error) {
+	var detail string
+	err := s.db.QueryRow(`SELECT detail FROM github_ops WHERE idem_key = ?`, idemKey).Scan(&detail)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	return detail, err
+}
+
+// GitHubSeenKey indique si une clé d'écriture GitHub a déjà été envoyée de
+// façon durable (T02-R4 : déduplication de l'adaptateur résistante au
+// redémarrage complet du processus).
+func (s *Store) GitHubSeenKey(idemKey string) (bool, error) {
+	var one int
+	err := s.db.QueryRow(`SELECT 1 FROM github_sent WHERE idem_key = ?`, idemKey).Scan(&one)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+	return err == nil, err
+}
+
+// GitHubMarkKey enregistre durablement l'envoi d'une clé d'écriture GitHub.
+func (s *Store) GitHubMarkKey(idemKey string) error {
+	_, err := s.db.Exec(`INSERT OR IGNORE INTO github_sent (idem_key, at) VALUES (?,?)`, idemKey, nowISO())
 	return err
 }
 
