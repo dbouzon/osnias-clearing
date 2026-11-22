@@ -158,6 +158,25 @@ func senderLogin(p issueCommentPayload) string {
 	return p.Comment.User.Login
 }
 
+// StartPendingRetryLoop relance périodiquement, pendant le fonctionnement
+// normal, le traitement des événements en attente (T02-R3, risque 1) :
+// la reprise ne dépend plus du seul redémarrage. Les événements en erreur
+// ou bloqués par un verrou d'exclusivité sont rejoués à chaque intervalle
+// (AIC_PENDING_RETRY_INTERVAL, défaut 60 s) jusqu'à réussite ; la boucle
+// s'arrête proprement à l'annulation du contexte (arrêt du coordinateur).
+func StartPendingRetryLoop(ctx context.Context, c *Coordinator, logger *slog.Logger) {
+	ticker := time.NewTicker(c.Config.PendingRetryInterval)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			DrainPendingEvents(ctx, c, logger)
+		}
+	}
+}
+
 // NewServer construit le récepteur HTTP avec son journal horodaté.
 func NewServer(c *Coordinator, logger *slog.Logger) *http.Server {
 	mux := http.NewServeMux()
