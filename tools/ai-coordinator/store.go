@@ -92,6 +92,13 @@ CREATE TABLE IF NOT EXISTS mission_locks (
     mission_id TEXT PRIMARY KEY,
     claimed_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS github_ops (
+    idem_key   TEXT PRIMARY KEY,
+    mission_id TEXT NOT NULL,
+    op_type    TEXT NOT NULL,
+    state      TEXT NOT NULL DEFAULT 'pending',
+    updated_at TEXT NOT NULL
+);
 CREATE INDEX IF NOT EXISTS idx_missions_state ON missions(state);
 CREATE INDEX IF NOT EXISTS idx_transitions_mission ON transitions(mission_id);
 `
@@ -163,6 +170,49 @@ func (s *Store) PendingEvents() ([]PendingEvent, error) {
 		out = append(out, e)
 	}
 	return out, rows.Err()
+}
+
+// EnqueueGitHubOp enregistre une écriture GitHub sortante sous sa clé
+// d'idempotence (T02-R3, risque 2) : INSERT OR IGNORE, retour false si la
+// clé est déjà connue. Les états sont pending (créée), sending (envoi en
+// cours), done (réalisée). L'écriture diffère de SaveEvent : un échec réel
+// n'est pas un doublon et l'erreur est renvoyée telle quelle.
+func (s *Store) EnqueueGitHubOp(idemKey, missionID, opType string) (bool, error) {
+	res, err := s.db.Exec(`INSERT OR IGNORE INTO github_ops (idem_key, mission_id, op_type, state, updated_at) VALUES (?,?,?,'pending',?)`,
+		idemKey, missionID, opType, nowISO())
+	if err != nil {
+		return false, err
+	}
+	n, _ := res.RowsAffected()
+	return n == 1, nil
+}
+
+// GitHubOpState retourne l'état d'une écriture GitHub (” si inconnue).
+func (s *Store) GitHubOpState(idemKey string) (string, error) {
+	var st string
+	err := s.db.QueryRow(`SELECT state FROM github_ops WHERE idem_key = ?`, idemKey).Scan(&st)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	return st, err
+}
+
+// MarkGitHubOpState fait évoluer l'état d'une écriture GitHub.
+func (s *Store) MarkGitHubOpState(idemKey, state string) error {
+	_, err := s.db.Exec(`UPDATE github_ops SET state = ?, updated_at = ? WHERE idem_key = ?`, state, nowISO(), idemKey)
+	return err
+}
+
+// DraftForMission retourne la référence de la livraison Draft persistée pour
+// une mission (” si aucune) : une reprise après interruption réutilise la
+// livraison existante au lieu d'en créer une seconde (T02-R3, risque 2).
+func (s *Store) DraftForMission(missionID string) (string, error) {
+	var ref string
+	err := s.db.QueryRow(`SELECT pr_draft FROM deliveries WHERE mission_id = ? ORDER BY id DESC LIMIT 1`, missionID).Scan(&ref)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	return ref, err
 }
 
 // MissionByID retourne une mission, ou nil si absente.
