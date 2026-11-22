@@ -5,7 +5,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"io"
 	"log/slog"
 	"net/http"
@@ -86,8 +85,10 @@ func (s *Server) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "missing delivery id", http.StatusBadRequest)
 		return
 	}
-	// Persistance durable de l'événement AVANT tout acquittement 2xx.
-	fresh, err := s.Coordinator.Store.SaveEvent(deliveryID, eventType)
+	// Persistance durable de l'événement, avec son payload, AVANT tout
+	// acquittement 2xx (T02-R2) : le traitement redevient possible après
+	// redémarrage même si le processus s'arrête juste après l'acquittement.
+	fresh, err := s.Coordinator.Store.SaveEvent(deliveryID, eventType, string(body))
 	if err != nil {
 		// échec réel de stockage : 503, GitHub rejouera la livraison.
 		// L'événement n'est pas marqué traité : aucun risque de perte.
@@ -102,27 +103,52 @@ func (s *Server) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if eventType != "issue_comment" {
-		return
-	}
-	var p issueCommentPayload
-	if err := json.Unmarshal(body, &p); err != nil {
-		s.Logger.Error("payload illisible", "err", err.Error())
-		return
-	}
-	if p.Action != "created" {
+		// types d'événements non commandés : traités définitivement.
+		_ = s.Coordinator.Store.MarkEventProcessed(deliveryID)
 		return
 	}
 	go func() {
 		ctx, cancel := context.WithTimeout(context.Background(), s.Coordinator.Config.MistralTimeout+30*time.Second)
 		defer cancel()
-		if err := s.Coordinator.HandleIssueComment(ctx, int64(p.Issue.Number), p.Issue.Title, senderLogin(p), p.Comment.Body); err != nil {
-			if err == ErrMissionLocked {
-				s.Logger.Info("exécution ignorée : verrou d'exclusivité actif", "issue", p.Issue.Number)
-				return
-			}
-			s.Logger.Error("traitement mission", "issue", p.Issue.Number, "err", err.Error())
-		}
+		s.ProcessAndAck(ctx, deliveryID, eventType, string(body))
 	}()
+}
+
+// ProcessAndAck traite un événement persisté et le marque traité si son
+// traitement est définitif. En cas d'échec ou de verrou actif, l'événement
+// reste dans la file d'attente durable et sera repris au redémarrage
+// (T02-R2 : aucune perte d'événement entre acquittement et traitement).
+func (s *Server) ProcessAndAck(ctx context.Context, deliveryID, eventType, payload string) {
+	done, err := s.Coordinator.ProcessEvent(ctx, eventType, payload)
+	if !done {
+		if err == ErrMissionLocked {
+			s.Logger.Info("exécution différée : verrou d'exclusivité actif, événement conservé en file d'attente", "delivery", deliveryID)
+		} else {
+			s.Logger.Error("traitement mission, événement conservé en file d'attente", "delivery", deliveryID, "err", err.Error())
+		}
+		return
+	}
+	if err := s.Coordinator.Store.MarkEventProcessed(deliveryID); err != nil {
+		s.Logger.Error("marquer l'événement traité", "delivery", deliveryID, "err", err.Error())
+	}
+}
+
+// DrainPendingEvents rejoue au démarrage les événements enregistrés mais non
+// traités (arrêt entre acquittement 2xx et traitement asynchrone, T02-R2).
+func DrainPendingEvents(ctx context.Context, c *Coordinator, logger *slog.Logger) {
+	events, err := c.Store.PendingEvents()
+	if err != nil {
+		logger.Error("lire la file d'attente des événements", "err", err.Error())
+		return
+	}
+	if len(events) == 0 {
+		return
+	}
+	logger.Info("file d'attente persistante : reprise", "events", len(events))
+	for _, e := range events {
+		s := &Server{Coordinator: c, Logger: logger}
+		s.ProcessAndAck(ctx, e.DeliveryID, e.EventType, e.Payload)
+	}
 }
 
 func senderLogin(p issueCommentPayload) string {
