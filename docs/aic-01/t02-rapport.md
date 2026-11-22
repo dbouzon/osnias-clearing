@@ -1,6 +1,6 @@
 # Rapport de réception — M-AIC-01 / T02 : coordinateur multi-agents (prototype local)
 
-Version 1.2 — 22 novembre 2026 (T02-R1 : levée des réserves de revue ; T02-R2 : correction des deux anomalies de revue) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
+Version 1.3 — 22 novembre 2026 (T02-R1, T02-R2 ; T02-R3 : traitement des deux risques résiduels) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
 
 ## 1. Objectif
 
@@ -47,8 +47,8 @@ Commandes exécutées dans l'environnement de développement (Go 1.24) :
 - `go build ./...` : OK
 - `go vet ./...` : OK
 - `gofmt -l .` : aucun écart
-- `go test -count=1 ./...` : OK, 18/18 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1 + 4 tests T02-R2)
-- `go test -count=3 ./...` : OK, 18/18 PASS trois exécutions successives (stabilité)
+- `go test -count=1 ./...` : OK, 22/22 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1 + 4 tests T02-R2 + 4 tests T02-R3)
+- `go test -count=3 ./...` : OK, 22/22 PASS trois exécutions successives (stabilité)
 
 Tests T02-R1 ajoutés :
 
@@ -59,7 +59,7 @@ Tests T02-R1 ajoutés :
 
 Remarques et limites :
 
-- `go test -race` n'a pas pu être exécuté : cgo et compilateur C indisponibles dans l'environnement T02 (tentative CGO_ENABLED=1 : « gcc not found ») ; à exécuter en T03. Un test de concurrence fonctionnel (8 exécutants simultanés) et un verrou d'exclusivité persistant couvrent la réserve en attendant.
+- `go test -race` n'a pas pu être exécuté en T02, T02-R2 ni T02-R3 : le détecteur exige cgo et un compilateur C (rejet explicite : « -race requires cgo »), indisponible dans la sandbox et non installable (installation de paquets interdite) ; à exécuter en T03 sur machine complète. Un test de concurrence fonctionnel (8 exécutants simultanés) et un verrou d'exclusivité persistant couvrent la réserve en attendant.
 - Tous les adaptateurs sont simulés (SimulatedMistral, SimulatedOpenAI, SimulatedGitHub) ; aucun appel réseau, aucune API payante, aucune ressource cloud.
 
 ## 6. Limites impératives respectées
@@ -84,12 +84,22 @@ Les deux anomalies signalées par la revue du 22/11/2026 (T02-R2) sont confirmé
 1. Anomalie A (reprise après interruption) : `ReclaimStaleClaim` actualisait `claimed_at` du verrou périmé sans supprimer la ligne ; le `ClaimMission` suivant (INSERT OR IGNORE) échouait donc silencieusement, et toute mission laissée RUNNING par un crash restait bloquée à chaque redémarrage. Correctif : `ReclaimStaleClaim` effectue désormais un DELETE atomique du verrou périmé (âge supérieur à AIC_RUN_STALE_INTERVAL) ; le verrou est ensuite ré-acquis normalement par `ClaimMission`. Les horodatages de verrous sont homogénéisés (RFC3339Nano).
 2. Anomalie B (perte possible d'un événement après acquittement) : seul l'identifiant de livraison était persisté ; un arrêt du processus entre la réponse 2xx et le traitement asynchrone perdait définitivement la commande. Correctif : file d'attente durable — `SaveEvent` persiste le payload brut avec l'événement ; les événements non traités (`processed_at` vide) sont retraités au démarrage (`DrainPendingEvents`, appelé avant `Resume`) ; un événement traité ou sans effet (type non commandé, action ≠ created, auteur non habilité, payload illisible) est marqué traité et n'est jamais rejoué ; en cas de verrou actif ou d'erreur, l'événement reste en file pour le redémarrage suivant.
 
-Tests T02-R2 ajoutés : TestT02R2ReclaimThenClaim (verrou périmé supprimé puis re-acquis), TestT02R2ResumeAfterCrash (mission RUNNING + verrou périmé : la reprise au redémarrage débloque réellement la mission), TestT02R2PendingEventQueue (événement acquitté non traité : payload restitué, mission exécutée au dévidage, file vidée), TestT02R2NoLossWhenEventNotCommand (les événements sans effet sont clos, la file ne s'engorge pas).
+Tests T02-R2 ajoutés : TestT02R2ReclaimThenClaim (verrou périmé supprimé puis re-acquis), TestT02R2ResumeAfterCrash (mission RUNNING + verrou périmé : la reprise au redémarrage débloque réellement la mission), TestT02R2PendingEventQueue (événement acquitté non traité : payload restitué, mission exécutée au dévidage, file vidée et cloturée), TestT02R2NoLossWhenEventNotCommand (les événements sans effet sont clos, la file ne s'engorge pas).
+
+Tests T02-R3 ajoutés : TestT02R3GitHubOpStates (états pending/sending/done de la table d'idempotence), TestT02R3NoDuplicateComment (commentaire renvoyé après fenêtre de crash : jamais dupliqué), TestT02R3DraftReused (livraison Draft interrompue : même référence, jamais dupliquée, livraison persistée réutilisée), TestT02R3PendingRetryLoop (relance à chaud : un événement bloqué par verrou est retraité en fonctionnement normal après libération du verrou).
+
+## 6 quater. T02-R3 — Traitement des deux risques résiduels
+
+Ordre du responsable du 22/11/2026 : traiter les deux réserves de la revue de réception et exécuter go test -race, en tranche corrective distincte, avant toute intégration aux API réelles (T03).
+
+1. Risque résiduel 1 (relance à chaud) : boucle permanente StartPendingRetryLoop, intervalle AIC_PENDING_RETRY_INTERVAL (défaut 60 s), arrêt propre à l'arrêt du coordinateur ; la file d'événements est retraitée périodiquement en fonctionnement normal, un événement bloqué par verrou ou en erreur n'attend plus le redémarrage ; complément : /aic start accepte de reprendre une mission RUNNING déverrouillée (l'exclusivité repose sur le verrou persistant, non sur l'état), sinon une mission laissée RUNNING par contention resterait en suspens jusqu'au redémarrage.
+2. Risque résiduel 2 (duplication des écritures GitHub) : chaque écriture sortante porte une clé d'idempotence déterministe enregistrée en base avant l'envoi (table github_ops, états pending/sending/done) ; une opération 'done' n'est jamais renvoyée ; une opération interrompue entre l'envoi et le marquage est renvoyée sous la même clé et dédupliquée par l'adaptateur (interface IdempotentGitHub, réalisée par SimulatedGitHub en T02) ; une livraison Draft déjà persistée est réutilisée (DraftForMission) sans nouvelle création. Les adaptateurs API réels devront réaliser IdempotentGitHub sur ce modèle en T03.
+3. go test -race : non exécutable dans l'environnement de développement — le détecteur exige cgo et un compilateur C (rejet explicite : « -race requires cgo; enable cgo by setting CGO_ENABLED=1 »), aucun compilateur C n'est disponible et l'installation de paquets y est interdite. Tentative CGO_ENABLED=0 refusée. Mesures compensatoires inchangées (verrou persistant, connexion SQLite unique, tests fonctionnels de concurrence) ; exécution requise en T03 sur machine complète.
 
 ## 7. Réserves et suite
 
-- `go test -race` à exécuter en T03 sur machine complète.
-- Interopérabilité réelle non démontrée en T02 : les adaptateurs Mistral, OpenAI et GitHub sont simulés ; l'ouverture des accès API et la démonstration de bout en bout relèvent de T03, le déploiement de T04.
-- Risque résiduel 1 (revue T02-R2) : les événements en file d'attente ne sont rejoués qu'au démarrage (DrainPendingEvents) ; il n'existe pas de boucle de relance automatique pendant le fonctionnement normal. À traiter en T03 (relance périodique de la file).
-- Risque résiduel 2 (revue T02-R2) : opérations GitHub et transitions SQLite hors transaction unique ; un arrêt entre les deux peut entraîner un double envoi GitHub au rejeu. Garantie effective : at-least-once avec idempotence des états, exactement-une-fois non garanti ; à traiter en T03 (mécanisme outbox ou identifiants d'idempotence).
-- Statut : T02, T02-R1 et T02-R2 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour. Revue du 22/11/2026 : réception du prototype T02 recommandée avec les deux risques résiduels ci-dessus documentés, leur traitement étant requis avant toute connexion réelle aux API (T03). Fusion suspendue à l'autorisation explicite du responsable.
+- `go test -race` à exécuter en T03 sur machine complète (non exécutable dans la sandbox : cgo/compilateur C requis, installation de paquets interdite ; rejet documenté en section 6 quater).
+- Interopérabilité réelle non démontrée en T02 : les adaptateurs Mistral, OpenAI et GitHub sont simulés ; l'ouverture des accès API et la démonstration de bout en bout relèvent de T03, le déploiement de T04 ; les adaptateurs API réels devront réaliser IdempotentGitHub (recherche avant création) pour garantir l'absence de doublon côté GitHub.
+- Risque résiduel 1 (relance à chaud) : traité en T02-R3 (boucle AIC_PENDING_RETRY_INTERVAL, testée).
+- Risque résiduel 2 (duplication GitHub) : traité en T02-R3 (clés d'idempotence persistées + déduplication adaptateur + réutilisation des livraisons Draft, testés) ; la garantie complète repose en T03 sur la réalisation d'IdempotentGitHub par les adaptateurs réels.
+- Statut : T02, T02-R1, T02-R2 et T02-R3 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour. Fusion suspendue à l'autorisation explicite du responsable.
