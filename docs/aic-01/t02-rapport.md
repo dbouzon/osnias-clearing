@@ -1,6 +1,6 @@
 # Rapport de réception — M-AIC-01 / T02 : coordinateur multi-agents (prototype local)
 
-Version 1.4 — 22 novembre 2026 (T02-R1 à T02-R4 ; T02-R4 : reprise des références de livraison et déduplication durable) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
+Version 1.5 — 22 novembre 2026 (T02-R1 à T02-R5 ; T02-R5 : clôture de l'idempotence SQLite ; audit documentaire des bibliothèques publié séparément) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
 
 ## 1. Objectif
 
@@ -47,8 +47,8 @@ Commandes exécutées dans l'environnement de développement (Go 1.24) :
 - `go build ./...` : OK
 - `go vet ./...` : OK
 - `gofmt -l .` : aucun écart
-- `go test -count=1 ./...` : OK, 24/24 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1 + 4 tests T02-R2 + 4 tests T02-R3 + 2 tests T02-R4)
-- `go test -count=3 ./...` : OK, 24/24 PASS trois exécutions successives (stabilité)
+- `go test -count=1 ./...` : OK, 28/28 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1 + 4 tests T02-R2 + 4 tests T02-R3 + 2 tests T02-R4 + 4 tests T02-R5)
+- `go test -count=3 ./...` : OK, 28/28 PASS trois exécutions successives (stabilité)
 
 Tests T02-R1 ajoutés :
 
@@ -90,6 +90,15 @@ Tests T02-R3 ajoutés : TestT02R3GitHubOpStates (états pending/sending/done de 
 
 Tests T02-R4 ajoutés : TestT02R4DraftRefRecoveredAfterCrash (référence de PR restituée depuis la base après interruption entre création et enregistrement, sans rappel de GitHub, y compris après redémarrage complet avec adaptateur vierge), TestT02R4IdempotenceAfterRestart (déduplication résistante au redémarrage complet : aucun doublon malgré un registre mémoire vierge).
 
+Tests T02-R5 ajoutés : TestT02R5PersistFailureNoEffect (échec injecté d'écriture du registre github_sent : erreur propagée, aucun commentaire produit, mémoire non marquée ; rejeu avec persistance saine : exactement un commentaire), TestT02R5SeenKeyErrorPropagated (échec injecté de lecture du registre : erreur propagée par les trois opérations idempotentes, aucun effet produit), TestT02R5DraftPersistFailureNoCreation (échec de persistance avant création de PR Draft : aucune PR simulée créée ; rejeu après redémarrage complet avec persistance saine : une seule PR, référence restituée), TestT02R5RestartNoDuplicationAnyOp (rejeu après redémarrage complet d'opérations comment et review, dont une interrompue avant le marquage 'done' : aucun doublon, opération cloturée).
+
+## 6 sexies. T02-R5 — Clôture de l'idempotence SQLite
+
+1. Propagation des erreurs : `seenKey` propage désormais les erreurs de lecture du registre durable (on ne conclut jamais à l'absence d'une clé sur une erreur SQLite) ; `markSeenKey` retourne une erreur au lieu d'ignorer l'échec d'écriture ; les trois opérations idempotentes (`PostCommentIdem`, `CreateDraftPRIdem`, `RequestChangesIdem`) propagent ces erreurs à l'appelant (githubApply, donc au coordinateur).
+2. Une opération n'est plus jamais considérée comme exécutée si sa persistance échoue : la clé est persistée durablement avant l'effet simulé et avant le marquage mémoire ; en cas d'échec d'écriture, aucun effet n'est produit, la mémoire n'est pas marquée et l'opération sera rejouée. Il ne peut plus exister d'opération simulée exécutée mais non enregistrée (source de duplication après redémarrage).
+3. Atomicité locale : mécanisme write-ahead (persistance durable avant cache mémoire) pour le couple cache/registre, équivalent transactionnel pour ce couple ; les écritures multi-instructions du Store (état de mission + journal) restent transactionnelles (déjà en place depuis T02-R1) et les écritures d'idempotence sont mono-instruction donc atomiques au sens SQLite.
+4. Tests : 28/28 PASS au total, dont 4 tests d'injection de panne (`failingKeyStore`), de redémarrage complet et de non-duplication (détail en section Tests T02-R5 ajoutés).
+
 ## 6 quater. T02-R3 — Traitement des deux risques résiduels
 
 Ordre du responsable du 22/11/2026 : traiter les deux réserves de la revue de réception et exécuter go test -race, en tranche corrective distincte, avant toute intégration aux API réelles (T03).
@@ -111,5 +120,5 @@ Ordre du 22/11/2026 (revue T02-R3, validation partielle) : corriger la restituti
 - `go test -race` à exécuter en T03 sur machine complète (non exécutable dans la sandbox : cgo/compilateur C requis, installation de paquets interdite ; rejet documenté en section 6 quater).
 - Interopérabilité réelle non démontrée en T02 : les adaptateurs Mistral, OpenAI et GitHub sont simulés ; l'ouverture des accès API et la démonstration de bout en bout relèvent de T03, le déploiement de T04 ; les adaptateurs API réels devront réaliser IdempotentGitHub (recherche avant création) pour garantir l'absence de doublon côté GitHub.
 - Risque résiduel 1 (relance à chaud) : traité en T02-R3 (boucle AIC_PENDING_RETRY_INTERVAL, testée).
-- Risque résiduel 2 (duplication GitHub) : traité en T02-R3 (clés d'idempotence persistées + déduplication adaptateur + réutilisation des livraisons Draft, testés), puis consolidé en T02-R4 (référence de PR restituée depuis la base, déduplication résistante au redémarrage complet, testés) ; la garantie complète repose en T03 sur la réalisation d'IdempotentGitHub par les adaptateurs réels.
-- Statut : T02, T02-R1, T02-R2, T02-R3 et T02-R4 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour. Fusion suspendue à l'autorisation explicite du responsable.
+- Risque résiduel 2 (duplication GitHub) : traité en T02-R3 (clés d'idempotence persistées + déduplication adaptateur + réutilisation des livraisons Draft, testés), consolidé en T02-R4 (référence de PR restituée depuis la base, déduplication résistante au redémarrage complet, testés), puis clos en T02-R5 (propagation des erreurs SQLite, persistance avant effet, testés) ; la garantie complète repose en T03 sur la réalisation d'IdempotentGitHub par les adaptateurs réels.
+- Statut : T02, T02-R1, T02-R2, T02-R3, T02-R4 et T02-R5 développées, testées et publiées sur `mission/ai-coordinator-v01` ; audit documentaire des bibliothèques Go (T02-R5, recommandation scénario B : go-github en T03, conservation de la persistance SQLite) publié dans docs/aic-01/t02-r5-audit-bibliotheques.md et validé par le responsable. PR Draft #4 mise à jour. Fusion suspendue à l'autorisation explicite du responsable.
