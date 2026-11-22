@@ -59,15 +59,21 @@ func main() {
 		Store: store, Config: cfg,
 		Mistral: mistral, Reviewer: reviewer, GitHub: github,
 	}
-	// T02-R2 : reprise des événements acquittés mais non traités (arrêt
-	// entre réponse 2xx et traitement asynchrone), avant la reprise des
-	// missions : les commandes humaines ne sont jamais perdues.
-	aic.DrainPendingEvents(context.Background(), coord, logger)
-	if err := coord.Resume(context.Background()); err != nil {
+	// Contexte d'exploitation : annulé proprement à l'arrêt.
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// T02-R2/T02-R3 : reprise des événements acquittés mais non traités
+	// (arrêt entre réponse 2xx et traitement asynchrone), puis relance
+	// périodique pendant le fonctionnement normal : les commandes humaines
+	// ne sont jamais perdues et n'attendent pas un redémarrage.
+	aic.DrainPendingEvents(ctx, coord, logger)
+	if err := coord.Resume(ctx); err != nil {
 		logger.Error("reprise des missions", "err", err.Error())
 		os.Exit(1)
 	}
 	srv := aic.NewServer(coord, logger)
+	go aic.StartPendingRetryLoop(ctx, coord, logger)
 	go func() {
 		logger.Info("coordinateur démarré", "addr", cfg.ListenAddr, "repo", cfg.GitHubRepo)
 		if err := srv.ListenAndServe(); err != nil {
@@ -79,5 +85,6 @@ func main() {
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 	<-stop
 	logger.Info("arrêt du coordinateur")
+	cancel()
 	_ = srv.Close()
 }
