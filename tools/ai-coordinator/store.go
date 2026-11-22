@@ -427,3 +427,40 @@ func nowISO() string { return time.Now().UTC().Format(time.RFC3339) }
 
 // nowNano fournit un horodatage haute précision (verrous d'exclusivité).
 func nowNano() string { return time.Now().UTC().Format(time.RFC3339Nano) }
+
+// AgentLog est une entrée du journal des agents (lecture seule, recette T02).
+type AgentLog struct {
+	ID        int64
+	MissionID string
+	Agent     string
+	Phase     string
+	Message   string
+	At        string
+}
+
+// Journal retourne les entrées du journal des agents, chronologiques. Un
+// identifiant de mission vide retourne l'ensemble du journal (lecture seule :
+// utilisé par l'utilitaire de recette aic-journal).
+func (s *Store) Journal(missionID string) ([]AgentLog, error) {
+	q := `SELECT id, mission_id, agent, phase, message, at FROM agent_logs`
+	args := []any{}
+	if missionID != "" {
+		q += ` WHERE mission_id = ?`
+		args = append(args, missionID)
+	}
+	q += ` ORDER BY id ASC`
+	rows, err := s.db.Query(q, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []AgentLog
+	for rows.Next() {
+		var l AgentLog
+		if err := rows.Scan(&l.ID, &l.MissionID, &l.Agent, &l.Phase, &l.Message, &l.At); err != nil {
+			return nil, err
+		}
+		out = append(out, l)
+	}
+	return out, rows.Err()
+}
