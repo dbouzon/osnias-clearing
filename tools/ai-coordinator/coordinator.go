@@ -2,6 +2,7 @@ package aic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -89,6 +90,29 @@ func (c *Coordinator) HandleIssueComment(ctx context.Context, issueNumber int64,
 		return c.GitHub.PostComment(m.ID, "mission bloquée par intervention humaine")
 	}
 	return nil
+}
+
+// ProcessEvent traite un événement GitHub persisté à partir de son type et
+// de son payload brut (T02-R2). Retourne done=true lorsque l'événement est
+// définitivement traité (aucun rejou utile) ; done=false indique un échec
+// ou un verrou actif : l'événement doit rester en file d'attente durable.
+func (c *Coordinator) ProcessEvent(ctx context.Context, eventType, payload string) (bool, error) {
+	if eventType != "issue_comment" {
+		return true, nil
+	}
+	var p issueCommentPayload
+	if err := json.Unmarshal([]byte(payload), &p); err != nil {
+		// payload illisible : le rejou serait identique, l'événement est clos.
+		_ = c.Store.Log("unknown", "coordinator", "error", "payload illisible (événement clos) : "+err.Error())
+		return true, nil
+	}
+	if p.Action != "created" {
+		return true, nil
+	}
+	if err := c.HandleIssueComment(ctx, int64(p.Issue.Number), p.Issue.Title, senderLogin(p), p.Comment.Body); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // RunToReview exécute l'agent Mistral (répertoire isolé, bornes appliquées),
