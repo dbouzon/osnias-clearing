@@ -1,6 +1,6 @@
 # Rapport de réception — M-AIC-01 / T02 : coordinateur multi-agents (prototype local)
 
-Version 1.1 — 22 novembre 2026 (T02-R1 : levée des réserves de revue) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
+Version 1.2 — 22 novembre 2026 (T02-R1 : levée des réserves de revue ; T02-R2 : correction des deux anomalies de revue) · Développeur : Mistral Code · Réception : ChatGPT / agent OpenAI · Responsable : Denis Lamalice
 
 ## 1. Objectif
 
@@ -47,8 +47,8 @@ Commandes exécutées dans l'environnement de développement (Go 1.24) :
 - `go build ./...` : OK
 - `go vet ./...` : OK
 - `gofmt -l .` : aucun écart
-- `go test -count=1 ./...` : OK, 14/14 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1)
-- `go test -count=3 ./...` : OK, 14/14 PASS trois exécutions successives (stabilité)
+- `go test -count=1 ./...` : OK, 18/18 PASS (10 scénarios initiaux T02-E rejoués + 4 tests T02-R1 + 4 tests T02-R2)
+- `go test -count=3 ./...` : OK, 18/18 PASS trois exécutions successives (stabilité)
 
 Tests T02-R1 ajoutés :
 
@@ -77,10 +77,19 @@ Les quatre réserves de la revue T02-R1 (commentaire PR #4 du 22/11/2026) sont l
 
 Correction connexe : les fichiers github.go et mistral.go présentaient dans la version publiée initiale des caractères altérés lors de la publication (motif antérieur à la publication : une séquence d'échappement). Ils sont corrigés et republiés ; l'intégrité de tous les fichiers a été re-vérifiée par construction et tests complets depuis la source distante.
 
+## 6 ter. T02-R2 — Correction des deux anomalies de revue
+
+Les deux anomalies signalées par la revue du 22/11/2026 (T02-R2) sont confirmées et corrigées :
+
+1. Anomalie A (reprise après interruption) : `ReclaimStaleClaim` actualisait `claimed_at` du verrou périmé sans supprimer la ligne ; le `ClaimMission` suivant (INSERT OR IGNORE) échouait donc silencieusement, et toute mission laissée RUNNING par un crash restait bloquée à chaque redémarrage. Correctif : `ReclaimStaleClaim` effectue désormais un DELETE atomique du verrou périmé (âge supérieur à AIC_RUN_STALE_INTERVAL) ; le verrou est ensuite ré-acquis normalement par `ClaimMission`. Les horodatages de verrous sont homogénéisés (RFC3339Nano).
+2. Anomalie B (perte possible d'un événement après acquittement) : seul l'identifiant de livraison était persisté ; un arrêt du processus entre la réponse 2xx et le traitement asynchrone perdait définitivement la commande. Correctif : file d'attente durable — `SaveEvent` persiste le payload brut avec l'événement ; les événements non traités (`processed_at` vide) sont retraités au démarrage (`DrainPendingEvents`, appelé avant `Resume`) ; un événement traité ou sans effet (type non commandé, action ≠ created, auteur non habilité, payload illisible) est marqué traité et n'est jamais rejoué ; en cas de verrou actif ou d'erreur, l'événement reste en file pour le redémarrage suivant.
+
+Tests T02-R2 ajoutés : TestT02R2ReclaimThenClaim (verrou périmé supprimé puis re-acquis), TestT02R2ResumeAfterCrash (mission RUNNING + verrou périmé : la reprise au redémarrage débloque réellement la mission), TestT02R2PendingEventQueue (événement acquitté non traité : payload restitué, mission exécutée au dévidage, file vidée), TestT02R2NoLossWhenEventNotCommand (les événements sans effet sont clos, la file ne s'engorge pas).
+
 ## 7. Réserves et suite
 
 - `go test -race` à exécuter en T03 sur machine complète.
 - Interopérabilité réelle non démontrée en T02 : les adaptateurs Mistral, OpenAI et GitHub sont simulés ; l'ouverture des accès API et la démonstration de bout en bout relèvent de T03, le déploiement de T04.
-- Statut : T02 et T02-R1 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour, en attente de la nouvelle revue.
+- Statut : T02, T02-R1 et T02-R2 développées, testées et publiées sur `mission/ai-coordinator-v01` ; PR Draft #4 mise à jour, en attente de la nouvelle revue.
 
 Décisions attendues du responsable : validation de T02, puis autorisation éventuelle de fusion de la PR Draft.
