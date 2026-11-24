@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.osnias-clearing.com/coord/schemas/message.schema.json",
+  "version": "1.0",
+  "title": "COORD message envelope",
+  "type": "object",
+  "required": ["type", "mission", "issue", "actor", "state", "data", "ts"],
+  "properties": {
+    "type": { "enum": ["verdict", "submission", "ack", "control"] },
+    "mission": { "type": "string", "minLength": 1 },
+    "issue": { "type": "string", "pattern": "^#[0-9]+$" },
+    "actor": { "$ref": "https://www.osnias-clearing.com/coord/schemas/identity.schema.json" },
+    "state": { "enum": ["PLANIFIEE", "EXECUTION", "DECISION_ATTENDUE", "ACCEPTEE", "EN_CORRECTION", "ACK_RECU", "REFUSEE", "CLOTUREE"] },
+    "data": { "type": "object" },
+    "ts": { "type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:]{8}Z$" },
+    "fingerprint": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  },
+  "additionalProperties": false
+}
