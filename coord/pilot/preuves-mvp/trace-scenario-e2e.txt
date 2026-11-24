@@ -1,0 +1,29 @@
+[REEL] binaire coord-pilot construit avec la toolchain Go officielle
+[REEL] service loopback démarré : http://127.0.0.1:18094 (token régénéré, non journalisé)
+[OK] S3 : démarrage refusé sur adresse non loopback
+[OK] S1 : sans token -> 401
+[OK] S2 : token invalide -> 401
+[OK] création de mission mvp-demo-01 (201) : PLANIFIEE
+[OK] E2E1.1 exécution par l'exécutant (appel simulé compté) : mistral-simule: 1/10 appels; openai-simule: 0/10 appels
+[OK] E2E1.2 soumission avec révision et empreinte
+[OK] E2E2 séparation N-05 : l'exécutant ne peut pas rendre le verdict
+[OK] boucle de correction : A_CORRIGER rendu par le réceptionnaire
+[OK] reprise d'exécution après correction
+[OK] nouvelle soumission sur preuves corrigées
+[OK] R4.1 arrêt demandé par le pilote
+[OK] R4.2 transition refusée pendant l'arrêt, motif explicite : transition refusée : arrêt demandé par le pilote (vérification du pilote)
+[OK] R4.3 levée de l'arrêt
+[OK] R5 arbitrage N-16 github fait foi, champs listés : ['etat', 'prochaine_action', 'sha_head']
+[OK] R5 reprise refusée si head divergent (N-17)
+[OK] réception ACCEPTEE avec référence obligatoire
+[OK] R6 verdict périmé refusé (N-13), motif « verdict perime »
+[OK] E2E1.3 ACK sur empreinte inchangée (preuves courantes)
+[OK] S4 rôle PILOTE non dérivable du corps de requête
+[OK] E2E1.4 clôture par l'autorité humaine (N-14)
+[OK] R1.a transition depuis état terminal refusée (mission terminee)
+[OK] R1.b cible hors table fermée refusée avec motif : transition interdite: EXECUTION -> CLOTUREE
+[OK] R3 plafond budgétaire dépassé : refus AVANT tout appel : budget : plafond d'appels depasse pour mistral-simule (1/1)
+[OK] journal de mission complet et typé (ARRET_PILOTE distinct d'ECART)
+[OK] journal du service : refus d'authentification S1/S2 consignés
+
+BILAN SCENARIO E2E: OK=25 KO=0 (REEL : service et HTTP locaux, adaptateurs SIMULÉS, 0 €)

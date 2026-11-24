@@ -1,0 +1,25 @@
+== go vet ==
+vet OK (aucun diagnostic)
+== go build ==
+build OK
+== go test (balance complete du module etendu) ==
+?   	coordengine/cmd/coord-demo	[no test files]
+?   	coordengine/cmd/coord-pilot	[no test files]
+?   	coordengine/cmd/vector-runner	[no test files]
+ok  	coordengine/internal/adaptateurs	0.008s
+ok  	coordengine/internal/arret	0.022s
+ok  	coordengine/internal/budget	0.007s
+ok  	coordengine/internal/ctxcontrol	0.013s
+ok  	coordengine/internal/engine	0.007s
+ok  	coordengine/internal/jcs	0.007s
+ok  	coordengine/internal/missions	0.052s
+ok  	coordengine/internal/persist	0.028s
+ok  	coordengine/internal/pilot	0.232s
+?   	coordengine/internal/policy	[no test files]
+ok  	coordengine/internal/resume	0.007s
+?   	coordengine/internal/spec	[no test files]
+== Vecteurs Go (runner) ==
+BILAN CONFORMITE: OK=22 KO=0 (vecteurs de ../docs/conformite-v15)
+== Demo Go ==
+Limites rappelees : la demonstration ne constitue PAS une preuve de securite
+de l'authentification ; le moteur n'authentifie jamais (spec COORD 1.0, section 11).

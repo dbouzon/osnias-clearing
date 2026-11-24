@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<!--
+  COORD Pilot — interface fonctionnelle locale (M-COORD-PILOT-02).
+  Copyright © 2026 Denis Bouzon ; ORCID: https://orcid.org/0009-0007-8894-8902
+  SPDX-License-Identifier: Apache-2.0
+
+  Interface web locale sans framework, servie par cmd/coord-pilot en loopback.
+  ADAPTATEURS SIMULÉS : aucune clé, aucun appel réseau sortant. Les données
+  affichées viennent du service local authentifié par token de session.
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:">
+<title>COORD Pilot — ADAPTATEURS SIMULÉS</title>
+<style>
+:root { --bleu:#1f3a5f; --clair:#f4f6f9; --accent:#0d6efd; --kz:#b02a37; }
+* { box-sizing:border-box; }
+body { font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; margin:0; background:var(--clair); color:#182430; }
+header { background:var(--bleu); color:#fff; padding:10px 16px; }
+header h1 { font-size:1.1rem; margin:0; display:inline; }
+#bandeau { position:sticky; top:0; z-index:3; background:var(--kz); color:#fff; text-align:center; font-weight:600; padding:6px 8px; letter-spacing:.4px; }
+nav { background:#fff; border-bottom:1px solid #d6dbe3; display:flex; flex-wrap:wrap; padding:4px 8px; gap:2px; }
+nav button { border:0; background:transparent; padding:8px 10px; font:inherit; cursor:pointer; border-radius:6px; color:#2c3e50; }
+nav button.actif { background:var(--bleu); color:#fff; }
+main { padding:14px 16px; max-width:880px; margin:0 auto; }
+section.ecran { display:none; }
+section.ecran.actif { display:block; }
+fieldset { border:1px solid #c7cedb; border-radius:8px; margin:0 0 14px; padding:10px 12px; background:#fff; }
+legend { font-weight:600; padding:0 6px; }
+label { display:block; font-size:.85rem; margin:6px 0 2px; color:#334; }
+input, select, textarea { width:100%; padding:6px 8px; border:1px solid #b9c2d0; border-radius:6px; font:inherit; background:#fff; }
+textarea { min-height:64px; font-family:ui-monospace,monospace; font-size:.8rem; }
+button.action { background:var(--accent); color:#fff; border:0; border-radius:6px; padding:8px 14px; font:inherit; cursor:pointer; margin-top:8px; }
+button.action.gris { background:#5a6675; }
+table { border-collapse:collapse; width:100%; background:#fff; font-size:.9rem; }
+th, td { border:1px solid #d4dae4; padding:6px 8px; text-align:left; }
+th { background:#eef1f6; }
+#sortie { background:#10141b; color:#cfe3ff; padding:10px; border-radius:8px; font-family:ui-monospace,monospace; font-size:.8rem; white-space:pre-wrap; max-height:340px; overflow:auto; }
+.err { color:var(--kz); font-weight:600; }
+.ok { color:#0c7a3d; font-weight:600; }
+.motif-refus { background:#fdecee; border:1px solid #ecc8cd; border-radius:6px; padding:8px; margin-top:8px; }
+.astuce { background:#eef6ff; border-left:4px solid var(--accent); padding:8px 10px; margin:8px 0; font-size:.86rem; }
+code { background:#e9edf3; padding:1px 5px; border-radius:4px; }
+footer { text-align:center; color:#667; font-size:.8rem; padding:18px; }
+</style>
+</head>
+<body>
+<div id="bandeau">ADAPTATEURS SIMULÉS — AUCUN APPEL RÉEL, AUCUNE CLÉ, AUCUN COÛT</div>
+<header><h1>COORD Pilot</h1> <span style="float:right;font-size:.8rem">COORD Specification 1.0 · moteur coordengine</span></header>
+
+<nav id="menu">
+  <button data-ecran="prise" class="actif">Prise en main</button>
+  <button data-ecran="tdb">Tableau de bord</button>
+  <button data-ecran="creation">Création de mission</button>
+  <button data-ecran="cycle">Suivi du cycle</button>
+  <button data-ecran="budgets">Budgets</button>
+  <button data-ecran="arret">Arrêt / levée</button>
+  <button data-ecran="reprise">Arbitrage / reprise</button>
+  <button data-ecran="securite">Sécurité</button>
+</nav>
+
+<main>
+<!-- Prise en main -->
+<section id="prise" class="ecran actif">
+  <h2>Prise en main</h2>
+  <p>Cette interface pilote le <strong>service local COORD Pilot</strong> (MVP) : un orchestrateur
+  de missions d'équipe d'IA conforme à <strong>COORD Specification 1.0</strong>, avec des
+  <strong>adaptateurs simulés</strong> uniquement. Aucune donnée réelle n'est échangée.</p>
+  <div class="astuce">Collez d'abord le <strong>token local</strong> affiché dans la console au
+  démarrage du service (il est régénéré à chaque démarrage, jamais journalisé). Renseignez-le
+  dans l'écran Tableau de bord.</div>
+  <h3>Déroulé d'une mission en 6 étapes</h3>
+  <ol>
+    <li><strong>Création</strong> : référence d'issue, deux adaptateurs simulés, exécutant et
+    réceptionnaire <em>distincts</em> (N-05), plafonds de budget.</li>
+    <li><strong>Exécution</strong> : l'exécutant démarre la mission (état PLANIFIEE → EXECUTION).</li>
+    <li><strong>Soumission</strong> : livrable + révision (40 hex) + empreinte de preuves SHA-256
+    (64 hex) → DECISION_ATTENDUE.</li>
+    <li><strong>Réception</strong> : verdict ACCEPTEE / REFUSEE / A_CORRIGER rendu par le
+    réceptionnaire uniquement, avec référence obligatoire.</li>
+    <li><strong>ACK</strong> : l'exécutant acquitte sur empreinte inchangée (N-13 : un verdict
+    périmé est refusé).</li>
+    <li><strong>Clôture</strong> : réservée à l'autorité humaine (session locale, N-14).</li>
+  </ol>
+  <h3>Légende des états</h3>
+  <p><code>PLANIFIEE → EXECUTION → DECISION_ATTENDUE → ACCEPTEE/EN_CORRECTION/REFUSEE →
+  ACK_RECU → CLOTUREE</code>. Toute transition hors table fermée est refusée avec motif.</p>
+  <h3>Rôles</h3>
+  <p><strong>EXECUTANT</strong> (exécute, soumet, acke) · <strong>RECEPTIONNAIRE</strong>
+  (rend le verdict, jamais la même identité que l'exécutant, N-05) ·
+  <strong>PILOTE</strong> (l'autorité humaine locale : arrêt, reprise, clôture — jamais
+  dérivable d'un corps de requête).</p>
+</section>
+
+<!-- Tableau de bord -->
+<section id="tdb" class="ecran">
+  <h2>Tableau de bord</h2>
+  <fieldset>
+    <legend>Session locale</legend>
+    <label for="token">Token local (affiché en console au démarrage)</label>
+    <input id="token" type="password" placeholder="collez le token de session" autocomplete="off">
+    <button class="action" onclick="chargerMissions()">Charger les missions</button>
+  </fieldset>
+  <table id="tbl-missions">
+    <thead><tr><th>Issue</th><th>État</th><th>Arrêt</th><th>Budget</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="astuce">Chaque refus s'affiche avec son <strong>motif explicite</strong> et sa
+  <strong>trace</strong> : l'état machine ne bouge jamais après un refus.</div>
+</section>
+
+<!-- Création -->
+<section id="creation" class="ecran">
+  <h2>Création de mission</h2>
+  <fieldset>
+    <legend>Nouvelle mission (adaptateurs simulés)</legend>
+    <label>Référence d'issue</label>
+    <input id="c-issue" placeholder="ex. mvp-demo-01">
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"><label>Adaptateur exécutant (simulé)</label>
+        <input id="c-ada-exec" value="mistral-simule"></div>
+      <div style="flex:1"><label>Adaptateur réceptionnaire (simulé)</label>
+        <input id="c-ada-recep" value="openai-simule"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"><label>Identité exécutante</label>
+        <input id="c-exec" value="exec-sim"></div>
+      <div style="flex:1"><label>Identité réceptionnaire (distincte, N-05)</label>
+        <input id="c-recep" value="recep-sim"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"><label>Plafond d'appels exécutant</label>
+        <input id="c-plaf-exec" type="number" value="10"></div>
+      <div style="flex:1"><label>Plafond d'appels réceptionnaire</label>
+        <input id="c-plaf-recep" type="number" value="10"></div>
+    </div>
+    <label>Plafond de jetons exécutant (0 = sans plafond de jetons)</label>
+    <input id="c-plaf-jetons" type="number" value="0">
+    <button class="action" onclick="creerMission()">Créer la mission</button>
+  </fieldset>
+  <p class="astuce">Une configuration d'habilitations vide ou mal formée ferme le service
+  (fail closed, N-05). Le mode « réel » des adaptateurs n'existe pas dans ce MVP.</p>
+</section>
+
+<!-- Cycle -->
+<section id="cycle" class="ecran">
+  <h2>Suivi du cycle</h2>
+  <fieldset>
+    <legend>Transition normative</legend>
+    <label>Mission</label>
+    <select id="t-issue"></select>
+    <label>Acteur</label>
+    <select id="t-acteur">
+      <option value="exec-sim">exec-sim (EXECUTANT simulé)</option>
+      <option value="recep-sim">recep-sim (RÉCEPTIONNAIRE simulé)</option>
+      <option value="pilote-local">pilote-local (autorité humaine)</option>
+    </select>
+    <label>Cible (état)</label>
+    <select id="t-cible">
+      <option>EXECUTION</option>
+      <option>DECISION_ATTENDUE</option>
+      <option>EN_CORRECTION</option>
+      <option>ACCEPTEE</option>
+      <option>REFUSEE</option>
+      <option>ACK_RECU</option>
+      <option>CLOTUREE</option>
+    </select>
+    <label>Données (JSON, ex. revision / empreinte_preuves / verdict_id / verdict_url / empreinte_courante / revision_courante)</label>
+    <textarea id="t-donnees" placeholder='{ "revision": "...(40 hex)", "empreinte_preuves": "...(64 hex)" }'></textarea>
+    <button class="action" onclick="faireTransition()">Demander la transition</button>
+  </fieldset>
+  <div class="astuce">Le rôle n'est <strong>jamais</strong> pris depuis cette page côté serveur :
+  il est résolu depuis l'enregistrement de la mission. Le champ « role » d'une requête forgée
+  est ignoré (S4). Les cibles de verdict valident la référence obligatoire du verdict.</div>
+</section>
+
+<!-- Budgets -->
+<section id="budgets" class="ecran">
+  <h2>Budgets</h2>
+  <fieldset>
+    <legend>Consommation par mission</legend>
+    <button class="action" onclick="chargerMissions()">Rafraîchir</button>
+  </fieldset>
+  <table id="tbl-budgets">
+    <thead><tr><th>Issue</th><th>État</th><th>Budget (appels consommés/plafonds)</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="astuce">Le contrôle budgétaire a lieu <strong>avant tout appel d'adaptateur</strong> :
+  un plafond dépassé bloque la transition, motif journalisé, aucune action externe (R3).
+  Un adaptateur sans plafond n'a jamais le droit d'appeler (fail closed). Les jetons sont
+  déclarés par l'adaptateur simulé ; le coût monétaire est un indicateur simulé.</p>
+</section>
+
+<!-- Arrêt -->
+<section id="arret" class="ecran">
+  <h2>Arrêt / levée (autorité humaine)</h2>
+  <fieldset>
+    <legend>Arrêt effectif du pilote</legend>
+    <label>Mission</label>
+    <select id="a-issue" class="sel-missions"></select>
+    <label>Motif (obligatoire, journalisé)</label>
+    <input id="a-motif" placeholder="ex. vérification humaine nécessaire">
+    <button class="action" onclick="demanderArret()">Demander l'arrêt</button>
+  </fieldset>
+  <fieldset>
+    <legend>Levée de l'arrêt</legend>
+    <label>Motif de levée</label>
+    <input id="a-motif-levee" placeholder="ex. reprise après vérification">
+    <button class="action gris" onclick="leverArret()">Lever l'arrêt</button>
+  </fieldset>
+  <p class="astuce">L'arrêt du pilote est une commande de l'autorité humaine, journalisée
+  <code>ARRET_PILOTE</code>, DISTINCTE des écarts auto-déclarés <code>ECART</code> (N-20).
+  Pendant l'arrêt, toute transition est refusée avec motif explicite, l'état machine reste
+  intact. À la levée, la reprise passe exclusivement par le dispositif normatif N-16/N-17.</p>
+</section>
+
+<!-- Reprise -->
+<section id="reprise" class="ecran">
+  <h2>Arbitrage / reprise (N-16/N-17)</h2>
+  <fieldset>
+    <legend>Divergence simulée entre copies</legend>
+    <label>Mission</label>
+    <select id="r-issue" class="sel-missions"></select>
+    <label>Copie de connaissance (JSON : sha_head, prochaine_action, état…)</label>
+    <textarea id="r-copie" placeholder='{ "sha_head": "…64 hex divergent…", "prochaine_action": "cloturer", "etat": "ACCEPTEE" }'></textarea>
+    <label>sha_head attendu (head vérifié par le pilote — l'empreinte courante s'affiche au chargement de la mission)</label>
+    <input id="r-attendu" placeholder="64 hex de l'enregistrement GitHub courant">
+    <button class="action" onclick="faireReprise()">Arbitrer puis reprendre</button>
+  </fieldset>
+  <p class="astuce">En cas de divergence, <strong>github fait foi</strong> (N-16), les champs
+  divergents et les empreintes des deux copies sont journalisés. La reprise n'exécute que si
+  le head vérifié correspond (N-17) ; sinon refus « sha_head divergent ».</p>
+</section>
+
+<!-- Sécurité -->
+<section id="securite" class="ecran">
+  <h2>Sécurité locale</h2>
+  <fieldset>
+    <legend>Contrôles</legend>
+    <button class="action gris" onclick="verifierSante()">Vérifier /health</button>
+  </fieldset>
+  <ul>
+    <li>S1/S2 : sans token ou token invalide → 401 journalisé, aucune transition.</li>
+    <li>S3 : le service n'écoute que sur 127.0.0.1 ; toute autre adresse refuse de démarrer.</li>
+    <li>S4 : le rôle PILOTE n'est dérivable que de la session locale authentifiée.</li>
+    <li>S5 : habilitations vides ou mal formées → démarrage refusé (fail closed).</li>
+    <li>R1 : toute transition hors table fermée est refusée avec motif explicite.</li>
+    <li>R3 : budget vérifié avant tout appel ; R4 : arrêt humain effectif ; R6 : verdict périmé refusé.</li>
+  </ul>
+  <p class="astuce">Chaque refus affiché ici porte un <strong>identifiant de trace</strong> qui
+  se retrouve dans le journal local de la mission.</p>
+</section>
+
+<div id="sortie"></div>
+</main>
+<footer>COORD Pilot MVP — Copyright © 2026 Denis Bouzon · ORCID 0009-0007-8894-8902 · Apache-2.0 · Données locales uniquement</footer>
+
+<script>
+"use strict";
+// Aucune ressource externe : tout est servi par le service local (CSP self).
+const $ = (id) => document.getElementById(id);
+const sortie = $("sortie");
+let dernierResultat = null;
+
+function afficher(texte, classe) {
+  const p = document.createElement("div");
+  p.className = classe || "";
+  p.textContent = texte;
+  sortie.textContent = "";
+  sortie.appendChild(p);
+}
+
+function api(chemin, corps, methode) {
+  const token = $("token").value.trim();
+  if (!token) { afficher("Token local manquant : collez le token affiché en console au démarrage (S1).", "err"); return Promise.reject("sans token"); }
+  return fetch(chemin, {
+    method: methode || (corps ? "POST" : "GET"),
+    headers: { "Content-Type": "application/json", "X-Coord-Pilot-Token": token },
+    body: corps ? JSON.stringify(corps) : undefined
+  }).then((r) => r.json().then((j) => ({ status: r.status, json: j })));
+}
+
+function rendre(requete) {
+  return requete.then(({ status, json }) => {
+    dernierResultat = { status, json };
+    afficher("HTTP " + status + "\n" + JSON.stringify(json, null, 2), status < 400 ? "ok" : undefined);
+    const refus = document.createElement("div");
+    if (status >= 400 && json && json.motif) {
+      refus.className = "motif-refus";
+      refus.textContent = "Refus : " + json.motif + " (trace " + json.trace + ", type " + json.type + ")";
+      sortie.appendChild(refus);
+    }
+  }, (e) => { if (e !== "sans token") afficher("Erreur réseau locale : " + e, "err"); });
+}
+
+function ecranCourant() {
+  const actif = document.querySelector("nav button.actif");
+  return actif ? actif.getAttribute("data-ecran") : "";
+}
+
+function remplirSelecteurs(liste) {
+  const options = liste.map((m) => '<option>' + m.issue + '</option>').join("");
+  for (const id of ["t-issue", "a-issue", "r-issue"]) {
+    const sel = $(id);
+    if (sel) sel.innerHTML = options || '<option>(aucune mission)</option>';
+  }
+}
+
+function chargerMissions() {
+  return rendre(api("/api/missions").then(({ status, json }) => {
+    const missions = (json && json.missions) || [];
+    const lignes = missions.map((m) =>
+      "<tr><td>" + esc(m.issue) + "</td><td>" + esc(m.etat) + "</td><td>" +
+      (m.arret ? "ARRÊT ACTIF" : "—") + "</td><td>" + esc(m.budget || "") + "</td></tr>").join("");
+    for (const id of ["tbl-missions", "tbl-budgets"]) {
+      const t = $(id);
+      if (t) t.querySelector("tbody").innerHTML = lignes;
+    }
+    remplirSelecteurs(missions);
+    if (ecranCourant() === "reprise" && missions.length) {
+      api("/api/mission/" + encodeURIComponent($("r-issue").value || missions[0].issue))
+        .then(({ json }) => { if (json && json.empreinte) $("r-attendu").value = json.empreinte; });
+    }
+    return { status, json };
+  }));
+}
+
+function creerMission() {
+  const plafonds = {};
+  const ae = $("c-ada-exec").value.trim(), ar = $("c-ada-recep").value.trim();
+  if (ae) plafonds[ae] = parseInt($("c-plaf-exec").value || "10", 10) || 0;
+  if (ar && ar !== ae) plafonds[ar] = parseInt($("c-plaf-recep").value || "10", 10) || 0;
+  const corps = {
+    issue: $("c-issue").value.trim(),
+    adaptateurs: [ae, ar],
+    roles: { EXECUTANT: ["executer", "soumettre", "acker"], RECEPTIONNAIRE: ["recevoir"], PILOTE: ["cloturer"] },
+    executant_id: $("c-exec").value.trim(),
+    recepteur_id: $("c-recep").value.trim(),
+    plafonds: { appels: plafonds, jetons: {} }
+  };
+  rendre(api("/api/mission", corps).then((r) => { chargerMissions(); return r; }));
+}
+
+function faireTransition() {
+  let donnees = {};
+  const brut = $("t-donnees").value.trim();
+  if (brut) { try { donnees = JSON.parse(brut); } catch (e) { afficher("Données JSON invalides : " + e, "err"); return; } }
+  const corps = { cible: $("t-cible").value, acteur: $("t-acteur").value, donnees: donnees, role: "IGNORE" };
+  rendre(api("/api/mission/" + encodeURIComponent($("t-issue").value) + "/transition", corps)
+    .then((r) => { chargerMissions(); return r; }));
+}
+
+function issueArret() { return $("a-issue").value; }
+
+function demanderArret() {
+  rendre(api("/api/mission/" + encodeURIComponent(issueArret()) + "/arret", { motif: $("a-motif").value.trim() })
+    .then((r) => { chargerMissions(); return r; }));
+}
+
+function leverArret() {
+  rendre(api("/api/mission/" + encodeURIComponent(issueArret()) + "/arret/lever", { motif: $("a-motif-levee").value.trim() })
+    .then((r) => { chargerMissions(); return r; }));
+}
+
+function faireReprise() {
+  let copie = {};
+  const brut = $("r-copie").value.trim();
+  if (brut) { try { copie = JSON.parse(brut); } catch (e) { afficher("Copie JSON invalide : " + e, "err"); return; } }
+  rendre(api("/api/mission/" + encodeURIComponent($("r-issue").value) + "/reprise",
+    { copie_knowledge: copie, sha_head_attendu: $("r-attendu").value.trim() }));
+}
+
+function verifierSante() { rendre(api("/health")); }
+
+function esc(s) { const d = document.createElement("span"); d.textContent = String(s); return d.innerHTML; }
+
+// Navigation : un écran visible à la fois, bandeau simulé permanent.
+document.querySelectorAll("nav button").forEach((b) => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("nav button").forEach((x) => x.classList.remove("actif"));
+    document.querySelectorAll("section.ecran").forEach((s) => s.classList.remove("actif"));
+    b.classList.add("actif");
+    $("" + b.getAttribute("data-ecran")).classList.add("actif");
+    if (b.getAttribute("data-ecran") === "tdb" || b.getAttribute("data-ecran") === "budgets") chargerMissions();
+  });
+});
+</script>
+</body>
+</html>
