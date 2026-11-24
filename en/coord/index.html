@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>COORD — the protocol that makes two AIs talk | Osnias Clearing</title>
+<meta content="COORD is the protocol and software that let two AI agents from different labs cooperate, with Mistral as executor and OpenAI as independent evaluator, around a public GitHub registry." name="description">
+<meta content="Denis Bouzon" name="author">
+<meta content="Denis Bouzon" name="creator">
+<meta content="Osnias Clearing" name="publisher">
+<meta content="index, follow" name="robots">
+<meta content="#050814" name="theme-color">
+<link href="/favicon.ico" rel="icon" sizes="any">
+<link href="/favicon_32x32.png" rel="icon" sizes="32x32" type="image/png">
+<meta content="AI agent coordination, multi-AI protocol, Mistral, OpenAI, independent review, state machine, proof fingerprints, GitHub" name="keywords">
+<meta content="COORD — Mistral ⇄ OpenAI dialogue protocol" name="DC.title">
+<meta content="Denis Bouzon" name="DC.creator">
+<meta content="en" name="DC.language">
+<link href="https://www.osnias-clearing.com/en/coord/" rel="canonical"><link href="https://www.osnias-clearing.com/coord/" hreflang="fr" rel="alternate"><link href="https://www.osnias-clearing.com/en/coord/" hreflang="en" rel="alternate"><link href="https://www.osnias-clearing.com/coord/" hreflang="x-default" rel="alternate">
+<link href="https://orcid.org/0009-0007-8894-8902" rel="author">
+<link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
+<meta content="COORD — the protocol that makes two AIs talk | Osnias Clearing" property="og:title">
+<meta content="Mistral executes, OpenAI reviews, GitHub is the record of truth: a public, reproducible protocol for AI agent cooperation." property="og:description">
+<meta content="article" property="og:type">
+<meta content="https://www.osnias-clearing.com/en/coord/" property="og:url">
+<meta content="Osnias Clearing" property="og:site_name">
+<meta content="Denis Bouzon" name="citation_author">
+<meta content="COORD — Mistral ⇄ OpenAI dialogue protocol" name="citation_title">
+<meta content="2026-11-24" name="citation_publication_date">
+<meta content="summary" name="twitter:card">
+<meta content="COORD — the protocol that makes two AIs talk | Osnias Clearing" name="twitter:title">
+<meta content="Mistral executes, OpenAI reviews, GitHub is the record of truth: a public, reproducible protocol for AI agent cooperation." name="twitter:description">
+<link href="/assets/css/osnias.css" rel="stylesheet">
+<script defer src="/assets/js/osnias-seo.js"></script>
+<script defer src="/assets/js/osnias-nav.js"></script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.osnias-clearing.com/#denis-bouzon",
+      "name": "Denis Bouzon",
+      "url": "https://www.osnias-clearing.com/",
+      "sameAs": [
+        "https://orcid.org/0009-0007-8894-8902"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.osnias-clearing.com/en/coord/#webpage",
+      "url": "https://www.osnias-clearing.com/en/coord/",
+      "name": "COORD — the protocol that makes two AIs talk | Osnias Clearing",
+      "description": "Mistral executes, OpenAI reviews, GitHub is the record of truth: a public, reproducible protocol for AI agent cooperation.",
+      "isPartOf": {
+        "@id": "https://www.osnias-clearing.com/#website"
+      },
+      "author": {
+        "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.osnias-clearing.com/en/coord/#techarticle",
+      "headline": "COORD — Mistral ⇄ OpenAI dialogue protocol",
+      "author": {
+        "@id": "https://www.osnias-clearing.com/#denis-bouzon"
+      },
+      "datePublished": "2026-11-24",
+      "url": "https://www.osnias-clearing.com/en/coord/",
+      "inLanguage": "en",
+      "about": "AI agent coordination with independent review anchored to Git fingerprints"
+    }
+  ]
+}</script>
+</head>
+<body>
+<div class="site-nav-fixed">
+<div class="site-nav-inner">
+<a class="site-nav-brand" href="/">OSNIAS <span>CLEARING</span></a>
+<nav aria-label="Main site navigation" class="site-nav-buttons" id="mainNav"></nav>
+</div>
+</div>
+<header>
+<div class="container">
+<section class="hero">
+<div aria-label="Language selection" class="language-switch"><span class="active-language">🇬🇧 English</span><a href="/coord/" hreflang="fr" lang="fr" title="Version française">🇫🇷 Français</a></div>
+<div class="hero-heading">
+<div class="eyebrow">Coordinating two AI agents from different labs</div>
+<h1>COORD: making Mistral and OpenAI talk to each other</h1>
+<p class="home-version" style="text-align:center;opacity:.78;font-size:.95rem;margin:.15rem 0 .65rem">Version v1.4 candidate · <time datetime="2026-11-24">24 November 2026</time></p>
+<div class="osnias-animation-cta" style="text-align:center;margin:.2rem auto 1rem"><a href="/coord-v1.0-v1.4.zip" download style="display:inline-block;padding:.85rem 1.5rem;border-radius:999px;border:1px solid #67d0ad;background:#173e53;color:#f1fbff;text-decoration:none;font-weight:700;box-shadow:0 3px 15px rgba(0,0,0,.14)" aria-label="Download the COORD archive v1.0 to v1.4 (zip)">⬇ Download COORD (.zip) — v1.0 to v1.4 sources</a></div>
+<div class="hero-role">Mistral executes · OpenAI reviews · GitHub is the record of truth</div>
+<p class="hero-lead">COORD is a small piece of software and a public protocol that let two AI agents cooperate: one designs and executes, the other one critiques and issues an independent verdict, while the Git repository keeps the proofs. No AI ever validates its own work.</p>
+</div>
+</section>
+</div>
+</header>
+<main class="container">
+<section id="roles">
+<div>
+<div class="section-label">01 · Roles</div>
+<h2>Four strictly separated roles</h2>
+<p class="section-intro">Role separation is the core invariant of the protocol: execution, review, registry and steering are never given to the same actor.</p>
+</div>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">EXECUTOR</div>
+<h3>Mistral</h3>
+<p>Designs, executes and publishes: code, tests, execution proofs, reports. Can never issue a verdict on its own work.</p>
+</article>
+<article class="card">
+<div class="card-kicker">REVIEWER</div>
+<h3>OpenAI (API)</h3>
+<p>Reviews the plans and receives the deliverables. Issues a verdict anchored to the exact Git SHA: ACCEPTEE, A_CORRIGER or REFUSEE. Never a self-review.</p>
+</article>
+<article class="card">
+<div class="card-kicker">REGISTRY / PILOT</div>
+<h3>GitHub · human</h3>
+<p>Issues, PRs and comments are the public record of truth. Closing, merging and activating versions remain reserved to the human pilot.</p>
+</article>
+</div>
+</section>
+<section id="state-machine">
+<div>
+<div class="section-label">02 · State machine</div>
+<h2>One mission, controlled transitions</h2>
+<p class="section-intro">Each mission moves through an explicit v1.0 state machine, valid in any language:</p>
+</div>
+<div class="notice"><strong>OUVERTE → PLAN_CRITIQUE → EN_EXECUTION → RECEPTION_DEMANDEE → DECISION_API → (A_CORRIGER → EN_EXECUTION) → ACK_MISTRAL → CLOTURE</strong></div>
+<p>A verdict is anchored to the pair (exact Git SHA, fingerprint of the proofs): if either changes, the verdict is stale and the review must be replayed. Publications are idempotent: a duplicate is never re-processed.</p>
+</section>
+<section id="real-mission">
+<div>
+<div class="section-label">03 · A real, end-to-end mission</div>
+<h2>Lived example: mission M-COORD-09</h2>
+<p class="section-intro">The mission that produced version v1.4 is also the protocol's most demanding E2E test, stricter than any simulated test.</p>
+</div>
+<div class="notice"><strong>Real sequence:</strong> version inventory and diagnosis → v1.4 specification → OpenAI prior review (a real A_CORRIGER, then the plan accepted after correction) → execution: module, 17-test battery, launcher → independent review on the exact SHA → consolidated reports. Session interruptions and environment lock-downs documented and resumed through the resume state, with no fictitious verdict.</div>
+</section>
+<section id="use-it">
+<div>
+<div class="section-label">04 · Use the reference software</div>
+<h2>Python 3, stdlib only, 88/88 PASS</h2>
+<p class="section-intro">The reference module and its batteries run by cloning the repository: no dependency, no key to configure.</p>
+</div>
+<div class="notice"><strong>Verified commands</strong> (in the repository's <code>coord/</code> folder):
+<pre style="overflow-x:auto"><code>sh run.sh            # v1.0 + v1.1 batteries: 37/37 PASS
+sh run_v12.sh        # v1.2 candidate battery: 11/11 PASS
+sh run_v13.sh        # v1.3 battery: 13/13 PASS
+sh run_robustness.sh # T3 robustness suite: 10/10 PASS
+sh run_v14.sh        # v1.4 candidate battery: 17/17 PASS</code></pre>
+Total: 88/88 PASS, exit 0. These tests are UNIT or INTEGRATION WITH MOCKS; real E2E tests are the real missions themselves.</div>
+<div class="resources">
+<a class="resource" href="https://github.com/dbouzon/osnias-clearing/tree/main/coord" rel="noopener noreferrer" target="_blank"><div><strong>Sources on GitHub</strong><span>Canonical modules · Test batteries · Launchers</span></div><div class="resource-type">OPEN →</div></a>
+<a class="resource" href="/coord/docs/proto-coord06-v14.md"><div><strong>v1.4 specification</strong><span>Amendment D1..D7 · Public reference (in French)</span></div><div class="resource-type">READ →</div></a>
+</div>
+</section>
+<section id="implement">
+<div>
+<div class="section-label">05 · Implement the protocol in your project</div>
+<h2>Few rules, any language</h2>
+<p class="section-intro">The protocol fits on one page: minimal states and transitions, a recording format, comment conventions and a few non-negotiable invariants.</p>
+</div>
+<p>A mission record is one normalised JSON line: mission, issue, state, protocol, sha_git, proof_fp (sha256 fingerprint of the proofs), model_api, ts_utc, verdict_url, verdict_id, ack. Asynchronous exchanges use marked comments: <code>FROM:MISTRAL</code>, <code>FROM:CHATGPT-API DECISION</code> and <code>TO:MISTRAL</code>.</p>
+<div class="notice"><strong>Invariants to reproduce:</strong> mandatory independent review · never a self-review · never a PASS without real execution · verdict staling by fingerprint · idempotent publications · no secrets in repositories.</div>
+<p>The full specification (<a href="/coord/docs/proto-coord06-v14.md">proto-coord06-v14</a>, in French) and a second Go implementation (<a href="https://github.com/dbouzon/osnias-clearing/tree/main/tools/ai-coordinator" rel="noopener noreferrer" target="_blank">tools/ai-coordinator</a>) are public.</p>
+</section>
+<section id="status-limits">
+<div>
+<div class="section-label">06 · Status and limits</div>
+<h2>What is proven, what is not</h2>
+<p class="section-intro">Transparency about limits is part of the protocol: every claim distinguishes what was executed from what was not.</p>
+</div>
+<div class="notice"><strong>Status:</strong> v1.4 candidate (v1.3 in force, issue #150). The v1.5 candidate version is not published here. <strong>Limits:</strong> UNIT/MOCK batteries, no simulated E2E is presented as real; the legal licence qualification is still to be determined; the French page is the reference version.</div>
+</section>
+</main>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div>© 2026 Osnias Clearing · The COORD software is published in the public repository <a href="https://github.com/dbouzon/osnias-clearing" rel="noopener noreferrer" target="_blank">dbouzon/osnias-clearing</a></div>
+<div><a href="/">Home</a> · <a href="/en/coord/">COORD</a></div>
+</div>
+<div class="footer-legal">Denis Bouzon · ORCID <a href="https://orcid.org/0009-0007-8894-8902" rel="noopener noreferrer" target="_blank">0009-0007-8894-8902</a> · Copyright © 2026 Denis Bouzon · Licence to be determined.</div>
+</div>
+</footer>
+<script async="" data-goatcounter="https://denis-osnias.goatcounter.com/count" src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
