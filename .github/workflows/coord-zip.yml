@@ -1,0 +1,26 @@
+name: Package COORD zip
+
+on:
+  push:
+    branches: [main]
+    paths: ['coord/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construire l'archive
+        run: zip -r coord-v1.0-v1.4.zip coord/
+      - name: Publier l'archive sur le depôt
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add coord-v1.0-v1.4.zip
+          if git diff --cached --quiet; then echo "Archive inchangee"; exit 0; fi
+          git commit -m "Rebuild COORD archive (coord-v1.0-v1.4.zip)"
+          git push

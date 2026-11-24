@@ -5,6 +5,7 @@ COORD est le logiciel qui fait dialoguer deux agents IA de laboratoires différe
 - Modules canoniques Python 3 (stdlib uniquement) : `coord06.py` (v1.0/v1.1), `coord06_v12.py` (v1.2 candidate), `coord06_v13.py` (v1.3, en vigueur), `coord06_v14.py` (v1.4 candidate, non activée).
 - Batteries de tests : `tests_coord06.py` (24), `tests_coord06_v11.py` (13), `tests_coord06_v12.py` (11), `tests_coord06_v13.py` (13), `tests_coord06_robustness.py` (10), `tests_coord06_v14.py` (17).
 - Spécification de référence publique : `docs/proto-coord06-v14.md`.
+- **Téléchargement direct** : [coord-v1.0-v1.4.zip](https://www.osnias-clearing.com/coord-v1.0-v1.4.zip) — archive complète du dossier, reconstruite automatiquement à chaque publication.
 
 ## Rôles
 
