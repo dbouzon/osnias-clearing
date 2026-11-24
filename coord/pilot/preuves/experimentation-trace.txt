@@ -1,0 +1,52 @@
+=== EXPERIMENTATION COORD v1.5 — M-COORD-PILOT-01 (issue #25) ===
+horodatage UTC : 2026-11-24T22:57:40Z
+moteur : coord06_v15.py (protocol v1.5, batterie 47/47 PASS par ailleurs)
+
+[CONFORME] configuration valide
+
+--- Contrôles négatifs REEL ---
+[CONFORME] habilitations vides refusees : 
+[CONFORME] role inconnu refuse : ['role inconnu: INCONNU']
+[CONFORME] identite non qualifiee refusee : identite non habilitee pour l'action: executer
+
+--- Cycle réel de la mission (transitions REEL du moteur sur événements réels) ---
+[CONFORME] PLANIFIEE -> EXECUTION
+[CONFORME] EXECUTION -> DECISION_ATTENDUE (plan v1)
+          revision v1   = 4383302ec91d41a015bc573c65664bc4f9b81017
+          empreinte v1 = d4fa45f2bd9d057870521341dee0a6a57fa8901e6873004a7355cb020e10eaa1
+[CONFORME] DECISION_ATTENDUE -> EN_CORRECTION (verdict A_CORRIGER, 5 points)
+[CONFORME] EN_CORRECTION -> EXECUTION (corrections)
+[CONFORME] EXECUTION -> DECISION_ATTENDUE (plan v2)
+          revision v2   = 446dcc813675645c0296c97c8bea6a6ef587645a
+          empreinte v2 = f252754d2595861928ce881624d8fb90b385f9a501fca470345b815fd3f110e5
+[CONFORME] auto-reception interdite (executant = recepteur) : role non autorise pour cette transition (attendu: RECEPTIONNAIRE)
+[CONFORME] DECISION_ATTENDUE -> ACCEPTEE (verdict PLAN_ACCEPTE, label moteur ACCEPTEE)
+[CONFORME] refus de verdict perime (empreinte divergente) : verdict perime (empreinte ou revision divergentes)
+[CONFORME] ACCEPTEE -> ACK_RECU (verdict publié, ACK de l'exécutant)
+[CONFORME] clôture par l'exécutant refusée (réservée PILOTE) : role non autorise pour cette transition (attendu: PILOTE)
+[CONFORME] verdict_perime actuel : False ; sur preuves v1 : True
+
+--- État machine atteint (réel, sans simulation de la suite) ---
+etat          = ACK_RECU
+executant     = mistral-vibe
+decisions     = 2 (A_CORRIGER puis ACCEPTEE)
+clôture : NON EFFECTUÉE — décision réservée au pilote (N-14) ; réception des livrables en cours.
+
+--- Persistance atomique REEL (H4/N-15) ---
+[CONFORME] enregistrement ecrit puis relu a l'identique : True
+[CONFORME] point d'arret inconnu refuse : point d'arret inconnu: avan_remplacement_x
+[CONFORME] crash injecte avant_remplacement : original INTACT = True (crash avant le renommage atomique)
+
+--- Divergence et arbitrage REEL (H5, N-16/N-17) ---
+[CONFORME] champs divergents detectes : ['round']
+[CONFORME] arbitrage : elu = github (github fait foi, N-16)
+[CONFORME] journal de conflits : 1 entree(s) ajoutee(s), rejeu idempotent = 0 ligne(s) ajoutee(s)
+[CONFORME] reprise avec head verifie : action = reception des livrables par OpenAI
+[CONFORME] reprise refusee avec head divergent : ['sha_head divergent : reprise impossible sans re-verification du monde']
+[CONFORME] sha_head divergent dans l'enregistrement arbitre : ['sha_head divergent : reprise impossible sans re-verification du monde']
+
+--- Témoins H3 sur les décisions réelles de la mission ---
+[CONFORME] decision A_CORRIGER (plan v1) perimee aujourd'hui : True (empreinte divergente)
+[CONFORME] decision ACCEPTEE (plan v2) perimee aujourd'hui : False (empreinte identique)
+
+BILAN EXPERIMENTATION v1.5 (M-COORD-PILOT-01) : CONFORME=26 ECART=0 — adaptateurs SIMULES cotes IA (identites reelles de la mission), moteur Python/Go REEL, aucune revendication de conformite pour un scenario simule.
