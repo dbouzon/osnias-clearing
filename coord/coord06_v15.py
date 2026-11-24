@@ -395,7 +395,7 @@ def journal_conflits(entries, journal_path):
         for e in entries:
             ligne = coord06.canonical_json(e)
             if ligne not in existants:
-                                f.write(ligne + "\\n")
+                f.write(ligne + "\n")
                 existants.add(ligne)
                 ajoutes += 1
     return ajoutes
@@ -491,7 +491,7 @@ def journal_ecarts(ecarts, journal_path):
             }
             ligne = coord06.canonical_json(entree)
             if ligne not in existants:
-                                f.write(ligne + "\\n")
+                f.write(ligne + "\n")
                 existants.add(ligne)
                 ajoutes += 1
     return ajoutes
@@ -537,7 +537,7 @@ def validate_record_v15(record):
         erreurs.append("identite executante absente (H1)")
     recpts = dur.get("receptionnaires")
     if not isinstance(recpts, list) or not recpts:
-        erreurs.append("receptionnaires absents (liste exigee, ne fut-elle remplise qu'au fil des verdicts)")
+        erreurs.append("receptionnaires absents (liste exigee, ne fut-elle remplie qu'au fil des verdicts)")
     if dur.get("regle_arbitrage") != REGLE_ARBITRAGE:
         erreurs.append("regle d'arbitrage invalide (github_fait_foi attendu)")
     etat = record.get("state", "")
