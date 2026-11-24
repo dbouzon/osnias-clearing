@@ -1,0 +1,155 @@
+{
+  "format": "coord-conformite-v1",
+  "fichier": "transitions_invalide.json",
+  "description": "Vecteurs NEGATIFS de la machine v1.5 durcie : chaque scenario DOIT etre refuse, avec le motif attendu. Un moteur conforme doit refuser exactement ces cas (auto-reception, verdict sans reference, transition hors table, role non autorise, identite non liee a un adaptateur enregistre, ACK sur empreinte remplacee, executant non stable, mission terminee, configuration valide rejete par le moteur).",
+  "config_fonctionnelle": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+  "vecteurs": [
+    {
+      "nom": "V-NEG-1 auto-reception interdite : l'executant declare RECEPTIONNAIRE par son propre adaptateur ne peut pas recevoir sa mission",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "ACCEPTEE",
+         "identite": {"id": "agent_exec", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "ACCEPTEE", "verdict_id": "vp-1", "verdict_url": "https://exemple.invalid/verdicts/1"}}
+      ],
+      "attendu": {"ok": false, "contient": "auto-reception interdite"}
+    },
+    {
+      "nom": "V-NEG-2 verdict sans reference : refus sans verdict_id ni verdict_url",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "REFUSEE",
+         "identite": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "REFUSEE"}}
+      ],
+      "attendu": {"ok": false, "contient": "reference de verdict obligatoire"}
+    },
+    {
+      "nom": "V-NEG-3 transition hors table fermee : EXECUTION -> CLOTUREE impossible",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "CLOTUREE",
+         "identite": {"id": "agent_pilote", "role": "PILOTE", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}}
+      ],
+      "attendu": {"ok": false, "contient": "transition interdite"}
+    },
+    {
+      "nom": "V-NEG-4 role non autorise pour la transition : le PILOTE ne soumet pas a la place de l'executant",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_pilote", "role": "PILOTE", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}}
+      ],
+      "attendu": {"ok": false, "contient": "role non autorise"}
+    },
+    {
+      "nom": "V-NEG-5 identite non liee a un adaptateur enregistre : refusee quelle que soit sa declaration",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "usurpateur", "role": "EXECUTANT", "qualifiee_par": "adapteur_non_enregistre"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}}
+      ],
+      "attendu": {"ok": false, "contient": "identite non habilitee"}
+    },
+    {
+      "nom": "V-NEG-6 verdict perime : ACK refuse quand l'empreinte des preuves a ete remplacee depuis la decision",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "ACCEPTEE",
+         "identite": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "ACCEPTEE", "verdict_id": "vp-6", "verdict_url": "https://exemple.invalid/verdicts/6"}},
+        {"operation": "transition", "cible": "ACK_RECU",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision_courante": "1111111111111111111111111111111111111111", "empreinte_courante": "9999999999999999999999999999999999999999999999999999999999999999"}}
+      ],
+      "attendu": {"ok": false, "contient": "verdict perime"}
+    },
+    {
+      "nom": "V-NEG-7 executant non stable : un autre EXECUTANT ne peut pas reprendre la mission en correction",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "EN_CORRECTION",
+         "identite": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "A_CORRIGER", "verdict_id": "vp-7", "verdict_url": "https://exemple.invalid/verdicts/7"}},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec_2", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}}
+      ],
+      "attendu": {"ok": false, "contient": "non stabilisee"}
+    },
+    {
+      "nom": "V-NEG-8 mission terminee : aucune transition depuis REFUSEE",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "REFUSEE",
+         "identite": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "REFUSEE", "verdict_id": "vp-8", "verdict_url": "https://exemple.invalid/verdicts/8"}},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}}
+      ],
+      "attendu": {"ok": false, "contient": "mission terminee"}
+    },
+    {
+      "nom": "V-NEG-9 configuration d'habilitations invalide : toute transition refusee (fail closed)",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a"], "roles": {"EXECUTANT": ["executer", "*"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}}
+      ],
+      "attendu": {"ok": false, "contient": "configuration d'habilitations invalide"}
+    }
+  ]
+}
