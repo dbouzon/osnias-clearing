@@ -105,7 +105,7 @@
 <article class="card">
 <div class="card-kicker">EXECUTANT</div>
 <h3>Mistral</h3>
-<p>COnçoit, exécute et publie : code, tests, preuves d'exécution, comptes rendus. Ne peut jamais rendre de verdict sur son propre travail.</p>
+<p>Conçoit, exécute et publie : code, tests, preuves d'exécution, comptes rendus. Ne peut jamais rendre de verdict sur son propre travail.</p>
 </article>
 <article class="card">
 <div class="card-kicker">EVALUATEUR</div>
@@ -122,11 +122,11 @@
 <section id="machine-etats">
 <div>
 <div class="section-label">02 · Machine à états</div>
-<h2>Une mission, des transitionsContrôlées</h2>
+<h2>Une mission, des transitions contrôlées</h2>
 <p class="section-intro">Chaque mission avance dans une machine à états v1.0 explicite, valable pour tout langage :</p>
 </div>
 <div class="notice"><strong>OUVERTE → PLAN_CRITIQUE → EN_EXECUTION → RECEPTION_DEMANDEE → DECISION_API → (A_CORRIGER → EN_EXECUTION) → ACK_MISTRAL → CLOTURE</strong></div>
-<p>Un verdict est ancré au couple (SHA Git, empreinte des preuves) : si l'un des deux change, le verdict est périmé et la réception doit être rejouée. Les publications sont idempotes : un doublon n'est jamais re-traité.</p>
+<p>Un verdict est ancré au couple (SHA Git, empreinte des preuves) : si l'un des deux change, le verdict est périmé et la réception doit être rejouée. Les publications sont idempotentes : un doublon n'est jamais re-traité.</p>
 </section>
 <section id="mission-type">
 <div>
