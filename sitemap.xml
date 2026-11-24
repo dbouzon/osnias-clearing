@@ -360,4 +360,10 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/partnership/erp-facturation/"/>
     <lastmod>2026-10-29</lastmod>
   </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/coord/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/coord/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/coord/"/>
+    <lastmod>2026-11-24</lastmod>
+  </url>
 </urlset>
