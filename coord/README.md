@@ -45,7 +45,12 @@ Les états et transitions ci-dessus, le format d'enregistrement (mission, issue,
 
 ## État et limites
 
-Version opérationnelle : v1.4 candidate (v1.3 en vigueur). Les suites v1.0..v1.3 restent inchangées ; la v1.4 ajoute la continuité autonome, l'état de reprise, les empreintes automatisées, la réception différentielle et les mesures de coordination. La v1.5 candidate n'est pas publiée ici. Licence : à déterminer.
+Version opérationnelle : v1.4 candidate (v1.3 en vigueur). Les suites v1.0..v1.3 restent inchangées ; la v1.4 ajoute la continuité autonome, l'état de reprise, les empreintes automatisées, la réception différentielle et les mesures de coordination. La v1.5 candidate n'est pas publiée ici. Licence : Apache-2.0 (texte complet dans `LICENSE`).
+
+
+## Licence
+
+Le logiciel COORD est distribué sous licence [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) — texte complet dans [`LICENSE`](LICENSE). Toute redistribution doit conserver les notices de copyright.
 
 ---
-Copyright © 2026 Denis Bouzon · ORCID : https://orcid.org/0009-0007-8894-8902 · Licence à déterminer.
+Copyright © 2026 Denis Bouzon · ORCID : https://orcid.org/0009-0007-8894-8902 · Licence : Apache-2.0.
