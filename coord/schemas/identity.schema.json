@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.osnias-clearing.com/coord/schemas/identity.schema.json",
+  "version": "1.0",
+  "title": "COORD identity (qualified at the trust boundary)",
+  "type": "object",
+  "required": ["id", "role", "qualifiee_par"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "role": { "enum": ["EXECUTANT", "RECEPTIONNAIRE", "PILOTE"] },
+    "qualifiee_par": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}
