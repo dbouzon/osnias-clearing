@@ -1,0 +1,92 @@
+{
+  "format": "coord-conformite-v1",
+  "fichier": "transitions_valide.json",
+  "description": "Vecteurs POSITIFS de la machine a etats v1.5 durcie (H1/H2/H3) : scenarios complets devant aboutir, identites qualifiees par des adaptateurs enregistres, receptionnaire distinct de l'executant.",
+  "config_typeur": {
+    "adaptateurs": ["adapteur_a", "adapteur_b"],
+    "roles": {
+      "EXECUTANT": ["executer", "soumettre", "acker"],
+      "RECEPTIONNAIRE": ["recevoir"],
+      "PILOTE": ["cloturer"]
+    }
+  },
+  "identites": {
+    "executant": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+    "recepteur": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+    "pilote": {"id": "agent_pilote", "role": "PILOTE", "qualifiee_par": "adapteur_a"}
+  },
+  "vecteurs": [
+    {
+      "nom": "V-POS-1 mission nominale : execution, verdict ACCEPTEE par recepteur distinct, ACK sur empreinte inchangee, cloture par pilote",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "ACCEPTEE",
+         "identite": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "ACCEPTEE", "verdict_id": "vp-1", "verdict_url": "https://exemple.invalid/verdicts/1"}},
+        {"operation": "transition", "cible": "ACK_RECU",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision_courante": "1111111111111111111111111111111111111111", "empreinte_courante": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "CLOTUREE",
+         "identite": {"id": "agent_pilote", "role": "PILOTE", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}}
+      ],
+      "attendu": {"ok": true, "etat": "CLOTUREE"}
+    },
+    {
+      "nom": "V-POS-2 boucle de correction : A_CORRIGER par recepteur distinct, meme executant reprend, nouvelle soumission, acceptation",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "EN_CORRECTION",
+         "identite": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "A_CORRIGER", "verdict_id": "vp-2", "verdict_url": "https://exemple.invalid/verdicts/2"}},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "3333333333333333333333333333333333333333", "empreinte_preuves": "4444444444444444444444444444444444444444444444444444444444444444"}},
+        {"operation": "transition", "cible": "ACCEPTEE",
+         "identite": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "ACCEPTEE", "verdict_id": "vp-3", "verdict_url": "https://exemple.invalid/verdicts/3"}}
+      ],
+      "attendu": {"ok": true, "etat": "ACCEPTEE"}
+    },
+    {
+      "nom": "V-POS-3 refus motive : verdict REFUSEE AVEC reference obligatoire, etat terminal",
+      "operations": [
+        {"operation": "mission", "issue": "#19"},
+        {"operation": "transition", "cible": "EXECUTION",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}},
+        {"operation": "transition", "cible": "DECISION_ATTENDUE",
+         "identite": {"id": "agent_exec", "role": "EXECUTANT", "qualifiee_par": "adapteur_a"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"revision": "1111111111111111111111111111111111111111", "empreinte_preuves": "2222222222222222222222222222222222222222222222222222222222222222"}},
+        {"operation": "transition", "cible": "REFUSEE",
+         "identite": {"id": "agent_recep", "role": "RECEPTIONNAIRE", "qualifiee_par": "adapteur_b"},
+         "config": {"adaptateurs": ["adapteur_a", "adapteur_b"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}},
+         "donnees": {"verdict": "REFUSEE", "verdict_id": "vp-4", "verdict_url": "https://exemple.invalid/verdicts/4"}}
+      ],
+      "attendu": {"ok": true, "etat": "REFUSEE"}
+    }
+  ]
+}
