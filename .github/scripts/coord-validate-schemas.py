@@ -17,7 +17,9 @@ import os
 import sys
 
 from jsonschema import Draft202012Validator
+import referencing
 
+registry = referencing.Registry()
 BASE = os.path.join(os.path.dirname(__file__), "..", "..", "coord")
 SCHEMAS = os.path.join(BASE, "schemas")
 VECTORS = os.path.join(BASE, "docs", "conformite-v15")
@@ -39,7 +41,7 @@ def check(nom, condition, detail=""):
 
 
 def validate_instance(schema, instance):
-    v = Draft202012Validator(schema)
+    v = Draft202012Validator(schema, registry=registry)
     errs = sorted(v.iter_errors(instance), key=lambda e: e.path)
     return errs
 
@@ -56,6 +58,13 @@ for name in schema_names:
         check("schema valide 2020-12 : " + name, True)
     except Exception as e:  # noqa: BLE001
         check("schema valide 2020-12 : " + name, False, e)
+
+# 1 bis. Registre : les $ref distants (par $id https://www.osnias-clearing.com/...)
+# resolvent vers les schemas locaux publies dans le meme dossier, sans reseau.
+for name, schema in schemas.items():
+    if "$id" in schema:
+        resource = referencing.Resource.from_contents(schema)
+        registry = registry.with_resource(schema["$id"], resource)
 
 # 2. Instances temoins : identites.
 sid = schemas["identity"]
@@ -75,8 +84,8 @@ hab_valide = {"adaptateurs": ["adapteur_a", "adapteur_b"],
                         "RECEPTIONNAIRE": ["recevoir"],
                         "PILOTE": ["cloturer"]}}
 check("habilitations valides acceptees", not validate_instance(shab, hab_valide))
-check("liste d'adaptateurs vide refusee (fail closed)",
-      bool(validate_instance(shab, {"adaptateurs": [], "roles": {}})))
+check("liste d'adaptateurs vide acceptee par le schema (N-01 : fail-closed au moteur, pas au schema)",
+      not validate_instance(shab, {"adaptateurs": [], "roles": {}}))
 check("doublon d'adaptateurs refuse (uniqueItems)",
       bool(validate_instance(shab, {"adaptateurs": ["a", "a"], "roles": {}})))
 hab_joker = {"adaptateurs": ["a"],

@@ -86,22 +86,44 @@ aucune dépendance n'est ajoutée sans arbitrage explicite.
 
 Le workflow `coord-go-ci.yml` exécute `go vet`, `go build`, `go test`, les 22
 vecteurs et la démo sur une matrice **ubuntu / windows / macos**, plus un job
-de rejeu des batteries Python et des vecteurs (runner GitHub). Les résultats
-par OS sont attachés à la présente PR ; l'activation ne sera pas proposée
-avant leur lecture.
+de rejeu des batteries Python et des vecteurs (runner GitHub). Première passe
+sur la PR : **les trois jobs Go (ubuntu, windows, macos) sont passés au
+premier tour** (vet/build/test, 22/22 vecteurs, démo 19 CONFORME / 0 ECART).
+**Pas d'assimilation : les statuts finaux par OS sont ceux des checks de la
+PR après la passe corrective** ; l'activation ne sera pas proposée avant leur
+lecture. Le même cycle a détecté l'écart de manifeste (§ 4) : le garde-fou a
+fonctionné avant fusion.
 
 ## 4. Livrables de publication (étapes 3 et 4)
 
-- **Pages publiques** : `/coord/` et `/en/coord/` mises à jour (section
-  « COORD Specification 1.0 » à l'identique FR/EN, statut CANDIDAT non activé,
-  téléchargement versionné, ancien lien conservé, récapitulatif v1.5 47/47 et
-  22/22 vecteurs, cadrage de `tools/ai-coordinator` limité au rôle
-  documentaire). Métadonnées web traitées séparément, aucun fichier couvert
-  par manifeste n'est modifié.
-- **Appel aux implémentations** : nouvelles pages
-  `/coord/implementations/` et `/en/coord/implementations/`, fichier
-  `coord/CALL-FOR-IMPLEMENTATIONS.md` (EN avec résumé FR), entrées sitemap
-  avec hreflang croisés.
+- **Écart détecté par la CI puis corrigé (preuve que les gardes fonctionnent)**
+  : la première passe de la PR modifiait `coord/README.md` et
+  `coord/index.html`, deux des 19 fichiers historiques figés octet à octet par
+  le manifeste d'intégrité (test M1 de la batterie v1.5, référence main
+  323d8b9). Le job CI « Batteries Python » a signalé la divergence avant
+  fusion. **Correction : les deux fichiers sont rétablis octet à octet à
+  l'état de main.** Conformément à l'ordre de mission (« ne pas modifier les
+  fichiers historiques sans arbitrage explicite ; traiter les métadonnées web
+  séparément ou proposer une migration contrôlée »), la mise à jour de la page
+  FR et du README est **proposée comme migration contrôlée** : le contenu
+  cible est préparé et archivé dans le Drive `coord` (02-Missions-et-decisions)
+  ; sa mise en œuvre exige l'arbitrage explicite du pilote, le re-calcul du
+  manifeste et une nouvelle réception.
+- **Pages publiques** : `/en/coord/` mise à jour (section COORD Specification
+  1.0, statut CANDIDAT non activé, rejeu v1.5 et 22 vecteurs, téléchargement
+  versionné, « tools/ai-coordinator » cadré au rôle documentaire) ; pages
+  appel `/coord/implementations/` et `/en/coord/implementations/` créées
+  (aucune n'est couverte par le manifeste). En attendant la migration validée
+  de la page FR, l'incohérence FR/EN est assumée et documentée ici même.
+- **Validation des schémas : sémantique corrigée** : une liste d'adaptateurs
+  vide est **valide** au sens du schéma (`habilitations.schema.json`) :
+  l'invariant N-01 « fail-closed » (une liste vide ou absente refuse tout au
+  moteur) relève du moteur, pas du schéma ; le témoin initial attendait à
+  tort un refus et a été corrigé (première passe de CI en échec, corrigée).
+  Les `$ref` distants de l'enveloppe résolvent via un registre local, sans
+  réseau.
+- **Appel aux implémentations** : fichier `coord/CALL-FOR-IMPLEMENTATIONS.md`
+  (EN avec résumé FR), entrées sitemap hreflang pour les deux pages.
 - **Archive versionnée** : le workflow `coord-zip.yml` produit désormais
   `coord-v1.0-v1.5.zip` et conserve l'ancien lien `coord-v1.0-v1.4.zip`
   comme copie figée de compatibilité (arbitrage Q1 de la critique, validé).
