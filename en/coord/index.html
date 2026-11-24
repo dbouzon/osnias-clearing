@@ -88,8 +88,9 @@
 <div class="hero-heading">
 <div class="eyebrow">Coordinating two AI agents from different labs</div>
 <h1>COORD: making Mistral and OpenAI talk to each other</h1>
-<p class="home-version" style="text-align:center;opacity:.78;font-size:.95rem;margin:.15rem 0 .65rem">Version v1.4 candidate · <time datetime="2026-11-24">24 November 2026</time></p>
-<div class="osnias-animation-cta" style="text-align:center;margin:.2rem auto 1rem"><a href="/coord-v1.0-v1.4.zip" download style="display:inline-block;padding:.85rem 1.5rem;border-radius:999px;border:1px solid #67d0ad;background:#173e53;color:#f1fbff;text-decoration:none;font-weight:700;box-shadow:0 3px 15px rgba(0,0,0,.14)" aria-label="Download the COORD archive v1.0 to v1.4 (zip)">⬇ Download COORD (.zip) — v1.0 to v1.4 sources</a></div>
+<p class="home-version" style="text-align:center;opacity:.78;font-size:.95rem;margin:.15rem 0 .65rem">Version v1.4 operational · v1.5 and COORD Specification 1.0 candidates · <time datetime="2026-11-24">24 November 2026</time></p>
+<div class="osnias-animation-cta" style="text-align:center;margin:.2rem auto 1rem"><a href="/coord-v1.0-v1.5.zip" download style="display:inline-block;padding:.85rem 1.5rem;border-radius:999px;border:1px solid #67d0ad;background:#173e53;color:#f1fbff;text-decoration:none;font-weight:700;box-shadow:0 3px 15px rgba(0,0,0,.14)" aria-label="Download the COORD archive v1.0 to v1.5 (zip)">⬇ Download COORD (.zip) — v1.0 to v1.5 + Specification 1.0</a></div>
+<p style="text-align:center;font-size:.85rem;opacity:.8">Earlier link kept alive: <a href="/coord-v1.0-v1.4.zip">coord-v1.0-v1.4.zip</a> (same content, existing links stay valid)</p>
 <div class="hero-role">Mistral executes · OpenAI reviews · GitHub is the record of truth</div>
 <p class="hero-lead">COORD is a small piece of software and a public protocol that let two AI agents cooperate: one designs and executes, the other one critiques and issues an independent verdict, while the Git repository keeps the proofs. No AI ever validates its own work.</p>
 </div>
@@ -149,11 +150,13 @@
 sh run_v12.sh        # v1.2 candidate battery: 11/11 PASS
 sh run_v13.sh        # v1.3 battery: 13/13 PASS
 sh run_robustness.sh # T3 robustness suite: 10/10 PASS
-sh run_v14.sh        # v1.4 candidate battery: 17/17 PASS</code></pre>
-Total: 88/88 PASS, exit 0. These tests are UNIT or INTEGRATION WITH MOCKS; real E2E tests are the real missions themselves.</div>
+sh run_v14.sh        # v1.4 battery: 17/17 PASS
+sh run_v15.sh        # hardened v1.5 candidate battery: 47/47 PASS</code></pre>
+Total: 88/88 PASS, exit 0; v1.5 candidate: 47/47 PASS plus 22/22 conformance vectors. These tests are UNIT or INTEGRATION WITH MOCKS; real E2E tests are the real missions themselves.</div>
 <div class="resources">
 <a class="resource" href="https://github.com/dbouzon/osnias-clearing/tree/main/coord" rel="noopener noreferrer" target="_blank"><div><strong>Sources on GitHub</strong><span>Canonical modules · Test batteries · Launchers</span></div><div class="resource-type">OPEN →</div></a>
-<a class="resource" href="/coord/docs/proto-coord06-v14.md"><div><strong>v1.4 specification</strong><span>Amendment D1..D7 · Public reference (in French)</span></div><div class="resource-type">READ →</div></a>
+<a class="resource" href="/coord/docs/spec/coord-spec-1.0.md"><div><strong>COORD Specification 1.0</strong><span>Normative EN · RFC 2119 · Language-neutral</span></div><div class="resource-type">READ →</div></a>
+<a class="resource" href="/en/coord/implementations/"><div><strong>Call for implementations</strong><span>22 public vectors · Publish your results</span></div><div class="resource-type">VISIT →</div></a>
 </div>
 </section>
 <section id="implement">
@@ -164,15 +167,40 @@ Total: 88/88 PASS, exit 0. These tests are UNIT or INTEGRATION WITH MOCKS; real 
 </div>
 <p>A mission record is one normalised JSON line: mission, issue, state, protocol, sha_git, proof_fp (sha256 fingerprint of the proofs), model_api, ts_utc, verdict_url, verdict_id, ack. Asynchronous exchanges use marked comments: <code>FROM:MISTRAL</code>, <code>FROM:CHATGPT-API DECISION</code> and <code>TO:MISTRAL</code>.</p>
 <div class="notice"><strong>Invariants to reproduce:</strong> mandatory independent review · never a self-review · never a PASS without real execution · verdict staling by fingerprint · idempotent publications · no secrets in repositories.</div>
-<p>The full specification (<a href="/coord/docs/proto-coord06-v14.md">proto-coord06-v14</a>, in French) and a second Go implementation (<a href="https://github.com/dbouzon/osnias-clearing/tree/main/tools/ai-coordinator" rel="noopener noreferrer" target="_blank">tools/ai-coordinator</a>) are public.</p>
+<p>The full specification (<a href="/coord/docs/proto-coord06-v14.md">proto-coord06-v14</a>, in French) is public, and the open standard <a href="/coord/docs/spec/coord-spec-1.0.md">COORD Specification 1.0</a> is implemented by a Go reference engine (<a href="https://github.com/dbouzon/osnias-clearing/tree/main/coord/go" rel="noopener noreferrer" target="_blank">coord/go</a>, stdlib only). The historical infrastructure <a href="https://github.com/dbouzon/osnias-clearing/tree/main/tools/ai-coordinator" rel="noopener noreferrer" target="_blank">tools/ai-coordinator</a> remains published for the record (documented divergence).</p>
+</section>
+<section id="spec-1-0">
+<div>
+<div class="section-label">06 · COORD Specification 1.0</div>
+<h2>The open standard, language-neutral</h2>
+<p class="section-intro">COORD Specification 1.0 formalises the protocol as a self-contained normative specification (English, RFC 2119), implemented by two independent reference engines.</p>
+</div>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">STANDARD</div>
+<h3>Specification 1.0</h3>
+<p>Eight states, a closed transition table, fail-closed authorizations, referenced verdicts, staling by fingerprint, atomic persistence, resume arbitration, context control (invariants N-01..N-20). <a href="/coord/docs/spec/coord-spec-1.0.md">Read the standard</a>.</p>
+</article>
+<article class="card">
+<div class="card-kicker">GO ENGINE</div>
+<h3>Stdlib reference</h3>
+<p>The <code>coordengine</code> module (Go 1.27, zero dependency), an autonomous demo and a vector runner. 22/22 vectors and 19 conformance checks, verified by CI on Linux, Windows and macOS.</p>
+</article>
+<article class="card">
+<div class="card-kicker">CONFORMANCE</div>
+<h3>22 public vectors</h3>
+<p>Three positive transition scenarios, nine negative ones, eight authorization configurations, two resume arbitrations. An implementation is conformant when it replays all of them. <a href="/en/coord/implementations/">Answer the call for implementations</a>.</p>
+</article>
+</div>
+<div class="notice"><strong>Public deliverables:</strong> standard (<code>coord/docs/spec/coord-spec-1.0.md</code>) · 5 JSON schemas 2020-12 (<code>coord/schemas/</code>) · vectors (<code>coord/docs/conformite-v15/</code>) · implementer guide (EN) · user guide (FR) · replay: <code>go run ./cmd/vector-runner -dir ../docs/conformite-v15</code> and <code>go run ./cmd/coord-demo</code>. <strong>Status: CANDIDATE, NOT ACTIVATED; activation belongs to the human pilot.</strong></div>
 </section>
 <section id="status-limits">
 <div>
-<div class="section-label">06 · Status and limits</div>
+<div class="section-label">07 · Status and limits</div>
 <h2>What is proven, what is not</h2>
 <p class="section-intro">Transparency about limits is part of the protocol: every claim distinguishes what was executed from what was not.</p>
 </div>
-<div class="notice"><strong>Status:</strong> v1.4 candidate (v1.3 in force, issue #150). The v1.5 candidate version is not published here. <strong>Limits:</strong> UNIT/MOCK batteries, no simulated E2E is presented as real; the software is licensed under Apache-2.0; the French page is the reference version.</div>
+<div class="notice"><strong>Status:</strong> v1.4 operational (reference). Non-activated candidates: hardened v1.5 and COORD Specification 1.0 with its Go reference engine; activation remains reserved to the human pilot. <strong>Limits:</strong> UNIT/MOCK batteries, no simulated E2E is presented as real; Go multi-OS qualification and schema validation executed by CI; the software is licensed under Apache-2.0; a French version of this page is the reference version, Spanish not included.</div>
 </section>
 </main>
 <footer>

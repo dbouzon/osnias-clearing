@@ -88,8 +88,9 @@
 <div class="hero-heading">
 <div class="eyebrow">Coordination de deux agents IA de laboratoires différents</div>
 <h1>COORD : faire dialoguer Mistral et OpenAI</h1>
-<p class="home-version" style="text-align:center;opacity:.78;font-size:.95rem;margin:.15rem 0 .65rem">Version v1.4 candidate · <time datetime="2026-11-24">24 novembre 2026</time></p>
-<div class="osnias-animation-cta" style="text-align:center;margin:.2rem auto 1rem"><a href="/coord-v1.0-v1.4.zip" download style="display:inline-block;padding:.85rem 1.5rem;border-radius:999px;border:1px solid #67d0ad;background:#173e53;color:#f1fbff;text-decoration:none;font-weight:700;box-shadow:0 3px 15px rgba(0,0,0,.14)" aria-label="Télécharger l'archive COORD v1.0 à v1.4 (zip)">⬇ Télécharger COORD (.zip) — sources v1.0 à v1.4</a></div>
+<p class="home-version" style="text-align:center;opacity:.78;font-size:.95rem;margin:.15rem 0 .65rem">Version v1.4 opérationnelle · v1.5 et COORD Specification 1.0 candidates · <time datetime="2026-11-24">24 novembre 2026</time></p>
+<div class="osnias-animation-cta" style="text-align:center;margin:.2rem auto 1rem"><a href="/coord-v1.0-v1.5.zip" download style="display:inline-block;padding:.85rem 1.5rem;border-radius:999px;border:1px solid #67d0ad;background:#173e53;color:#f1fbff;text-decoration:none;font-weight:700;box-shadow:0 3px 15px rgba(0,0,0,.14)" aria-label="Télécharger l'archive COORD v1.0 à v1.5 (zip)">⬇ Télécharger COORD (.zip) — v1.0 à v1.5 + Specification 1.0</a></div>
+<p style="text-align:center;font-size:.85rem;opacity:.8">Ancien lien conservé : <a href="/coord-v1.0-v1.4.zip">coord-v1.0-v1.4.zip</a> (même contenu, compatibilité des liens existants)</p>
 <div class="hero-role">Mistral exécute · OpenAI évalue · GitHub fait foi</div>
 <p class="hero-lead">COORD est un petit logiciel et un protocole public qui font coopérer deux agents IA : l'un conçoit et exécute, l'autre critique et rend un verdict indépendant, et le dépôt Git conserve les preuves. Aucune IA ne valide jamais son propre travail.</p>
 </div>
@@ -149,11 +150,14 @@
 sh run_v12.sh        # batterie v1.2 candidate : 11/11 PASS
 sh run_v13.sh        # batterie v1.3 : 13/13 PASS
 sh run_robustness.sh # suite de robustesse T3 : 10/10 PASS
-sh run_v14.sh        # batterie v1.4 candidate : 17/17 PASS</code></pre>
-Total : 88/88 PASS, exit 0. Ces tests sont UNITAIRES ou d'INTEGRATION AVEC MOCKS ; les E2E réels sont les missions réelles elles-mêmes.</div>
+sh run_v14.sh        # batterie v1.4 : 17/17 PASS
+sh run_v15.sh        # batterie v1.5 candidate durcie : 47/47 PASS</code></pre>
+Total : 88/88 PASS, exit 0 ; v1.5 candidate : 47/47 PASS et 22/22 vecteurs de conformité. Ces tests sont UNITAIRES ou d'INTEGRATION AVEC MOCKS ; les E2E réels sont les missions réelles elles-mêmes.</div>
 <div class="resources">
 <a class="resource" href="https://github.com/dbouzon/osnias-clearing/tree/main/coord" rel="noopener noreferrer" target="_blank"><div><strong>Sources sur GitHub</strong><span>Modules canoniques · Batteries · Lanceurs</span></div><div class="resource-type">OPEN →</div></a>
 <a class="resource" href="/coord/docs/proto-coord06-v14.md"><div><strong>Spécification v1.4</strong><span>Amendement D1..D7 · Référence publique</span></div><div class="resource-type">READ →</div></a>
+<a class="resource" href="/coord/docs/spec/coord-spec-1.0.md"><div><strong>COORD Specification 1.0</strong><span>Norme EN · RFC 2119 · Indépendante du langage</span></div><div class="resource-type">READ →</div></a>
+<a class="resource" href="/coord/implementations/"><div><strong>Appel à implémentations</strong><span>22 vecteurs publics · Publiez vos résultats</span></div><div class="resource-type">VISIT →</div></a>
 </div>
 </section>
 <section id="implémenter">
@@ -164,15 +168,40 @@ Total : 88/88 PASS, exit 0. Ces tests sont UNITAIRES ou d'INTEGRATION AVEC MOCKS
 </div>
 <p>L'enregistrement de mission est une ligne JSON normalisée : mission, issue, state, protocol, sha_git, proof_fp (empreinte sha256 des preuves), model_api, ts_utc, verdict_url, verdict_id, ack. Les échanges asynchrones utilisent des commentaires marqués <code>FROM:MISTRAL</code>, <code>FROM:CHATGPT-API DECISION</code> et <code>TO:MISTRAL</code>.</p>
 <div class="notice"><strong>Invariants à reproduire :</strong> réception indépendante obligatoire · jamais d'auto-réception · jamais de PASS sans exécution réelle · obsolescence d'un verdict par empreinte · idempotence des publications · aucun secret dans les dépôts.</div>
-<p>La spécification complète (<a href="/coord/docs/proto-coord06-v14.md">proto-coord06-v14</a>) et une seconde implémentation en Go (<a href="https://github.com/dbouzon/osnias-clearing/tree/main/tools/ai-coordinator" rel="noopener noreferrer" target="_blank">tools/ai-coordinator</a>) sont publiques.</p>
+<p>La spécification complète (<a href="/coord/docs/proto-coord06-v14.md">proto-coord06-v14</a>) est publique, et la norme ouverte <a href="/coord/docs/spec/coord-spec-1.0.md">COORD Specification 1.0</a> est implémentée par un moteur de référence en Go (<a href="https://github.com/dbouzon/osnias-clearing/tree/main/coord/go" rel="noopener noreferrer" target="_blank">coord/go</a>, stdlib uniquement). L'infrastructure historique <a href="https://github.com/dbouzon/osnias-clearing/tree/main/tools/ai-coordinator" rel="noopener noreferrer" target="_blank">tools/ai-coordinator</a> reste publiée à titre documentaire (divergence d'états documentée).</p>
+</section>
+<section id="spec-1-0">
+<div>
+<div class="section-label">06 · COORD Specification 1.0</div>
+<h2>La norme ouverte, indépendante du langage</h2>
+<p class="section-intro">COORD Specification 1.0 formalise le protocole en une spécification normative autonome (anglais, RFC 2119), implémentée par deux moteurs de référence indépendants.</p>
+</div>
+<div class="grid-3">
+<article class="card">
+<div class="card-kicker">NORME</div>
+<h3>Specification 1.0</h3>
+<p>Huit états, table de transitions fermée, habilitations fail-closed, verdicts référencés, obsolescence par empreinte, persistance atomique, arbitrage de reprise, contrôle du contexte (invariants N-01..N-20). <a href="/coord/docs/spec/coord-spec-1.0.md">Lire la norme (EN)</a>.</p>
+</article>
+<article class="card">
+<div class="card-kicker">MOTEUR Go</div>
+<h3>Référence stdlib</h3>
+<p>Module <code>coordengine</code> (Go 1.27, zéro dépendance), démonstration autonome et runner de vecteurs. 22/22 vecteurs et 19 contrôles conformes, vérifiés par CI sur Linux, Windows et macOS.</p>
+</article>
+<article class="card">
+<div class="card-kicker">CONFORMITÉ</div>
+<h3>22 vecteurs publics</h3>
+<p>Trois scénarios de transition positifs, neuf négatifs, huit habilitations, deux arbitrages de reprise. Une implémentation est conforme si elle les rejoue tous. <a href="/coord/implementations/">Participez à l'appel à implémentations</a>.</p>
+</article>
+</div>
+<div class="notice"><strong>Livrables publics :</strong> norme (<code>coord/docs/spec/coord-spec-1.0.md</code>) · 5 schémas JSON 2020-12 (<code>coord/schemas/</code>) · vecteurs (<code>coord/docs/conformite-v15/</code>) · guide implémenteur (EN) · guide utilisateur (FR) · rejeu : <code>go run ./cmd/vector-runner -dir ../docs/conformite-v15</code> et <code>go run ./cmd/coord-demo</code>. <strong>Statut : CANDIDATE, NON ACTIVÉE ; activation réservée au pilote humain.</strong></div>
 </section>
 <section id="etat-limites">
 <div>
-<div class="section-label">06 · État et limites</div>
+<div class="section-label">07 · État et limites</div>
 <h2>Ce qui est prouvé, ce qui ne l'est pas</h2>
 <p class="section-intro">La transparence sur les limites fait partie du protocole : chaque affirmation distingue ce qui a été exécuté de ce qui ne l'a pas été.</p>
 </div>
-<div class="notice"><strong>État :</strong> v1.4 candidate (v1.3 en vigueur, issue #150). La version candidate v1.5 n'est pas publiée ici. <strong>Limites :</strong> batteries UNITAIRES/MOCKS, aucun E2E simulé n'est présenté comme réel ; logiciel placé sous licence Apache-2.0 ; versions EN/ES de cette page envisagées.</div>
+<div class="notice"><strong>État :</strong> v1.4 opérationnelle (référence). Candidatures non activées : v1.5 durcie et COORD Specification 1.0 avec son moteur de référence Go ; l'activation reste réservée au pilote humain. <strong>Limites :</strong> batteries UNITAIRES/MOCKS, aucun E2E simulé n'est présenté comme réel ; qualification Go multi-OS et validation des schémas exécutées par CI ; logiciel placé sous licence Apache-2.0 ; version anglaise publiée, ES non incluse.</div>
 </section>
 </main>
 <footer>
