@@ -1,0 +1,14 @@
+[PASS] T1 bandeau 'DONNÉES SIMULÉES' présent
+[PASS] T2 les 8 écrans présents — manquants: []
+[PASS] T3 navigation cohérente — cibles inconnues: []
+[PASS] T4 aucun appel externe ni ressource distante — []
+[PASS] T5 identifiants DOM référencés présents — absents: []
+[PASS] T6 les 8 états de la spec affichables — []
+[PASS] T7 invariants illustrés à l'écran — []
+[PASS] T8 rôles et actions normatifs présents — []
+[PASS] T9 distinction ARRET_PILOTE / ECART (N-20) explicite
+[PASS] T10 copyright, ORCID, Apache-2.0
+[PASS] T11 sections équilibrées — open=8 close=8
+[PASS] T12 parse HTML sans erreur
+
+BILAN MAQUETTE: PASS=12 FAIL=0 (contrôles statiques REEL ; rendu navigateur NON_EXECUTE, à la charge du pilote)

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<!--
+  COORD Pilot — maquette de conception (M-COORD-PILOT-01, issue #25)
+  Copyright © 2026 Denis Bouzon ; ORCID: https://orcid.org/0009-0007-8894-8902
+  SPDX-License-Identifier: Apache-2.0
+
+  MAQUETTE DE CONCEPTION. Toutes les données affichées sont SIMULÉES et codées
+  en dur : aucun appel réseau, aucune clé, aucun compte. Les transitions
+  illustrées ne sont PAS le moteur : l'ergonomie cible est illustrée, la
+  vérité normative réside dans coordengine (coord/go).
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COORD Pilot — maquette de conception (données simulées)</title>
+<style>
+  :root{
+    --bg:#f4f5f7; --card:#ffffff; --ink:#1c2733; --mut:#5b6b7b; --line:#dfe4ea;
+    --accent:#0e5fa8; --accent-soft:#e8f1fb; --ok:#1a7f4b; --ok-soft:#e6f4ec;
+    --warn:#a15c00; --warn-soft:#fdf1dd; --ko:#b3261e; --ko-soft:#fbe9e7;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  header.appbar{background:var(--ink);color:#fff;padding:10px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  header.appbar h1{font-size:16px;margin:0;font-weight:600}
+  header.appbar .v{font-size:12px;color:#9db4c8}
+  .banner{background:repeating-linear-gradient(135deg,var(--warn-soft),var(--warn-soft) 12px,#fdf7ea 12px,#fdf7ea 24px);
+    color:var(--warn);border-bottom:1px solid #eadbc0;padding:7px 18px;font-size:13px;font-weight:600;text-align:center}
+  nav.tabs{display:flex;flex-wrap:wrap;gap:2px;background:#fff;border-bottom:1px solid var(--line);padding:0 12px;position:sticky;top:0;z-index:5}
+  nav.tabs button{border:0;background:transparent;padding:11px 14px;font:inherit;font-size:13.5px;color:var(--mut);cursor:pointer;border-bottom:3px solid transparent}
+  nav.tabs button.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+  main{max-width:1080px;margin:0 auto;padding:22px 18px 60px}
+  section.screen{display:none;animation:fade .18s ease}
+  section.screen.on{display:block}
+  @keyframes fade{from{opacity:.4}to{opacity:1}}
+  h2{font-size:21px;margin:6px 0 4px}
+  h3{font-size:16px;margin:18px 0 8px}
+  p.sub{color:var(--mut);margin:0 0 18px;font-size:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{color:var(--mut);text-align:left;font-weight:600;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  .pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+  .st-PLANIFIEE{background:#eceff3;color:#3d4a5a}.st-EXECUTION{background:var(--accent-soft);color:var(--accent)}
+  .st-DECISION_ATTENDUE{background:#efe7fb;color:#5b3fa8}.st-ACCEPTEE{background:var(--ok-soft);color:var(--ok)}
+  .st-EN_CORRECTION{background:var(--warn-soft);color:var(--warn)}.st-ACK_RECU{background:var(--ok-soft);color:var(--ok)}
+  .st-REFUSEE{background:var(--ko-soft);color:var(--ko)}.st-CLOTUREE{background:#eceff3;color:#3d4a5a}
+  .tag{display:inline-block;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:600;padding:2px 8px;border-radius:5px}
+  .tag.ko{background:var(--ko-soft);color:var(--ko)}
+  .tag.ok{background:var(--ok-soft);color:var(--ok)}
+  .tag.warn{background:var(--warn-soft);color:var(--warn)}
+  .mono{font-family:var(--mono);font-size:12px;word-break:break-all}
+  button.act{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:7px;padding:8px 14px;font:inherit;font-size:13.5px;cursor:pointer}
+  button.act.sec{background:#fff;color:var(--accent)}
+  button.act:disabled{opacity:.45;cursor:not-allowed}
+  button.small{padding:4px 10px;font-size:12.5px}
+  label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+  input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;font:inherit;background:#fff}
+  .hint{font-size:12px;color:var(--mut);margin-top:3px}
+  .msg{border-radius:8px;padding:10px 13px;font-size:13.5px;margin:12px 0}
+  .msg.ok{background:var(--ok-soft);color:var(--ok)}
+  .msg.ko{background:var(--ko-soft);color:var(--ko)}
+  .msg.info{background:var(--accent-soft);color:var(--accent)}
+  .steps{list-style:none;counter-reset:s;padding:0;margin:0}
+  .steps li{counter-increment:s;position:relative;padding:9px 0 9px 44px;border-left:2px solid var(--line);margin-left:14px}
+  .steps li::before{content:counter(s);position:absolute;left:-13px;top:8px;width:26px;height:26px;border-radius:50%;
+    background:var(--accent);color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--mono);font-size:11.5px}
+  .flow span{background:#eceff3;border:1px solid var(--line);padding:3px 7px;border-radius:5px;color:#3d4a5a}
+  .flow em{color:var(--mut);font-style:normal}
+  .tl{border-left:2px solid var(--line);margin-left:8px;padding-left:18px}
+  .tl .ev{position:relative;padding:10px 0 2px}
+  .tl .ev::before{content:"";position:absolute;left:-24px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+  .tl .ev.ref::before{background:var(--ko)}
+  .tl .ev.warn::before{background:var(--warn)}
+  .tl time{font-size:11.5px;color:var(--mut);font-family:var(--mono)}
+  details{border:1px solid var(--line);border-radius:8px;padding:10px 13px;margin:9px 0;background:#fff}
+  summary{cursor:pointer;font-weight:600;font-size:13.5px}
+  .barb{background:#eceff3;border-radius:99px;height:9px;overflow:hidden;margin:6px 0 2px}
+  .barb i{display:block;height:100%;background:var(--accent)}
+  .barb.ko i{background:var(--ko)}
+  footer{border-top:1px solid var(--line);color:var(--mut);font-size:12px;padding:16px 18px;text-align:center}
+  .kbd{background:#eceff3;border:1px solid var(--line);border-radius:4px;padding:0 5px;font-family:var(--mono);font-size:11.5px}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <h1>COORD Pilot</h1>
+  <span class="v">maquette de conception — v0.1 (M-COORD-PILOT-01)</span>
+  <span style="margin-left:auto;font-size:12px" id="whoami">pilote local : <span class="mono">pilot-local-001 [PILOTE]</span></span>
+</header>
+<div class="banner">DONNÉES SIMULÉES — maquette de conception, aucun appel réel, aucune clé, aucun compte</div>
+
+<nav class="tabs" id="tabs">
+  <button data-go="prise" class="on">Prise en main</button>
+  <button data-go="dashboard">Missions</button>
+  <button data-go="creer">Créer une mission</button>
+  <button data-go="cycle">Suivi du cycle</button>
+  <button data-go="arbitrage">Arbitrage humain</button>
+  <button data-go="arret">Arrêt / reprise</button>
+  <button data-go="couts">Coûts</button>
+  <button data-go="journal">Journal</button>
+</nav>
+
+<main>
+
+<!-- ============ ÉCRAN 0 : PRISE EN MAIN ============ -->
+<section class="screen on" id="prise">
+  <h2>Prise en main</h2>
+  <p class="sub">COORD Pilot est l'interface de gouvernance humaine d'une équipe d'IA coordonnée par le moteur
+  <span class="mono">coordengine</span> (COORD Specification 1.0). Le pilote humain crée des missions, y affecte un
+  exécutant et un réceptionnaire, arbitre les divergences, contrôle les budgets et reste la seule autorité de clôture.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">Déroulé d'une mission en 6 étapes</h3>
+    <ol class="steps">
+      <li><b>Création.</b> Le pilote ouvre une mission (référence d'issue), choisit les rôles et fixe les plafonds de budget. État : <span class="pill st-PLANIFIEE">PLANIFIEE</span></li>
+      <li><b>Exécution.</b> L'exécutant travaille ; chaque transition est autorisée par les habilitations et journalisée. État : <span class="pill st-EXECUTION">EXECUTION</span></li>
+      <li><b>Soumission.</b> L'exécutant soumet preuves + empreintes pour réception. État : <span class="pill st-DECISION_ATTENDUE">DECISION_ATTENDUE</span></li>
+      <li><b>Réception.</b> Le réceptionnaire (toujours distinct de l'exécutant) rend un verdict : <span class="tag ok">ACCEPTEE</span> <span class="tag warn">A_CORRIGER</span> <span class="tag ko">REFUSEE</span></li>
+      <li><b>Correction éventuelle.</b> Sur A_CORRIGER, retour à l'exécution ; les preuves changent, l'ancien verdict devient obsolète (N-13).</li>
+      <li><b>ACK et clôture.</b> L'exécutant s'acquitte du verdict accepté ; le pilote seul clôt : <span class="pill st-CLOTUREE">CLOTUREE</span></li>
+    </ol>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0">Légende des états</h3>
+      <p style="line-height:2.1">
+        <span class="pill st-PLANIFIEE">PLANIFIEE</span> créée, pas encore lancée ·
+        <span class="pill st-EXECUTION">EXECUTION</span> travail en cours ·
+        <span class="pill st-DECISION_ATTENDUE">DECISION_ATTENDUE</span> soumise, verdict attendu ·
+        <span class="pill st-ACCEPTEE">ACCEPTEE</span> verdict favorable ·
+        <span class="pill st-EN_CORRECTION">EN_CORRECTION</span> corrections demandées ·
+        <span class="pill st-ACK_RECU">ACK_RECU</span> l'exécutant a acquitté ·
+        <span class="pill st-REFUSEE">REFUSEE</span> terminal, refus ·
+        <span class="pill st-CLOTUREE">CLOTUREE</span> terminal, clôturée par le pilote
+      </p>
+      <p class="hint">Les états REFUSEE et CLOTUREE sont terminaux : toute transition supplémentaire est refusée (N-09).</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Concepts à connaître</h3>
+      <details><summary>Adaptateur</summary><p>Identifie le canal qui a qualifié une identité (ex. <span class="mono">mistral-sandbox</span>). Fail-closed : une identité non qualifiée par un adaptateur configuré est refusée (N-01) ; configuration vide = tout refusé (N-05).</p></details>
+      <details><summary>Habilitation</summary><p>Autorisation par rôle et action (<span class="mono">executer / soumettre / recevoir / acker / cloturer</span>). Toute action non listée est refusée (N-02..N-04) ; un agent n'est jamais exécutant ET réceptionnaire de la même mission (N-05·6.3).</p></details>
+      <details><summary>Preuves et empreinte</summary><p>Chaque soumission porte une révision (SHA-1, 40 hex) et l'empreinte SHA-256 de ses preuves. Un verdict rendu sur des preuves depuis modifiées est obsolète : refus (N-13).</p></details>
+      <details><summary>Arbitrage</summary><p>Si deux copies de l'état divergent, la copie GitHub fait foi (N-16) et la reprise n'exécute que si le head vérifié correspond (N-17).</p></details>
+      <details><summary>Budget</summary><p>Compteurs par mission et par adaptateur (appels, jetons), plafonds fixés à la création. Dépassement = transition bloquée avant tout appel.</p></details>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Ce que cette maquette n'est PAS</h3>
+    <p>Elle n'est pas le moteur : les transitions affichées sont des données simulées pour valider l'ergonomie.
+    Elle ne fait aucun appel réseau, n'a aucune clé ni compte, et le bandeau <b>DONNÉES SIMULÉES</b> reste visible
+    sur tous les écrans. La vérité normative réside dans <span class="mono">coord/go</span> (COORD Specification 1.0).</p>
+    <p><button class="act" data-go="dashboard">Ouvrir le tableau des missions</button></p>
+  </div>
+</section>
+
+<!-- ============ ÉCRAN 1 : TABLEAU DE BORD ============ -->
+<section class="screen" id="dashboard">
+  <h2>Missions</h2>
+  <p class="sub">Référentiel multi-missions, chacun dans son dossier, écriture atomique (N-15). Cliquez sur une mission pour suivre son cycle.</p>
+  <div class="card" style="padding:0;overflow:auto">
+  <table id="tbl-missions">
+    <thead><tr>
+      <th>Mission</th><th>Issue</th><th>État</th><th>Exécutant</th><th>Réceptionnaire</th><th>Budget</th><th>Arrêt</th><th>Détail</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+  </div>
+  <p><button class="act" data-go="creer">+ Créer une mission</button></p>
+</section>
+
+<!-- ============ ÉCRAN 2 : CRÉATION ============ -->
+<section class="screen" id="creer">
+  <h2>Créer une mission</h2>
+  <p class="sub">Rôles, habilitations et plafonds de budget — toutes les valeurs ci-dessous sont simulées. Le service vérifiera : exécutant ≠ réceptionnaire (N-05·6.3), adaptateurs non vides (N-01), habilitations bien formées sinon refus de démarrer (N-05).</p>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0">Mission et rôles</h3>
+      <label for="f-issue">Référence d'issue</label>
+      <input id="f-issue" value="osnias-clearing#/issue-exemple-101"><div class="hint" id="hint-issue"></div>
+      <label for="f-exe">Exécutant (identité qualifiée par adaptateur)</label>
+      <select id="f-exe"></select>
+      <label for="f-rec">Réceptionnaire (distinct de l'exécutant)</label>
+      <select id="f-rec"></select>
+      <div id="f-roles-msg" class="msg ko" style="display:none"></div>
+      <label for="f-ada">Adaptateurs déclarés pour cette mission (N-01, non vides, distincts)</label>
+      <select id="f-ada" multiple size="4" style="height:auto"></select>
+      <div class="hint">Liste vide = configuration invalide : le service refusera de démarrer (fail-closed, N-05).</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Habilitations et budget</h3>
+      <p class="hint" style="margin-top:0">Actions autorisées par rôle (N-02..N-04). Les jokers sont refusés (N-03), les doublons refusés (N-04).</p>
+      <table style="font-size:12.5px">
+        <thead><tr><th>Rôle</th><th>Actions autorisées</th></tr></thead>
+        <tbody>
+          <tr><td>EXECUTANT</td><td class="mono">executer, soumettre, acker</td></tr>
+          <tr><td>RECEPTIONNAIRE</td><td class="mono">recevoir</td></tr>
+          <tr><td>PILOTE</td><td class="mono">cloturer <span class="hint">(+ arrêt / arbitrage via le service)</span></td></tr>
+        </tbody>
+      </table>
+      <label for="f-cap">Plafond d'appels d'adaptateur pour la mission</label>
+      <input id="f-cap" type="number" value="20" min="1">
+      <div class="hint">Fail-closed : pas de plafond défini = aucun appel autorisé. Mode simulé = coût nul.</div>
+      <p style="margin-top:16px"><button class="act" id="btn-create">Créer la mission (simulé)</button>
+      <button class="act sec small" id="btn-check">Vérifier le refus exécutant = réceptionnaire</button></p>
+      <div id="f-create-msg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ÉCRAN 3 : SUIVI DU CYCLE ============ -->
+<section class="screen" id="cycle">
+  <h2>Suivi du cycle</h2>
+  <p class="sub">Chronologie de la mission sélectionnée : transitions, verdicts, preuves. Les refus portent toujours un motif explicite.</p>
+  <div class="card">
+    <div class="flow" id="cycle-flow"></div>
+    <p class="hint">Table fermée de transitions (N-10) : tout couple absent est refusé ; états terminaux intangibles (N-09).</p>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0" id="cycle-title">Chronologie</h3>
+      <div class="tl" id="cycle-tl"></div>
+    </div>
+    <div>
+      <div class="card">
+        <h3 style="margin-top:0">Soumission en réception (simulée)</h3>
+        <p class="mono" id="cycle-soum"></p>
+        <p class="hint">Révision = SHA-1 (40 hex), empreinte = SHA-256 (64 hex) de la forme canonique RFC 8785 (N-12/N-13).</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Essayer un verdict</h3>
+        <p><select id="cycle-verdict">
+          <option value="ACCEPTEE">ACCEPTEE</option>
+          <option value="A_CORRIGER">A_CORRIGER</option>
+          <option value="REFUSEE">REFUSEE</option>
+        </select>
+        <button class="act small" id="btn-verdict">Émettre le verdict (simulé)</button></p>
+        <p><label><input type="checkbox" id="cycle-stale" style="width:auto"> Simuler des preuves modifiées après le verdict (test N-13)</label></p>
+        <div id="verdict-msg"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ÉCRAN 4 : ARBITRAGE ============ -->
+<section class="screen" id="arbitrage">
+  <h2>Arbitrage humain</h2>
+  <p class="sub">Divergence entre la copie locale (connaissances) et la copie de référence : arbitration « GitHub fait foi » (N-16), puis reprise conditionnée au head vérifié (N-17). Le pilote arbitre ; personne d'autre.</p>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0">Champs divergents détectés</h3>
+      <table id="arb-tbl"><thead><tr><th>Champ</th><th>Copie locale</th><th>Copie GitHub (foi)</th></tr></thead><tbody></tbody></table>
+      <p><button class="act" id="btn-arb">Arbitrer (github_fait_foi)</button></p>
+      <div id="arb-msg"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Reprise conditionnée (N-17)</h3>
+      <label for="arb-head">Head attendu de la référence</label>
+      <input class="mono" id="arb-head" value="">
+      <label for="arb-head-input">Head déclaré par le service</label>
+      <input class="mono" id="arb-head-input" value="">
+      <p style="margin-top:14px"><button class="act" id="btn-reprise">Tenter la reprise</button></p>
+      <div id="reprise-msg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ÉCRAN 5 : ARRÊT / REPRISE ============ -->
+<section class="screen" id="arret">
+  <h2>Arrêt / reprise</h2>
+  <p class="sub">L'arrêt est une commande du pilote, interceptée par le service : le moteur n'est pas modifié. Journal de type <span class="mono">ARRET_PILOTE</span>, distinct des écarts auto-déclarés (<span class="mono">ECART</span>, N-20), qui eux n'interrompent jamais une mission.</p>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0">Contrôle simulé</h3>
+      <p>État machine : <span class="pill st-EXECUTION" id="arret-state">EXECUTION</span></p>
+      <p>
+        <button class="act" id="btn-stop">Demander l'arrêt de la mission</button>
+        <button class="act sec" id="btn-stop-try" disabled>Demander une transition</button>
+        <button class="act sec" id="btn-resume" disabled>Lever l'arrêt et reprendre</button>
+      </p>
+      <div id="arret-msg"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Pourquoi deux mécanismes distincts</h3>
+      <table style="font-size:13px"><thead><tr><th></th><th>ECART (N-20)</th><th>ARRET_PILOTE</th></tr></thead><tbody>
+        <tr><td>Qui</td><td>exécutant (auto-déclaré)</td><td>pilote (autorité humaine)</td></tr>
+        <tr><td>Effet mission</td><td>jamais interrompue</td><td>toutes transitions refusées, motif explicite</td></tr>
+        <tr><td>Effet machine</td><td>aucun</td><td>aucun (état conservé intact)</td></tr>
+        <tr><td>Type de journal</td><td class="mono">ECART</td><td class="mono">ARRET_PILOTE</td></tr>
+        <tr><td>Reprise</td><td>automatique, sans décision</td><td>via N-16 + N-17 uniquement</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ÉCRAN 6 : COÛTS ============ -->
+<section class="screen" id="couts">
+  <h2>Coûts et budgets</h2>
+  <p class="sub">Compteurs par mission et par adaptateur, vérifiés AVANT toute transition qui déclencherait un appel. Dépassement = refus explicite, aucune action externe. Mode simulé : coût nul.</p>
+  <div class="card" style="padding:0;overflow:auto">
+    <table id="couts-tbl"><thead><tr>
+      <th>Mission</th><th>Adaptateur</th><th>Appels</th><th>Jeton·s (déclarés)</th><th>Plafond d'appels</th><th>Indicateur € (simulé)</th><th>État budget</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Démonstration du blocage (simulée)</h3>
+    <p><button class="act" id="btn-budget">Tenter une transition sans budget restant</button></p>
+    <div id="budget-msg"></div>
+  </div>
+</section>
+
+<!-- ============ ÉCRAN 7 : JOURNAL ============ -->
+<section class="screen" id="journal">
+  <h2>Journal</h2>
+  <p class="sub">Journal idempotent par mission (empreinte calculée, N-19) : transitions autorisées ET refusées, avec motif. Rien n'est masqué.</p>
+  <div class="card" style="padding:0;overflow:auto">
+    <table id="journal-tbl"><thead><tr><th>Heure (UTC)</th><th>Mission</th><th>Type</th><th>Événement</th><th>Motif / détail</th><th>Empreinte</th></tr></thead><tbody></tbody></table>
+  </div>
+  <p class="hint">Types de entrées : TRANSITION, REFUS, VERDICT, ARRET_PILOTE, ARBITRAGE, ECART, BUDGET. En production, chaque entrée porte l'empreinte SHA-256 de son contenu (idempotence).</p>
+</section>
+
+</main>
+<footer>
+  COORD Pilot — maquette de conception, mission M-COORD-PILOT-01 (issue #25) ·
+  Données simulées explicites, aucune dépendance à un fournisseur ·
+  Copyright © 2026 Denis Bouzon ; ORCID: <a href="https://orcid.org/0009-0007-8894-8902">0009-0007-8894-8902</a> · Apache-2.0
+</footer>
+
+<script>
+"use strict";
+/* ====== Données SIMULÉES (aucun appel réseau) ====== */
+var ETATS = ["PLANIFIEE","EXECUTION","DECISION_ATTENDUE","ACCEPTEE","EN_CORRECTION","ACK_RECU","REFUSEE","CLOTUREE"];
+var ADAPTERS = ["mistral-sandbox","openai-pont","github-app"];
+var IDENTITES = [
+  {id:"mistral-vibe", role:"EXECUTANT", adaptateur:"mistral-sandbox"},
+  {id:"chatgpt-pont", role:"RECEPTIONNAIRE", adaptateur:"openai-pont"},
+  {id:"pilot-local-001", role:"PILOTE", adaptateur:"session-locale"}
+];
+var missions = [
+  {ide:"M-1", issue:"#25 M-COORD-PILOT-01", etat:"EXECUTION", exe:"mistral-vibe", rec:"chatgpt-pont",
+   budget:{appels:14, cap:20}, arret:false,
+   soumission:{revision:"4f709ef172870daac927e5b366eaa145cdfae9f2",
+               empreinte:"e1f1cdbed291de8e03e8f5ebe3ae20a452b600f87275d92eb95269d3d671a6f6"}},
+  {ide:"M-2", issue:"#23 M-COORD-RELEASE-01", etat:"ACCEPTEE", exe:"mistral-vibe", rec:"chatgpt-pont",
+   budget:{appels:19, cap:25}, arret:false,
+   soumission:{revision:"4f709ef172870daac927e5b366eaa145cdfae9f2",
+               empreinte:"8c097f7672d5a031956b9f02d5162c04de411d41985bf62e233c108e53388f96"}},
+  {ide:"M-3", issue:"#20 M-COORD-STD-01", etat:"CLOTUREE", exe:"mistral-vibe", rec:"chatgpt-pont",
+   budget:{appels:22, cap:22}, arret:false,
+   soumission:{revision:"ba01a894c0e0d1e2f3a4b5c6d7e8f9a0b1c2d3e4",
+               empreinte:"a9bcd4eb5c45a8fc1234567890abcdefabcdefabcdefabcdefabcdefabcdef42"}}
+];
+var journal = [
+  {t:"22:41:07", m:"M-1", type:"TRANSITION", ev:"PLANIFIEE → EXECUTION", d:"identité mistral-vibe, action executer", fp:"c1d2..."},
+  {t:"22:43:12", m:"M-1", type:"ECART", ev:" terme d'ordre hors mission rencontré", d:"journalisé, N-20 : aucune interruption, aucune décision", fp:"b7e2..."},
+  {t:"22:44:03", m:"M-2", type:"VERDICT", ev:"ACCEPTEE", d:"verdict_id 7146560751, url issue #23", fp:"9f01..."},
+  {t:"22:47:30", m:"M-1", type:"BUDGET", ev:"compteur appels 14/20", d:"vérifié avant transition", fp:"44aa..."}
+];
+var missionVisee = "M-1";
+
+/* ====== Navigation (REEL : maquette interactive locale) ====== */
+var tabs = document.querySelectorAll("nav.tabs button[data-go], button.act[data-go]");
+function go(id){
+  document.querySelectorAll("section.screen").forEach(function(s){ s.classList.toggle("on", s.id === id); });
+  document.querySelectorAll("nav.tabs button").forEach(function(b){
+    b.classList.toggle("on", b.getAttribute("data-go") === id);
+  });
+  window.scrollTo(0,0);
+}
+tabs.forEach(function(b){ b.addEventListener("click", function(){ go(b.getAttribute("data-go")); }); });
+
+/* ====== Renders ====== */
+function pill(e){ return '<span class="pill st-'+e+'">'+e+'</span>'; }
+function renderMissions(){
+  var tb = document.querySelector("#tbl-missions tbody"); tb.innerHTML = "";
+  missions.forEach(function(m){
+    var pct = Math.round(100*m.budget.appels/m.budget.cap);
+    tb.insertAdjacentHTML("beforeend",
+      '<tr><td class="mono">'+m.ide+'</td><td>'+m.issue+'</td><td>'+pill(m.etat)+'</td>'+
+      '<td>'+m.exe+'</td><td>'+m.rec+'</td>'+
+      '<td style="min-width:110px"><div class="barb'+(pct>=100?" ko":"")+'"><i style="width:'+Math.min(pct,100)+'%"></i></div><span class="hint">'+m.budget.appels+'/'+m.budget.cap+' appels</span></td>'+
+      '<td>'+(m.arret?'<span class="tag ko">ARRÊT ACTIF</span>':'—')+'</td>'+
+      '<td><button class="act small" data-open="'+m.ide+'">Suivre</button></td></tr>');
+  });
+  tb.querySelectorAll("button[data-open]").forEach(function(b){
+    b.addEventListener("click", function(){
+      missionVisee = b.getAttribute("data-open");
+      renderCycle(); go("cycle");
+    });
+  });
+}
+function renderJournal(filtre){
+  var tb = document.querySelector("#journal-tbl tbody"); tb.innerHTML = "";
+  journal.forEach(function(j){
+    if(filtre && j.m !== filtre) return;
+    var c = {TRANSITION:"accent-soft", REFUS:"ko-soft", VERDICT:"ok-soft", ARRET_PILOTE:"ko-soft",
+             ARBITRAGE:"warn-soft", ECART:"warn-soft", BUDGET:"accent-soft"}[j.type] || "#eceff3";
+    tb.insertAdjacentHTML("beforeend",
+      '<tr><td class="mono">'+j.t+'</td><td class="mono">'+j.m+'</td>'+
+      '<td><span class="tag" style="background:'+c+'">'+j.type+'</span></td>'+
+      '<td>'+j.ev+'</td><td>'+j.d+'</td><td class="mono">'+j.fp+'</td></tr>');
+  });
+}
+function addJournal(type, ev, d){
+  var now = new Date();
+  journal.unshift({t:now.toISOString().substr(11,8), m:missionVisee, type:type, ev:ev, d:d,
+                   fp:Math.random().toString(16).slice(2,6)+"..."});
+  renderJournal();
+}
+function renderCouts(){
+  var tb = document.querySelector("#couts-tbl tbody"); tb.innerHTML = "";
+  missions.forEach(function(m){
+    var ko = m.budget.appels >= m.budget.cap;
+    tb.insertAdjacentHTML("beforeend",
+      '<tr><td class="mono">'+m.ide+'</td><td class="mono">mistral-sandbox</td><td>'+m.budget.appels+'</td>'+
+      '<td>'+(m.budget.appels*8500).toLocaleString("fr")+'</td><td>'+m.budget.cap+'</td>'+
+      '<td>0,00 € <span class="hint">(mode simulé)</span></td>'+
+      '<td>'+(ko?'<span class="tag ko">PLAFOND ATTEINT — BLOQUÉ</span>':'<span class="tag ok">OK</span>')+'</td></tr>');
+  });
+}
+function renderCycle(){
+  var m = missions.find(function(x){ return x.ide === missionVisee; });
+  document.getElementById("cycle-flow").innerHTML =
+    ETATS.map(function(e){ return '<span'+(e===m.etat?' style="border-color:var(--accent);color:var(--accent);font-weight:700"':'')+'>'+e+'</span>'; })
+         .join('<em>→</em>');
+  document.getElementById("cycle-title").textContent = "Chronologie — mission "+m.ide+" ("+m.issue+")";
+  var tl = document.getElementById("cycle-tl");
+  tl.innerHTML =
+    '<div class="ev"><time>22:38</time> · PLANIFIEE créée par pilot-local-001 (habilitations vérifiées N-01..N-05)</div>'+
+    '<div class="ev"><time>22:41</time> · EXECUTION — exécutant mistral-vibe, action <span class="kbd">executer</span> autorisée</div>'+
+    '<div class="ev warn"><time>22:43</time> · ECART (N-20) — terme hors mission journalisé, mission NON interrompue</div>'+
+    '<div class="ev"><time>22:48</time> · DECISION_ATTENDUE — soumission de preuves pour réception</div>';
+  document.getElementById("cycle-soum").textContent =
+    "revision   = "+m.soumission.revision+"\nempreinte = "+m.soumission.empreinte;
+}
+function identOptions(sel, exclude){
+  sel.innerHTML = IDENTITES.map(function(i){
+    var dis = (i.id===exclude)?' disabled':'';
+    return '<option value="'+i.id+'"'+dis+'>'+i.id+' — '+i.role+' ['+i.adaptateur+']</option>';
+  }).join("");
+}
+function renderArbitrage(){
+  var tb = document.querySelector("#arb-tbl tbody");
+  tb.innerHTML =
+    '<tr><td>état</td><td class="mono">EXECUTION</td><td class="mono">DECISION_ATTENDUE</td></tr>'+
+    '<tr><td>decisions[0].verdict</td><td class="mono">(absent)</td><td class="mono">A_CORRIGER</td></tr>';
+  document.getElementById("arb-head").value = "a803b3c533ceba605bbd8795ed061e1c59bc85f9";
+  document.getElementById("arb-head-input").value = "a803b3c533ceba605bbd8795ed061e1c59bc85f9";
+}
+
+/* ====== Interactions simulées (REEL : la logique d'écran fonctionne, les données sont simulées) ====== */
+document.addEventListener("DOMContentLoaded", function(){
+  renderMissions(); renderCouts(); renderJournal(); renderCycle(); renderArbitrage();
+  identOptions(document.getElementById("f-exe"), null);
+  identOptions(document.getElementById("f-rec"), "mistral-vibe"); /* réceptionnaire par défaut = distinct */
+  var ada = document.getElementById("f-ada");
+  ada.innerHTML = ADAPTERS.concat(["session-locale"]).map(function(a){
+    return '<option>'+a+'</option>'; }).join("");
+
+  /* — création de mission — */
+  document.getElementById("btn-check").addEventListener("click", function(){
+    var m = document.getElementById("f-roles-msg");
+    m.style.display = "block";
+    m.textContent = "REFUS (simulé) — N-05·6.3 : l'exécutant et le réceptionnaire doivent être des identités distinctes ; jamais simultanément EXECUTANT et RECEPTIONNAIRE de la même mission.";
+    addJournal("REFUS", "création refusée", "exécutant = réceptionnaire (N-05·6.3)");
+  });
+  document.getElementById("btn-create").addEventListener("click", function(){
+    var exe = document.getElementById("f-exe").value;
+    var rec = document.getElementById("f-rec").value;
+    var sel = Array.prototype.slice.call(document.getElementById("f-ada").selectedOptions)
+              .map(function(o){ return o.value; });
+    var msg = document.getElementById("f-create-msg");
+    if(exe === rec){
+      msg.innerHTML = '<div class="msg ko">REFUS (simulé) — exécutant et réceptionnaire identiques : création refusée (N-05·6.3).</div>';
+      addJournal("REFUS","création refusée","exécutant = réceptionnaire"); return;
+    }
+    if(sel.length === 0){
+      msg.innerHTML = '<div class="msg ko">REFUS (simulé) — liste d\'adaptateurs vide : configuration invalide, fail-closed (N-01/N-05).</div>';
+      addJournal("REFUS","création refusée","adaptateurs vides (N-01)"); return;
+    }
+    var cap = parseInt(document.getElementById("f-cap").value,10);
+    missions.push({ide:"M-"+(missions.length+1), issue:document.getElementById("f-issue").value,
+      etat:"PLANIFIEE", exe:exe, rec:rec, budget:{appels:0, cap:isNaN(cap)?20:cap}, arret:false,
+      soumission:{revision:"(pas encore soumise)", empreinte:"—"}});
+    renderMissions(); renderCouts();
+    msg.innerHTML = '<div class="msg ok">Mission créée (simulé) — état PLANIFIEE, exécutant '+exe+', réceptionnaire '+rec+
+      ', adaptateurs : '+sel.join(", ")+', plafond '+(isNaN(cap)?20:cap)+' appels. Écriture atomique du dossier, journal ajouté.</div>';
+    addJournal("TRANSITION","mission créée","état PLANIFIEE, habilitations vérifiées");
+  });
+
+  /* — verdicts — */
+  document.getElementById("btn-verdict").addEventListener("click", function(){
+    var v = document.getElementById("cycle-verdict").value;
+    var stale = document.getElementById("cycle-stale").checked;
+    var out = document.getElementById("verdict-msg");
+    var m = missions.find(function(x){ return x.ide === missionVisee; });
+    if(stale){
+      out.innerHTML = '<div class="msg ko">REFUS (simulé, N-13) — verdict obsolète : l\'empreinte des preuves a changé ('+
+        m.soumission.empreinte.substr(0,12)+'… → nouveau hash). Le verdict ne peut être appliqué ; nouvelles preuves requises.</div>';
+      addJournal("REFUS","verdict rejeté","obsolète : empreinte changée (N-13)"); return;
+    }
+    var cible = v==="ACCEPTEE"?"ACCEPTEE":(v==="A_CORRIGER"?"EN_CORRECTION":"REFUSEE");
+    out.innerHTML = '<div class="msg '+(v==="REFUSEE"?"ko":"ok")+'">Verdict '+v+' enregistré (simulé) : DECISION_ATTENDUE → '+
+      cible+'. verdict_id obligatoire + url de référence (N-12). Réception par '+m.rec+' (distinct de l\'exécutant, 6.3).</div>';
+    addJournal("VERDICT", v, cible+" — verdict_id simulé 7146xxxxxx");
+    m.etat = cible; renderCycle(); renderMissions();
+  });
+
+  /* — arbitrage — */
+  document.getElementById("btn-arb").addEventListener("click", function(){
+    document.getElementById("arb-msg").innerHTML =
+      '<div class="msg info">Arbitrage consigné (simulé) : la copie GitHub fait foi (N-16). Champs arbitré : état → DECISION_ATTENDUE, decisions[0].verdict → A_CORRIGER. Journal de type ARBITRAGE ajouté ; signature du pilote requise en production.</div>';
+    addJournal("ARBITRAGE","github_fait_foi appliqué","2 champs arbitré(s) par pilot-local-001");
+  });
+  document.getElementById("btn-reprise").addEventListener("click", function(){
+    var att = document.getElementById("arb-head").value.trim();
+    var dec = document.getElementById("arb-head-input").value.trim();
+    var ok = att === dec && att.length === 40;
+    document.getElementById("reprise-msg").innerHTML = ok
+      ? '<div class="msg ok">Reprise EXÉCUTÉE (simulé) : head déclaré = head attendu → prochaine action exécutée (N-17).</div>'
+      : '<div class="msg ko">Refus de reprise (simulé) : head déclaré ≠ head attendu (N-17). Aucune action exécutée tant que la référence n\'est pas vérifiée.</div>';
+    addJournal(ok?"TRANSITION":"REFUS", "reprise", ok?"head vérifié, reprise exécutée":"head divergent (N-17)");
+  });
+
+  /* — arrêt / reprise — */
+  var arretOn = false;
+  document.getElementById("btn-stop").addEventListener("click", function(){
+    arretOn = true;
+    document.getElementById("btn-stop-try").disabled = false;
+    document.getElementById("btn-resume").disabled = false;
+    document.getElementById("btn-stop").disabled = true;
+    document.getElementById("arret-state").textContent = "EXECUTION (gelée)";
+    document.getElementById("arret-msg").innerHTML =
+      '<div class="msg info">Arrêt demandé (simulé) — journal <span class="mono">ARRET_PILOTE</span> consigné. L\'état machine est conservé intact ; c\'est le service qui refuse désormais chaque transition, avec motif. Le moteur, lui, reste conforme et inchangé.</div>';
+    addJournal("ARRET_PILOTE","arrêt demandé par pilot-local-001","toutes transitions refusées au service");
+  });
+  document.getElementById("btn-stop-try").addEventListener("click", function(){
+    document.getElementById("arret-msg").innerHTML =
+      '<div class="msg ko">REFUS (simulé) — transition refusée : « arrêt demandé par le pilote ». Aucune action externe, mission intacte, motif journalisé.</div>';
+    addJournal("REFUS","transition refusée","arrêt demandé par le pilote");
+  });
+  document.getElementById("btn-resume").addEventListener("click", function(){
+    arretOn = false;
+    document.getElementById("btn-stop").disabled = false;
+    document.getElementById("btn-stop-try").disabled = true;
+    document.getElementById("btn-resume").disabled = true;
+    document.getElementById("arret-state").textContent = "EXECUTION";
+    document.getElementById("arret-msg").innerHTML =
+      '<div class="msg ok">Arrêt levé (simulé) — reprise via le dispositif normatif uniquement : divergence vérifiée, arbitrage N-16 si requis, head vérifié (N-17). Cycle rétabli.</div>';
+    addJournal("TRANSITION","arrêt levé, reprise","N-16 + N-17 vérifiés");
+  });
+
+  /* — budget — */
+  document.getElementById("btn-budget").addEventListener("click", function(){
+    document.getElementById("budget-msg").innerHTML =
+      '<div class="msg ko">REFUS (simulé) — budget : plafond d\'appels atteint (20/20). La transition est bloquée AVANT tout appel d\'adaptateur, motif journalisé. Aucune action externe effectuée ; le pilote peut lever le plafond (décision tracée) ou laisser la mission en attente.</div>';
+    addJournal("BUDGET","transition bloquée","plafond d'appels atteint");
+  });
+});
+</script>
+</body>
+</html>
