@@ -1,0 +1,68 @@
+name: COORD qualification (Go multi-OS + schemas)
+on:
+  push:
+    branches: [main]
+    paths: ['coord/go/**', 'coord/schemas/**', 'coord/docs/conformite-v15/**', '.github/workflows/coord-go-ci.yml', '.github/scripts/coord-validate-schemas.py']
+  pull_request:
+    paths: ['coord/go/**', 'coord/schemas/**', 'coord/docs/conformite-v15/**', '.github/workflows/coord-go-ci.yml', '.github/scripts/coord-validate-schemas.py']
+  workflow_dispatch:
+jobs:
+  go:
+    name: Go ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: coord/go
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+      - name: go vet
+        run: go vet ./...
+      - name: go build
+        run: go build ./...
+      - name: go test
+        run: go test ./...
+      - name: Vecteurs de conformite (22 publies)
+        run: go run ./cmd/vector-runner -dir ../docs/conformite-v15
+      - name: Demonstration autonome (19 CONFORME / 0 ECART attendus)
+        run: go run ./cmd/coord-demo
+  schemas:
+    name: Schemas JSON 2020-12 (validateur externe)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Valider les schemas et les instances temoins
+        run: |
+          pip install jsonschema
+          python .github/scripts/coord-validate-schemas.py
+  python:
+    name: Batteries Python (non-regression)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: coord
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Batteries v1.0 a v1.5 + robustesse
+        run: |
+          python tests_coord06.py
+          python tests_coord06_v11.py
+          python tests_coord06_v12.py
+          python tests_coord06_v13.py
+          python tests_coord06_robustness.py
+          python tests_coord06_v14.py
+          python tests_coord06_v15.py
+      - name: Vecteurs de conformite (22 publies, moteur Python)
+        run: python docs/conformite-v15/runner_conformite.py docs/conformite-v15

@@ -374,4 +374,18 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/coord/"/>
     <lastmod>2026-11-24</lastmod>
   </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/coord/implementations/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/coord/implementations/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/coord/implementations/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/coord/implementations/"/>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://www.osnias-clearing.com/en/coord/implementations/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.osnias-clearing.com/coord/implementations/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.osnias-clearing.com/en/coord/implementations/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.osnias-clearing.com/coord/implementations/"/>
+    <lastmod>2026-11-24</lastmod>
+  </url>
 </urlset>
