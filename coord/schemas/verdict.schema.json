@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.osnias-clearing.com/coord/schemas/verdict.schema.json",
+  "version": "1.0",
+  "title": "COORD verdict payload (spec 6.4)",
+  "type": "object",
+  "required": ["verdict", "verdict_id", "verdict_url"],
+  "properties": {
+    "verdict": { "enum": ["ACCEPTEE", "A_CORRIGER", "REFUSEE"] },
+    "verdict_id": { "type": "string", "minLength": 1 },
+    "verdict_url": { "type": "string", "pattern": "^https?://" },
+    "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "empreinte_preuves": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  },
+  "additionalProperties": false
+}

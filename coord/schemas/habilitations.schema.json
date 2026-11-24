@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.osnias-clearing.com/coord/schemas/habilitations.schema.json",
+  "version": "1.0",
+  "title": "COORD habilitation configuration (fail closed, spec 4)",
+  "type": "object",
+  "required": ["adaptateurs"],
+  "properties": {
+    "adaptateurs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "roles": {
+      "type": "object",
+      "propertyNames": { "enum": ["EXECUTANT", "RECEPTIONNAIRE", "PILOTE"] },
+      "additionalProperties": {
+        "type": "array",
+        "items": { "enum": ["executer", "soumettre", "recevoir", "acker", "cloturer"] }
+      }
+    }
+  },
+  "additionalProperties": false
+}
