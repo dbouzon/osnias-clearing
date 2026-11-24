@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Copyright © 2026 Denis Bouzon
 # ORCID: https://orcid.org/0009-0007-8894-8902
+# SPDX-License-Identifier: Apache-2.0
 """Batterie M-COORD-06 v1.4 (candidate) — scénarios de l'issue #157, amendement D1..D7.
 
 Tous ces tests sont UNITAIRES ou d'INTEGRATION AVEC MOCKS (etiquette MOCK

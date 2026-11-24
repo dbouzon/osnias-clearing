@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Copyright © 2026 Denis Bouzon
 # ORCID: https://orcid.org/0009-0007-8894-8902
+# SPDX-License-Identifier: Apache-2.0
 """Batterie de non-régression M-COORD-06 v1.0 — machine a etats, idempotence, obsolescence, securite.
 Tests UNITAIRES et INTEGRATION AVEC MOCKS. Aucun test ci-dessous n'est un E2E reel :
 les E2E reels sont documentes separement (mission M-COORD-06 elle-meme, issues #124)."""

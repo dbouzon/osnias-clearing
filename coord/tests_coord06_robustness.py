@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Copyright © 2026 Denis Bouzon
 # ORCID: https://orcid.org/0009-0007-8894-8902
+# SPDX-License-Identifier: Apache-2.0
 """Suite de robustesse M-COORD-13-T3 — module canonique coord06.py (v1.1 en vigueur).
 
 Petite mission réelle non critique (essai COORD v1.3, issue #150, T3) :

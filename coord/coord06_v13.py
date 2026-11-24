@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Copyright © 2026 Denis Bouzon
 # ORCID: https://orcid.org/0009-0007-8894-8902
+# SPDX-License-Identifier: Apache-2.0
 """Coord06 v1.3 (candidate, NON ACTIVEE) — extensions du protocole M-COORD-06.
 
 Module d'extension : importe coord06 (v1.1) et coord06_v12 (v1.2 candidate)
