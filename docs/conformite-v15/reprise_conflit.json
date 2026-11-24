@@ -1,0 +1,27 @@
+{
+  "format": "coord-conformite-v1",
+  "fichier": "reprise_conflit.json",
+  "description": "Vecteurs d'arbitrage des supports de reprise divergents (H5) : en cas de divergence entre le support knowledge et le support github, github fait foi ; les champs divergents sont identifies ; deux supports concordants ne declenchent pas d'arbitrage. Les enregistrements suivent le format de reprise normalise (mission, tranche, round, issue, branche, sha_base, sha_head, curseur_relais, reserves_ouvertes, prochaine_action, ts_utc).",
+  "vecteurs": [
+    {
+      "nom": "V-REP-1 supports divergents : github fait foi, champs divergents identifies",
+      "operations": [
+        {"operation": "arbitrer",
+         "record_knowledge": {"mission": "M-TEST", "tranche": "T1", "round": 1, "issue": "#19", "branche": "mission/x", "sha_base": "1111111111111111111111111111111111111111", "sha_head": "2222222222222222222222222222222222222222", "curseur_relais": 7144000000, "reserves_ouvertes": ["R1"], "prochaine_action": "action A (knowledge)", "ts_utc": "2026-11-24T22:00:00Z"},
+         "record_github": {"mission": "M-TEST", "tranche": "T1", "round": 2, "issue": "#19", "branche": "mission/x", "sha_base": "1111111111111111111111111111111111111111", "sha_head": "2222222222222222222222222222222222222222", "curseur_relais": 7144000000, "reserves_ouvertes": ["R1"], "prochaine_action": "action B (github)", "ts_utc": "2026-11-24T22:05:00Z"},
+         "ts_utc": "2026-11-24T22:10:00Z"}
+      ],
+      "attendu": {"arbitre": "github", "champs_divergents": ["prochaine_action", "round", "ts_utc"]}
+    },
+    {
+      "nom": "V-REP-2 supports concordants : aucun arbitrage, elu = supports_concordants",
+      "operations": [
+        {"operation": "arbitrer",
+         "record_knowledge": {"mission": "M-TEST", "tranche": "T1", "round": 3, "issue": "#19", "branche": "mission/x", "sha_base": "1111111111111111111111111111111111111111", "sha_head": "2222222222222222222222222222222222222222", "curseur_relais": 7144000000, "reserves_ouvertes": [], "prochaine_action": "action C", "ts_utc": "2026-11-24T22:00:00Z"},
+         "record_github": {"mission": "M-TEST", "tranche": "T1", "round": 3, "issue": "#19", "branche": "mission/x", "sha_base": "1111111111111111111111111111111111111111", "sha_head": "2222222222222222222222222222222222222222", "curseur_relais": 7144000000, "reserves_ouvertes": [], "prochaine_action": "action C", "ts_utc": "2026-11-24T22:00:00Z"},
+         "ts_utc": "2026-11-24T22:10:00Z"}
+      ],
+      "attendu": {"arbitre": "supports_concordants", "champs_divergents": []}
+    }
+  ]
+}
