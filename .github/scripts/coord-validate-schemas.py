@@ -9,7 +9,7 @@ runner GitHub (quand l'installation de paquets est impossible dans un
 environnement local). Validation REEL avec le validateur independant
 `jsonschema` (Draft 2020-12).
 
-Sortie : un tat par famille de tests ; exit 0 si et seulement si tout est OK.
+Sortie : un état par famille de tests ; exit 0 si et seulement si tout est OK.
 """
 
 import json
@@ -54,7 +54,7 @@ for name in schema_names:
     try:
         Draft202012Validator.check_schema(schemas[name])
         check("schema valide 2020-12 : " + name, True)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         check("schema valide 2020-12 : " + name, False, e)
 
 # 2. Instances temoins : identites.
@@ -137,8 +137,10 @@ for f in vector_files:
           "; ".join(e.message for e in errs[:3]))
     fichiers_avec_vecteurs += 1
     n_vec += len(doc.get("vecteurs", []))
-check("22 vecteurs couverts", n_vec == 22, "compte=" + str(n_vec))
-check("4 fichiers de vecteurs couverts", fichiers_avec_vecteurs == 4, "compte=" + str(fichiers_avec_vecteurs))
+check("22 vecteurs couverts", n_vec == 22,
+      "compte=" + str(n_vec))
+check("4 fichiers de vecteurs couverts", fichiers_avec_vecteurs == 4,
+      "compte=" + str(fichiers_avec_vecteurs))
 
 print()
 print("BILAN SCHEMAS: OK=%d KO=%d" % (ok, ko))
