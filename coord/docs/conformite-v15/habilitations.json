@@ -1,0 +1,63 @@
+{
+  "format": "coord-conformite-v1",
+  "fichier": "habilitations.json",
+  "description": "Vecteurs de validation de la configuration des habilitations (H1) : toute defaillance est REFUSEE (fail closed). Les vecteurs positifs documentent les seules configurations valides ; les negatifs couvrent : joker, role inconnu, action inconnue, doublons d'actions ou d'adaptateurs, adaptateurs absents ou mal formes, role EXECUTANT sans aucune action (valide mais sans droit).",
+  "vecteurs": [
+    {
+      "nom": "V-HAB-1 joker interdit dans les actions",
+      "operations": [
+        {"operation": "valider_habilitations", "config": {"adaptateurs": ["a1"], "roles": {"EXECUTANT": ["executer", "*"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}}
+      ],
+      "attendu": {"habilitations": false, "contient": "joker"}
+    },
+    {
+      "nom": "V-HAB-2 role inconnu refuse",
+      "operations": [
+        {"operation": "valider_habilitations", "config": {"adaptateurs": ["a1"], "roles": {"SUPERADMIN": ["executer"]}}}
+      ],
+      "attendu": {"habilitations": false, "contient": "role inconnu"}
+    },
+    {
+      "nom": "V-HAB-3 action inconnue refusee",
+      "operations": [
+        {"operation": "valider_habilitations", "config": {"adaptateurs": ["a1"], "roles": {"EXECUTANT": ["supprimer_tout"]}}}
+      ],
+      "attendu": {"habilitations": false, "contient": "action inconnue"}
+    },
+    {
+      "nom": "V-HAB-4 actions en doublon refusees",
+      "operations": [
+        {"operation": "valider_habilitations", "config": {"adaptateurs": ["a1"], "roles": {"EXECUTANT": ["executer", "executer"]}}}
+      ],
+      "attendu": {"habilitations": false, "contient": "doublon"}
+    },
+    {
+      "nom": "V-HAB-5 adaptateurs en doublon refuses",
+      "operations": [
+        {"operation": "valider_habilitations", "config": {"adaptateurs": ["a1", "a1"], "roles": {"EXECUTANT": ["executer"]}}}
+      ],
+      "attendu": {"habilitations": false, "contient": "doublon"}
+    },
+    {
+      "nom": "V-HAB-6 adaptateurs absents : configuration refusee",
+      "operations": [
+        {"operation": "valider_habilitations", "config": {"roles": {"EXECUTANT": ["executer"]}}}
+      ],
+      "attendu": {"habilitations": false, "contient": "adaptateurs"}
+    },
+    {
+      "nom": "V-HAB-7 configuration valide minimale : EXECUTANT sans action (valide, aucun droit)",
+      "operations": [
+        {"operation": "valider_habilitations", "config": {"adaptateurs": ["a1"], "roles": {"EXECUTANT": []}}}
+      ],
+      "attendu": {"habilitations": true}
+    },
+    {
+      "nom": "V-HAB-8 configuration complete valide",
+      "operations": [
+        {"operation": "valider_habilitations", "config": {"adaptateurs": ["a1", "a2"], "roles": {"EXECUTANT": ["executer", "soumettre", "acker"], "RECEPTIONNAIRE": ["recevoir"], "PILOTE": ["cloturer"]}}}
+      ],
+      "attendu": {"habilitations": true}
+    }
+  ]
+}
