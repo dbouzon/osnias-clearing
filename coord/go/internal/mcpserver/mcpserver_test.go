@@ -12,6 +12,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -277,7 +278,14 @@ func TestJetonFichier_Permissions(t *testing.T) {
 	if err := os.WriteFile(ouvert, []byte(jetonLecture), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := mcpserver.ChargerJeton(ouvert); err == nil {
+	if runtime.GOOS == "windows" {
+		// Sous Windows les permissions POSIX ne s'appliquent pas (contrôle
+		// sans objet, voir ChargerJeton) : comportement documenté attendu,
+		// le fichier est chargé sans erreur.
+		if _, err := mcpserver.ChargerJeton(ouvert); err != nil {
+			t.Fatalf("windows : chargement attendu (permissions sans objet), obtenu %v", err)
+		}
+	} else if _, err := mcpserver.ChargerJeton(ouvert); err == nil {
 		t.Fatal("permissions 0644 : refus attendu (fail closed 0600)")
 	} else if !strings.Contains(err.Error(), "0600") {
 		t.Fatalf("message de diagnostic sans chmod : %s", err.Error())
