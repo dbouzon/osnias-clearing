@@ -54,7 +54,7 @@ jobs:
         with:
           go-version: '1.27'
       - name: go test -race (transactions et invariants de concurrence)
-        run: go test -race -count=2 ./internal/pilot/ ./internal/missions/ ./internal/connecteurs/ ./internal/mcpserver/
+        run: go test -race -count=2 ./internal/pilot/ ./internal/missions/ ./internal/connecteurs/ ./internal/mcpserver/ ./internal/a2a/
   schemas:
     name: Schemas JSON 2020-12 (validateur externe)
     runs-on: ubuntu-latest
