@@ -135,20 +135,30 @@ func (s *Service) cheminJournal(issue string) string {
 }
 
 // journalService journalise au niveau du service (auth, démarrage) : fichier
-// distinct des journaux de mission.
-func (s *Service) journalService(e entreeJournal) {
+// distinct des journaux de mission. L'erreur n'est JAMAIS masquée (C5) :
+// elle est tracée sur stderr ET retournée à l'appelant.
+func (s *Service) journalService(e entreeJournal) error {
 	if e.Trace == "" {
 		e.Trace = s.trace()
 	}
-	_ = journalAjouter(filepath.Join(s.ref.Racine(), nomJournalService), e)
+	if err := journalAjouter(filepath.Join(s.ref.Racine(), nomJournalService), e); err != nil {
+		fmt.Fprintln(os.Stderr, "journal de service indisponible : "+err.Error())
+		return err
+	}
+	return nil
 }
 
-func (s *Service) journalMission(issue string, e entreeJournal) {
+// journalMission journalise dans le journal de la mission. L'erreur est
+// retournée à l'appelant, jamais ignorée (C5) : toute écriture de journal
+// manquante d'une opération est EXPLICITE (réponse typée ERREUR_JOURNAL).
+// Ne prend AUCUN verrou : doit être appelée DANS une transaction (verrou
+// de mission déjà détenu) ou hors opération d'écriture.
+func (s *Service) journalMission(issue string, e entreeJournal) error {
 	if e.Trace == "" {
 		e.Trace = s.trace()
 	}
 	e.Issue = issue
-	_ = journalAjouter(s.cheminJournal(issue), e)
+	return journalAjouter(s.cheminJournal(issue), e)
 }
 
 func journalAjouter(chemin string, entree any) error {
@@ -189,16 +199,59 @@ type erreurAPI struct {
 	Motif string `json:"motif"`
 }
 
-// auth verifie le token local (S1/S2). Returns 0 on success.
+// erreurService : refus typé (code HTTP + type + motif) qu'une transaction
+// fait remonter AU gestionnaire de réponse ; l'état n'est PAS sauvegardé.
+type erreurService struct {
+	code  int
+	typ   string
+	motif string
+}
+
+func (e *erreurService) Error() string { return e.typ + " : " + e.motif }
+
+// erreurJournal transforme un échec d'écriture de journal en refus typé
+// ERREUR_JOURNAL, explicite et jamais masqué (C5).
+func erreurJournal(contexte string, err error) *erreurService {
+	return &erreurService{http.StatusInternalServerError, "ERREUR_JOURNAL",
+		contexte + " : journal indisponible : " + err.Error()}
+}
+
+// repondreErreur expose l'erreur d'une transaction : refus typé, mission
+// inconnue, ou défaut interne EXPLICITE (jamais masqué).
+func (s *Service) repondreErreurTransaction(w http.ResponseWriter, err error) {
+	var es *erreurService
+	if errors.As(err, &es) {
+		s.refuser(w, es.code, es.typ, es.motif)
+		return
+	}
+	if errors.Is(err, missions.ErrIntrouvable) {
+		s.refuser(w, http.StatusNotFound, "MISSION_INCONNUE", err.Error())
+		return
+	}
+	s.refuser(w, http.StatusInternalServerError, "INTERNE", err.Error())
+}
+
+// auth verifie le token local (S1/S2). Returns 0 on success. Un refus
+// d'authentification reste TOUJOURS un 401 (décision de sécurité prioritaire)
+// mais une défaillance du journal de service est signalée dans le motif,
+// jamais masquée (C5).
 func (s *Service) auth(r *http.Request) (int, string) {
 	t := r.Header.Get("X-Coord-Pilot-Token")
 	if t == "" {
-		s.journalService(entreeJournal{Type: "REFUS_AUTH", Detail: "token absent"})
-		return http.StatusUnauthorized, "token d'authentification locale absent (401)"
+		err := s.journalService(entreeJournal{Type: "REFUS_AUTH", Detail: "token absent"})
+		motif := "token d'authentification locale absent (401)"
+		if err != nil {
+			motif += " ; journal de service indisponible : " + err.Error()
+		}
+		return http.StatusUnauthorized, motif
 	}
 	if t != s.token {
-		s.journalService(entreeJournal{Type: "REFUS_AUTH", Detail: "token invalide ou perime"})
-		return http.StatusUnauthorized, "token d'authentification locale invalide ou perime (401)"
+		err := s.journalService(entreeJournal{Type: "REFUS_AUTH", Detail: "token invalide ou perime"})
+		motif := "token d'authentification locale invalide ou perime (401)"
+		if err != nil {
+			motif += " ; journal de service indisponible : " + err.Error()
+		}
+		return http.StatusUnauthorized, motif
 	}
 	return 0, ""
 }
@@ -290,11 +343,12 @@ func (s *Service) listerMissions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	out := []map[string]any{}
-	for _, issue := range s.ref.Lister() {
-		if enr, err := s.ref.Obtenir(issue); err == nil {
+	for _, dir := range s.ref.Lister() {
+		if enr, err := s.ref.ParDossier(dir); err == nil {
 			out = append(out, map[string]any{
 				"issue": enr.Issue, "etat": enr.Mission.State,
 				"arret": enr.Arret.Actif, "budget": enr.Budget.ResumeCompteurs(),
+				"reprise_attendue": enr.RepriseAttendue,
 			})
 		}
 	}
@@ -360,106 +414,156 @@ func (s *Service) transition(w http.ResponseWriter, r *http.Request) {
 			"corps de requête illisible : "+err.Error())
 		return
 	}
-	enr, err := s.ref.Obtenir(issue)
-	if err != nil {
-		s.refuser(w, http.StatusNotFound, "MISSION_INCONNUE", "mission inconnue : "+issue)
-		return
-	}
 
-	// S4 : rôle résolu côté serveur, jamais depuis le corps (RoleDeclare ignoré).
-	id, ok := resoudreActeur(enr, c.Acteur)
-	if !ok {
-		s.journalMission(issue, entreeJournal{Type: "REFUS_ACTEUR",
-			Detail: "acteur " + c.Acteur + " inconnu ou réservé à la session locale"})
-		s.refuser(w, http.StatusForbidden, "ACTEUR_REFUSE",
-			"acteur non habilité : "+c.Acteur+
-				" (le rôle PILOTE n'est dérivable que de la session locale, S4)")
-		return
-	}
-
-	// R4 : arrêt pilote intercepté au service, motif explicite, état intact.
-	if arret.Actif(&enr.Arret) {
-		motifRefus := "transition refusée : arrêt demandé par le pilote (" + enr.Arret.Motif + ")"
-		s.journalMission(issue, entreeJournal{Type: arret.TypeRefusArret,
-			Detail: "transition " + c.Cible + " refusée (" + enr.Arret.Motif + ")"})
-		_ = arret.JournalRefus("transition "+c.Cible+" refusée : "+motifRefus,
-			id.ID, s.cheminJournal(issue))
-		s.refuser(w, http.StatusConflict, "ARRET_PILOTE_ACTIF", motifRefus)
-		return
-	}
-
-	donnees := map[string]string{}
-	for k, v := range c.Donnees {
-		donnees[k] = fmt.Sprint(v)
-	}
-
-	// R3 : budget vérifié AVANT tout appel d'adaptateur.
-	action, avecAppel := declencheAppel(c.Cible)
 	var resultats []adaptateurs.Resultat
-	if avecAppel {
-		estimation := adaptateurs.JetonsEstimes(action)
-		if okB, motifB := enr.Budget.VerifierAvantAppel(id.QualifiedBy, estimation); !okB {
-			s.journalMission(issue, entreeJournal{Type: "REFUS_BUDGET", Detail: motifB})
-			s.refuser(w, http.StatusConflict, "BUDGET_DEPASSE", motifB)
-			return
-		}
-		reg, err := adaptateurs.Registre([]string{id.QualifiedBy})
-		if err != nil {
-			s.refuser(w, http.StatusInternalServerError, "APPEL_ADAPTATEUR",
-				"registre indisponible : "+err.Error())
-			return
-		}
-		var res adaptateurs.Resultat
-		if action == spec.ActionExecuter {
-			mandat := donnees["mandat"]
-			if mandat == "" {
-				mandat = "mandat de " + enr.Issue
-			}
-			res, err = reg[id.QualifiedBy].Executer(mandat)
-		} else {
-			livrable := donnees["livrable"]
-			if livrable == "" {
-				livrable = "livrable de " + enr.Issue
-			}
-			res, err = reg[id.QualifiedBy].Soumettre(livrable)
-		}
-		if err != nil {
-			s.refuser(w, http.StatusConflict, "APPEL_ADAPTATEUR", "appel simulé refusé : "+err.Error())
-			return
-		}
-		resultats = append(resultats, res)
-	}
+	var acteurID, empreinteFinale string
+	errTx := s.ref.Transaction(issue, func(ctx *missions.ContexteMission) error {
+		enr := ctx.Enr
 
-	// Transition normative UNIQUEMENT via le moteur (aucune duplication, R1).
-	okT, motif := enr.Mission.Transition(c.Cible, id, enr.Adaptateurs, enr.Roles, donnees)
-	if !okT {
-		detail := "transition " + c.Cible + " refusée par le moteur : " + motif
+		// S4 : rôle résolu côté serveur, jamais depuis le corps (RoleDeclare ignoré).
+		id, ok := resoudreActeur(enr, c.Acteur)
+		if !ok {
+			detail := "acteur " + c.Acteur + " inconnu ou réservé à la session locale"
+			if err := s.journalMission(issue, entreeJournal{Type: "REFUS_ACTEUR", Detail: detail}); err != nil {
+				return erreurJournal("refus d'acteur", err)
+			}
+			return &erreurService{http.StatusForbidden, "ACTEUR_REFUSE",
+				"acteur non habilité : " + c.Acteur +
+					" (le rôle PILOTE n'est dérivable que de la session locale, S4)"}
+		}
+		acteurID = id.ID
+
+		// R4 : arrêt pilote intercepté au service, sous le verrou de mission :
+		// une transition concurrente ne peut écraser l'arrêt du pilote (C3).
+		if arret.Actif(&enr.Arret) {
+			motifRefus := "transition refusée : arrêt demandé par le pilote (" + enr.Arret.Motif + ")"
+			if err := s.journalMission(issue, entreeJournal{Type: arret.TypeRefusArret,
+				Detail: "transition " + c.Cible + " refusée (" + enr.Arret.Motif + ")"}); err != nil {
+				return erreurJournal("refus d'arrêt", err)
+			}
+			if err := arret.JournalRefus("transition "+c.Cible+" refusée : "+motifRefus,
+				id.ID, s.cheminJournal(issue)); err != nil {
+				return erreurJournal("refus d'arrêt", err)
+			}
+			return &erreurService{http.StatusConflict, "ARRET_PILOTE_ACTIF", motifRefus}
+		}
+
+		// C4 : après la levée d'un arrêt, la mission reste bloquée jusqu'à la
+		// reprise NORMATIVE (N-16/N-17) : la levée seule ne reprend rien.
+		if enr.RepriseAttendue {
+			motif := "transition refusée : reprise normative requise après levée d'arrêt " +
+				"(N-16/N-17, POST /api/mission/" + issue + "/reprise)"
+			if err := s.journalMission(issue, entreeJournal{Type: "REFUS_REPRISE_ATTENDUE",
+				Detail: "transition " + c.Cible + " refusée (reprise normative attendue)"}); err != nil {
+				return erreurJournal("refus reprise attendue", err)
+			}
+			return &erreurService{http.StatusConflict, "REPRISE_ATTENDUE", motif}
+		}
+
+		donnees := map[string]string{}
+		for k, v := range c.Donnees {
+			donnees[k] = fmt.Sprint(v)
+		}
+
+		action, avecAppel := declencheAppel(c.Cible)
+
+		// C2 : VALIDATION NORMATIVE AVANT TOUT APPEL, sur une copie
+		// indépendante de l'enregistrement (l'original n'est pas muté) :
+		// une transition interdite ne consomme NI appel NI budget.
+		copie, err := missions.Copie(enr)
+		if err != nil {
+			return &erreurService{http.StatusInternalServerError, "INTERNE",
+				"copie de validation impossible : " + err.Error()}
+		}
+		if okT, motifT := copie.Mission.Transition(c.Cible, id, enr.Adaptateurs, enr.Roles, donnees); !okT {
+			detail := "transition " + c.Cible + " refusée par le moteur : " + motifT
+			if err := s.journalMission(issue, entreeJournal{Type: "REFUS_TRANSITION", Detail: detail}); err != nil {
+				return erreurJournal("refus de transition", err)
+			}
+			return &erreurService{http.StatusConflict, "TRANSITION_REFUSEE", motifT}
+		}
+
+		if avecAppel {
+			// R3 : budget vérifié AVANT tout appel d'adaptateur.
+			estimation := adaptateurs.JetonsEstimes(action)
+			if okB, motifB := enr.Budget.VerifierAvantAppel(id.QualifiedBy, estimation); !okB {
+				if err := s.journalMission(issue, entreeJournal{Type: "REFUS_BUDGET", Detail: motifB}); err != nil {
+					return erreurJournal("refus budgétaire", err)
+				}
+				return &erreurService{http.StatusConflict, "BUDGET_DEPASSE", motifB}
+			}
+			reg, err := adaptateurs.Registre([]string{id.QualifiedBy})
+			if err != nil {
+				return &erreurService{http.StatusInternalServerError, "APPEL_ADAPTATEUR",
+					"registre indisponible : " + err.Error()}
+			}
+			var res adaptateurs.Resultat
+			if action == spec.ActionExecuter {
+				mandat := donnees["mandat"]
+				if mandat == "" {
+					mandat = "mandat de " + enr.Issue
+				}
+				res, err = reg[id.QualifiedBy].Executer(mandat)
+			} else {
+				livrable := donnees["livrable"]
+				if livrable == "" {
+					livrable = "livrable de " + enr.Issue
+				}
+				res, err = reg[id.QualifiedBy].Soumettre(livrable)
+			}
+			if err != nil {
+				return &erreurService{http.StatusConflict, "APPEL_ADAPTATEUR",
+					"appel simulé refusé : " + err.Error()}
+			}
+			resultats = append(resultats, res)
+		}
+
+		// Transition réelle : elle ne peut diverger de la validation effectuée
+		// sur la copie du MÊME état verrouillé (défense en profondeur ; une
+		// divergence ici est un défaut interne explicite, jamais silencieux).
+		if ok2, motif2 := enr.Mission.Transition(c.Cible, id, enr.Adaptateurs, enr.Roles, donnees); !ok2 {
+			return &erreurService{http.StatusInternalServerError, "INTERNE",
+				"validation et application divergent : " + motif2}
+		}
+
 		for _, res := range resultats {
 			enr.Budget.Consommer(id.QualifiedBy, res.Jetons)
-			s.journalMission(issue, entreeJournal{Type: "APPEL_SIMULE",
-				Detail: res.Sortie + " (transition ensuite refusée, jetons consommés journalisés)"})
 		}
-		s.journalMission(issue, entreeJournal{Type: "REFUS_TRANSITION", Detail: detail})
-		_ = s.ref.Sauver(enr)
-		s.refuser(w, http.StatusConflict, "TRANSITION_REFUSEE", motif)
+		fk, err := missions.Empreinte(enr)
+		if err != nil {
+			return &erreurService{http.StatusInternalServerError, "INTERNE",
+				"empreinte impossible : " + err.Error()}
+		}
+		empreinteFinale = fk
+		return nil
+	}, func(ctx *missions.ContexteMission) error {
+		// Journalisation post-persistance (état déjà enregistré) : une
+		// défaillance du journal est EXPLICITE (C5), elle n'annule pas la
+		// sauvegarde (le budget consommé reste la référence fail-closed).
+		for _, res := range resultats {
+			if err := s.journalMission(issue, entreeJournal{Type: "APPEL_SIMULE", Detail: res.Sortie}); err != nil {
+				return erreurJournal("état enregistré, journalisation de l'appel", err)
+			}
+		}
+		detail := c.Cible + " par " + acteurID + " ; empreinte " + empreinteFinale
+		if err := s.journalMission(issue, entreeJournal{Type: "TRANSITION", Detail: detail}); err != nil {
+			return erreurJournal("état enregistré, journalisation de la transition", err)
+		}
+		return nil
+	})
+	if errTx != nil {
+		s.repondreErreurTransaction(w, errTx)
 		return
 	}
 
-	for _, res := range resultats {
-		enr.Budget.Consommer(id.QualifiedBy, res.Jetons)
-		s.journalMission(issue, entreeJournal{Type: "APPEL_SIMULE", Detail: res.Sortie})
-	}
-
-	if err := s.ref.Sauver(enr); err != nil {
-		s.refuser(w, http.StatusInternalServerError, "PERSISTANCE",
-			"écriture atomique impossible : "+err.Error())
+	ent, err := s.ref.Obtenir(issue)
+	if err != nil {
+		s.refuser(w, http.StatusInternalServerError, "INTERNE",
+			"relecture impossible : "+err.Error())
 		return
 	}
-	fk, _ := missions.Empreinte(enr)
-	s.journalMission(issue, entreeJournal{Type: "TRANSITION",
-		Detail: c.Cible + " par " + id.ID + " ; empreinte " + fk})
-	rep := map[string]any{"etat": enr.Mission.State, "empreinte": fk,
-		"budget": enr.Budget.ResumeCompteurs()}
+	rep := map[string]any{"etat": ent.Mission.State, "empreinte": empreinteFinale,
+		"budget": ent.Budget.ResumeCompteurs()}
 	if len(resultats) == 1 {
 		rep["appel_adaptateur"] = map[string]any{
 			"simule": true, "jetons": resultats[0].Jetons, "sortie": resultats[0].Sortie}
@@ -479,20 +583,27 @@ func (s *Service) arretDemander(w http.ResponseWriter, r *http.Request) {
 			"corps de requête illisible : "+err.Error())
 		return
 	}
-	enr, err := s.ref.Obtenir(issue)
-	if err != nil {
-		s.refuser(w, http.StatusNotFound, "MISSION_INCONNUE", "mission inconnue : "+issue)
+	// C1/C3 : transaction complète sous le verrou de mission ; si le journal
+	// échoue, l'arrêt N'est PAS pris (fail closed, réponse explicite, C5).
+	errTx := s.ref.Transaction(issue, func(ctx *missions.ContexteMission) error {
+		enr := ctx.Enr
+		if err := arret.Demander(&enr.Arret, c.Motif, ActeurPiloteLocal, s.cheminJournal(issue)); err != nil {
+			return erreurJournal("arrêt non enregistré", err)
+		}
+		enr.RepriseAttendue = false
+		return nil
+	}, func(ctx *missions.ContexteMission) error {
+		if err := s.journalMission(issue, entreeJournal{Type: "ARRET",
+			Detail: "arrêt demandé : " + c.Motif}); err != nil {
+			return erreurJournal("arrêt enregistré, journalisation", err)
+		}
+		return nil
+	})
+	if errTx != nil {
+		s.repondreErreurTransaction(w, errTx)
 		return
 	}
-	if err := arret.Demander(&enr.Arret, c.Motif, ActeurPiloteLocal, s.cheminJournal(issue)); err != nil {
-		s.refuser(w, http.StatusInternalServerError, "ARRET", err.Error())
-		return
-	}
-	if err := s.ref.Sauver(enr); err != nil {
-		s.refuser(w, http.StatusInternalServerError, "PERSISTANCE", err.Error())
-		return
-	}
-	reponseJSON(w, http.StatusOK, map[string]any{"arret": enr.Arret.Actif, "motif": c.Motif})
+	reponseJSON(w, http.StatusOK, map[string]any{"arret": true, "motif": c.Motif})
 }
 
 func (s *Service) arretLever(w http.ResponseWriter, r *http.Request) {
@@ -507,22 +618,36 @@ func (s *Service) arretLever(w http.ResponseWriter, r *http.Request) {
 			"corps de requête illisible : "+err.Error())
 		return
 	}
-	enr, err := s.ref.Obtenir(issue)
-	if err != nil {
-		s.refuser(w, http.StatusNotFound, "MISSION_INCONNUE", "mission inconnue : "+issue)
+	// C4 : lever l'arrêt NE reprend PAS la mission : l'indicateur
+	// RepriseAttendue exige la reprise NORMATIVE (N-16/N-17) avant toute
+	// transition ultérieure. Transaction complète (C1/C3), journaux
+	// explicites (C5).
+	errTx := s.ref.Transaction(issue, func(ctx *missions.ContexteMission) error {
+		enr := ctx.Enr
+		if !arret.Actif(&enr.Arret) {
+			return &erreurService{http.StatusConflict, "ARRET_NON_ACTIF",
+				"arret pilote non actif : levee impossible (fail closed)"}
+		}
+		if err := arret.Lever(&enr.Arret, c.Motif, ActeurPiloteLocal, s.cheminJournal(issue)); err != nil {
+			return erreurJournal("levée non enregistrée", err)
+		}
+		enr.RepriseAttendue = true
+		return nil
+	}, func(ctx *missions.ContexteMission) error {
+		if err := s.journalMission(issue, entreeJournal{Type: "LEVEE_ARRET",
+			Detail: "levée : reprise exclusive par le dispositif normatif N-16/N-17 " +
+				"(reprise_attendue)"}); err != nil {
+			return erreurJournal("levée enregistrée, journalisation", err)
+		}
+		return nil
+	})
+	if errTx != nil {
+		s.repondreErreurTransaction(w, errTx)
 		return
 	}
-	if err := arret.Lever(&enr.Arret, c.Motif, ActeurPiloteLocal, s.cheminJournal(issue)); err != nil {
-		s.refuser(w, http.StatusConflict, "ARRET_NON_ACTIF", err.Error())
-		return
-	}
-	if err := s.ref.Sauver(enr); err != nil {
-		s.refuser(w, http.StatusInternalServerError, "PERSISTANCE", err.Error())
-		return
-	}
-	s.journalMission(issue, entreeJournal{Type: "LEVEE_ARRET",
-		Detail: "reprise exclusive par le dispositif normatif N-16/N-17"})
-	reponseJSON(w, http.StatusOK, map[string]any{"arret": enr.Arret.Actif})
+	reponseJSON(w, http.StatusOK, map[string]any{"arret": false,
+		"reprise_attendue": true,
+		"prochaine_etape":  "POST /api/mission/" + issue + "/reprise (N-16/N-17)"})
 }
 
 // avanceeAttendue derives the next expected action from the state (input of
@@ -555,49 +680,72 @@ func (s *Service) reprise(w http.ResponseWriter, r *http.Request) {
 			"corps de requête illisible : "+err.Error())
 		return
 	}
-	enr, err := s.ref.Obtenir(issue)
-	if err != nil {
-		s.refuser(w, http.StatusNotFound, "MISSION_INCONNUE", "mission inconnue : "+issue)
-		return
-	}
-	if arret.Actif(&enr.Arret) {
-		s.refuser(w, http.StatusConflict, "ARRET_PILOTE_ACTIF",
-			"reprise refusée : arrêt demandé par le pilote ; lever l'arrêt d'abord")
-		return
-	}
-	if c.ShaHeadAttendu == "" {
-		s.refuser(w, http.StatusBadRequest, "SHA_HEAD_MANQUANT",
-			"sha_head attendu obligatoire (N-17, fail closed)")
-		return
-	}
+	// C1 : transaction sous verrou (arbitrage + reprise + déverrouillage). La
+	// reprise NORMATIVE est la SEULE voie qui débloque une mission après
+	// levée d'arrêt (C4) : elle seule efface RepriseAttendue.
+	var action, elu, regle string
+	var champs []string
+	errTx := s.ref.Transaction(issue, func(ctx *missions.ContexteMission) error {
+		enr := ctx.Enr
+		if arret.Actif(&enr.Arret) {
+			return &erreurService{http.StatusConflict, "ARRET_PILOTE_ACTIF",
+				"reprise refusée : arrêt demandé par le pilote ; lever l'arrêt d'abord"}
+		}
+		if c.ShaHeadAttendu == "" {
+			return &erreurService{http.StatusBadRequest, "SHA_HEAD_MANQUANT",
+				"sha_head attendu obligatoire (N-17, fail closed)"}
+		}
 
-	// Enregistrement GitHub (fait foi) : empreinte courante du référentiel.
-	fk, _ := missions.Empreinte(enr)
-	recordGithub := map[string]any{
-		"sha_head":         fk,
-		"prochaine_action": avanceeAttendue(enr.Mission.State),
-		"etat":             enr.Mission.State,
-	}
-	champs := resume.ChampsDivergents(c.CopieKnowledge, recordGithub)
-	s.journalMission(issue, entreeJournal{Type: "DIVERGENCE", Detail: fmt.Sprint(champs)})
+		// Enregistrement GitHub (fait foi) : empreinte courante du référentiel.
+		fk, err := missions.Empreinte(enr)
+		if err != nil {
+			return &erreurService{http.StatusInternalServerError, "INTERNE",
+				"empreinte impossible : " + err.Error()}
+		}
+		recordGithub := map[string]any{
+			"sha_head":         fk,
+			"prochaine_action": avanceeAttendue(enr.Mission.State),
+			"etat":             enr.Mission.State,
+		}
+		champs = resume.ChampsDivergents(c.CopieKnowledge, recordGithub)
 
-	ts := time.Now().UTC().Format(time.RFC3339)
-	entree := resume.Arbitrer(c.CopieKnowledge, recordGithub, ts, ActeurPiloteLocal)
-	s.journalMission(issue, entreeJournal{Type: "ARBITRATION",
-		Detail: "elu=" + entree.Elu + " regle=" + entree.Regle +
-			" knowledge=" + fmt.Sprint(entree.Empreintes["knowledge"]) +
-			" github=" + fmt.Sprint(entree.Empreintes["github"])})
+		ts := time.Now().UTC().Format(time.RFC3339)
+		entree := resume.Arbitrer(c.CopieKnowledge, recordGithub, ts, ActeurPiloteLocal)
+		elu = entree.Elu
+		regle = entree.Regle
 
-	action, motifs := resume.Reprise(entree, c.ShaHeadAttendu)
-	if len(motifs) > 0 {
-		s.journalMission(issue, entreeJournal{Type: "REFUS_REPRISE",
-			Detail: strings.Join(motifs, " ; ")})
-		s.refuser(w, http.StatusConflict, "REPRISE_REFUSEE", strings.Join(motifs, " ; "))
+		actionArbitree, motifs := resume.Reprise(entree, c.ShaHeadAttendu)
+		if len(motifs) > 0 {
+			if err := s.journalMission(issue, entreeJournal{Type: "REFUS_REPRISE",
+				Detail: strings.Join(motifs, " ; ")}); err != nil {
+				return erreurJournal("refus de reprise", err)
+			}
+			return &erreurService{http.StatusConflict, "REPRISE_REFUSEE", strings.Join(motifs, " ; ")}
+		}
+		action = actionArbitree
+		enr.RepriseAttendue = false
+		return nil
+	}, func(ctx *missions.ContexteMission) error {
+		// Journalisation post-persistance : erreur explicite (C5), jamais masquée.
+		if err := s.journalMission(issue, entreeJournal{Type: "DIVERGENCE", Detail: fmt.Sprint(champs)}); err != nil {
+			return erreurJournal("reprise enregistrée, journalisation divergence", err)
+		}
+		if err := s.journalMission(issue, entreeJournal{Type: "ARBITRATION",
+			Detail: "elu=" + elu + " regle=" + regle}); err != nil {
+			return erreurJournal("reprise enregistrée, journalisation arbitrage", err)
+		}
+		if err := s.journalMission(issue, entreeJournal{Type: "REPRISE",
+			Detail: "prochaine action : " + action}); err != nil {
+			return erreurJournal("reprise enregistrée, journalisation", err)
+		}
+		return nil
+	})
+	if errTx != nil {
+		s.repondreErreurTransaction(w, errTx)
 		return
 	}
-	s.journalMission(issue, entreeJournal{Type: "REPRISE", Detail: "prochaine action : " + action})
 	reponseJSON(w, http.StatusOK, map[string]any{
-		"elu": entree.Elu, "regle": entree.Regle, "champs_divergents": champs,
-		"prochaine_action": action,
+		"elu": elu, "regle": regle, "champs_divergents": champs,
+		"prochaine_action": action, "reprise_attendue": false,
 	})
 }

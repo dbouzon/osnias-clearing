@@ -51,7 +51,8 @@ func TestCreationEtRelecture(t *testing.T) {
 		t.Fatal("relecture incoherente")
 	}
 	// Le dossier mission.json est bien ecrit (shard = un dossier par mission).
-	if _, err := os.Stat(filepath.Join(ref.Racine(), "-mvp-01", "mission.json")); err != nil {
+	// Chemin encodé par nomDir (injectif, C6) : '#' (0x23) devient '~23'.
+	if _, err := os.Stat(filepath.Join(ref.Racine(), "~23mvp-01", "mission.json")); err != nil {
 		t.Fatalf("enregistrement atomique absent : %v", err)
 	}
 }
@@ -117,7 +118,8 @@ func TestEstConformeFailClosedAuDemarrage(t *testing.T) {
 		t.Fatalf("referentiel sain refuse au demarrage : %v", err)
 	}
 	// Sabotage direct d'un enregistrement : le demarrage DOIT refuser (R2/S5).
-	chemin := filepath.Join(racine, "-ok", "mission.json")
+	// Chemin encodé par nomDir (injectif, C6) : '#' (0x23) devient '~23'.
+	chemin := filepath.Join(racine, "~23ok", "mission.json")
 	_ = os.WriteFile(chemin, []byte(`{"Issue":"#ok","Roles":{}}`), 0o644)
 	ref2, err := Ouvrir(racine)
 	if err != nil {

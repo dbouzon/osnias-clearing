@@ -336,16 +336,33 @@ func TestR4ArretPiloteEffectif(t *testing.T) {
 		t.Fatal("état machine DOIT rester intact pendant l'arrêt")
 	}
 
-	// Levée : le cycle reprend.
+	// Levée : le cycle reste bloqué jusqu'à la reprise NORMATIVE (C4).
 	code, rep = e.appel("POST", "/api/mission/r4/arret/lever", tokenTest,
 		map[string]any{"motif": "reprise après vérification"})
 	if code != http.StatusOK || rep["arret"] != false {
 		t.Fatal("levée d'arrêt attendue")
 	}
+	code, rep = e.transition("r4", "DECISION_ATTENDUE", "exec-sim",
+		map[string]any{"revision": rev40, "empreinte_preuves": emp64})
+	if code != http.StatusConflict || rep["type"] != "REPRISE_ATTENDUE" {
+		t.Fatalf("après levée, une reprise normative DOIT être exigée, obtenu %d %v", code, rep)
+	}
+	_, detail := e.appel("GET", "/api/mission/r4", tokenTest, nil)
+	code, _ = e.appel("POST", "/api/mission/r4/reprise", tokenTest, map[string]any{
+		"copie_knowledge": map[string]any{
+			"sha_head":         detail["empreinte"],
+			"prochaine_action": "soumettre",
+			"etat":             "EXECUTION",
+		},
+		"sha_head_attendu": detail["empreinte"],
+	})
+	if code != http.StatusOK {
+		t.Fatal("reprise normative attendue en 200")
+	}
 	code, _ = e.transition("r4", "DECISION_ATTENDUE", "exec-sim",
 		map[string]any{"revision": rev40, "empreinte_preuves": emp64})
 	if code != http.StatusOK {
-		t.Fatal("après levée, la transition DOIT passer")
+		t.Fatal("après la reprise normative, la transition DOIT passer")
 	}
 }
 

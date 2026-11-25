@@ -33,15 +33,18 @@ import (
 // Enregistrement: the complete persisted record of one mission: the
 // normative state machine instance, its habilitation configuration, its
 // identities (EXECUTANT and RECEPTIONNAIRE, always distinct, N-05), its
-// budget, and its stop state.
+// budget, its stop state, and the reprise-expected flag (correction C4:
+// after a stop is lifted, the mission stays blocked until the normative
+// resume device N-16/N-17 has been executed).
 type Enregistrement struct {
-	Issue       string              `json:"Issue"`
-	Mission     engine.Mission      `json:"Mission"`
-	Adaptateurs []string            `json:"Adaptateurs"`
-	Roles       map[string][]string `json:"Roles"`
-	Identites   []policy.Identity   `json:"Identites"`
-	Budget      budget.Budget       `json:"Budget"`
-	Arret       arret.Etat          `json:"Arret"`
+	Issue            string              `json:"Issue"`
+	Mission          engine.Mission      `json:"Mission"`
+	Adaptateurs      []string            `json:"Adaptateurs"`
+	Roles            map[string][]string `json:"Roles"`
+	Identites        []policy.Identity   `json:"Identites"`
+	Budget           budget.Budget       `json:"Budget"`
+	Arret            arret.Etat          `json:"Arret"`
+	RepriseAttendue  bool                `json:"RepriseAttendue"`
 }
 
 // JournalPath names the mission journal file of an issue.
@@ -49,14 +52,24 @@ func JournalPath(racine, issue string) string {
 	return filepath.Join(racine, nomDir(issue), "journal.jsonl")
 }
 
+// nomDir mappe un identifiant de mission vers un nom de dossier. Le codage
+// est INJECTIF octet par octet (correction C6, réception complémentaire
+// issue #27) : les octets sûrs [a-zA-Z0-9_-] sont conservés, tout autre
+// octet est encodé « ~xx » en hexadécimal. '~' (0x7E) n'appartenant pas au
+// jeu conservé, chaque séquence d'échappement est non ambiguë : deux
+// identifiants distincts ne peuvent JAMAIS partager un dossier.
 func nomDir(issue string) string {
-	b := strings.Builder{}
-	for _, r := range issue {
+	var b strings.Builder
+	for i := 0; i < len(issue); i++ {
+		c := issue[i]
 		switch {
-		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9', r == '-', r == '_':
-			b.WriteRune(r)
+		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z', c >= '0' && c <= '9', c == '-', c == '_':
+			b.WriteByte(c)
 		default:
-			b.WriteByte('-')
+			const hexa = "0123456789abcdef"
+			b.WriteByte('~')
+			b.WriteByte(hexa[c>>4])
+			b.WriteByte(hexa[c&0x0f])
 		}
 	}
 	out := b.String()
@@ -242,7 +255,67 @@ func Empreinte(enr *Enregistrement) (string, error) {
 	return jcs.Fingerprint(m)
 }
 
-var errIntrouvable = errors.New("mission introuvable")
+// ErrIntrouvable : la mission n'existe pas dans le référentiel.
+var ErrIntrouvable = errors.New("mission introuvable")
+
+var errIntrouvable = ErrIntrouvable
+
+// Copie retourne une copie indépendante (deep copy) de l'enregistrement,
+// pour valider une transition SANS muter l'original (correction C2,
+// réception complémentaire : la validation normative a lieu sur cette copie
+// AVANT tout appel d'adaptateur).
+func Copie(enr *Enregistrement) (*Enregistrement, error) {
+	raw, err := json.Marshal(enr)
+	if err != nil {
+		return nil, err
+	}
+	var c Enregistrement
+	if err := json.Unmarshal(raw, &c); err != nil {
+		return nil, err
+	}
+	return &c, nil
+}
+
+// ContexteMission : vue verrouillée d'une mission pendant une transaction.
+// Le verrou de mission est DÉTENU du début à la fin de la transaction
+// (lecture, validation, appel, mutation, journalisation, sauvegarde).
+type ContexteMission struct {
+	Issue string
+	Enr   *Enregistrement
+}
+
+// Transaction sérialise l'intégralité d'une opération par mission
+// (corrections C1/C3, réception complémentaire issue #27) : verrou de
+// mission détenu du chargement à la sauvegarde, aucune requête concurrente
+// ne peut ni perdre une mise à jour ni écraser un arrêt humain.
+//
+// fn replie la logique métier (validations, appels, mutations) sur
+// ctx.Enr ; si fn échoue, l'enregistrement n'est PAS sauvegardé (état
+// intact sur disque, rejet explicite) ; les journaux déjà écrits par fn
+// restent tracés (refus explicites). Si fn réussit, l'enregistrement est
+// sauvegardé (N-15) PUIS apres est exécuté sous le même verrou
+// (journalisation post-persistance : une erreur de journal y est
+// EXPLICITE et n'annule pas la sauvegarde, elle est retournée à l'appelant).
+func (r *Referentiel) Transaction(issue string, fn func(*ContexteMission) error, apres func(*ContexteMission) error) error {
+	v := r.verrou(issue)
+	v.Lock()
+	defer v.Unlock()
+	enr, err := r.charger(issue)
+	if err != nil {
+		return err
+	}
+	ctx := &ContexteMission{Issue: issue, Enr: enr}
+	if err := fn(ctx); err != nil {
+		return err
+	}
+	if err := r.sauverSansVerrou(ctx.Enr); err != nil {
+		return err
+	}
+	if apres == nil {
+		return nil
+	}
+	return apres(ctx)
+}
 
 // Obtenir loads one mission record.
 func (r *Referentiel) Obtenir(issue string) (*Enregistrement, error) {
@@ -256,15 +329,28 @@ func (r *Referentiel) Obtenir(issue string) (*Enregistrement, error) {
 }
 
 func (r *Referentiel) charger(issue string) (*Enregistrement, error) {
-	raw, err := os.ReadFile(filepath.Join(r.racine, nomDir(issue), "mission.json"))
+	return r.chargerDossier(nomDir(issue))
+}
+
+// chargerDossier charge un enregistrement par son nom de dossier ENCODÉ
+// (tel que retourné par Lister), SANS ré-encodage (C6 : l'encodage injectif
+// n'est idempotent que sur les identifiants, pas sur les noms encodés).
+func (r *Referentiel) chargerDossier(dir string) (*Enregistrement, error) {
+	raw, err := os.ReadFile(filepath.Join(r.racine, dir, "mission.json"))
 	if err != nil {
 		return nil, errIntrouvable
 	}
 	var enr Enregistrement
 	if err := json.Unmarshal(raw, &enr); err != nil {
-		return nil, fmt.Errorf("mission %s : enregistrement illisible : %w", issue, err)
+		return nil, fmt.Errorf("mission %s : enregistrement illisible : %w", dir, err)
 	}
 	return &enr, nil
+}
+
+// ParDossier charge un enregistrement par son nom de dossier encodé (retourné
+// par Lister), sans ré-encodage.
+func (r *Referentiel) ParDossier(dir string) (*Enregistrement, error) {
+	return r.chargerDossier(dir)
 }
 
 // Journaliser appends idempotent typed lines to the mission journal (N-19).
@@ -295,9 +381,10 @@ func (r *Referentiel) Lister() []string {
 
 // EstConforme checks every mission configuration at service startup: a
 // malformed or empty configuration anywhere makes the startup fail (R2/S5).
+// Le parcours se fait PAR DOSSIER (noms encodés, sans ré-encodage, C6).
 func (r *Referentiel) EstConforme() error {
 	for _, dir := range r.Lister() {
-		enr, err := r.charger(dir)
+		enr, err := r.chargerDossier(dir)
 		if err != nil {
 			return fmt.Errorf("demarrage : mission %s illisible : %w", dir, err)
 		}

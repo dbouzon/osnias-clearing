@@ -1,4 +1,4 @@
-== Batteries Python (stdlib, main ec7dc4f + fichiers nouveaux uniquement) ==
+== Batteries Python (stdlib, main ec7dc4f + fichiers de la PR uniquement, post-corrections C1..C6 ==
 BILAN: PASS=24 FAIL=0 BLOQUE=0 (E2E reels documentes hors suite, voir rapport #124)
 BILAN v1.1: PASS=13 FAIL=0 BLOQUE=0 (tous ces tests sont UNITAIRES/MOCKS, aucun E2E reel)
 BILAN v1.2: PASS=11 FAIL=0 BLOQUE=0 (tous ces tests sont UNITAIRES/MOCKS, aucun E2E reel ; v1.2 CANDIDATE non activee)
@@ -7,7 +7,7 @@ BILAN v1.4: PASS=17 FAIL=0 BLOQUE=0 (tous ces tests sont UNITAIRES/MOCKS, aucun 
 BILAN v1.5 durcie: PASS=47 FAIL=0 (tests UNITAIRES/INTEGRATION MOCKS ; versions v1.0..v1.4 et leurs lanceurs inchanges, manifeste verifie ; v1.5 CANDIDATURE non activee, go test NON_EXECUTE hors perimetre toolchain)
 BILAN robustesse T3: PASS=10 FAIL=0 (tests UNITAIRES sur coord06.py v1.1 en vigueur, module non modifie)
 == Vecteurs ==
-BILAN CONFORMITE: OK=22 KO=0 (vecteurs de /home/user/coord-pilot02/repo/coord/docs/conformite-v15)
+BILAN CONFORMITE: OK=22 KO=0 (vecteurs de docs/conformite-v15)
 == Demo v1.5 ==
 demo v15 exit 0
 == Maquette T1..T12 (depuis son dossier) ==
