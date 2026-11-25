@@ -32,6 +32,8 @@ jobs:
         run: go run ./cmd/vector-runner -dir ../docs/conformite-v15
       - name: Demonstration autonome (19 CONFORME / 0 ECART attendus)
         run: go run ./cmd/coord-demo
+      - name: Demonstration locale du conducteur (cycle complet, serveurs factices, 0 €)
+        run: go run ./cmd/coord-mission -demo-local -data "${RUNNER_TEMP}/coord-mission-demo"
   race:
     name: Race detector (concurrence C1..C6, reception issue #27)
     runs-on: ubuntu-latest
