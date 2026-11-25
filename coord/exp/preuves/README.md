@@ -8,6 +8,7 @@ Toutes les exécutions sont REELLES en boucle locale (loopback), hors ligne, san
 | --- | --- | --- |
 | `conduite-s1-s9.md` | Tableau comparatif et détails des scénarios S1, S2, S3, S3b, S4, S5, S6, S7, S8, S9 (modes A et B) | `5cbfb159f96917ac73987e5c4b7334b1c8f82405849c19f5261e4874beb29d57` |
 | `gouvernance-s10.md` | Scénario S10 : Pilot réel + serveur MCP #37 lecture seule + tests négatifs anti-mandat | `c3e92cd208ddcbe2ef07d312d866f6480451b16b9fffa4ad04501f5937c5030e` |
+| `reception-openai.md` | Déclaration de réception formelle du réceptionnaire OpenAI (verdict RECEPTION_CONFORME sur le SHA 5f8fcdb4...) | `fc9fcb48e33ddd121744d1afa9a1ce7315827c1acaf5a974f6f930cca4693525` |
 
 ## Régénérer
 
