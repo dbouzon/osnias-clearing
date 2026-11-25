@@ -294,7 +294,7 @@ func (o *Orchestrateur) preparer(issue, cible, action, acteur, charge string) (*
 		// serait dépassé. Les adaptateurs loopback/simulés restent 0 €.
 		estCentimes := 0
 		if a, okA := o.reg[id.QualifiedBy]; okA {
-			if h, okH := a.(*HTTPEndPoint); okH && !h.simuleLoc {
+			if h, okH := a.(ConnecteurReel); okH && !h.SimuleLocal() {
 				if enr.Budget.Plafonds.Centimes <= 0 {
 					return errors.New("orchestrateur : APPEL_REEL_REFUSE : aucun plafond " +
 						"monetaire arme pour la mission (fail closed, reserve 7154948522)")
@@ -347,7 +347,7 @@ func (o *Orchestrateur) appelerReel(ctx context.Context, p *preparation) (adapta
 	if !ok {
 		return adaptateurs.Resultat{}, errors.New("orchestrateur : adaptateur non enregistré : " + p.adaptateur)
 	}
-	h, okH := a.(*HTTPEndPoint)
+	h, okH := a.(ConnecteurReel)
 	if !okH {
 		// Adaptateur simulé : l'anti-doublon et la réservation s'appliquent
 		// quand même ; l'appel reste local, sans réseau (0 €).
@@ -400,7 +400,7 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 		// jamais libérer de réservation (conservateur par construction).
 		if p.estCentimes > 0 {
 			if a, okA := o.reg[p.adaptateur]; okA {
-				if h, okH := a.(*HTTPEndPoint); okH {
+				if h, okH := a.(ConnecteurReel); okH {
 					if coutReel, errC := h.CoutReelCentimes(res.Jetons); errC == nil &&
 						coutReel > p.estCentimes {
 						enr.Budget.AjusterCentimes(p.adaptateur, coutReel-p.estCentimes)

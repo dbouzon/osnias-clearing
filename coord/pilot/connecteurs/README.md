@@ -162,3 +162,69 @@ go run ./cmd/coord-mission \
 | Anti-doublons crash/interruption | REEL |
 | Race detector (connecteurs) | CI multi-OS (`go test -race`) |
 | Appels facturés réels | NON_EXECUTE (autorisation pilote requise) |
+
+## Connecteur Anthropic Claude (M-COORD-LLM-01, issue #40)
+
+Copyright © 2026 Denis Bouzon · ORCID <https://orcid.org/0009-0007-8894-8902> · Licence Apache-2.0
+
+Troisième fournisseur LLM réel, pour les rôles **critique de plan** et
+**réceptionnaire** (tranche 1 ; Claude exécutant = mission ultérieure).
+Plan v2 PLAN_ACCEPTE ([commentaire 7169582206](https://github.com/dbouzon/osnias-clearing/issues/40#issuecomment-7169582206)),
+ordre de reprise V1.1 sous COORD v1.5
+([commentaire 7173095544](https://github.com/dbouzon/osnias-clearing/issues/40#issuecomment-7173095544)).
+
+### Architecture (décisions D1..D4 du plan v2)
+
+```
+coord/go/internal/connecteurs/
+  commun.go         NOUVEAU (#40) : baseHTTP, briques de sécurité COMMUNES
+                    (boucle d'appel contrôlée, bornage à l'émission, retraits
+                    0..5 bornés, plafond de réponse, expurgation, voûte
+                    monétaire) + interface ConnecteurReel (orchestrateur)
+  anthropic.go      NOUVEAU (#40) : AnthropicPoint, format Messages API
+  connecteurs.go    HTTPEndPoint inchangé de comportement ; hérite de
+                    baseHTTP ; champ additif "format" (D4)
+  orchestre.go      assertions *HTTPEndPoint -> interface ConnecteurReel
+                    (aucune sémantique modifiée : voûte, TX1/TX2, verdicts)
+coord/go/cmd/coord-mission/  dispatch par "format" (branchement unique)
+```
+
+- **D1** : aucune duplication de la boucle de sécurité ; extraction
+  mécanique prouvée par le rejeu intégral (63 tests connecteurs verts,
+  batteries Python 135/135, vecteurs 22/22 byte-identiques `8c097f76…`).
+- **D2** : client HTTP stdlib, SDK `anthropic-sdk-go` ÉCARTÉ (ses retries
+  seraient une seconde autorité de reprise contournant la voûte monétaire ;
+  périmètre minimal pour POST /v1/messages ; `go.mod` INCHANGÉ, zéro
+  dépendance ajoutée). `anthropic-version` ÉPINGLÉ (`2023-06-01`) :
+  toute montée de version est un commit explicite du pilote.
+- **D3** (fail closed) : en-têtes `x-api-key` + `anthropic-version`
+  (jamais `Bearer`) ; gabarit COORD en `system` top-level (anti-injection
+  identique mot pour mot) ; `max_tokens` obligatoire = borne
+  `jetons_sortie_max_par_tentative` ; sortie = SEULS blocs `content[]` de
+  type `text` (tout autre bloc = refus intégral) ; usage =
+  `input_tokens + output_tokens` (absent/nul = `JETONS_INCONNUS`) ;
+  `stop_reason=max_tokens` = troncature refusée intégralement ; stop_reason
+  inconnu = refus ; champs de prompt caching non nuls = `JETONS_INCONNUS`
+  (COORD n'émet jamais `cache_control`) ; `MODELE_DIVERGENT` inchangé ;
+  anti-doublon côté orchestrateur (aucun en-tête d'idempotence supposé
+  côté Anthropic, la clé SHA-256 reste calculée et journalisée).
+- **D4** : `"format": "openai"|"anthropic"` champ additif et
+  rétrocompatible dans la déclaration du fournisseur (absent = `openai`,
+  comportement Mistral/OpenAI inchangé ; valeur inconnue = refus).
+
+### Configuration
+
+Voir `exemple-anthropic.json` (SANS secret : la clé passe par
+`COORD_CLE_ANTHROPIC`). Mêmes tarifs/bornes/plafonds déclarés que les
+autres fournisseurs (voûte monétaire opposable avant chaque appel).
+REEL exige le triple verrou habituel + le bloc `autorisation_pilote`
+(qui EST l'autorisation budgétaire écrite).
+
+### Qualification
+
+Recette C1..C15 sur serveurs factices loopback UNIQUEMENT (SIMULÉ, 0 €) :
+`anthropic_test.go`. Statut : qualification logicielle et simulée RÉELLE
+(exécutée) ; **qualification réelle auprès de l'API Anthropic :
+NON_EXÉCUTÉE** (aucun appel, aucune clé réelle) — procédure préparée dans
+`recette-anthropic-reelle.md`, exécution sur autorisation écrite du pilote
+uniquement.
