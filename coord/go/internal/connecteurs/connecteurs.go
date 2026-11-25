@@ -354,6 +354,15 @@ func (h *HTTPEndPoint) ExecuterContexte(ctx context.Context, action, charge, cle
 			return ra.Model, "", 0, nil
 		}
 		if ra.Usage.TotalTokens <= 0 {
+			// Diagnostic additif M-COORD-HARDENING-01 P3 : distinguer l'usage
+			// ABSENT du corps de l'usage PRÉSENT mais nul/invalide. Le refus
+			// fail-closed et le code public JETONS_INCONNUS sont INCHANGÉS ;
+			// le diagnostic ne transporte jamais de secret.
+			if strings.Contains(string(lu), `"usage"`) {
+				return ra.Model, ra.Choices[0].Message.Content, 0,
+					errors.New("JETONS_INCONNUS : usage présent mais nul/invalide " +
+						"(budget non garanti, fail closed)")
+			}
 			return ra.Model, ra.Choices[0].Message.Content, 0, nil
 		}
 		return ra.Model, ra.Choices[0].Message.Content, ra.Usage.TotalTokens, nil

@@ -117,14 +117,20 @@ func (b *baseHTTP) appel(ctx context.Context, action, charge, cleIdempotence str
 	if action != "executer" && action != "soumettre" && action != "critiquer" && action != "recevoir" {
 		return adaptateurs.Resultat{}, errors.New("connecteurs : action inconnue " + action)
 	}
-	// Bornage à L'ÉMISSION (réserve 7154948522) : la requête elle-même est
-	// refusée AVANT tout octet émis si sa charge dépasse la borne d'entrée
-	// déclarée (heuristique conservatrice : au plus 4 octets UTF-8 par jeton
-	// d'entrée). Fail closed, défense en profondeur côté connecteur.
-	if !b.simuleLoc && b.jetonsEntreeMax > 0 && len(corps) > b.jetonsEntreeMax*4 {
+	// Bornage à L'ÉMISSION (réserve 7154948522, durcissement
+	// M-COORD-HARDENING-01 P1) : la requête elle-même est refusée AVANT tout
+	// octet émis si sa charge dépasse la borne d'entrée déclarée. Estimation
+	// conservatrice qui MAJORE les jetons : charge divisée par 2 (le ratio
+	// réel UTF-8 descend vers 2 voire 1 octet par jeton en CJK/accentué ;
+	// l'ancien diviseur 4 sous-estimait les jetons en multi-octets, d'où le
+	// garde-fou TestReproP1BorneOctetsSousEstimeJetons). Cette estimation
+	// locale est une défense en profondeur côté connecteur, PAS une garantie
+	// du décompte réel du fournisseur. Fail closed.
+	if !b.simuleLoc && b.jetonsEntreeMax > 0 && len(corps) > b.jetonsEntreeMax*2 {
 		return adaptateurs.Resultat{}, errors.New("connecteurs : CHARGE_HORS_BORNE : " +
-			"la requête dépasse jetons_entree_max_par_tentative (heuristique 4 octets par " +
-			"jeton, fail closed, AUCUN octet émis)")
+			"la requête dépasse jetons_entree_max_par_tentative (estimation conservatrice " +
+			"2 octets par jeton, MAJORANT local, PAS une garantie fournisseur, " +
+			"fail closed, AUCUN octet émis)")
 	}
 
 	refusAnalyse := func(err error) (adaptateurs.Resultat, error) {
