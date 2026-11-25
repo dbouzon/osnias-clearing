@@ -335,10 +335,12 @@ def blob_sha1(path):
 manifeste = json.load(open(os.path.join(ICI, "docs", "conformite-v15",
                                         "manifeste-historique-main.json"), encoding="utf-8"))
 racine = os.path.dirname(ICI)  # racine du depot
-# La page publique est une ressource de presentation evolutive (M1, #40).
-# Le manifeste historique reste intact ; seule cette exception explicite est
-# autorisee. La presence de la page reste obligatoire.
-presentation = {"coord/index.html"}
+# La page publique et le README sont des ressources de presentation
+# evolutive (M1, #40 pour index.html ; extension validee par la decision
+# d'activation M-COORD-ACTIVATION-01, issue #44 : le README porte les statuts
+# de versions). Le manifeste historique reste intact ; seule cette exception
+# explicite est autorisee. La presence des fichiers reste obligatoire.
+presentation = {"coord/index.html", "coord/README.md"}
 divergents = []
 for f in manifeste["fichiers"]:
     rel = f["chemin"].split("/", 1)[1]
@@ -348,7 +350,7 @@ for f in manifeste["fichiers"]:
     elif f["chemin"] not in presentation and blob_sha1(chemin) != f["sha1"]:
         divergents.append(f["chemin"])
 check("M1 non-regression : fichiers historiques inchanges contre main 323d8b9 "
-      "(page publique evolutive, presence obligatoire)",
+      "(pages publiques evolutives index.html et README.md, presence obligatoire)",
       not divergents, ", ".join(divergents))
 
 # ---- Vecteurs de conformite : le module distribue passe tous les vecteurs ----

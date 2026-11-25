@@ -2,10 +2,10 @@
 
 COORD est le logiciel qui fait dialoguer deux agents IA de laboratoires différents — Mistral (exécutant) et OpenAI (évaluateur indépendant) — autour d'un même dépôt GitHub, sans jamais qu'une IA valide son propre travail.
 
-- Modules canoniques Python 3 (stdlib uniquement) : `coord06.py` (v1.0/v1.1), `coord06_v12.py` (v1.2 candidate), `coord06_v13.py` (v1.3, en vigueur), `coord06_v14.py` (v1.4 candidate, non activée).
+- Modules canoniques Python 3 (stdlib uniquement) : `coord06.py` (v1.0/v1.1), `coord06_v12.py` (v1.2), `coord06_v13.py` (v1.3), `coord06_v14.py` (v1.4), `coord06_v15.py` (v1.5, version opérationnelle activée).
 - Batteries de tests : `tests_coord06.py` (24), `tests_coord06_v11.py` (13), `tests_coord06_v12.py` (11), `tests_coord06_v13.py` (13), `tests_coord06_robustness.py` (10), `tests_coord06_v14.py` (17).
-- Spécification de référence publique : `docs/proto-coord06-v14.md`.
-- **Téléchargement direct** : [coord-v1.0-v1.4.zip](https://www.osnias-clearing.com/coord-v1.0-v1.4.zip) — archive complète du dossier, reconstruite automatiquement à chaque publication.
+- Spécification de référence publique : `docs/proto-coord06-v15.md` (activée) ; norme découplée : `docs/spec/coord-spec-1.0.md`.
+- **Téléchargement direct** : [coord-v1.0-v1.5.zip](https://www.osnias-clearing.com/coord-v1.0-v1.5.zip) — archive complète du dossier, reconstruite automatiquement à chaque publication (lien historique `coord-v1.0-v1.4.zip` maintenu vivant, contenu équivalent).
 
 ## Rôles
 
@@ -45,7 +45,7 @@ Les états et transitions ci-dessus, le format d'enregistrement (mission, issue,
 
 ## État et limites
 
-Version opérationnelle : v1.4 candidate (v1.3 en vigueur). Les suites v1.0..v1.3 restent inchangées ; la v1.4 ajoute la continuité autonome, l'état de reprise, les empreintes automatisées, la réception différentielle et les mesures de coordination. La v1.5 candidate n'est pas publiée ici. Licence : Apache-2.0 (texte complet dans `LICENSE`).
+Version opérationnelle : **v1.5, activée le 26 novembre 2026** par décision du pilote (mission M-COORD-ACTIVATION-01, issue #44, SHA de référence `2abdebc943e424a11790dd8a24cd6f43c7d914ee`). Les versions v1.0..v1.4 deviennent historiques : leurs suites et enregistrements restent inchangés et rejouables. La v1.5 ajoute le durcissement des transitions, la voûte budgétaire monétaire, les habilitations serveur et les vecteurs de conformité (47 tests + 22 vecteurs, concordance Python/Go). Relation avec **COORD Specification 1.0** (`docs/spec/coord-spec-1.0.md`) : la norme est découplée des versions d'implémentation ; v1.5 en est l'implémentation conforme de référence (concordance 22/22 vecteurs, matrice dans `docs/qualification-m-coord-activation-01.md`). Licence : Apache-2.0 (texte complet dans `LICENSE`).
 
 
 ## Licence

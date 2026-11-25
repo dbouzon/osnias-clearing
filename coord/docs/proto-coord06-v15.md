@@ -1,6 +1,8 @@
 <!-- Copyright © 2026 Denis Bouzon — ORCID: https://orcid.org/0009-0007-8894-8902 — SPDX-License-Identifier: Apache-2.0 -->
 
-# Protocole COORD v1.5 (CANDIDATURE, NON ACTIVEE) — spécification consolidée autonome
+# Protocole COORD v1.5 (OFFICIELLE, ACTIVÉE) — spécification consolidée autonome
+
+> **Activation** : v1.5 est la version OFFICIELLE de référence opérationnelle depuis le 26 novembre 2026, par décision expresse du pilote Denis Bouzon (mission M-COORD-ACTIVATION-01, issue #44 du dépôt `dbouzon/osnias-clearing`), sur la base qualifiée main `2abdebc943e424a11790dd8a24cd6f43c7d914ee` (réception consolidée RECEPTION_CONFORME). v1.4 devient historique.
 
 Mission : M-COORD-HARDENING-01, issue #19 du dépôt `dbouzon/osnias-clearing`. Branche de candidature : `mission/coord-hardening-01`. Auteure : Mistral (Vibe), plan v2 accepté par critique préalable OpenAI (verdict PLAN_ACCEPTE, session m-coord-hardening-01). **Aucune fusion vers main et aucune activation sans décision expresse du pilote.**
 
@@ -9,8 +11,8 @@ Mission : M-COORD-HARDENING-01, issue #19 du dépôt `dbouzon/osnias-clearing`. 
 Ce document est **autonome** : il contient l'intégralité des règles normatives du protocole COORD applicables à une mission v1.5 consolidée ; il ne renvoie à aucun document v1.0–v1.4 pour ses définitions normatives. Les versions antérieures restent en vigueur pour leurs propres enregistrements (§7, coexistence).
 
 Normalisation des statuts de version (corrigeant la mention historique obsolète) :
-- **OFFICIELLE** : version activée par décision expresse du pilote ; à la date de ce document, **v1.4 est la version OFFICIELLE de référence opérationnelle** ;
-- **CANDIDATURE** : version spécifiée, implémentée, testée, réceptionnée mais non activée ; **v1.5 (ce document) est une CANDIDATURE**.
+- **OFFICIELLE** : version activée par décision expresse du pilote ; **v1.5 (ce document) est la version OFFICIELLE de référence opérationnelle depuis le 26/11/2026** (issue #44) ; v1.4 et antérieures sont historiques ;
+- **CANDIDATURE** : version spécifiée, implémentée, testée, réceptionnée mais non activée (**aucune à cette date**).
 
 Les constantes d'enregistrement des versions antérieures (`PROTOCOL_VERSION*`) demeurent inchangées dans le code distribué : elles identifient les enregistrements historiques, pas le statut opérationnel (défaut de mention documenté, constat complémentaire de l'issue #19).
 
