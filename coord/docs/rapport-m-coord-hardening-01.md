@@ -53,4 +53,16 @@ Fusion et clôture de #52 réservées au pilote. #42 suspendue. Statuts v1.5 inc
 
 ---
 
-Copyright © 2026 Denis Bouzon — ORCID https://orcid.org/0009-0007-8894-8902 — SPDX: Apache-2.0
+Copyright © 2026 Denis Bouzon — ## Cycle correctif — réception complémentaire 7176998049 (A_CORRIGER sur P5)
+
+Réception complémentaire OpenAI sur le SHA `b0b98650` : deux écarts dans `snapshot.go`, sans élargissement de périmètre. Corrections sur la même branche/PR, reproductions avant correction.
+
+- **P5-1 fsync** : constat par lecture directe — l'écriture de la projection (temp à nom fixe + rename) ne comportait pas le fsync du contrat T1. **Corrigé** : `ecrireSnapshot` réécrite sur le modèle déjà qualifié de `coord/a2a/rail.go/persister` (CreateTemp insensible aux collisions, écriture, FSYNC AVANT fermeture, chmod 0600, rename atomique, retrait du temporaire sur TOUT échec, y compris rename). Garde-fou permanent : `TestSnapshotFsyncAvantRenommage` (hook `fsyncFichier` : exactement 1 fsync par écriture, aucun temporaire résiduel).
+- **P5-2 ABSENT vs INCONNU** : reproduction AUTOMATISÉE AVANT correction — `TestReproP5ErreurAppelJamaisPresenteeCommeAbsence` **FAIL constaté sur le code du SHA `b0b98650`** (marqueur d'appel illisible → projection régénérée en affirmant l'absence, AUCUNE trace d'erreur). **Corrigé** : `regenererSnapshot` propage l'erreur de `appelEnCoursNonResolu` (état INCONNU, jamais une absence vérifiable) : la projection ÉCHOUE, l'échec est journalisé `SNAPSHOT_ERREUR`, la projection précédente reste périmée en place (mention conservatoire), la transition durable reste INTACTE. Après correction : PASS.
+- **Couverture exigée** : `TestSnapshotACKEtResolution` (points de projection ACK → état `ACK_RECU`, et résolution d'appel en cours → projection régénérée, empreinte et compteur du journal constatés) ; `TestSnapshotErreurEcritureJamaisAutoritaire` adapté au nouveau modèle d'écriture (conflit portable par répertoire cible, échec APRÈS fsync, SNAPSHOT_ERREUR journalisé, transition durable réussie, aucun temporaire résiduel) ; vérification des temporaires `.snapshot-*` par glob dans tous les tests de projection.
+- **Périmètre du correctif** : 2 fichiers uniquement (`snapshot.go`, `snapshot_test.go`). Module `coord/a2a` INTACT (diff byte-exact). Divergence gofmt préexistante de `orchestre_test.go` constatée au SHA de base, non touchée (hors périmètre).
+- **Qualification rejouée au correctif** : engine vet/build + 13 paquets verts (dont 5 tests snapshot + REPRO P5-2) ; module coord/a2a vert et intact ; Python v1.5 47/47 PASS (M1 PASS) ; vecteurs 22/22 Go (empreinte sha256 de sortie byte-identique à la ligne de base `8c097f76…`) ; `-race` NON_EXÉCUTÉ local (pas de gcc), couvert par le job CI Race detector.
+
+---
+
+ORCID https://orcid.org/0009-0007-8894-8902 — SPDX: Apache-2.0

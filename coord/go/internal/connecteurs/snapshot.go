@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -59,8 +60,20 @@ func (o *Orchestrateur) regenererSnapshot(issue string) error {
 	if err != nil {
 		return err
 	}
+	// ABSENT vs INCONNU (réception complémentaire 7176998049, P5-2) :
+	// une ERREUR de lecture de l'enregistrement d'appel est un état
+	// INCONNU, jamais une absence vérifiable. La projection ne doit pas
+	// affirmer une absence invérifiable : elle ÉCHOUE (l'échec est
+	// journalisé SNAPSHOT_ERREUR par projeterDurable, la transition durable
+	// reste INTACTE) et la projection précédente reste périmée en place,
+	// couverte par la mention conservatoire. Seul a == nil (fichier lu,
+	// aucun appel non résolu) vaut absence.
 	appel := ""
-	if a, errA := o.appelEnCoursNonResolu(issue); errA == nil && a != nil {
+	a, errA := o.appelEnCoursNonResolu(issue)
+	if errA != nil {
+		return fmt.Errorf("projection impossible : appel en cours INCONNU (pas absent) : %w", errA)
+	}
+	if a != nil {
 		appel = a.Action
 	}
 	journal, errJ := os.ReadFile(missions.JournalPath(o.ref.Racine(), issue))
@@ -93,21 +106,51 @@ func (o *Orchestrateur) regenererSnapshot(issue string) error {
 	return ecrireSnapshot(o.ref.Racine(), issue, &snap)
 }
 
-// ecrireSnapshot : écriture atomique (temp + rename, 0600) ; jamais de
-// décision fondée sur le contenu précédent.
+// fsyncFichier : point d'ancrage du garde-fou permanent TestSnapshotFsync-
+// AvantRenommage (réception complémentaire 7176998049, P5-1). Ne jamais
+// modifier la sémantique : Sync AVANT Close/Rename.
+var fsyncFichier = func(f *os.File) error { return f.Sync() }
+
+// ecrireSnapshot : écriture DURABLE alignée sur le contrat T1 (temp +
+// fsync + rename, 0600), même modèle que la persistance du rail
+// coord/a2a (rail.go persister) : CreateTemp (nom unique, jamais de nom
+// fixe en collision), écriture, FSYNC AVANT fermeture, chmod 0600,
+// renommage atomique ; en cas d'échec, le temporaire est retiré. Jamais
+// de décision fondée sur le contenu précédent.
 func ecrireSnapshot(racine, issue string, snap *Snapshot) error {
 	raw, err := json.MarshalIndent(snap, "", "  ")
 	if err != nil {
 		return err
 	}
 	chemin := CheminSnapshot(racine, issue)
-	tmp := chemin + ".tmp"
-	if err := os.WriteFile(tmp, raw, 0o600); err != nil {
-		_ = os.Remove(tmp)
+	tmp, err := os.CreateTemp(filepath.Dir(chemin), ".snapshot-*")
+	if err != nil {
 		return err
 	}
-	if err := os.Rename(tmp, chemin); err != nil {
-		_ = os.Remove(tmp)
+	nom := tmp.Name()
+	if _, err := tmp.Write(raw); err != nil {
+		tmp.Close()
+		os.Remove(nom)
+		return err
+	}
+	// FSYNC (durabilité du contenu AVANT le renommage atomique) : sans
+	// lui, un crash après rename peut laisser une projection vide ou
+	// partielle (constat avéré par la réception complémentaire).
+	if err := fsyncFichier(tmp); err != nil {
+		tmp.Close()
+		os.Remove(nom)
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		os.Remove(nom)
+		return err
+	}
+	if err := os.Chmod(nom, 0o600); err != nil {
+		os.Remove(nom)
+		return err
+	}
+	if err := os.Rename(nom, chemin); err != nil {
+		os.Remove(nom)
 		return err
 	}
 	return nil

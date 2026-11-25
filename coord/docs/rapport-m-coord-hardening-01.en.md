@@ -53,4 +53,16 @@ Merging PR and closing #52 are reserved to the pilot. #42 suspended. v1.5 status
 
 ---
 
-Copyright © 2026 Denis Bouzon — ORCID https://orcid.org/0009-0007-8894-8902 — SPDX: Apache-2.0
+Copyright © 2026 Denis Bouzon — ## Corrective cycle — complementary reception 7176998049 (A_CORRIGER on P5)
+
+Complementary OpenAI reception on SHA `b0b98650`: two gaps in `snapshot.go`, no scope widening. Fixes on the same branch/PR, reproductions before the fix.
+
+- **P5-1 fsync**: finding by direct reading — the projection write (fixed-name temp + rename) lacked the fsync of the T1 contract. **FIXED**: `ecrireSnapshot` rewritten after the already-qualified `coord/a2a/rail.go/persister` model (collision-proof CreateTemp, write, FSYNC BEFORE close, chmod 0600, atomic rename, temp removal on EVERY failure including rename). Permanent guard: `TestSnapshotFsyncAvantRenommage` (`fsyncFichier` hook: exactly 1 fsync per write, no residual temp).
+- **P5-2 ABSENT vs UNKNOWN**: AUTOMATED reproduction BEFORE the fix — `TestReproP5ErreurAppelJamaisPresenteeCommeAbsence` **FAIL observed on the `b0b98650` code** (unreadable in-flight marker → projection regenerated asserting absence, NO error trace). **FIXED**: `regenererSnapshot` propagates the `appelEnCoursNonResolu` error (UNKNOWN state, never a verifiable absence): the projection FAILS, the failure is journalised `SNAPSHOT_ERREUR`, the previous projection stays stale in place (conservative note), the durable transition stays INTACT. After the fix: PASS.
+- **Required coverage**: `TestSnapshotACKEtResolution` (ACK projection point → `ACK_RECU`, in-flight call resolution point → regenerated projection, journal fingerprint and counter asserted); `TestSnapshotErreurEcritureJamaisAutoritaire` adapted to the new write model (portable conflict via target directory, failure AFTER fsync, SNAPSHOT_ERREUR journalised, durable transition succeeds, no residual temp); `.snapshot-*` leftover checks by glob in all projection tests.
+- **Fix scope**: 2 files only (`snapshot.go`, `snapshot_test.go`). `coord/a2a` module UNTOUCHED (byte-exact diff). Pre-existing gofmt divergence of `orchestre_test.go` observed at the base SHA, not touched (out of scope).
+- **Qualification replayed at the fix**: engine vet/build + 13 green packages (incl. 5 snapshot tests + REPRO P5-2); coord/a2a module green and untouched; Python v1.5 47/47 PASS (M1 PASS); vectors 22/22 Go (output sha256 byte-identical to the `8c097f76…` baseline); `-race` NOT_EXECUTED locally (no gcc), covered by the CI Race detector job.
+
+---
+
+ORCID https://orcid.org/0009-0007-8894-8902 — SPDX: Apache-2.0
