@@ -166,6 +166,44 @@ POSIX (0600/uid, refus 0644, refus liens symboliques, rotation exclusive
 sans résidu temporaire) et le race detector couvre `internal/mcpserver`.
 Fidélité vérifiée octet à octet par tarball codeload épinglé au SHA.
 
+## Corrections de l'ordre résiduel (commentaire 7164717573, 25/11/2026)
+
+À la suite de la contre-revue OpenAI et de l'ordre A_CORRIGER résiduel du
+pilote, trois corrections (plan v1 critiqué par OpenAI :
+**PLAN_ACCEPTE_AVEC_REMARQUES_NON_BLOQUANTES**) :
+
+- **Fenêtre d'exposition éliminée (SEC-MCP-01)** : le fichier temporaire
+  est désormais créé DÉJÀ PROTÉGÉ — sous Windows par attributs de
+  sécurité à la création (`windows.CreateFile` + `SecurityAttributes`
+  portant un SDDL `D:P(A;;FA;;;<SID utilisateur>)` : DACL restreint,
+  protégé, aucun héritage de %TEMP%, partage refusé pendant l'écriture) ;
+  la protection effective est ensuite VÉRIFIÉE sur le handle AVANT toute
+  écriture du secret (fail-closed : refus et suppression du temporaire
+  sinon) ; plus aucun DACL n'est appliqué après coup. POSIX : création
+  exclusive O_EXCL en 0600 (l'umask ne peut que rétrécir) + fstat de
+  contrôle avant l'écriture.
+- **Anti-substitution par handles (ChargerJeton, TOCTOU)** : TOUTES les
+  vérifications et la lecture se font sur un HANDLE unique, le chemin
+  n'est jamais ré-résolu. POSIX : Lstat initial (refus liens
+  symboliques), ouverture, identité dev/ino exigée identique au contrôle
+  initial, 0600, propriétaire. Windows : DACL vérifié SUR LE HANDLE
+  (`GetSecurityInfo`), identité FileIndex croisée avec une seconde
+  ouverture `FILE_FLAG_OPEN_REPARSE_POINT` (tout point d'analyse est
+  refusé ; toute substitution fait diverger les FileIndex → REFUS).
+- **Attribution** : ORCID 8892 erronés corrigés en
+  0009-0007-8894-8902 dans `jeton_uid_posix.go` et
+  `jeton_uid_windows.go` (seuls fichiers concernés, aucun autre fichier
+  touché).
+
+**Preuves** : CI multi-OS 6 jobs **verts** au SHA code
+`ca303ff648c5d70d041394f2b3e3cda2bd729317` (run 45631509393) : le job
+`Go windows-latest` exécute RÉELLEMENT la création protégée dès l'origine
+(`CreateFile` + SA) et son chargement fail-closed ; le job ubuntu éxécute
+les tests POSIX (0600/uid, dev/ino, refus liens symboliques, rotation
+exclusive sans résidu temporaire) ; race detector étendu à mcpserver ;
+SEC-01 rejoués (12 paquets verts) ; démo locale rejouée, trace INCHANGÉE
+(sha256 initiale conservée) ; go vet/build GOOS=linux/windows/darwin OK.
+
 ## Restent réservés au pilote
 
 Fusion de la PR, clôture de #35, décisions d'activation, emballages fournisseurs
