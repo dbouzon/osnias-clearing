@@ -1,0 +1,51 @@
+name: COORD rail A2A autonome (module coord/a2a)
+on:
+  push:
+    branches: [main]
+    paths: ['coord/a2a/**', '.github/workflows/coord-a2a-ci.yml']
+  pull_request:
+    paths: ['coord/a2a/**', '.github/workflows/coord-a2a-ci.yml']
+  workflow_dispatch:
+jobs:
+  a2a:
+    name: Rail A2A ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: coord/a2a
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache-dependency-path: coord/a2a/go.sum
+      - name: go vet
+        run: go vet ./...
+      - name: go build
+        run: go build ./...
+      - name: go test (recette module sans moteur)
+        shell: bash
+        run: |
+          if ! go test ./... > test-out.log 2>&1; then
+            cat test-out.log
+            grep -E '^--- FAIL' test-out.log | awk '{printf "::error::%s\n", $0}' || true
+            exit 1
+          fi
+  race:
+    name: Race detector (rail A2A autonome)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: coord/a2a
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache-dependency-path: coord/a2a/go.sum
+      - name: go test -race (registre durable, idempotence, annulation)
+        run: go test -race -count=2 ./...
