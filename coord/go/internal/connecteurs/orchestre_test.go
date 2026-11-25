@@ -452,15 +452,22 @@ func TestPlafondAppelsAvantToutAppel(t *testing.T) {
 		t.Fatalf("création : %v", err)
 	}
 	ctx := context.Background()
-	if _, err := b.orch.Executer(ctx, issue, "mistral-exec", "mandat unique"); err != nil {
+	res, err := b.orch.Executer(ctx, issue, "mistral-exec", "mandat unique")
+	if err != nil {
 		t.Fatalf("unique appel autorisé attendu : %v", err)
 	}
-	if _, err := b.orch.Executer(ctx, issue, "mistral-exec", "second appel"); err == nil ||
+	// La table fermée interdit EXECUTION -> EXECUTION ; l'étape suivante est
+	// la soumission, qui réserve AUSSI sur le plafond de mistral (1) : refus
+	// BUDGET_DEPASSE AVANT toute nouvelle dépense.
+	if _, err := b.orch.Soumettre(ctx, issue, "mistral-exec", res.Sortie); err == nil ||
 		!strings.Contains(err.Error(), "BUDGET_DEPASSE") {
 		t.Fatalf("plafond dépassé attendu : %v", err)
 	}
 	if b.appelsExec != 1 {
 		t.Fatalf("le second appel n'a pas dû partir : %d", b.appelsExec)
+	}
+	if b.etat(t, issue) != spec.EtatExecution {
+		t.Fatalf("la mission reste en EXECUTION sans la soumission : %s", b.etat(t, issue))
 	}
 
 	// Aucun adaptateur sans plafond ne peut être appelé (fail closed).
@@ -470,15 +477,15 @@ func TestPlafondAppelsAvantToutAppel(t *testing.T) {
 	if err := b.orch.NouvelleMission(issue2, "mistral-exec", "openai-recep", rolesTest(), p2); err != nil {
 		t.Fatalf("création 2 : %v", err)
 	}
-	res, err := b.orch.Executer(ctx, issue2, "mistral-exec", "mandat")
-	if err != nil {
-		t.Fatalf("exécution : %v", err)
+	res2, err2 := b.orch.Executer(ctx, issue2, "mistral-exec", "mandat")
+	if err2 != nil {
+		t.Fatalf("exécution : %v", err2)
 	}
-	if _, err := b.orch.Soumettre(ctx, issue2, "mistral-exec", res.Sortie); err != nil {
+	if _, err := b.orch.Soumettre(ctx, issue2, "mistral-exec", res2.Sortie); err != nil {
 		t.Fatalf("soumission : %v", err)
 	}
 	appelsAvant := b.appelsRecep
-	if _, _, err := b.orch.Recevoir(ctx, issue2, "openai-recep", res.Sortie); err == nil ||
+	if _, _, err := b.orch.Recevoir(ctx, issue2, "openai-recep", res2.Sortie); err == nil ||
 		!strings.Contains(err.Error(), "BUDGET_DEPASSE") {
 		t.Fatalf("réceptionnaire sans plafond = refus : %v", err)
 	}

@@ -106,3 +106,20 @@ func (b *Budget) ResumeCompteurs() string {
 	}
 	return strings.Join(parts, "; ")
 }
+
+// AjusterJetons adjusts the consumed TOKEN counter of an adapter by a real
+// surplus measured AFTER the call (M-COORD-PILOT-03, étape 4), WITHOUT
+// counting an additional call: the call itself was already counted by the
+// durable reservation of TX1. Fail closed: the counter can never go below
+// zero. This method never authorises anything: ceilings still govern the
+// pre-call verification (VerifierAvantAppel).
+func (b *Budget) AjusterJetons(adaptateur string, deltaJetons int) {
+	if b.Etat.JetonsConsommes == nil {
+		b.Etat.JetonsConsommes = map[string]int{}
+	}
+	v := b.Etat.JetonsConsommes[adaptateur] + deltaJetons
+	if v < 0 {
+		v = 0
+	}
+	b.Etat.JetonsConsommes[adaptateur] = v
+}

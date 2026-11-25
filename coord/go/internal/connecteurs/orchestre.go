@@ -362,7 +362,7 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 			return errReponseTardive
 		}
 		if surplus := res.Jetons - p.estimation; surplus > 0 {
-			enr.Budget.Consommer(p.adaptateur, surplus)
+			enr.Budget.AjusterJetons(p.adaptateur, surplus)
 		}
 		if !sansTransition {
 			donnees := map[string]string{}
