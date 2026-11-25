@@ -13,10 +13,10 @@
 //     (1) mode "REEL" in the local configuration file,
 //     (2) the environment variable COORD_MODE_REEL=1,
 //     (3) a non-empty provider key read ONLY from the environment variable
-//         named by the configuration (never from the repository, a journal
-//         or the UI),
+//     named by the configuration (never from the repository, a journal
+//     or the UI),
 //     (4) an explicit pilot authorization block (fournisseurs, plafond,
-//         date). Any missing gate refuses the call before any byte is sent.
+//     date). Any missing gate refuses the call before any byte is sent.
 //   - loopback endpoints (127.0.0.1, localhost, ::1) carry the local
 //     factor test harness ONLY (serveurs factices, réseau local, 0 €).
 //   - secrets are never stored in a serialized struct, never returned in
@@ -24,6 +24,13 @@
 //     refused (SORTIE_COMPROMISE) or expurgated ([EXPURGE]).
 //   - the declared model is verified A POSTERIORI against the model field
 //     of the response: the authenticated identity is never presumed.
+//   - monetary control (réserves 7154948522): every potentially billable
+//     attempt is preceded by a DURABLE conservative reservation in integer
+//     euro cents, computed from tariffs and per-attempt bounds DECLARED by
+//     the pilot ((1 + retraits) whole attempts counted; input bound opposed
+//     AT EMISSION before any byte is sent). Unknown tariff or bound refuses
+//     the call (TARIF_INCONNU, fail closed). The reservation is a LOCAL
+//     conservative estimate, NOT a provider-side spending guarantee.
 //   - responses are size-limited; 429/5xx get BOUNDED retries with
 //     backoff; the whole call honours a context deadline, so the pilot
 //     stop never waits on the network (the mission lock is never held
@@ -61,10 +68,18 @@ const (
 
 // Jetons minimums facturés à un fournisseur dont la réponse omettrait l'usage:
 // fail-closed, l'orchestrateur refuse plutôt que de sous-compter (JETONS_INCONNUS).
-var secretRE = regexp.MustCompile(`sk-[A-Za-z0-9_\-]{8,}`)
+var secretRE = regexp.MustCompile(`sk-[A-Za-z0-9_\\-]{8,}`)
 
 // ConfigFournisseur : un fournisseur déclaré. AUCUN secret ici : la clé est
 // lue au démarrage dans la variable d'environnement CleEnv.
+//
+// Tarification et bornes (correction de la réserve 7154948522) : en mode
+// REEL, chaque fournisseur DOIT déclarer des tarifs EXPLICITES (centimes
+// d'euro entiers par million de jetons d'entrée et de sortie, plus un prix
+// fixe par requête) ET des bornes de jetons par tentative. Tarif ou borne
+// inconnu => fail closed : aucun appel ne peut partir. Ces tarifs sont des
+// DÉCLARATIONS DU PILOTE : l'estimation qui en découle est une borne
+// conservatrice LOCALE, pas une garantie du facturier fournisseur.
 type ConfigFournisseur struct {
 	ID               string `json:"id"`
 	Endpoint         string `json:"endpoint"`
@@ -73,6 +88,13 @@ type ConfigFournisseur struct {
 	TimeoutMS        int    `json:"timeout_ms"`
 	TailleMaxReponse int64  `json:"taille_max_reponse"`
 	RetraitsMax      int    `json:"retraits_max"`
+	// Tarifs (centimes d'euro ENTIERS, arrondis toujours vers le haut):
+	TarifEntreeCentimesParMillion int `json:"tarif_entree_centimes_par_million"`
+	TarifSortieCentimesParMillion int `json:"tarif_sortie_centimes_par_million"`
+	TarifRequeteCentimes          int `json:"tarif_requete_centimes"`
+	// Bornes de jetons par tentative (l'entrée est opposée à l'émission):
+	JetonsEntreeMaxParTentative int `json:"jetons_entree_max_par_tentative"`
+	JetonsSortieMaxParTentative int `json:"jetons_sortie_max_par_tentative"`
 }
 
 // Autorisation : bloc d'autorisation explicite du pilote (mission #29,
@@ -89,9 +111,9 @@ type Autorisation struct {
 // Config : configuration locale, chargée d'un fichier jamais committé avec
 // des secrets (voir coord/pilot/connecteurs/ pour les exemples).
 type Config struct {
-	Mode          string             `json:"mode"`
-	Autorisation  *Autorisation      `json:"autorisation_pilote"`
-	Fournisseurs  []ConfigFournisseur `json:"fournisseurs"`
+	Mode         string              `json:"mode"`
+	Autorisation *Autorisation       `json:"autorisation_pilote"`
+	Fournisseurs []ConfigFournisseur `json:"fournisseurs"`
 }
 
 // ChargerConfig lit et valide la configuration locale (fail closed).
@@ -106,6 +128,19 @@ func ChargerConfig(chemin string) (*Config, error) {
 	}
 	if c.Mode != ModeSimule && c.Mode != ModeReel {
 		return nil, errors.New("connecteurs : mode inconnu (SIMULE ou REEL attendus, fail closed)")
+	}
+	// En mode REEL, l'AUTORISATION EXPLICITE du pilote est la première
+	// porte : rien d'autre ne peut l'ouvrir. Le plafond monétaire qu'elle
+	// déclare est transmis au moteur budgétaire par le conducteur (réserve
+	// 7154948522 : PlafondCentimes est désormais OPPOSABLE).
+	if c.Mode == ModeReel {
+		if c.Autorisation == nil || strings.TrimSpace(c.Autorisation.Pilote) == "" ||
+			len(c.Autorisation.Fournisseurs) == 0 || c.Autorisation.PlafondCentimes <= 0 ||
+			c.Autorisation.PlafondAppels <= 0 || c.Autorisation.PlafondJetons <= 0 ||
+			strings.TrimSpace(c.Autorisation.Date) == "" {
+			return nil, errors.New("connecteurs : mode REEL exige l'autorisation explicite du pilote "+
+				"(fournisseurs, plafonds monétaire, d'appels et de jetons, date) — fail closed")
+		}
 	}
 	vus := map[string]bool{}
 	for _, f := range c.Fournisseurs {
@@ -128,21 +163,23 @@ func ChargerConfig(chemin string) (*Config, error) {
 		if f.RetraitsMax < 0 || f.RetraitsMax > 5 {
 			return nil, errors.New("connecteurs : retraits_max hors bornes (0..5) pour " + f.ID)
 		}
+		if c.Mode == ModeReel {
+			// Fail closed : tarifs et bornes complets exigés pour tout
+			// fournisseur déclaré en mode REEL (réserve 7154948522) :
+			// aucun plafond monétaire opposable sans tarification explicite.
+			if f.TarifEntreeCentimesParMillion <= 0 || f.TarifSortieCentimesParMillion <= 0 ||
+				f.TarifRequeteCentimes <= 0 || f.JetonsEntreeMaxParTentative <= 0 ||
+				f.JetonsSortieMaxParTentative <= 0 {
+				return nil, errors.New("connecteurs : mode REEL : tarifs (entree/sortie/requete) et "+
+					"bornes (entree/sortie) requis pour "+f.ID+" (fail closed, aucun tarif inconnu)")
+			}
+		}
 		if c.Mode == ModeReel && strings.TrimSpace(f.CleEnv) == "" {
 			return nil, errors.New("connecteurs : cle_env requis en mode REEL pour " + f.ID)
 		}
 	}
 	if len(c.Fournisseurs) == 0 {
 		return nil, errors.New("connecteurs : aucun fournisseur déclaré (N-01, fail closed)")
-	}
-	if c.Mode == ModeReel {
-		if c.Autorisation == nil || strings.TrimSpace(c.Autorisation.Pilote) == "" ||
-			len(c.Autorisation.Fournisseurs) == 0 || c.Autorisation.PlafondCentimes <= 0 ||
-			c.Autorisation.PlafondAppels <= 0 || c.Autorisation.PlafondJetons <= 0 ||
-			strings.TrimSpace(c.Autorisation.Date) == "" {
-			return nil, errors.New("connecteurs : mode REEL exige l'autorisation explicite du pilote " +
-				"(fournisseurs, plafonds monétaire, d'appels et de jetons, date) — fail closed")
-		}
 	}
 	return &c, nil
 }
@@ -161,14 +198,21 @@ func (c *Config) Fournisseur(id string) (ConfigFournisseur, error) {
 // OpenAI ou tout autre endpoint compatible {model, messages}). Il
 // implémente l'interface adaptateurs.Adaptateur, sans privilège fournisseur.
 type HTTPEndPoint struct {
-	id         string
-	endpoint   string
-	cle        string
-	modele     string
-	client     *http.Client
-	tailleMax  int64
-	retraits   int
-	simuleLoc  bool // endpoint loopback : banc d'essai local uniquement
+	id        string
+	endpoint  string
+	cle       string
+	modele    string
+	client    *http.Client
+	tailleMax int64
+	retraits  int
+	simuleLoc bool // endpoint loopback : banc d'essai local uniquement
+	// Tarification et bornes déclarées (réserve 7154948522). Zéro = inconnu :
+	// l'orchestrateur refuse l'appel d'un connecteur réel (fail closed).
+	tarifEntreeMillion int
+	tarifSortieMillion int
+	tarifRequete       int
+	jetonsEntreeMax    int
+	jetonsSortieMax    int
 }
 
 // NouveauHTTPEndPoint construit le connecteur d'un fournisseur déclaré.
@@ -198,6 +242,12 @@ func (c *Config) NouveauHTTPEndPoint(id string) (*HTTPEndPoint, error) {
 		tailleMax: f.TailleMaxReponse,
 		retraits:  f.RetraitsMax,
 		simuleLoc: loopback,
+
+		tarifEntreeMillion: f.TarifEntreeCentimesParMillion,
+		tarifSortieMillion: f.TarifSortieCentimesParMillion,
+		tarifRequete:       f.TarifRequeteCentimes,
+		jetonsEntreeMax:    f.JetonsEntreeMaxParTentative,
+		jetonsSortieMax:    f.JetonsSortieMaxParTentative,
 	}
 	if !loopback {
 		// Triple verrou d'exécution réelle (mission #29, étape 4/5).
@@ -265,7 +315,7 @@ type messageAPI struct {
 }
 
 type requeteAPI struct {
-	Model    string      `json:"model"`
+	Model    string       `json:"model"`
 	Messages []messageAPI `json:"messages"`
 }
 
@@ -273,7 +323,7 @@ type reponseAPI struct {
 	Model   string `json:"model"`
 	Choices []struct {
 		Message struct {
-			Content string `json:"content"`
+			Content string `json:"message"`
 		} `json:"message"`
 	} `json:"choices"`
 	Usage struct {
@@ -299,6 +349,15 @@ func (h *HTTPEndPoint) ExecuterContexte(ctx context.Context, action, charge, cle
 	corps, err := json.Marshal(req)
 	if err != nil {
 		return adaptateurs.Resultat{}, err
+	}
+	// Bornage à L'ÉMISSION (réserve 7154948522) : la requête elle-même est
+	// refusée AVANT tout octet émis si sa charge dépasse la borne d'entrée
+	// déclarée (heuristique conservatrice : au plus 4 octets UTF-8 par jeton
+	// d'entrée). Fail closed, défense en profondeur côté connecteur.
+	if !h.simuleLoc && h.jetonsEntreeMax > 0 && len(corps) > h.jetonsEntreeMax*4 {
+		return adaptateurs.Resultat{}, errors.New("connecteurs : CHARGE_HORS_BORNE : " +
+			"la requête dépasse jetons_entree_max_par_tentative (heuristique 4 octets par " +
+			"jeton, fail closed, AUCUN octet émis)")
 	}
 
 	var derniere string
@@ -391,4 +450,50 @@ func min64(a, b int64) int64 {
 		return a
 	}
 	return b
+}
+
+// ---- tarification et enveloppe monétaire (réserve 7154948522) ----
+
+// coutJetons : coût en centimes de jetons au tarif déclaré (centimes par
+// million de jetons), arrondi VERS LE HAUT en arithmétique ENTIÈRE : aucun
+// flottant, aucun sous-comptage, unités explicites (centimes d'euro).
+func coutJetons(jetons, tarifCentimesParMillion int) int {
+	return (jetons*tarifCentimesParMillion + 999_999) / 1_000_000
+}
+
+// EstimationCentimesSur : enveloppe monétaire CONSERVATRICE d'une tentative
+// potentiellement facturable, en centimes d'euro entiers, calculée AVANT
+// tout appel. Chaque retrait possible (429/5xx, jusqu'à retraits_max) peut
+// être intégralement facturé par le fournisseur : l'enveloppe compte donc
+// (1 + retraits) tentatives intégralement. Tarif ou borne inconnu (<= 0) :
+// erreur TARIF_INCONNU, l'appel est refusé par l'orchestrateur (fail
+// closed). Cette enveloppe est une ESTIMATION LOCALE fondée sur les tarifs
+// et bornes DÉCLARÉS par le pilote : ce n'est PAS une garantie du montant
+// réellement facturé par le fournisseur.
+func (h *HTTPEndPoint) EstimationCentimesSur() (int, error) {
+	if h.tarifEntreeMillion <= 0 || h.tarifSortieMillion <= 0 || h.tarifRequete <= 0 ||
+		h.jetonsEntreeMax <= 0 || h.jetonsSortieMax <= 0 {
+		return 0, errors.New("TARIF_INCONNU : tarifs (entree/sortie/requete) ou bornes " +
+			"absents pour " + h.id + " : aucun plafond monetaire opposable (fail closed)")
+	}
+	parTentative := coutJetons(h.jetonsEntreeMax, h.tarifEntreeMillion) +
+		coutJetons(h.jetonsSortieMax, h.tarifSortieMillion) + h.tarifRequete
+	return (1 + h.retraits) * parTentative, nil
+}
+
+// CoutReelCentimes : coût conservateur calculé À POSTERIORI depuis l'usage
+// TOTAL réellement signalé par la réponse : la répartition entrée/sortie
+// n'étant pas disponible, le tarif le plus élevé des deux est appliqué (on
+// ne sous-compte jamais). Ne sert qu'à enregistrer un ÉVENTUEL surcoût
+// dépassant la réservation : le coût constaté ne libère JAMAIS de centimes
+// réservés (conservateur par construction, côté orchestrateur).
+func (h *HTTPEndPoint) CoutReelCentimes(jetonsTotal int) (int, error) {
+	if h.tarifEntreeMillion <= 0 || h.tarifSortieMillion <= 0 || h.tarifRequete <= 0 {
+		return 0, errors.New("TARIF_INCONNU : tarification absente pour " + h.id)
+	}
+	m := h.tarifEntreeMillion
+	if h.tarifSortieMillion > m {
+		m = h.tarifSortieMillion
+	}
+	return coutJetons(jetonsTotal, m) + h.tarifRequete, nil
 }
