@@ -32,8 +32,11 @@ import (
 	"coordengine/internal/adaptateurs"
 )
 
-// secretRE : séquences de clé à expurger de toute sortie.
-var secretRE = regexp.MustCompile(`sk-[A-Za-z0-9_\-]{8,}`)
+// secretRE : séquences de clé à expurger de toute sortie. Familles
+// couvertes : préfixe sk- (OpenAI et compatibles) et clés Google AI Studio
+// (AIza suivi de 35 caractères) — correction M-COORD-RAIL-01 T2 validée par
+// le pilote (constat Gemini confirmé : la clé AIza n'était pas expurgée).
+var secretRE = regexp.MustCompile(`(sk-[A-Za-z0-9_\-]{8,}|AIza[0-9A-Za-z_\-]{35})`)
 
 // Format d'API déclarés (décision D4 du plan v2) : champ additif "format"
 // de la configuration, rétrocompatible ("openai" si absent).
