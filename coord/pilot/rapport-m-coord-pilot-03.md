@@ -128,3 +128,62 @@ MCP hors périmètre ; aucun changement normatif ; v1.5 non activée.
 3. Clôture de #27 et de #29, activation éventuelle de v1.5.
 
 — Vibe (Mistral), exécutant M-COORD-PILOT-03, 25/11/2026.
+
+## 8. Addendum du 25/11/2026 — correction de la contre-réception A_CORRIGER (réserve 7154948522)
+
+**Contre-réception OpenAI** : `PlafondCentimes` validé dans la configuration
+mais non transmis au moteur budgétaire ; surplus comptabilisé après l'appel.
+Le plafond monétaire n'était PAS démontré opposable. Correction conduite en
+boucle sur la même branche / même PR #30, plan de correction v1
+**PLAN_ACCEPTE au premier tour** par OpenAI (session pont `m-coord-pilot-03`,
+empreinte `038ccca3…`), sans réserve ni point bloquant.
+
+**Reproductions AVANT correction** (compilables sur le code incriminé,
+échouées) : REPRO A (le budget ne porte aucun plafond ni réservation
+monétaire) ; REPRO B (appel d'un connecteur réel sans plafond armé : l'appel
+part, aucune erreur). Les deux sont conservées comme garde-fous permanents.
+
+**Correction** : voûte monétaire additive.
+- `budget.go` : plafond global `Plafonds.Centimes` (centimes d'euro entiers),
+  réservations durables `Etat.CentimesReserves`, méthodes `ReserverCentimes`
+  (refus si plafond non armé/dépassé, fail closed),
+  `AjusterCentimes` (enregistre un surcoût, JAMAIS de libération),
+  `CentimesReservesTotal`.
+- `connecteurs.go` : tarifs explicites par fournisseur
+  (`tarif_entree/sortie_centimes_par_million`, `tarif_requete_centimes`) et
+  bornes par tentative (`jetons_entree/sortie_max_par_tentative`), exigés
+  complets en mode REEL au chargement ; enveloppe conservatrice
+  `(1+retraits_max) × [coût(borne entrée)+coût(borne sortie)+requête]`,
+  arrondis vers le haut en arithmétique entière ; bornage À L'ÉMISSION
+  (`CHARGE_HORS_BORNE`, heuristique 4 octets/jeton) ; coût réel conservateur
+  `CoutReelCentimes`.
+- `orchestre.go` : TX1 arme la réservation monétaire pour tout adaptateur
+  réel (plafond non armé => `APPEL_REEL_REFUSE`, tarif inconnu =>
+  `TARIF_INCONNU`, plafond dépassé => `BUDGET_DEPASSE`, le tout AVANT tout
+  octet émis) ; TX2 n'enregistre que d'éventuels surcoûts ; journal
+  `APPEL_RESERVE` enrichi (`centimes_reserves` + rappel « estimation locale,
+  pas une garantie fournisseur »).
+- `cmd/coord-mission/main.go` : `PlafondCentimes` de l'autorisation pilote
+  TRANSMIS au budget de la mission.
+- **Distinction assumée** : la réservation est une estimation CONSERVATRICE
+  LOCALE (tarifs/bornes déclarés) ; le logiciel garantit qu'il refuse
+  d'émettre au-delà, pas ce que le fournisseur facture.
+
+**Défaut annexe découvert et corrigé** (préexistant sur la première tête de
+branche) : la démo `-demo-local` échouait `MODELE_DIVERGENT` (modèle déclaré
+`demo-exec`/`demo-recep` ≠ modèle répondu `demo`) : elle ne pouvait pas
+s'exécuter. Corrigé de façon minimale (modèle déclaré = `demo` pour les deux
+fournisseurs factices, contrôle fail-closed inchangé) et AJOUTÉ à la CI
+(job Go multi-OS, exit 0 attendu) : la démo déroule désormais son cycle
+complet jusqu'à `ACK_RECU`.
+
+**Preuves REEL (Go 1.27.4 officiel installé en séance, linux/amd64)** :
+`go vet`/`build`/`test` OK (11 paquets ; connecteurs 32 tests, budget 10
+tests, dont 15 nouveaux) ;
+Python 88/88 historiques + 47/47 v1.5 + robustesse 10/10 + démo Python
+CONFORME ; Go : vecteurs 22/22 sha `8c097f76…` et démo 19 CONFORME/0 ECART
+sha `e1f1cdbe…` byte-identiques à la ligne de base #23 ; `-demo-local`
+exit 0 état ACK_RECU. Race local NON_EXÉCUTÉ (pas de gcc), couvert par la
+CI (`-race -count=2` incluant `./internal/connecteurs/`).
+
+— Vibe (Mistral), cycle correctif M-COORD-PILOT-03, 25/11/2026.
