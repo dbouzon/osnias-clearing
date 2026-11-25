@@ -1,0 +1,44 @@
+name: COORD experiment (A2A vs A2A-over-MCP, module coord/exp)
+on:
+  push:
+    branches: [main]
+    paths: ['coord/exp/**', '.github/workflows/coord-exp-ci.yml']
+  pull_request:
+    paths: ['coord/exp/**', '.github/workflows/coord-exp-ci.yml']
+  workflow_dispatch:
+jobs:
+  exp-go:
+    name: Exp Go ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: coord/exp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+      - name: go vet
+        run: go vet ./...
+      - name: go build
+        run: go build ./...
+      - name: go test (S1..S9 + S10 gouvernance, boucles locales, 0 EUR)
+        shell: bash
+        run: go test ./... -timeout 300s
+  exp-race:
+    name: Exp Race detector
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: coord/exp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+      - name: go test -race -count=2 (conduite complete incluse)
+        run: go test -race -count=2 ./... -timeout 600s

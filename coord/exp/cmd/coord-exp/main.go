@@ -25,7 +25,27 @@ import (
 
 func main() {
 	jsonMode := flag.Bool("json", false, "sortie JSON des lignes de conduite")
+	s10 := flag.Bool("s10", false, "scenario S10 seul (gouvernance COORD : Pilot reel + serveur MCP lecture)")
 	flag.Parse()
+
+	if *s10 {
+		res, err := conduite.LigneS10(context.Background())
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "erreur S10:", err)
+			os.Exit(1)
+		}
+		if *jsonMode {
+			b, err := json.MarshalIndent(res, "", "  ")
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "erreur d encodage JSON:", err)
+				os.Exit(1)
+			}
+			fmt.Println(string(b))
+			return
+		}
+		fmt.Println(conduite.MarkdownS10(res))
+		return
+	}
 
 	exp, err := conduite.Runner(context.Background())
 	if err != nil {
