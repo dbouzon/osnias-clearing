@@ -1,0 +1,42 @@
+name: coord-debug-build (temporaire, M-COORD-PILOT-03)
+on:
+  push:
+    branches: [mission/coord-pilot-03]
+jobs:
+  erreurs:
+    # Harnais TEMPORAIRE de la mission M-COORD-PILOT-03 : le sandbox
+    # executant n'a pas de toolchain Go (installations interdites) et les
+    # journaux Actions ne sont pas lisibles hors session admin ; cette
+    # trace sera SUPPRIMEE avant la fusion definitive.
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+      - name: capturer
+        working-directory: coord/go
+        run: |
+          {
+            echo "=== go build ./... ==="
+            go build ./... 2>&1
+            echo "BUILD_EXIT=$?"
+            echo "=== go vet ./... ==="
+            go vet ./... 2>&1
+            echo "VET_EXIT=$?"
+            echo "=== go test ./... (extrait) ==="
+            go test ./... 2>&1 | tail -60
+          } > /tmp/erreurs.txt 2>&1 || true
+      - name: publier
+        run: |
+          mkdir -p .coord-debug
+          cp /tmp/erreurs.txt .coord-debug/erreurs-build.txt
+          git config user.name "coord-debug-bot"
+          git config user.email "action@users.noreply.github.com"
+          git add .coord-debug
+          if git diff --cached --quiet; then echo "trace inchangée"; exit 0; fi
+          git commit -m "debug: trace de build autonome (M-COORD-PILOT-03, temporaire)"
+          git push
