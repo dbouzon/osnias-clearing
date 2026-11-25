@@ -1,10 +1,12 @@
 <!DOCTYPE html>
+<!-- Copyright © 2026 Denis Bouzon
+ORCID: https://orcid.org/0009-0007-8894-8902 -->
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1" name="viewport">
-<title>COORD — le protocole qui fait dialoguer deux IA | Osnias Clearing</title>
-<meta content="COORD est le protocole et le logiciel qui font coopérer deux agents IA de laboratoires différents, Mistral en exécutant et OpenAI en évaluateur indépendant, autour d'un registre GitHub public." name="description">
+<title>COORD — Protocole ouvert de coordination d’agents IA | Osnias Clearing</title>
+<meta content="Gouvernance multi-agents IA indépendante des fournisseurs, réception indépendante, logiciel reproductible et architecture expérimentale A2A-over-MCP." name="description">
 <meta content="Denis Bouzon" name="author">
 <meta content="Denis Bouzon" name="creator">
 <meta content="Osnias Clearing" name="publisher">
@@ -13,23 +15,23 @@
 <link href="/favicon.ico" rel="icon" sizes="any">
 <link href="/favicon_32x32.png" rel="icon" sizes="32x32" type="image/png">
 <meta content="coordination d'agents IA, protocole multi-IA, Mistral, OpenAI, réception indépendante, machine à états, empreintes de preuves, GitHub" name="keywords">
-<meta content="COORD — protocole de dialogue Mistral ⇄ OpenAI" name="DC.title">
+<meta content="COORD — Protocole ouvert de coordination d’agents IA | Osnias Clearing" name="DC.title">
 <meta content="Denis Bouzon" name="DC.creator">
 <meta content="fr" name="DC.language">
 <link href="https://www.osnias-clearing.com/coord/" rel="canonical"><link href="https://www.osnias-clearing.com/coord/" hreflang="fr" rel="alternate"><link href="https://www.osnias-clearing.com/en/coord/" hreflang="en" rel="alternate"><link href="https://www.osnias-clearing.com/coord/" hreflang="x-default" rel="alternate">
 <link href="https://orcid.org/0009-0007-8894-8902" rel="author">
 <link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
-<meta content="COORD — le protocole qui fait dialoguer deux IA | Osnias Clearing" property="og:title">
-<meta content="Mistral exécute, OpenAI évalue, GitHub fait foi : un protocole public et reproductible de coopération entre agents IA." property="og:description">
+<meta content="COORD — Protocole ouvert de coordination d’agents IA | Osnias Clearing" property="og:title">
+<meta content="Gouvernance multi-agents IA indépendante des fournisseurs, réception indépendante, logiciel reproductible et architecture expérimentale A2A-over-MCP." property="og:description">
 <meta content="article" property="og:type">
 <meta content="https://www.osnias-clearing.com/coord/" property="og:url">
 <meta content="Osnias Clearing" property="og:site_name">
 <meta content="Denis Bouzon" name="citation_author">
-<meta content="COORD — protocole de dialogue Mistral ⇄ OpenAI" name="citation_title">
+<meta content="COORD — Protocole ouvert de coordination d’agents IA | Osnias Clearing" name="citation_title">
 <meta content="2026-11-24" name="citation_publication_date">
 <meta content="summary" name="twitter:card">
-<meta content="COORD — le protocole qui fait dialoguer deux IA | Osnias Clearing" name="twitter:title">
-<meta content="Mistral exécute, OpenAI évalue, GitHub fait foi : un protocole public et reproductible de coopération entre agents IA." name="twitter:description">
+<meta content="COORD — Protocole ouvert de coordination d’agents IA | Osnias Clearing" name="twitter:title">
+<meta content="Gouvernance multi-agents IA indépendante des fournisseurs, réception indépendante, logiciel reproductible et architecture expérimentale A2A-over-MCP." name="twitter:description">
 <link href="/assets/css/osnias.css" rel="stylesheet">
 <script defer src="/assets/js/osnias-seo.js"></script>
 <script defer src="/assets/js/osnias-nav.js"></script>
@@ -49,8 +51,8 @@
       "@type": "WebPage",
       "@id": "https://www.osnias-clearing.com/coord/#webpage",
       "url": "https://www.osnias-clearing.com/coord/",
-      "name": "COORD — le protocole qui fait dialoguer deux IA | Osnias Clearing",
-      "description": "Mistral exécute, OpenAI évalue, GitHub fait foi : un protocole public et reproductible de coopération entre agents IA.",
+      "name": "COORD — Protocole ouvert de coordination d’agents IA | Osnias Clearing",
+      "description": "Gouvernance multi-agents IA indépendante des fournisseurs, réception indépendante, logiciel reproductible et architecture expérimentale A2A-over-MCP.",
       "isPartOf": {
         "@id": "https://www.osnias-clearing.com/#website"
       },
@@ -62,11 +64,12 @@
     {
       "@type": "TechArticle",
       "@id": "https://www.osnias-clearing.com/coord/#techarticle",
-      "headline": "COORD — protocole de dialogue Mistral ⇄ OpenAI",
+      "headline": "COORD — Protocole ouvert de coordination d’agents IA | Osnias Clearing",
       "author": {
         "@id": "https://www.osnias-clearing.com/#denis-bouzon"
       },
       "datePublished": "2026-11-24",
+      "dateModified": "2026-11-25",
       "url": "https://www.osnias-clearing.com/coord/",
       "inLanguage": "fr",
       "about": "Coordination d'agents IA avec réception indépendante ancrée aux empreintes Git"
@@ -86,12 +89,12 @@
 <section class="hero">
 <div aria-label="Sélection de langue" class="language-switch"><span class="active-language">🇫🇷 Français</span><a href="/en/coord/" hreflang="en" lang="en" title="English version">🇬🇧 English</a></div>
 <div class="hero-heading">
-<div class="eyebrow">Coordination de deux agents IA de laboratoires différents</div>
-<h1>COORD : faire dialoguer Mistral et OpenAI</h1>
-<p class="home-version" style="text-align:center;opacity:.78;font-size:.95rem;margin:.15rem 0 .65rem">Version v1.4 candidate · <time datetime="2026-11-24">24 novembre 2026</time></p>
-<div class="osnias-animation-cta" style="text-align:center;margin:.2rem auto 1rem"><a href="/coord-v1.0-v1.4.zip" download style="display:inline-block;padding:.85rem 1.5rem;border-radius:999px;border:1px solid #67d0ad;background:#173e53;color:#f1fbff;text-decoration:none;font-weight:700;box-shadow:0 3px 15px rgba(0,0,0,.14)" aria-label="Télécharger l'archive COORD v1.0 à v1.4 (zip)">⬇ Télécharger COORD (.zip) — sources v1.0 à v1.4</a></div>
+<div class="eyebrow">Coopération inter-agents indépendante des fournisseurs</div>
+<h1>COORD : un protocole ouvert de coordination d’agents IA</h1>
+<p class="home-version" style="text-align:center;opacity:.85">v1.4 opérationnelle · v1.5 et Specification 1.0 candidates · <time datetime="2026-11-25">25 novembre 2026</time></p>
+<div class="osnias-animation-cta" style="text-align:center;margin:.2rem auto 1rem"><a href="/coord-v1.0-v1.5.zip" download style="display:inline-block;padding:.85rem 1.5rem;border-radius:999px;border:1px solid #67d0ad;background:#173e53;color:#f1fbff;text-decoration:none;font-weight:700;box-shadow:0 3px 15px rgba(0,0,0,.14)" aria-label="Télécharger l'archive COORD v1.0 à v1.5 (zip)">⬇ Télécharger COORD (.zip) — sources v1.0 à v1.5</a></div>
 <div class="hero-role">Mistral exécute · OpenAI évalue · GitHub fait foi</div>
-<p class="hero-lead">COORD est un petit logiciel et un protocole public qui font coopérer deux agents IA : l'un conçoit et exécute, l'autre critique et rend un verdict indépendant, et le dépôt Git conserve les preuves. Aucune IA ne valide jamais son propre travail.</p>
+<p class="hero-lead">COORD sépare exécution, réception indépendante, preuves durables et autorisation humaine. Mistral et OpenAI illustrent des agents interchangeables, sans constituer des dépendances du protocole.</p>
 </div>
 </section>
 </div>
@@ -149,7 +152,7 @@
 sh run_v12.sh        # batterie v1.2 candidate : 11/11 PASS
 sh run_v13.sh        # batterie v1.3 : 13/13 PASS
 sh run_robustness.sh # suite de robustesse T3 : 10/10 PASS
-sh run_v14.sh        # batterie v1.4 candidate : 17/17 PASS</code></pre>
+sh run_v14.sh        # batterie v1.4 : 17/17 PASS</code></pre>
 Total : 88/88 PASS, exit 0. Ces tests sont UNITAIRES ou d'INTEGRATION AVEC MOCKS ; les E2E réels sont les missions réelles elles-mêmes.</div>
 <div class="resources">
 <a class="resource" href="https://github.com/dbouzon/osnias-clearing/tree/main/coord" rel="noopener noreferrer" target="_blank"><div><strong>Sources sur GitHub</strong><span>Modules canoniques · Batteries · Lanceurs</span></div><div class="resource-type">OPEN →</div></a>
@@ -160,7 +163,7 @@ Total : 88/88 PASS, exit 0. Ces tests sont UNITAIRES ou d'INTEGRATION AVEC MOCKS
 <div>
 <div class="section-label">05 · Implémenter le protocole dans votre projet</div>
 <h2>Peu de règles, n'importe quel langage</h2>
-<p class="section-intro">Le protocole tient en une page : états et transitions minimales, format d'enregistrement, conventions de commentaires et quelques invariants non négociables.</p>
+<p class="section-intro">Le protocole définit des règles explicites : états et transitions minimales, format d'enregistrement, conventions de commentaires et quelques invariants non négociables.</p>
 </div>
 <p>L'enregistrement de mission est une ligne JSON normalisée : mission, issue, state, protocol, sha_git, proof_fp (empreinte sha256 des preuves), model_api, ts_utc, verdict_url, verdict_id, ack. Les échanges asynchrones utilisent des commentaires marqués <code>FROM:MISTRAL</code>, <code>FROM:CHATGPT-API DECISION</code> et <code>TO:MISTRAL</code>.</p>
 <div class="notice"><strong>Invariants à reproduire :</strong> réception indépendante obligatoire · jamais d'auto-réception · jamais de PASS sans exécution réelle · obsolescence d'un verdict par empreinte · idempotence des publications · aucun secret dans les dépôts.</div>
@@ -172,8 +175,9 @@ Total : 88/88 PASS, exit 0. Ces tests sont UNITAIRES ou d'INTEGRATION AVEC MOCKS
 <h2>Ce qui est prouvé, ce qui ne l'est pas</h2>
 <p class="section-intro">La transparence sur les limites fait partie du protocole : chaque affirmation distingue ce qui a été exécuté de ce qui ne l'a pas été.</p>
 </div>
-<div class="notice"><strong>État :</strong> v1.4 candidate (v1.3 en vigueur, issue #150). La version candidate v1.5 n'est pas publiée ici. <strong>Limites :</strong> batteries UNITAIRES/MOCKS, aucun E2E simulé n'est présenté comme réel ; logiciel placé sous licence Apache-2.0 ; versions EN/ES de cette page envisagées.</div>
+<div class="notice"><strong>État :</strong> v1.4 opérationnelle ; v1.5 et COORD Specification 1.0 candidates non activées. Licence Apache-2.0. Les résultats simulés ne constituent pas une qualification réelle des fournisseurs.</div>
 </section>
+<section id="architecture"><div class="section-label">Architecture · Recherche</div><h2>Pile de communication inter-agents</h2><p class="section-intro">Une pile conceptuelle inspirée du modèle ISO/OSI, sans équivalence normative avec ses couches. COORD gouverne, A2A structure les échanges, MCP les encapsule dans l’expérience proposée.</p><figure style="margin:1rem auto;max-width:760px"><ol reversed start="6" style="list-style:none;padding:0;display:grid;gap:.5rem"><li style="background:#4338ca;color:white;padding:1rem;border-radius:.6rem"><strong>6 · Application</strong><div>Interface Pilot ; Web et mobile sont des perspectives.</div></li><li style="background:#1d4ed8;color:white;padding:1rem;border-radius:.6rem"><strong>5 · COORD</strong><div>Mandats, autorisations, budget, réception indépendante et preuves durables.</div></li><li style="background:#0e7490;color:white;padding:1rem;border-radius:.6rem"><strong>4 · A2A</strong><div>Messages, tâches, états et livrables inter-agents.</div></li><li style="background:#047857;color:white;padding:1rem;border-radius:.6rem"><strong>3 · MCP</strong><div>Enveloppe applicative expérimentale des messages A2A.</div></li><li style="background:#475569;color:white;padding:1rem;border-radius:.6rem"><strong>2 · Communication</strong><div>HTTPS ou STDIO local.</div></li><li style="background:#334155;color:white;padding:1rem;border-radius:.6rem"><strong>1 · Réseau</strong><div>TCP/IP pour HTTPS uniquement ; STDIO utilise les flux de processus locaux.</div></li></ol><figcaption>Architecture A2A-over-MCP proposée — expérimentation #38, non encore qualifiée.</figcaption></figure><p>Exemple : COORD autorise une tâche, le message A2A porte son identité et son contenu, une passerelle MCP expérimentale le transmet à un agent et retourne le résultat. COORD conserve l’autorité de réception. MCP n’est pas TCP et ne garantit pas nativement l’interopérabilité A2A.</p><div class="notice">Question de recherche : comparer A2A direct et A2A encapsulé avec des agents simulés, mesurer fidélité, latence, trafic, reprise et sécurité. Aucun gain de performance ni compatibilité Gemini n’est encore revendiqué. <a href="https://github.com/dbouzon/osnias-clearing/issues/38">#38</a> · <a href="https://a2a-protocol.org/">A2A</a> · <a href="https://modelcontextprotocol.io/">MCP</a></div><h3>Logiciel de référence et preuves</h3><p>Référence Python et moteur Go ; Pilot et orchestration ; connecteurs fournisseurs ; serveur MCP en lecture seule réceptionné dans la PR #37. La passerelle expérimentale reste distincte du serveur de lecture. <a href="https://github.com/dbouzon/osnias-clearing/tree/main/coord/go">Go</a> · <a href="https://github.com/dbouzon/osnias-clearing/issues/33">SEC-01</a> · <a href="https://github.com/dbouzon/osnias-clearing/pull/37">MCP #37</a>.</p><p><a href="/coord/docs/spec/coord-spec-1.0.md">COORD Specification 1.0 (candidate)</a> · <a href="/coord/implementations/">Appel à implémentations</a></p></section>
 </main>
 <footer>
 <div class="container">
