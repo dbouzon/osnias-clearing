@@ -1,0 +1,69 @@
+== Reproductions expérimentales des anomalies C1..C6 sur c4c4b4c6 (avant correction, issue #27 / PR #28 ==
+== Commande : go test ./internal/pilot/ -run 'TestC1|TestC2|TestC3|TestC4|TestC5|TestC6' -v ==
+=== RUN   TestC1InvariantPlafondSousConcurrence
+    concurrence_test.go:124: C1 : 4 appel(s) passé(s) mais 2 comptabilisé(s) : perte de mise à jour
+--- FAIL: TestC1InvariantPlafondSousConcurrence (0.04s)
+=== RUN   TestC1ReproEntrelacementPerdMiseAJour
+    concurrence_test.go:183: C3 : l'arrêt du pilote a été écrasé par une transition concurrente ; avec Transaction, l'arrêt DOIT être durable
+--- FAIL: TestC1ReproEntrelacementPerdMiseAJour (0.01s)
+=== RUN   TestC3InvariantArretDurableSousConcurrence
+    concurrence_test.go:219: C3 : l'arrêt du pilote DOIT rester actif après l'orage de requêtes
+--- FAIL: TestC3InvariantArretDurableSousConcurrence (0.04s)
+=== RUN   TestC2TransitionInterditeSansAppelNiConsommation
+    concurrence_test.go:248: C2 : 1 appel(s) passé(s) pour une transition interdite
+--- FAIL: TestC2TransitionInterditeSansAppelNiConsommation (0.01s)
+=== RUN   TestC4LeveeExigeRepriseNormative
+    concurrence_test.go:294: C4 : reprise normative attendue avant toute transition, obtenu 200 map[appel_adaptateur:map[jetons:250 simule:true sortie:SOUMISSION SIMULEE par [mistral-simule] empreinte 8dfba10fe6a66d37 (aucune cle, aucun reseau)] budget:mistral-simule: 2/10 appels; openai-simule: 0/10 appels empreinte:6c06bea3ff8147d8a23e9e04c7b3eb028b8db4977025e31c531485e379db7225 etat:DECISION_ATTENDUE]
+--- FAIL: TestC4LeveeExigeRepriseNormative (0.03s)
+=== RUN   TestC5ErreurJournalExplicite
+    concurrence_test.go:341: C5 : une erreur de journal DOIT être explicite (500), obtenu 403 map[motif:acteur non habilité : inconnu (le rôle PILOTE n'est dérivable que de la session locale, S4) trace:07a21b3e type:ACTEUR_REFUSE]
+--- FAIL: TestC5ErreurJournalExplicite (0.01s)
+=== RUN   TestC6IdentifiantsDistinctsDossiersDistincts
+    concurrence_test.go:365: C6 : la création de "a-b" DOIT aboutir (identifiant distinct) : creation : mission a-b deja existante
+--- FAIL: TestC6IdentifiantsDistinctsDossiersDistincts (0.01s)
+FAIL
+FAIL	coordengine/internal/pilot	0.168s
+FAIL
+
+== Sortie : 6 ÉCHECS (comportement fautif reproduit) ==
+
+==================================================================
+APRÈS CORRECTION (nouvelle révision, invariants verrouillés)
+Commande : go test ./internal/pilot/ -run 'TestC1|TestC2|TestC3|TestC4|TestC5|TestC6' -count=2 -v
+=== RUN   TestC1InvariantPlafondSousConcurrence
+--- PASS: TestC1InvariantPlafondSousConcurrence (0.04s)
+=== RUN   TestC1TransactionSerieArrEtBudget
+--- PASS: TestC1TransactionSerieArrEtBudget (0.01s)
+=== RUN   TestC3InvariantArretDurableSousConcurrence
+--- PASS: TestC3InvariantArretDurableSousConcurrence (0.03s)
+=== RUN   TestC2TransitionInterditeSansAppelNiConsommation
+--- PASS: TestC2TransitionInterditeSansAppelNiConsommation (0.01s)
+=== RUN   TestC4LeveeExigeRepriseNormative
+--- PASS: TestC4LeveeExigeRepriseNormative (0.03s)
+=== RUN   TestC5ErreurJournalExplicite
+--- PASS: TestC5ErreurJournalExplicite (0.01s)
+=== RUN   TestC6IdentifiantsDistinctsDossiersDistincts
+--- PASS: TestC6IdentifiantsDistinctsDossiersDistincts (0.02s)
+=== RUN   TestC1InvariantPlafondSousConcurrence
+--- PASS: TestC1InvariantPlafondSousConcurrence (0.04s)
+=== RUN   TestC1TransactionSerieArrEtBudget
+--- PASS: TestC1TransactionSerieArrEtBudget (0.01s)
+=== RUN   TestC3InvariantArretDurableSousConcurrence
+--- PASS: TestC3InvariantArretDurableSousConcurrence (0.04s)
+=== RUN   TestC2TransitionInterditeSansAppelNiConsommation
+--- PASS: TestC2TransitionInterditeSansAppelNiConsommation (0.02s)
+=== RUN   TestC4LeveeExigeRepriseNormative
+--- PASS: TestC4LeveeExigeRepriseNormative (0.04s)
+=== RUN   TestC5ErreurJournalExplicite
+--- PASS: TestC5ErreurJournalExplicite (0.01s)
+=== RUN   TestC6IdentifiantsDistinctsDossiersDistincts
+--- PASS: TestC6IdentifiantsDistinctsDossiersDistincts (0.03s)
+PASS
+ok  	coordengine/internal/pilot	0.363s
+
+Sortie : 6/6 PASS x 2 itérations (comportement corrigé verrouillé).
+Race detector : NON_EXECUTE en local (compilateur C absent du sandbox) ;
+couvert par le job CI dédié « go test -race ./internal/pilot/ ./internal/missions/ ».
+Bout en bout : go vet/build/test ./... 11 paquets OK ; scénario E2E 25/25 exit 0.
+Vecteurs Go sha256 8c097f76... et démo Go sha256 e1f1cdbe... : byte-identiques
+à la ligne de base #23 (noyau historique intact).
