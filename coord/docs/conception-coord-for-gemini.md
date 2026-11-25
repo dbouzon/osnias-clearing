@@ -1,15 +1,15 @@
-<!-- Copyright © 2026 Denis Bouzon — ORCID 0009-0007-8894-8902 — SPDX-License-Identifier: Apache-2.0 -->
+<!-- Copyright © 2026 Denis Bouzon — ORCID https://orcid.org/0009-0007-8894-8902 — SPDX-License-Identifier: Apache-2.0 -->
 
 # Conception de COORD for Gemini — Dossier M-COORD-GEMINI-01
 
-- **Version** : 1.0 — 25/11/2026 — Mission [M-COORD-GEMINI-01](https://github.com/dbouzon/osnias-clearing/issues/31) (issue #31)
+- **Version** : 1.1 — 25/11/2026 — Mission [M-COORD-GEMINI-01](https://github.com/dbouzon/osnias-clearing/issues/31) (issue #31). v1.1 : corrections après contre-réception A_CORRIGER (commentaire 7163089887) : v1 strictement lecture seule sans aucun token transporté au client IA ; périmètre recentré sur l'emballage du serveur commun #35 ; traçabilité des commandes et références corrigées.
 - **Statut** : conception uniquement. COORD v1.4 = référence opérationnelle ; v1.5 = candidate non activée.
 - **Exécutant** : Mistral (Vibe). Critique et réception indépendante : OpenAI. Gouvernance : pilote humain.
 - **Base** : main `40c6fd9b7266ac5315fd15f60f75e85b19de11f2` (post-fusion PR #34, harnais M-COORD-SEC-01 pérennisés).
 
 ## 1. Objet et périmètre
 
-Concevoir l'extension permettant à Gemini CLI d'utiliser COORD : découverte et consultation des missions, opérations actives uniquement via les contrôles Pilot existants. La direction **Gemini → COORD** (agent consommant COORD) est le périmètre ; la direction **COORD → Gemini** (API fournisseur Google, type connecteur de `coord/go/internal/connecteurs`) est une dépendance ultérieure hors périmètre 01. Aucune modification du moteur, du protocole ou des connecteurs ; aucun appel payant ; aucun secret en repo.
+Concevoir l'extension permettant à Gemini CLI d'utiliser COORD : découverte et consultation des missions en **lecture seule stricte** en v1. La direction **Gemini → COORD** (agent consommant COORD) est le périmètre ; la direction **COORD → Gemini** (API fournisseur Google, type connecteur de `coord/go/internal/connecteurs`) est une dépendance ultérieure hors périmètre 01. Toute opération active (création, transition, soumission, arrêt, reprise) reste du ressort exclusif du pilote via son interface Pilot ; une éventuelle soumission déléguée à l'agent ferait l'objet d'une identité déléguée distincte, après mandat spécifique du pilote. Aucune modification du moteur, du protocole ou des connecteurs ; aucun appel payant ; aucun secret en repo.
 
 ## 2. Fait d'écosystème 2026 : scission Gemini CLI / Antigravity
 
@@ -23,8 +23,8 @@ Concevoir l'extension permettant à Gemini CLI d'utiliser COORD : découverte et
 Gemini CLI / Antigravity (agent IA)
         │  (emballage : gemini-extension.json, GEMINI.md, commandes /coord-*)
         ▼
-Serveur MCP « coord-gemini » (STDIO, loopback, lecture seule par défaut)
-        │  HTTP loopback + token console EXISTANT de coord-pilot (jamais de new surface d'autorité)
+Serveur MCP commun « COORD » (cf. #35 ; STDIO, loopback, LECTURE SEULE STRICTE v1)
+        │  HTTP loopback, routes publiques de lecture uniquement (AUCUN token pilote transporté)
         ▼
 Service COORD Pilot (cmd/coord-pilot, inchangé)
         │
@@ -32,8 +32,8 @@ Service COORD Pilot (cmd/coord-pilot, inchangé)
 Moteur COORD (coord06 v1.4 / module coordengine v1.5, inchangés)
 ```
 
-- **Serveur MCP** : STDIO, lancé par le client CLI ; s'apparente à un client du service HTTP Pilot. Il s'exécute sur la machine du pilote, en loopback uniquement. Toute opération active (création, transition, soumission, arrêt, reprise) passe par les routes authentifiées existantes de `coord/go/internal/pilot`, avec le **token console existant** : aucune duplication des règles COORD, aucun contournement du pilote. Lecture seule par défaut : le serveur MCP ne détient le token actif que si le pilote le place dans le trousseau local ; sinon, seules les routes publiques de découverte/consultation sont joignables.
-- **Secrets** : token via champ `settings[].sensitive` (trousseau système Gemini CLI / Antigravity) ou variable d'environnement locale, jamais dans le repo ni dans les logs. Politique d'assainissement des variables d'environnement du CLI (clarifiée au commit du 14/05/2026) documentée dans le README de l'extension.
+- **Serveur MCP** : STDIO, lancé par le client CLI ; s'apparente à un client du service HTTP Pilot. Il s'exécute sur la machine du pilote, en loopback uniquement. **V1 strictement lecture seule** : seules les routes publiques de découverte/consultation de `coord/go/internal/pilot` sont appelées. Aucune opération active, aucune duplication des règles COORD, aucun contournement du pilote. La conception du serveur (SDK, langage, contrat complet) relève de la mission [M-COORD-MCP-01](https://github.com/dbouzon/osnias-clearing/issues/35) (#35) ; le présent dossier ne définit que le contrat d'interface côté client et l'emballage.
+- **Secrets** : **aucune information d'authentification n'est fournie à l'extension ni au serveur MCP en v1** (pas de token console dans l'environnement, le trousseau ou les `settings` du client IA). Politique d'assainissement des variables d'environnement du CLI (clarifiée au commit du 14/05/2026) documentée dans le README de l'extension. Si un besoin de soumission déléguée émerge, il exigera une identité déléguée distincte et un mandat explicite, pas une réutilisation du token pilote.
 - **Isolation** : le serveur MCP n'accède jamais directement au stockage (`missions/*.json`) : tout passe par le service Pilot (règle #35 « ne pas contourner Pilot » reprise ici).
 
 ## 4. Manifeste modèle (`gemini-extension.json`)
@@ -51,29 +51,21 @@ Moteur COORD (coord06 v1.4 / module coordengine v1.5, inchangés)
     }
   },
   "contextFileName": "GEMINI.md",
-  "settings": [
-    {
-      "name": "coordPilotToken",
-      "description": "Token console du service COORD Pilot local (optionnel : lecture seule sans token)",
-      "envVar": "COORD_PILOT_TOKEN",
-      "sensitive": true
-    }
-  ],
   "excludeTools": ["run_shell_command"]
 }
 ```
 
-Notes : `name` en minuscules/tirets et égal au nom du répertoire ; manifeste à la **racine** du dépôt ou de l'archive de release ; `trust` non supporté ; `${extensionPath}` officiel. Le champ `copyright`/ORCID figure dans les en-têtes de fichiers sources (SPDX), pas dans le JSON (syntaxe JSON préservée).
+Notes : manifeste **exemplaire** (le binaire/commande du serveur commun sera livré par #35 ; l'exemple Node.js est indicatif) ; `name` en minuscules/tirets et égal au nom du répertoire ; manifeste à la **racine** du dépôt ou de l'archive de release ; `trust` non supporté ; `${extensionPath}` officiel ; **aucun `settings` en v1** : aucune donnée sensible n'est transportée vers le client IA. Le champ `copyright`/ORCID figure dans les en-têtes de fichiers sources (SPDX), pas dans le JSON (syntaxe JSON préservée).
 
 ## 5. Contrat d'outils MCP (v1 proposée)
 
 | Outil | Mode | Description | Garantie |
 |---|---|---|---|
-| `coord_list_missions` | lecture seule | Liste mission, verdict, état (JSON pur) | Route publique Pilot |
-| `coord_get_mission` | lecture seule | Détail, stratégie, journal d'une mission autorisée | Filtrage par droits Pilot |
+| `coord_list_missions` | lecture seule | Liste mission, verdict, état (données agrégées, aucun secret) | Route publique Pilot |
+| `coord_get_mission` | lecture seule | Détail et journal d'une mission autorisée | Filtrage par droits Pilot |
 | `coord_get_budget` | lecture seule | Jetons/centimes réservés et consommés | Données agrégées, aucun secret |
-| `coord_submit_artifact` | actif | Soumission d'un livrable pour réception | Token console requis, idempotence moteur |
-| (aucune mutation d'état) | actif-interdit | Toute mutation d'état (création, transition, arrêt, reprise) **interdite** au serveur MCP v1 : le pilote agit via son interface Pilot | Anti-auto-mandatement (cf. §7) |
+
+**Aucun outil actif en v1** : toute mutation d'état (création, transition, soumission, arrêt, reprise, clôture) est **interdite** au serveur MCP ; le pilote agit via son interface Pilot (anti-auto-mandatement, cf. §7 et garde-fous M-COORD-SEC-01). Une éventuelle future soumission déléguée exigerait une identité déléguée distincte octroyée par mandat explicite, jamais le token console du pilote. Contrat détaillé (schémas, erreurs, négociation) à définir par #35.
 
 Règles : schémas JSON d'entrée validés côté serveurs factices avant développement (02) ; toute erreur = refus explicite, jamais d'effet de bord ; négociation/erreurs conforme au standard MCP.
 
@@ -81,8 +73,8 @@ Règles : schémas JSON d'entrée validés côté serveurs factices avant dével
 
 | Exigence (source mandat) | Preuve en 01 | Vérification en 02/03 |
 |---|---|---|
-| Installation 3 OS par outils officiels | Matrice §8, commandes vérifiées | CI 3 OS + à chaud par un tiers |
-| Lecture par défaut, actions explicites | Contrat §5, routes Pilot existantes | Tests ; refus sans token |
+| Installation 3 OS par outils officiels | Matrice §8, commandes proposées (exemples, NON exécutées en 01) | CI 3 OS + à chaud par un tiers |
+| Lecture seule stricte, aucune action exposée en v1 | Contrat §5, manifeste §4 sans `settings` | Tests ; refus de toute mutation |
 | Aucun contournement du pilote | §3 (service HTTP unique), §7 A-tests | Rejeu harnais SEC-01 PR #34 verts |
 | Installation sans clé ≠ exécution Gemini | §8.3 (installation sans authentification Google, exécution = clé du pilote) | Démo locale |
 | Galerie : 3 conditions (public + topic + manifeste racine) | §9.2 | Soumission réelle 03 (décision pilote) |
@@ -94,8 +86,8 @@ Règles : schémas JSON d'entrée validés côté serveurs factices avant dével
 | Menace | Garantie (existant, preuve) | Choix 01 |
 |---|---|---|
 | Injection via données de mission (identité/model falsifié) | Données opaques sans privilège, aucune route exécute du texte ; résolution d'acteur serveur (S4) ; N-05, fail-closed | Rejeu A1-A15 exigé en 02 (harnais #34) |
-| Usurpation de rôle/pilote dans un prompt | Identités déclarées ≠ identités authentifiées ; aucune action sur texte de LLM | `_exclu_` du contrat §5 |
-| Détournement de token | `sensitive` → trousseau, pas de log d'auth, refus hors loopback | Documenter + tester en 02 |
+| Usurpation de rôle/pilote dans un prompt | Identités déclarées ≠ identités authentifiées ; aucune action sur texte de LLM ; aucun outil actif en v1 (§5) | Rejeu A1-A15 exigé en 02 (harnais #34) |
+| Transfert/exfiltration du token pilote | **Aucun token transporté en v1** (conception §3–§4) : ni environnement, ni trousseau, ni `settings` du client IA ; refus hors loopback | Documenter + tester en 02 |
 | Escalade via payload falsifié | Schéma JSON strict, routes Pilot inchangées, fail-closed transmis | Vecteurs 22/22 à rejouer en 02 |
 | Doubles appels/idempotence | Anti-doublon orchestrateur existant (`appel_en_cours.json`) | Non modifié, testé 02 |
 | Surcoût/argent | 0 € en 01 (adaptateurs simulés) ; voûte monétaire inchangée | 0 appel réel |
@@ -104,15 +96,14 @@ Règles : schémas JSON d'entrée validés côté serveurs factices avant dével
 
 ### 8.1 Prérequis
 
-- Windows / Linux / macOS ; Node.js ≥ 20 (serveur MCP) ; COORD Pilot local déjà configuré (`coord/go/cmd/coord-pilot`) ; git pour l'installation CLI.
+- Windows / Linux / macOS ; runtime requis par le serveur MCP commun #35 (SDK et langage à décider par #35, non imposés ici) ; COORD Pilot local déjà configuré (`coord/go/cmd/coord-pilot`) ; git pour l'installation CLI.
 - Gemini CLI (hérité) : `gemini extensions install <url-du-dépôt> [--consent]` ; Antigravity : conversion plugin documentée : `agy plugin import gemini`, puis configuration du serveur MCP comme tout MCP externe.
 
-### 8.2 Commandes (vérifiées en conception)
+### 8.2 Commandes (exemples proposés dans ce dossier, NON exécutées en 01)
 
 ```bash
-# lecture seule, sans token :
-node mcp/coord-gemini.js            # serveur STDIO, attend COORD_PILOT_URL locale
-# avec droits actifs : token du pilote dans le trousseau système
+# exemple indicatif, cible livrée par #35 puis emballée en 02 :
+# <commande du serveur MCP commun COORD>   → serveur STDIO, routes publiques de lecture du service Pilot local
 ```
 
 ### 8.3 Installation sans clé ≠ exécution Gemini
@@ -139,15 +130,17 @@ Topic `gemini-cli-extension`, licence Apache-2.0 (cohérente avec COORD, décisi
 | Gemini CLI (client, non modifié) | Apache-2.0 | Oui |
 | COORD (Apache-2.0, inchangé) | Apache-2.0 | — |
 
-Fichiers propres : `Copyright © 2026 Denis Bouzon — ORCID 0009-0007-8894-8902 — SPDX-License-Identifier: Apache-2.0` en en-tête. Aucun changement de licence du repo sans décision du pilote.
+Tableau indicatif fondé sur l'option Node.js examinée en 01 ; le choix définitif du SDK et du langage relève de #35, avec re-vérification des licences en 02.
+
+Fichiers propres : `Copyright © 2026 Denis Bouzon — ORCID https://orcid.org/0009-0007-8894-8902 — SPDX-License-Identifier: Apache-2.0` en en-tête. Aucun changement de licence du repo sans décision du pilote.
 
 ## 11. Démo simulée (01, sans clé ni compte Osnias)
 
-Scénario reproductible en 02 : (S1) service Pilot local lancé avec missions factices ; (S2) serveur MCP démarré en STDIO ; (S3) négociation MCP standard + liste missions + détail ; (S4) soumission sans token activé → refus explicite sans effet de bord (S5) données hostiles (identité falsifiée, JSON profond) → données pures refusées ; trace sha256 publiée. Critères : refus, jamais d'effet de bord ; PROFIL(res) trace reproductible.
+Scénario reproductible en 02 : (S1) service Pilot local lancé avec missions factices ; (S2) serveur MCP démarré en STDIO ; (S3) négociation MCP standard + liste missions + détail ; (S4) tentative de mutation ou d'appel d'outil actif inexistant → refus explicite sans effet de bord ; (S5) données hostiles (identité falsifiée, JSON profond) → données pures refusées ; trace sha256 publiée. Critères : refus, jamais d'effet de bord ; trace reproductible.
 
 ## 12. Plan des sous-missions 02 (développement) et 03 (publication)
 
-- **02 — développement** (à publier par le pilote après ∃ serveur MCP commun #35) : serveur MCP réel conformément au contrat §5, adaptateurs simulés, tests factices loopback, CI 3 OS, réception indépendante au SHA, journalisation détaillée des verdicts avec sévérité (exigence de #31 initiale reportée de #29).
+- **02 — emballage et qualification** (à publier par le pilote après réception du serveur MCP commun développé par #35, dont le SDK et le langage restent à sa discrétion) : emballage Gemini CLI/Antigravity autour du serveur commun, qualification réelle de compatibilité (non présumée), tests sur serveurs factices loopback, démo locale S1..S5, CI 3 OS, réception indépendante au SHA. **Aucun transfert des points de #29 (journalisation des verdicts, sévérité) sans mandat spécifique** : ces évolutions relèvent d'une mission dédiée, pas de 02.
 - **03 — publication/indexation** : dépôt dédié si décision pilote, topic, release, contrôles galerie, contrôles HTTP 200, licence affichée.
 
 ## 13. Critères de réussite vérifiables 02/03 (extrait)
