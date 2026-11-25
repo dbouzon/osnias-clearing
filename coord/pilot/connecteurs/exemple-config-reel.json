@@ -1,0 +1,44 @@
+{
+  "mode": "REEL",
+  "autorisation_pilote": {
+    "pilote": "Denis Bouzon",
+    "fournisseurs": ["mistral", "openai"],
+    "plafond_centimes": 200,
+    "plafond_appels_par_fournisseur": 10,
+    "plafond_jetons_par_fournisseur": 100000,
+    "date": "2026-11-25",
+    "objet": "mission bénigne M-COORD-PILOT-03, premiere mission inter-IA",
+    "note": "Ce bloc EST l'autorisation budgetaire ecrite du pilote ; sans lui aucun appel reel."
+  },
+  "fournisseurs": [
+    {
+      "id": "mistral",
+      "endpoint": "https://api.mistral.ai/v1/chat/completions",
+      "cle_env": "COORD_CLE_MISTRAL",
+      "modele": "mistral-small-latest",
+      "timeout_ms": 60000,
+      "taille_max_reponse": 262144,
+      "retraits_max": 2,
+      "tarif_entree_centimes_par_million": 10,
+      "tarif_sortie_centimes_par_million": 30,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 8000,
+      "jetons_sortie_max_par_tentative": 2000
+    },
+    {
+      "id": "openai",
+      "endpoint": "https://api.openai.com/v1/chat/completions",
+      "cle_env": "COORD_CLE_OPENAI",
+      "modele": "gpt-4o-mini",
+      "timeout_ms": 60000,
+      "taille_max_reponse": 262144,
+      "retraits_max": 2,
+      "tarif_entree_centimes_par_million": 15,
+      "tarif_sortie_centimes_par_million": 60,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 8000,
+      "jetons_sortie_max_par_tentative": 2000
+    }
+  ],
+  "note_tarifs": "Tarifs et bornes DECLARES par le pilote (a ajuster selon la grille reelle du compte) : ils bornent l'enveloppe monetaire conservee avant chaque appel (arrondis vers le haut, retraits comptes integralement). C'est une estimation LOCALE, pas une garantie du facturier fournisseur."
+}
