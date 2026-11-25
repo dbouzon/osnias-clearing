@@ -40,7 +40,7 @@ const (
 	TypeReception     = "RECEPTION"
 	TypeResolution    = "RESOLUTION_APPEL"
 	TypeClotureRefuse = "CLOTURE_REFUSEE"
-	TypeCommitRefuse = "COMMIT_REFUSE"
+	TypeCommitRefuse  = "COMMIT_REFUSE"
 )
 
 // Erreurs structurées (fail closed, explicites).
@@ -131,7 +131,7 @@ type appelEnCours struct {
 }
 
 const (
-	appelEnCoursEtatEnCours = "EN_COURS"
+	appelEnCoursEtatEnCours  = "EN_COURS"
 	appelEnCoursEtatTermine  = "TERMINE"
 	appelEnCoursEtatOrphelin = "ORPHELIN"
 )
@@ -187,9 +187,9 @@ func (o *Orchestrateur) ResoudreAppelEnCours(issue, resolution, motif, par strin
 		return err
 	}
 	return o.ref.Journaliser(issue, map[string]any{
-		"type": TypeResolution,
+		"type":   TypeResolution,
 		"detail": "appel en cours résolu (" + resolution + ") : " + motif,
-		"par":   par,
+		"par":    par,
 	})
 }
 
@@ -221,18 +221,21 @@ func resoudreActeur(enr *missions.Enregistrement, acteur string) (policy.Identit
 // ---- séquence RÉSERVER -> APPELER -> COMMITTER ----
 
 type preparation struct {
-	identite   policy.Identity
-	adaptateur string
-	estimation int
-	cleIdemp   string
-	charge     string
-	action     string
+	identite    policy.Identity
+	adaptateur  string
+	estimation  int
+	estCentimes int // réservation monétaire durable de la tentative (réel uniquement)
+	cleIdemp    string
+	charge      string
+	action      string
 }
 
 // preparer : TX1. Vérifie absence d'appel non résolu, arrêt, reprise,
 // acteur habilité, validation normative sur COPIE (C2) quand la cible est
 // connue, RÉSERVE le budget de façon DURABLE (R3 ; la réservation est
-// consommée même en cas d'échec : l'incertitude est payée, fail closed) et
+// consommée même en cas d'échec : l'incertitude est payée, fail closed) :
+// jetons ET, pour un adaptateur réel, enveloppe MONÉTAIRE conservatrice en
+// centimes opposée au plafond de la mission (réserve 7154948522), et
 // inscrit l'appel en cours (anti-doublons après interruption).
 func (o *Orchestrateur) preparer(issue, cible, action, acteur, charge string) (*preparation, error) {
 	var p *preparation
@@ -284,11 +287,34 @@ func (o *Orchestrateur) preparer(issue, cible, action, acteur, charge string) (*
 			return errors.New("orchestrateur : BUDGET_DEPASSE : " + motifB)
 		}
 		enr.Budget.Consommer(id.QualifiedBy, estimation)
+		// Voûte monétaire (réserve 7154948522) : pour un adaptateur RÉEL,
+		// une estimation CONSERVATRICE en centimes est réservée DURABLEMENT
+		// AVANT tout appel : refus si aucun plafond n'est armé, si un tarif
+		// ou une borne est inconnu, ou si le plafond monétaire de la mission
+		// serait dépassé. Les adaptateurs loopback/simulés restent 0 €.
+		estCentimes := 0
+		if a, okA := o.reg[id.QualifiedBy]; okA {
+			if h, okH := a.(*HTTPEndPoint); okH && !h.simuleLoc {
+				if enr.Budget.Plafonds.Centimes <= 0 {
+					return errors.New("orchestrateur : APPEL_REEL_REFUSE : aucun plafond " +
+						"monetaire arme pour la mission (fail closed, reserve 7154948522)")
+				}
+				var errT error
+				estCentimes, errT = h.EstimationCentimesSur()
+				if errT != nil {
+					return errors.New("orchestrateur : APPEL_REEL_REFUSE : " + errT.Error())
+				}
+				if okB, motifB := enr.Budget.ReserverCentimes(id.QualifiedBy, estCentimes); !okB {
+					return errors.New("orchestrateur : BUDGET_DEPASSE : " + motifB)
+				}
+			}
+		}
 		p = &preparation{
-			identite:   id,
-			adaptateur: id.QualifiedBy,
-			estimation: estimation,
-			cleIdemp:   empreinteCharge(issue + "|" + action + "|" + charge + "|" +
+			identite:    id,
+			adaptateur:  id.QualifiedBy,
+			estimation:  estimation,
+			estCentimes: estCentimes,
+			cleIdemp: empreinteCharge(issue + "|" + action + "|" + charge + "|" +
 				time.Now().UTC().Format(time.RFC3339Nano)),
 			charge: charge,
 			action: action,
@@ -308,6 +334,9 @@ func (o *Orchestrateur) preparer(issue, cible, action, acteur, charge string) (*
 	o.ref.Journaliser(issue, map[string]any{
 		"type": TypeAppelReserve, "action": p.action, "adaptateur": p.adaptateur,
 		"jetons_reserves": p.estimation, "cle_idempotence": p.cleIdemp,
+		"centimes_reserves": p.estCentimes,
+		"detail": "centimes_reserves = estimation conservatrice LOCALE declaree " +
+			"(tarifs + bornes + retraits), pas une garantie fournisseur",
 	})
 	return p, nil
 }
@@ -344,8 +373,10 @@ func (o *Orchestrateur) appelerReel(ctx context.Context, p *preparation) (adapta
 
 // committer : TX2. Relit l'état persisté, refuse la transition si un arrêt
 // est survenu pendant l'appel (réponse tardive : état inchangé), applique
-// la transition normative, paie l'éventuel surplus de jetons réels, marque
-// l'appel TERMINE et journalise. donnees supplémentaires fournies quand
+// la transition normative, paie l'éventuel surplus de jetons réels,
+// enregistre l'éventuel SURCOÛT monétaire réel (une réservation n'est
+// jamais libérée : conservateur par construction), marque l'appel TERMINE
+// et journalise. donnees supplémentaires fournies quand
 // la réponse les contient (verdict de réception).
 func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 	res adaptateurs.Resultat, donneesExtra map[string]string, sansTransition bool) error {
@@ -363,6 +394,19 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 		}
 		if surplus := res.Jetons - p.estimation; surplus > 0 {
 			enr.Budget.AjusterJetons(p.adaptateur, surplus)
+		}
+		// Voûte monétaire (réserve 7154948522) : un ÉVENTUEL surcoût réel
+		// constaté est ENREGISTRÉ (jamais libéré) ; le coût réel ne peut
+		// jamais libérer de réservation (conservateur par construction).
+		if p.estCentimes > 0 {
+			if a, okA := o.reg[p.adaptateur]; okA {
+				if h, okH := a.(*HTTPEndPoint); okH {
+					if coutReel, errC := h.CoutReelCentimes(res.Jetons); errC == nil &&
+						coutReel > p.estCentimes {
+						enr.Budget.AjusterCentimes(p.adaptateur, coutReel-p.estCentimes)
+					}
+				}
+			}
 		}
 		if !sansTransition {
 			donnees := map[string]string{}
@@ -397,7 +441,7 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 		if errors.Is(echec, errReponseTardive) {
 			o.ref.Journaliser(issue, map[string]any{
 				"type": TypeReponseTard, "action": action,
-				"detail": "réponse arrivée pendant/après un arrêt pilote : aucune transition appliquée, aucune fraude d'état",
+				"detail":       "réponse arrivée pendant/après un arrêt pilote : aucune transition appliquée, aucune fraude d'état",
 				"jetons_reels": res.Jetons,
 			})
 		}
@@ -423,8 +467,8 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 	})
 	if surplus := res.Jetons - p.estimation; surplus > 0 {
 		o.ref.Journaliser(issue, map[string]any{
-			"type": TypeSurplus,
-			"detail": fmt.Sprintf("jetons réels supérieurs à la réservation : +%d", surplus),
+			"type":       TypeSurplus,
+			"detail":     fmt.Sprintf("jetons réels supérieurs à la réservation : +%d", surplus),
 			"adaptateur": p.adaptateur,
 		})
 	}
@@ -509,9 +553,9 @@ func (o *Orchestrateur) Soumettre(ctx context.Context, issue, executantID, livra
 
 // VerdictPlan : verdict structuré de critique de plan (ancré au plan).
 type VerdictPlan struct {
-	Verdict            string   `json:"verdict"`
-	Points             []string `json:"points"`
-	EmpreinteAttendue  string   `json:"empreinte_attendue"`
+	Verdict           string   `json:"verdict"`
+	Points            []string `json:"points"`
+	EmpreinteAttendue string   `json:"empreinte_attendue"`
 }
 
 // CritiquerPlan : critique du plan par l'adaptateur réceptionnaire AVANT
@@ -731,10 +775,8 @@ func (o *Orchestrateur) Acker(issue, executantID string) error {
 // #29, spec 6.6) : la clôture relève du pilote humain uniquement.
 func (o *Orchestrateur) Cloturer(issue string) error {
 	_ = o.ref.Journaliser(issue, map[string]any{
-		"type": TypeClotureRefuse,
+		"type":   TypeClotureRefuse,
 		"detail": "clôture réservée au pilote : refus de l'automatisme (aucun texte de modèle ne vaut autorisation)",
 	})
 	return errors.New("orchestrateur : CLOTURE_REFUSEE : la clôture est réservée au pilote humain")
 }
-
-
