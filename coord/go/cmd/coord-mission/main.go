@@ -239,11 +239,26 @@ func registreDepuisConfig(cfg *connecteurs.Config) (map[string]adaptateurs.Adapt
 	sort.Strings(ids)
 	reg := map[string]adaptateurs.Adaptateur{}
 	for _, id := range ids {
-		h, err := cfg.NouveauHTTPEndPoint(id)
-		if err != nil {
-			return nil, err
+		f, errF := cfg.Fournisseur(id)
+		if errF != nil {
+			return nil, errF
 		}
-		reg[id] = h
+		var adapt adaptateurs.Adaptateur
+		switch f.FormatEffectif() {
+		case connecteurs.FormatAnthropic:
+			ap, errA := cfg.NouveauAnthropicPoint(id)
+			if errA != nil {
+				return nil, errA
+			}
+			adapt = ap
+		default: // "openai" (valeur implicite, plan v2 D4)
+			hp, errH := cfg.NouveauHTTPEndPoint(id)
+			if errH != nil {
+				return nil, errH
+			}
+			adapt = hp
+		}
+		reg[id] = adapt
 	}
 	return reg, nil
 }

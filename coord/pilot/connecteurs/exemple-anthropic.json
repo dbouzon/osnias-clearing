@@ -1,0 +1,31 @@
+{
+  "mode": "REEL",
+  "autorisation_pilote": {
+    "pilote": "Denis Bouzon",
+    "fournisseurs": ["anthropic"],
+    "plafond_centimes": 200,
+    "plafond_appels_par_fournisseur": 10,
+    "plafond_jetons_par_fournisseur": 100000,
+    "date": "2026-11-25",
+    "objet": "qualification reelle M-COORD-LLM-01 : Claude critique de plan et receptionnaire",
+    "note": "Ce bloc EST l'autorisation budgetaire ecrite du pilote ; sans lui aucun appel reel. NE JAMAIS committer ce fichier avec une vraie cle : la cle passe par la variable d'environnement COORD_CLE_ANTHROPIC."
+  },
+  "fournisseurs": [
+    {
+      "id": "anthropic",
+      "endpoint": "https://api.anthropic.com/v1/messages",
+      "cle_env": "COORD_CLE_ANTHROPIC",
+      "modele": "claude-sonnet-4-5",
+      "format": "anthropic",
+      "timeout_ms": 60000,
+      "taille_max_reponse": 262144,
+      "retraits_max": 2,
+      "tarif_entree_centimes_par_million": 300,
+      "tarif_sortie_centimes_par_million": 1500,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 8000,
+      "jetons_sortie_max_par_tentative": 2000
+    }
+  ],
+  "note_tarifs": "Tarifs et bornes DECLARES par le pilote (a ajuster selon la grille reelle du compte Anthropic) : ils bornent l'enveloppe monetaire reservee avant chaque appel (arrondis vers le haut, retraits comptes integralement). Estimation LOCALE, pas une garantie du facturier. Le champ \"format\": \"anthropic\" declenche le connecteur Messages API (champ additif : absent = format openai, comportement inchange pour Mistral/OpenAI)."
+}
