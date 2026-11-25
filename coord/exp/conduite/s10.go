@@ -29,6 +29,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -72,6 +73,15 @@ func racineCoord() (string, error) {
 		courant = parent
 	}
 	return "", fmt.Errorf("dossier coord/ du depot introuvable depuis %s", courant)
+}
+
+// nomBinaire ajoute le suffixe executable requis par le systeme hote
+// (".exe" sous Windows), pour construire puis lancer les binaires.
+func nomBinaire(nom string) string {
+	if runtime.GOOS == "windows" {
+		return nom + ".exe"
+	}
+	return nom
 }
 
 // construireBinaire compile un binaire du module coord/go vers tmp.
@@ -210,8 +220,8 @@ func LigneS10(ctx context.Context) (*ResultatS10, error) {
 	}
 	defer os.RemoveAll(tmp)
 
-	binPilot := filepath.Join(tmp, "coord-pilot")
-	binMcp := filepath.Join(tmp, "coord-mcp")
+	binPilot := filepath.Join(tmp, nomBinaire("coord-pilot"))
+	binMcp := filepath.Join(tmp, nomBinaire("coord-mcp"))
 	if err := construireBinaire(racine, "./cmd/coord-pilot", binPilot); err != nil {
 		return nil, err
 	}
