@@ -64,7 +64,16 @@ client-serveur distante reste possible sans développement anticipé.
   FAQ ; `coord/mcp/preuves/demo-mcp-locale-trace.txt`.
 - CI : `coord-go-ci.yml` — la démonstration MCP locale rejoint la qualification
   multi-OS (step dédié `go run ./cmd/coord-mcp -demo-local`) et le race detector
-  s'étend à `./internal/mcpserver/`.
+  s'étend à `./internal/mcpserver/`. Le step `go test` publie désormais les noms
+  de tests en échec en annotations CI (diagnostic multi-OS sans accès admin aux logs).
+- Qualification multi-OS CI **REELLE et VERTE** au commit final
+  `fb780bc68fa74c4c67f686869d3c220933c98dd8` : les 6 jobs passent (Go
+  ubuntu/windows/macos, race detector étendu, schemas JSON, batteries Python).
+  Correction apportée après premier échec du job Windows : le test de permissions
+  POSIX du jeton exigeait un refus en 0644 non applicable sous Windows (bits
+  POSIX sans objet) ; le test est devenu OS-aware et **affirme** désormais le
+  comportement documenté sous Windows (chargement OK, contrôle sans objet), le
+  refus 0600 restant exigé sur POSIX.
 
 ## Preuves REEL (sandbox, go1.27.4 linux/amd64, toolchain officielle)
 
@@ -105,8 +114,10 @@ documentée, non développée. v1.4 reste la référence opérationnelle.
 ## Réserves
 
 - `-race` couvert par CI uniquement (pas de gcc local).
-- Test de permissions strictement 0600 : POSIX ; Windows documenté sans contrôle
-  de mode (CI windows exécute le même binaire, le contrôle de propriétaire n'y est pas applicable (POSIX uniquement)).
+- Test de permissions strictement 0600 : exigé sur POSIX (refus 0644) ; sous
+  Windows, bits sans objet — le test affirme le comportement documenté
+  (chargement sans contrôle de mode) et le contrôle de propriétaire n'y est pas
+  applicable.
 - Compatibilité réelle des clients (Gemini CLI, Antigravity, Claude, OpenAI,
   Mistral) : NON_TESTÉE, hors périmètre ; qualifications futures distinctes.
 
