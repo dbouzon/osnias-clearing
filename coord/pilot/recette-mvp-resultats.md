@@ -61,7 +61,7 @@ clé, 0 €. Verdicts consignés ci-dessous, extraits complets dans `preuves-mvp
 
 - `preuves-mvp/trace-recette-python.txt` sha256 `9849bd09984e4ef778b860708f9620d839995614975cfc60b39fa3f3fc21d682`
 - `preuves-mvp/trace-recette-go.txt` sha256 `0368685bde1618267e352b69d20a22bb60d535f8e75f4d3e82797a739a20dd21`
-- `preuves-mvp/trace-scenario-e2e.txt` sha256 `d47ef8c8c7f3cdb3e973f354d20120aaade9ab46e80ba3287d38170fa511137c` (BILAN SCENARIO E2E: OK=25 KO=0, byte-identique à la révision initiale)
+- `preuves-mvp/trace-scenario-e2e.txt` sha256 `d47ef8c8c7f3bdb3e973f354d20120aaade9ab46e80ba3287d38170fa511137c` (BILAN SCENARIO E2E: OK=25 KO=0, byte-identique à la révision initiale ; coquille corrigée : l'empreinte publiée à la livraison initiale portait « c7f3cdb3 », le sha réel calcule « c7f3bdb3 », le fichier est inchangé)
 - `preuves-mvp/trace-reproductions.txt` sha256 `f41627b48456352dd8e2d670e7f077c82dcd6fb6da46a7a4d57ba23e638f804f` (reproductions C1..C6 AVANT correction + invariants verrouillés APRÈS)
 
 ## Réception complémentaire et corrections C1..C6 (issue #27, PR #28)
