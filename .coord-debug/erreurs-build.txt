@@ -8,23 +8,15 @@ VET_EXIT=0
 ?   	coordengine/cmd/coord-pilot	[no test files]
 ?   	coordengine/cmd/vector-runner	[no test files]
 ok  	coordengine/internal/adaptateurs	0.002s
-ok  	coordengine/internal/arret	0.019s
-ok  	coordengine/internal/budget	0.002s
---- FAIL: TestCycleCompletCritiqueExecutionReceptionACK (0.01s)
-    orchestre_test.go:256: 2 appels executant attendus : {AppelsConsommes:map[mistral:4 openai:4] JetonsConsommes:map[mistral:3000 openai:600]}
---- FAIL: TestCrashPendantAppelAntiDoublons (0.00s)
-    orchestre_test.go:413: deux tentatives attendues au budget : {AppelsConsommes:map[mistral:3] JetonsConsommes:map[mistral:2500]}
---- FAIL: TestPlafondAppelsAvantToutAppel (0.00s)
-    orchestre_test.go:460: plafond dépassé attendu : orchestrateur : validation normative refusée avant appel : transition interdite: EXECUTION -> EXECUTION
-FAIL
-FAIL	coordengine/internal/connecteurs	1.970s
-ok  	coordengine/internal/ctxcontrol	0.003s
-ok  	coordengine/internal/engine	0.002s
+ok  	coordengine/internal/arret	0.059s
+ok  	coordengine/internal/budget	0.003s
+ok  	coordengine/internal/connecteurs	2.206s
+ok  	coordengine/internal/ctxcontrol	0.012s
+ok  	coordengine/internal/engine	0.004s
 ok  	coordengine/internal/jcs	0.002s
-ok  	coordengine/internal/missions	0.011s
-ok  	coordengine/internal/persist	0.012s
-ok  	coordengine/internal/pilot	0.085s
+ok  	coordengine/internal/missions	0.030s
+ok  	coordengine/internal/persist	0.018s
+ok  	coordengine/internal/pilot	0.262s
 ?   	coordengine/internal/policy	[no test files]
-ok  	coordengine/internal/resume	0.002s
+ok  	coordengine/internal/resume	0.005s
 ?   	coordengine/internal/spec	[no test files]
-FAIL
