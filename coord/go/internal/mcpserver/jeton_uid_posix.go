@@ -1,5 +1,5 @@
 // Copyright © 2026 Denis Bouzon
-// ORCID: https://orcid.org/0009-0007-8892-8902
+// ORCID: https://orcid.org/0009-0007-8894-8902
 // SPDX-License-Identifier: Apache-2.0
 
 //go:build !windows
@@ -9,6 +9,7 @@ package mcpserver
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"syscall"
 )
 
@@ -21,26 +22,68 @@ func uidFichier(info os.FileInfo) uint64 {
 	return ^uint64(0)
 }
 
-// verifierProtectionJeton (POSIX, SEC-MCP-01/02) : permissions
-// strictement 0600 et propriétaire = utilisateur courant (contrôle
-// sans objet si l'UID ne peut pas être lu).
-func verifierProtectionJeton(chemin string, info os.FileInfo) error {
-	if info.Mode().Perm() != 0o600 {
-		return erreurJeton(chemin, fmt.Sprintf("permissions %o invalides : exiger 0600 (chmod 0600)", info.Mode().Perm()))
+// creerTemporaireProtege (POSIX) : création exclusive O_EXCL, mode 0600 à
+// la création (l'umask ne peut que rétrécir les droits : le secret n'a
+// jamais existé sous une protection plus large).
+func creerTemporaireProtege(cheminCible string) (*os.File, error) {
+	return os.CreateTemp(filepath.Dir(cheminCible), filepath.Base(cheminCible)+".tmp-*")
+}
+
+// verifierTemporaireProtege (POSIX) : fail-closed AVANT écriture du
+// secret : le handle ouvert doit être un fichier régulier en 0600.
+func verifierTemporaireProtege(chemin string, f *os.File) error {
+	info, err := f.Stat()
+	if err != nil || !info.Mode().IsRegular() {
+		return erreurJeton(chemin, "controle du fichier temporaire impossible")
 	}
-	if os.Getuid() >= 0 && uint64(os.Getuid()) != uidFichier(info) {
-		return erreurJeton(chemin, "le fichier n'appartient pas a l'utilisateur courant")
+	if info.Mode().Perm() != 0o600 {
+		return erreurJeton(chemin, "fichier temporaire non protege a la creation (0600 attendu)")
 	}
 	return nil
 }
 
-// protegerFichierJeton (POSIX) : chmod explicite 0600. La création est déjà
-// restrictive (fichier temporaire O_EXCL 0600, l'umask ne peut pas élargir).
-func protegerFichierJeton(chemin string) error {
-	if err := os.Chmod(chemin, 0o600); err != nil {
-		return erreurJeton(chemin, "chmod 0600 impossible")
+// ouvrirJetonProtege (POSIX) : contrôle anti-substitution par handles.
+// Le chemin est résolu une seule fois : Lstat initial (refus des liens
+// symboliques et répertoires), ouverture, puis TOUTES les vérifications
+// et la lecture se font sur le handle ouvert : identité dev/ino exigée
+// identique au contrôle initial (sinon substitution), permissions 0600,
+// propriétaire = utilisateur courant.
+func ouvrirJetonProtege(chemin string) (*os.File, error) {
+	linfo, err := os.Lstat(chemin)
+	if err != nil {
+		return nil, erreurJeton(chemin, "fichier de jeton introuvable ou illisible")
 	}
-	return nil
+	if !linfo.Mode().IsRegular() {
+		return nil, erreurJeton(chemin, "le chemin ne designe pas un fichier regulier (lien symbolique refuse)")
+	}
+	f, err := os.Open(chemin)
+	if err != nil {
+		return nil, erreurJeton(chemin, "fichier de jeton introuvable ou illisible")
+	}
+	finfo, err := f.Stat()
+	if err != nil {
+		f.Close()
+		return nil, erreurJeton(chemin, "controle du fichier ouvert impossible")
+	}
+	if !finfo.Mode().IsRegular() {
+		f.Close()
+		return nil, erreurJeton(chemin, "le chemin ne designe pas un fichier regulier")
+	}
+	ls, ok1 := linfo.Sys().(*syscall.Stat_t)
+	fs, ok2 := finfo.Sys().(*syscall.Stat_t)
+	if !ok1 || !ok2 || ls.Dev != fs.Dev || ls.Ino != fs.Ino {
+		f.Close()
+		return nil, erreurJeton(chemin, "substitution du fichier detectee entre le controle et l'ouverture")
+	}
+	if finfo.Mode().Perm() != 0o600 {
+		f.Close()
+		return nil, erreurJeton(chemin, fmt.Sprintf("permissions %o invalides : exiger 0600 (chmod 0600)", finfo.Mode().Perm()))
+	}
+	if os.Getuid() >= 0 && uint64(os.Getuid()) != uidFichier(finfo) {
+		f.Close()
+		return nil, erreurJeton(chemin, "le fichier n'appartient pas a l'utilisateur courant")
+	}
+	return f, nil
 }
 
 // remplacerFichierJeton (POSIX) : renommage atomique. Un lien symbolique

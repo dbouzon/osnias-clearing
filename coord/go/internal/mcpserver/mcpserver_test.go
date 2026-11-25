@@ -346,10 +346,14 @@ func TestJetonFichier_LienSymbolique(t *testing.T) {
 	}
 }
 
-// TestEcrireJeton_RotationProtegee (SEC-MCP-01/02) : écriture sécurisée
-// (création exclusive, protection effective, remplacement atomique),
-// relecture, rotation, aucune trace temporaire résiduelle, jetons
-// invalides refusés.
+// TestEcrireJeton_RotationProtegee (SEC-MCP-01/02 + ordre résiduel) :
+// écriture sécurisée dont la protection effective est présente DÈS LA
+// CRÉATION et vérifiée sur le handle AVANT l'écriture du secret ; le
+// chargement fail-closed immédiatement après la création le démontre
+// (POSIX : 0600 au fstat ; Windows : DACL natif restreint protégé, CI
+// réelle). Vérifie aussi : relecture, rotation, contrôle
+// anti-substitution par handle, aucune trace temporaire résiduelle,
+// jetons invalides refusés.
 func TestEcrireJeton_RotationProtegee(t *testing.T) {
 	racine := t.TempDir()
 	chemin := filepath.Join(racine, "jeton-rotation.txt")

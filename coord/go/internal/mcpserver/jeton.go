@@ -6,6 +6,7 @@ package mcpserver
 
 import (
 	"bytes"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,29 +23,25 @@ func erreurJeton(nomFichier, motif string) error {
 	return &ErreurJeton{Motif: motif + " [" + filepath.Base(nomFichier) + "]"}
 }
 
-// ChargerJeton lit le fichier de jeton de lecture du pilote. Contrôles
-// fail-closed AVANT la lecture : le fichier doit exister, être un fichier
-// régulier (un lien symbolique n'est jamais suivi), puis posséder la
-// protection effective attendue sur le système courant (voir
-// verifierProtectionJeton) : POSIX — permissions strictement 0600 et
-// propriétaire = utilisateur courant ; Windows — DACL natif restreint à
-// l'utilisateur courant, sans héritage. Aucune valeur de jeton n'apparaît
-// jamais dans les erreurs.
+// ChargerJeton lit le fichier de jeton de lecture du pilote via un HANDLE
+// unique (anti-substitution, le chemin n'est JAMAIS ré-résolu après le
+// contrôle). Contrôles fail-closed AVANT la lecture (voir
+// ouvrirJetonProtege) : fichier régulier (lien symbolique refusé),
+// identité du fichier ouvert vérifiée contre le contrôle initial,
+// protection effective exigée (POSIX : 0600 + propriétaire = utilisateur
+// courant ; Windows : DACL natif restreint à l'utilisateur courant,
+// protégé contre l'héritage). Aucune valeur de jeton n'apparaît jamais
+// dans les erreurs.
 func ChargerJeton(chemin string) (string, error) {
 	if strings.TrimSpace(chemin) == "" {
 		return "", &ErreurJeton{Motif: "chemin du fichier de jeton requis"}
 	}
-	info, err := os.Lstat(chemin)
+	f, err := ouvrirJetonProtege(chemin)
 	if err != nil {
-		return "", erreurJeton(chemin, "fichier de jeton introuvable ou illisible")
-	}
-	if info.IsDir() || !info.Mode().IsRegular() {
-		return "", erreurJeton(chemin, "le chemin ne designe pas un fichier regulier (lien symbolique refuse)")
-	}
-	if err := verifierProtectionJeton(chemin, info); err != nil {
 		return "", err
 	}
-	brut, err := os.ReadFile(chemin)
+	defer f.Close()
+	brut, err := io.ReadAll(io.LimitReader(f, 8192))
 	if err != nil {
 		return "", erreurJeton(chemin, "lecture du fichier de jeton impossible")
 	}
@@ -56,14 +53,17 @@ func ChargerJeton(chemin string) (string, error) {
 }
 
 // EcrireJeton écrit de façon sécurisée un fichier de jeton de lecture
-// (SEC-MCP-01/02) : création EXCLUSIVE d'un fichier temporaire dans le
-// même répertoire (jamais de collision, jamais de suivi de lien
-// symbolique), protection effective appliquée AVANT le renommage atomique
-// (POSIX : chmod 0600 ; Windows : DACL natif restreint à l'utilisateur
-// courant, sans héritage), puis remplacement atomique de la cible
-// (rotation). Une cible existante non régulière (lien symbolique,
-// répertoire) est refusée. Aucune valeur de jeton n'apparaît dans les
-// erreurs.
+// (SEC-MCP-01/02, ordre résiduel) : le fichier temporaire est créé
+// EXCLUSIVEMENT (jamais de collision, jamais de suivi de lien) DÉJÀ
+// PROTÉGÉ — Windows : attributs de sécurité à la création (DACL natif
+// restreint à l'utilisateur courant, sans héritage) ; POSIX : mode 0600
+// à la création (O_EXCL) — puis cette protection effective est VÉRIFIÉE
+// sur le handle AVANT toute écriture du secret (fail-closed : refus et
+// suppression du temporaire sinon). Le partage est refusé pendant
+// l'écriture (Windows : FILE_SHARE_NONE). Remplacement atomique final
+// de la cible (rotation) ; une cible existante non régulière (lien
+// symbolique, répertoire) est refusée. Aucune valeur de jeton
+// n'apparaît dans les erreurs.
 func EcrireJeton(chemin, jeton string) error {
 	if strings.TrimSpace(chemin) == "" {
 		return &ErreurJeton{Motif: "chemin du fichier de jeton requis"}
@@ -75,9 +75,9 @@ func EcrireJeton(chemin, jeton string) error {
 	if info, err := os.Lstat(chemin); err == nil && !info.Mode().IsRegular() {
 		return erreurJeton(chemin, "cible existante non reguliere (lien symbolique ou repertoire) : remplacement refuse")
 	}
-	f, err := os.CreateTemp(filepath.Dir(chemin), filepath.Base(chemin)+".tmp-*")
+	f, err := creerTemporaireProtege(chemin)
 	if err != nil {
-		return erreurJeton(chemin, "creation exclusive du fichier temporaire impossible")
+		return erreurJeton(chemin, "creation exclusive du fichier temporaire protege impossible")
 	}
 	tmp := f.Name()
 	passe := false
@@ -87,6 +87,11 @@ func EcrireJeton(chemin, jeton string) error {
 			os.Remove(tmp)
 		}
 	}()
+	// Fail-closed : la protection effective est vérifiée sur le handle
+	// AVANT toute écriture du secret.
+	if err := verifierTemporaireProtege(chemin, f); err != nil {
+		return err
+	}
 	if _, err := f.WriteString(valeur + "\n"); err != nil {
 		return erreurJeton(chemin, "ecriture du fichier temporaire impossible")
 	}
@@ -95,9 +100,6 @@ func EcrireJeton(chemin, jeton string) error {
 	}
 	if err := f.Close(); err != nil {
 		return erreurJeton(chemin, "fermeture du fichier temporaire impossible")
-	}
-	if err := protegerFichierJeton(tmp); err != nil {
-		return err
 	}
 	if err := remplacerFichierJeton(tmp, chemin); err != nil {
 		return erreurJeton(chemin, "remplacement atomique du fichier de jeton impossible")

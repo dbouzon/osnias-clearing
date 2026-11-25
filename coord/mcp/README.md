@@ -49,9 +49,11 @@ démarrage de coord-pilot
                 ▼
 coord-mcp -pilot http://127.0.0.1:PORT -jeton /chemin/du/jeton-lecture
         │  contrôle AVANT démarrage (SEC-MCP-01/02) : fichier régulier
-        │  (liens symboliques REFUSÉS), protection effective — POSIX : 0600 +
-        │  propriétaire = utilisateur courant ; Windows : DACL natif restreint
-        │  à l'utilisateur courant, sans héritage — sinon REFUS (exit 2),
+        │  (liens symboliques REFUSÉS, anti-substitution : identité du fichier
+        │  ouvert vérifiée sur SON HANDLE, jamais de ré-résolution du
+        │  chemin), protection effective — POSIX : 0600 + propriétaire =
+        │  utilisateur courant ; Windows : DACL natif restreint à
+        │  l'utilisateur courant, sans héritage — sinon REFUS (exit 2),
         │  aucune valeur affichée
         ▼
 sessions de lecture uniquement (missions : liste, détail)
@@ -113,7 +115,8 @@ secret, et l'absence de tout outil de mutation. Trace de référence :
 | Usurpation du pilote | Aucun outil actif en v1 ; mutations impossibles par construction ; rôle résolu côté service (S4) |
 | Transfert du token console au client IA | Le serveur ne connaît que le jeton de lecture ; jeton jamais dans l'environnement du client, les `settings`, les logs ni les réponses |
 | Jeton de lecture compromis | Protection EFFECTIVE du fichier contrôlée au démarrage en fail-closed (POSIX 0600+propriétaire ; Windows DACL natif restreint, sans héritage), rotation par redémarrage, valeur jamais affichée ni journalisée |
-| Substitution du fichier (lien symbolique, collision, fichier préexistant) | Écriture sécurisée `EcrireJeton` : création EXCLUSIVE d'un temporaire dans le même répertoire (jamais de collision), liens symboliques refusés au chargement ET à l'écriture (jamais suivis), remplacement atomique (rotation) ; permissions/ACL appliquées AVANT le renommage |
+| Substitution du fichier (lien symbolique, collision, fichier préexistant) | Écriture sécurisée `EcrireJeton` : création EXCLUSIVE d'un temporaire DÉJÀ PROTÉGÉ — Windows : attributs de sécurité à la création (DACL restreint sans héritage) + vérification sur le handle AVANT l'écriture du secret, aucun partage pendant l'écriture ; POSIX : mode 0600 à la création + fstat de contrôle avant l'écriture. Liens symboliques refusés au chargement ET à l'écriture (jamais suivis), remplacement atomique (rotation) |
+| Substitution entre contrôle et lecture (TOCTOU) | `ChargerJeton` par HANDLE unique : POSIX — identité dev/ino=Lstat exigée ; Windows — DACL vérifié SUR LE HANDLE + identité FileIndex croisée avec une ouverture `FILE_FLAG_OPEN_REPARSE_POINT` (tout point d'analyse est refusé) ; la lecture se fait depuis le même handle, le chemin n'est jamais ré-résolu |
 | Fuite dans les erreurs | Table erreur→code stable, messages sans jeton/URL/chemin/corps brut ; tests permanents de non-divulgation (`internal/mcpserver/mcpserver_test.go` + `-race` en CI) |
 | Accès distant | URL du service restreinte à loopback (refus au démarrage), pas de port exposé par coord-mcp |
 
