@@ -68,7 +68,7 @@ const (
 
 // Jetons minimums facturés à un fournisseur dont la réponse omettrait l'usage:
 // fail-closed, l'orchestrateur refuse plutôt que de sous-compter (JETONS_INCONNUS).
-var secretRE = regexp.MustCompile(`sk-[A-Za-z0-9_\\-]{8,}`)
+var secretRE = regexp.MustCompile(`sk-[A-Za-z0-9_\-]{8,}`)
 
 // ConfigFournisseur : un fournisseur déclaré. AUCUN secret ici : la clé est
 // lue au démarrage dans la variable d'environnement CleEnv.
@@ -138,7 +138,7 @@ func ChargerConfig(chemin string) (*Config, error) {
 			len(c.Autorisation.Fournisseurs) == 0 || c.Autorisation.PlafondCentimes <= 0 ||
 			c.Autorisation.PlafondAppels <= 0 || c.Autorisation.PlafondJetons <= 0 ||
 			strings.TrimSpace(c.Autorisation.Date) == "" {
-			return nil, errors.New("connecteurs : mode REEL exige l'autorisation explicite du pilote "+
+			return nil, errors.New("connecteurs : mode REEL exige l'autorisation explicite du pilote " +
 				"(fournisseurs, plafonds monétaire, d'appels et de jetons, date) — fail closed")
 		}
 	}
@@ -170,8 +170,8 @@ func ChargerConfig(chemin string) (*Config, error) {
 			if f.TarifEntreeCentimesParMillion <= 0 || f.TarifSortieCentimesParMillion <= 0 ||
 				f.TarifRequeteCentimes <= 0 || f.JetonsEntreeMaxParTentative <= 0 ||
 				f.JetonsSortieMaxParTentative <= 0 {
-				return nil, errors.New("connecteurs : mode REEL : tarifs (entree/sortie/requete) et "+
-					"bornes (entree/sortie) requis pour "+f.ID+" (fail closed, aucun tarif inconnu)")
+				return nil, errors.New("connecteurs : mode REEL : tarifs (entree/sortie/requete) et " +
+					"bornes (entree/sortie) requis pour " + f.ID + " (fail closed, aucun tarif inconnu)")
 			}
 		}
 		if c.Mode == ModeReel && strings.TrimSpace(f.CleEnv) == "" {
@@ -323,7 +323,7 @@ type reponseAPI struct {
 	Model   string `json:"model"`
 	Choices []struct {
 		Message struct {
-			Content string `json:"message"`
+			Content string `json:"content"`
 		} `json:"message"`
 	} `json:"choices"`
 	Usage struct {
@@ -454,7 +454,7 @@ func min64(a, b int64) int64 {
 
 // ---- tarification et enveloppe monétaire (réserve 7154948522) ----
 
-// coutJetons : coût en centimes de jetons au tarif déclaré (centimes par
+// coutJetons : coût en centimes de `jetons` au tarif déclaré (centimes par
 // million de jetons), arrondi VERS LE HAUT en arithmétique ENTIÈRE : aucun
 // flottant, aucun sous-comptage, unités explicites (centimes d'euro).
 func coutJetons(jetons, tarifCentimesParMillion int) int {

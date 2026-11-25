@@ -32,8 +32,8 @@ import (
 // réservation en centimes : la dépense réelle n'est bornée par rien.
 func TestReproABudgetSansPlafondMonetaire(t *testing.T) {
 	if _, ok := reflect.TypeOf(budget.Plafonds{}).FieldByName("Centimes"); !ok {
-		t.Fatalf("REPRO A : budget.Plafonds n'expose AUCUN plafond monétaire "+
-			"(champ Centimes) : le plafond de l'autorisation pilote ne peut pas "+
+		t.Fatalf("REPRO A : budget.Plafonds n'expose AUCUN plafond monétaire " +
+			"(champ Centimes) : le plafond de l'autorisation pilote ne peut pas " +
 			"être rendu opposable — anomalie 7154948522")
 	}
 	if _, ok := reflect.TypeOf(budget.Etat{}).FieldByName("CentimesReserves"); !ok {
