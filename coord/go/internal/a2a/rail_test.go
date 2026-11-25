@@ -17,6 +17,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -330,7 +331,10 @@ func TestRailE9SecuriteJetonLoopback(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if info.Mode().Perm() != 0o600 {
+	// L'invariant 0600 est POSIX : sur Windows le chmod n'est qu'une
+	// émulation (bit lecture seule), Perm() n'est pas fiable ; la cible de
+	// production (VPS Linux) garde l'assertion stricte.
+	if runtime.GOOS != "windows" && info.Mode().Perm() != 0o600 {
 		t.Fatalf("registre 0600 attendu : %v", info.Mode().Perm())
 	}
 	raw, _ := os.ReadFile(a.Rail().chemin)
