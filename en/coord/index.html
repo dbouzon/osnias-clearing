@@ -1,10 +1,12 @@
 <!DOCTYPE html>
+<!-- Copyright © 2026 Denis Bouzon
+ORCID: https://orcid.org/0009-0007-8894-8902 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1" name="viewport">
-<title>COORD — the protocol that makes two AIs talk | Osnias Clearing</title>
-<meta content="COORD is the protocol and software that let two AI agents from different labs cooperate, with Mistral as executor and OpenAI as independent evaluator, around a public GitHub registry." name="description">
+<title>COORD — Open protocol for AI agent coordination | Osnias Clearing</title>
+<meta content="Provider-independent AI agent governance, independent review, reproducible reference software and experimental A2A-over-MCP architecture." name="description">
 <meta content="Denis Bouzon" name="author">
 <meta content="Denis Bouzon" name="creator">
 <meta content="Osnias Clearing" name="publisher">
@@ -13,23 +15,23 @@
 <link href="/favicon.ico" rel="icon" sizes="any">
 <link href="/favicon_32x32.png" rel="icon" sizes="32x32" type="image/png">
 <meta content="AI agent coordination, multi-AI protocol, Mistral, OpenAI, independent review, state machine, proof fingerprints, GitHub" name="keywords">
-<meta content="COORD — Mistral ⇄ OpenAI dialogue protocol" name="DC.title">
+<meta content="COORD — Open protocol for AI agent coordination | Osnias Clearing" name="DC.title">
 <meta content="Denis Bouzon" name="DC.creator">
 <meta content="en" name="DC.language">
 <link href="https://www.osnias-clearing.com/en/coord/" rel="canonical"><link href="https://www.osnias-clearing.com/coord/" hreflang="fr" rel="alternate"><link href="https://www.osnias-clearing.com/en/coord/" hreflang="en" rel="alternate"><link href="https://www.osnias-clearing.com/coord/" hreflang="x-default" rel="alternate">
 <link href="https://orcid.org/0009-0007-8894-8902" rel="author">
 <link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
-<meta content="COORD — the protocol that makes two AIs talk | Osnias Clearing" property="og:title">
-<meta content="Mistral executes, OpenAI reviews, GitHub is the record of truth: a public, reproducible protocol for AI agent cooperation." property="og:description">
+<meta content="COORD — Open protocol for AI agent coordination | Osnias Clearing" property="og:title">
+<meta content="Provider-independent AI agent governance, independent review, reproducible reference software and experimental A2A-over-MCP architecture." property="og:description">
 <meta content="article" property="og:type">
 <meta content="https://www.osnias-clearing.com/en/coord/" property="og:url">
 <meta content="Osnias Clearing" property="og:site_name">
 <meta content="Denis Bouzon" name="citation_author">
-<meta content="COORD — Mistral ⇄ OpenAI dialogue protocol" name="citation_title">
+<meta content="COORD — Open protocol for AI agent coordination | Osnias Clearing" name="citation_title">
 <meta content="2026-11-24" name="citation_publication_date">
 <meta content="summary" name="twitter:card">
-<meta content="COORD — the protocol that makes two AIs talk | Osnias Clearing" name="twitter:title">
-<meta content="Mistral executes, OpenAI reviews, GitHub is the record of truth: a public, reproducible protocol for AI agent cooperation." name="twitter:description">
+<meta content="COORD — Open protocol for AI agent coordination | Osnias Clearing" name="twitter:title">
+<meta content="Provider-independent AI agent governance, independent review, reproducible reference software and experimental A2A-over-MCP architecture." name="twitter:description">
 <link href="/assets/css/osnias.css" rel="stylesheet">
 <script defer src="/assets/js/osnias-seo.js"></script>
 <script defer src="/assets/js/osnias-nav.js"></script>
@@ -49,8 +51,8 @@
       "@type": "WebPage",
       "@id": "https://www.osnias-clearing.com/en/coord/#webpage",
       "url": "https://www.osnias-clearing.com/en/coord/",
-      "name": "COORD — the protocol that makes two AIs talk | Osnias Clearing",
-      "description": "Mistral executes, OpenAI reviews, GitHub is the record of truth: a public, reproducible protocol for AI agent cooperation.",
+      "name": "COORD — Open protocol for AI agent coordination | Osnias Clearing",
+      "description": "Provider-independent AI agent governance, independent review, reproducible reference software and experimental A2A-over-MCP architecture.",
       "isPartOf": {
         "@id": "https://www.osnias-clearing.com/#website"
       },
@@ -62,11 +64,12 @@
     {
       "@type": "TechArticle",
       "@id": "https://www.osnias-clearing.com/en/coord/#techarticle",
-      "headline": "COORD — Mistral ⇄ OpenAI dialogue protocol",
+      "headline": "COORD — Open protocol for AI agent coordination | Osnias Clearing",
       "author": {
         "@id": "https://www.osnias-clearing.com/#denis-bouzon"
       },
       "datePublished": "2026-11-24",
+      "dateModified": "2026-11-25",
       "url": "https://www.osnias-clearing.com/en/coord/",
       "inLanguage": "en",
       "about": "AI agent coordination with independent review anchored to Git fingerprints"
@@ -86,13 +89,13 @@
 <section class="hero">
 <div aria-label="Language selection" class="language-switch"><span class="active-language">🇬🇧 English</span><a href="/coord/" hreflang="fr" lang="fr" title="Version française">🇫🇷 Français</a></div>
 <div class="hero-heading">
-<div class="eyebrow">Coordinating two AI agents from different labs</div>
-<h1>COORD: making Mistral and OpenAI talk to each other</h1>
-<p class="home-version" style="text-align:center;opacity:.78;font-size:.95rem;margin:.15rem 0 .65rem">Version v1.4 operational · v1.5 and COORD Specification 1.0 candidates · <time datetime="2026-11-24">24 November 2026</time></p>
+<div class="eyebrow">Provider-independent agent cooperation</div>
+<h1>COORD: an open protocol for AI agent coordination</h1>
+<p class="home-version" style="text-align:center;opacity:.85">v1.4 operational · v1.5 and Specification 1.0 candidates · <time datetime="2026-11-25">25 November 2026</time></p>
 <div class="osnias-animation-cta" style="text-align:center;margin:.2rem auto 1rem"><a href="/coord-v1.0-v1.5.zip" download style="display:inline-block;padding:.85rem 1.5rem;border-radius:999px;border:1px solid #67d0ad;background:#173e53;color:#f1fbff;text-decoration:none;font-weight:700;box-shadow:0 3px 15px rgba(0,0,0,.14)" aria-label="Download the COORD archive v1.0 to v1.5 (zip)">⬇ Download COORD (.zip) — v1.0 to v1.5 + Specification 1.0</a></div>
 <p style="text-align:center;font-size:.85rem;opacity:.8">Earlier link kept alive: <a href="/coord-v1.0-v1.4.zip">coord-v1.0-v1.4.zip</a> (same content, existing links stay valid)</p>
 <div class="hero-role">Mistral executes · OpenAI reviews · GitHub is the record of truth</div>
-<p class="hero-lead">COORD is a small piece of software and a public protocol that let two AI agents cooperate: one designs and executes, the other one critiques and issues an independent verdict, while the Git repository keeps the proofs. No AI ever validates its own work.</p>
+<p class="hero-lead">COORD separates execution, independent review, durable evidence and human authorization. Mistral and OpenAI are examples of interchangeable agents, not protocol dependencies.</p>
 </div>
 </section>
 </div>
@@ -202,6 +205,7 @@ Total: 88/88 PASS, exit 0; v1.5 candidate: 47/47 PASS plus 22/22 conformance vec
 </div>
 <div class="notice"><strong>Status:</strong> v1.4 operational (reference). Non-activated candidates: hardened v1.5 and COORD Specification 1.0 with its Go reference engine; activation remains reserved to the human pilot. <strong>Limits:</strong> UNIT/MOCK batteries, no simulated E2E is presented as real; Go multi-OS qualification and schema validation executed by CI; the software is licensed under Apache-2.0; a French version of this page is the reference version, Spanish not included.</div>
 </section>
+<section id="architecture"><div class="section-label">Architecture · Research</div><h2>Inter-agent communication stack</h2><p class="section-intro">A conceptual stack inspired by ISO/OSI, not a standardized OSI mapping. COORD governs, A2A structures exchanges, MCP encapsulates them in the proposed experiment.</p><figure style="margin:1rem auto;max-width:760px"><ol reversed start="6" style="list-style:none;padding:0;display:grid;gap:.5rem"><li style="background:#4338ca;color:white;padding:1rem;border-radius:.6rem"><strong>6 · Application</strong><div>Pilot interface; web and mobile are future options.</div></li><li style="background:#1d4ed8;color:white;padding:1rem;border-radius:.6rem"><strong>5 · COORD</strong><div>Mandates, authorization, budget, independent review and durable evidence.</div></li><li style="background:#0e7490;color:white;padding:1rem;border-radius:.6rem"><strong>4 · A2A</strong><div>Agent messages, tasks, states and artifacts.</div></li><li style="background:#047857;color:white;padding:1rem;border-radius:.6rem"><strong>3 · MCP</strong><div>Experimental application-level envelope for A2A messages.</div></li><li style="background:#475569;color:white;padding:1rem;border-radius:.6rem"><strong>2 · Communication</strong><div>HTTPS or local STDIO.</div></li><li style="background:#334155;color:white;padding:1rem;border-radius:.6rem"><strong>1 · Network</strong><div>TCP/IP for HTTPS only; STDIO uses local process streams.</div></li></ol><figcaption>Proposed A2A-over-MCP architecture — experiment #38, not yet qualified.</figcaption></figure><p>Example: COORD authorizes a task, the A2A message carries its identity and content, an experimental MCP gateway forwards it to an agent and returns the result. COORD retains authority over acceptance. MCP is not TCP and does not natively guarantee A2A interoperability.</p><div class="notice">Research question: compare direct A2A with encapsulated A2A using simulated agents, measuring fidelity, latency, traffic, recovery and security. No performance benefit or Gemini compatibility is claimed yet. <a href="https://github.com/dbouzon/osnias-clearing/issues/38">#38</a> · <a href="https://a2a-protocol.org/">A2A</a> · <a href="https://modelcontextprotocol.io/">MCP</a></div><h3>Reference software and evidence</h3><p>Python reference and Go engine; Pilot and orchestration; provider connectors; read-only MCP server reviewed in PR #37. The experimental gateway is separate from the read-only server. <a href="https://github.com/dbouzon/osnias-clearing/tree/main/coord/go">Go</a> · <a href="https://github.com/dbouzon/osnias-clearing/issues/33">SEC-01</a> · <a href="https://github.com/dbouzon/osnias-clearing/pull/37">MCP #37</a>.</p><p><a href="/coord/docs/spec/coord-spec-1.0.md">COORD Specification 1.0 (candidate)</a> · <a href="/en/coord/implementations/">Call for implementations</a></p></section>
 </main>
 <footer>
 <div class="container">
