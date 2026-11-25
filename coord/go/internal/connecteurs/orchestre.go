@@ -119,6 +119,44 @@ func (o *Orchestrateur) NouvelleMission(issue, executantID, recepteurID string,
 	})
 }
 
+// NouvelleMissionExplicit crée la mission normative avec affectation
+// EXPLICITE des adaptateurs qualifiants (M-COORD-RAIL-01 T2, arbitrage
+// pilote). Nécessaire au banc multi-fournisseurs : dès que PLUS DE DEUX
+// adaptateurs sont enregistrés, le tri alphabétique de NouvelleMission ne
+// peut plus exprimer l'intention du banc. Additive et rétrocompatible :
+// NouvelleMission (chaîne de tri) reste inchangée. Fail closed : un
+// adaptateur qualifiant inconnu du registre EST REFUSÉ ; le réceptionnaire
+// qualifié par le PILOTE reste distinct de l'exécutant (N-05/N-11 : ces
+// invariants relèvent du moteur, les identités transmises ici restent
+// distinctes par construction).
+func (o *Orchestrateur) NouvelleMissionExplicit(issue, executantID, recepteurID,
+	quaExecID, quaRecepID string, roles map[string][]string, plafonds budget.Plafonds) error {
+	if _, ok := o.reg[quaExecID]; !ok {
+		return fmt.Errorf("connecteurs : ADAPTATEUR_INCONNU %q (affectation explicite, fail closed)", quaExecID)
+	}
+	if _, ok := o.reg[quaRecepID]; !ok {
+		return fmt.Errorf("connecteurs : ADAPTATEUR_INCONNU %q (affectation explicite, fail closed)", quaRecepID)
+	}
+	ids := make([]string, 0, len(o.reg))
+	for id := range o.reg {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	identites := []policy.Identity{
+		{ID: executantID, Role: "EXECUTANT", QualifiedBy: quaExecID},
+		{ID: recepteurID, Role: "RECEPTIONNAIRE", QualifiedBy: quaRecepID},
+		{ID: ActeurPilote, Role: "PILOTE", QualifiedBy: quaExecID},
+	}
+	if _, err := o.ref.Creer(issue, ids, roles, identites, plafonds); err != nil {
+		return err
+	}
+	return o.ref.Journaliser(issue, map[string]any{
+		"type": "CREATION_ORCHESTREE",
+		"detail": "mission conduite par connecteurs réels : exécutant qualifié par " +
+			quaExecID + ", réceptionnaire par " + quaRecepID + " (affectation explicite)",
+	})
+}
+
 // ---- enregistrement d'appel en cours (anti-doublons après interruption) ----
 
 type appelEnCours struct {
