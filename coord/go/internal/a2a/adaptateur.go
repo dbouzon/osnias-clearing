@@ -2,8 +2,10 @@
 // ORCID: https://orcid.org/0009-0007-8894-8902
 // SPDX-License-Identifier: Apache-2.0
 
-// Adaptateur A2A : le point d'entrée UNIQUE par lequel COORD délègue une
-// tâche à un agent A2A (mission M-COORD-LLM-02, plan v2). L'adaptateur est
+// Adaptateur A2A : PONT MINCE entre la batterie COORD et le MODULE RAIL
+// AUTONOME coord/a2a (M-COORD-RAIL-01, T2 : le rail vit hors de coordengine,
+// dans son propre go.mod ; ce fichier ne contient aucune logique de rail et
+// importe uniquement le contrat public du module). L'adaptateur est
 // REGISTERED comme tout adaptateur (adaptateurs.Adaptateur) : la machine
 // normative, elle seule, décide des transitions. Les contrôles monétaires
 // (EnveloppeCentimes/CoutConservateurJetons) sont PARTAGÉS avec les
@@ -21,6 +23,8 @@ import (
 
 	"coordengine/internal/adaptateurs"
 	"coordengine/internal/connecteurs"
+
+	coorda2a "github.com/dbouzon/osnias-clearing/coord/a2a"
 )
 
 // attenteMax : borne DURE de la boucle d'attente d'un résultat par appel
@@ -34,7 +38,7 @@ const (
 // AdaptateurA2A : délègue une action COORD (executer | soumettre |
 // critiquer | recevoir) à un agent A2A via le rail générique.
 type AdaptateurA2A struct {
-	rail *Rail
+	rail *coorda2a.Rail
 	id   string
 	sim  bool
 	// Monétaire (voûte partagée) : tarifs et bornes DÉCLARÉS par le pilote.
@@ -59,7 +63,7 @@ func NouvelAdaptateurA2AJeton(ctx context.Context, f connecteurs.ConfigFournisse
 		return nil, errors.New("a2a : TARIF_INCONNU : tarifs (entree/sortie/requete) et bornes " +
 			"requis pour " + f.ID + " (voûte monétaire partagée, fail closed)")
 	}
-	rail, err := NouveauRail(ctx, f.Endpoint, jeton, cheminRegistre)
+	rail, err := coorda2a.NouveauRail(ctx, f.Endpoint, jeton, cheminRegistre)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +80,7 @@ func NouvelAdaptateurA2AJeton(ctx context.Context, f connecteurs.ConfigFournisse
 }
 
 // Rail expose le rail générique (réutilisable par d'autres adaptateurs).
-func (a *AdaptateurA2A) Rail() *Rail { return a.rail }
+func (a *AdaptateurA2A) Rail() *coorda2a.Rail { return a.rail }
 
 // ID : identifiant opaque du fournisseur déclaré.
 func (a *AdaptateurA2A) ID() string { return a.id }
@@ -113,7 +117,7 @@ func (a *AdaptateurA2A) ExecuterContexte(ctx context.Context, action, charge, cl
 		if doublon && env != nil {
 			// E3 : rejet en doublon — jamais un second débit.
 			return adaptateurs.Resultat{}, fmt.Errorf("a2a : %w (tâche %s, action %s)",
-				ErrDoublon, env.Tache, env.Action)
+				coorda2a.ErrDoublon, env.Tache, env.Action)
 		}
 		return adaptateurs.Resultat{}, err
 	}
@@ -135,7 +139,7 @@ func (a *AdaptateurA2A) ExecuterContexte(ctx context.Context, action, charge, cl
 			return adaptateurs.Resultat{}, fmt.Errorf("a2a : delegation incertaine (%s) : %v : "+
 				"RÉSOLUTION PILOTE REQUISE (fail closed)", env.Tache, errS)
 		}
-		if etat == EtatAchevee {
+		if etat == coorda2a.EtatAchevee {
 			if e, ok := a.rail.ResultatDurable(env.Tache); ok {
 				return adaptateurs.Resultat{Jetons: e.Jetons, Sortie: e.Texte, Simule: a.sim}, nil
 			}
@@ -143,11 +147,11 @@ func (a *AdaptateurA2A) ExecuterContexte(ctx context.Context, action, charge, cl
 				"n'a pas livré de résultat exploitable à l'envoi (fail closed, résolution pilote requise)",
 				env.Tache)
 		}
-		if etat == EtatEchouee || etat == EtatAnnulee {
+		if etat == coorda2a.EtatEchouee || etat == coorda2a.EtatAnnulee {
 			return adaptateurs.Resultat{}, fmt.Errorf("a2a : TACHE_TERMINALE_NEGATIVE %s (%s)",
 				env.Tache, etat)
 		}
-		if etat == EtatSaisieAttendue {
+		if etat == coorda2a.EtatSaisieAttendue {
 			return adaptateurs.Resultat{}, fmt.Errorf("a2a : SAISIE_ATTENDUE %s : l'agent "+
 				"exige une entrée (aucune transmission automatique de mandat, fail closed)", env.Tache)
 		}
