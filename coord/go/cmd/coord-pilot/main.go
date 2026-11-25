@@ -31,6 +31,12 @@ func main() {
 	flag.Parse()
 
 	token := genererToken()
+	jetonLecture := genererToken()
+	jetonFichier := filepath.Join(os.TempDir(), "coord-pilot-jeton-lecture.txt")
+	if err := os.WriteFile(jetonFichier, []byte(jetonLecture+"\n"), 0o600); err != nil {
+		fmt.Fprintln(os.Stderr, "ecriture du fichier de jeton de lecture impossible : "+filepath.Base(jetonFichier))
+		os.Exit(1)
+	}
 
 	ref, err := missions.Ouvrir(*donnees)
 	if err != nil {
@@ -38,7 +44,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	svc, err := pilot.NouveauService(ref, *ui, token, *adresse)
+	svc, err := pilot.NouveauService(ref, *ui, token, *adresse, pilot.AvecJetonLecture(jetonLecture))
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "demarrage refuse : "+err.Error())
 		os.Exit(1)
@@ -56,6 +62,9 @@ func main() {
 	fmt.Println("URL         : http://" + ln.Addr().String() + "/")
 	fmt.Println("Token local : " + token)
 	fmt.Println("Ce token n'est pas journalise ; il est regenere a chaque demarrage.")
+	fmt.Println("Jeton de lecture (PDF/MCP pages) : " + filepath.Base(jetonFichier) + " (permissions 0600, dossier temporaire)")
+	fmt.Println("Ce jeton est LECTURE SEULE : liste et detail des missions ; il est refuse sur toute mutation.")
+	fmt.Println("Il n'est pas journalise et est regenere a chaque demarrage (rotation : les anciens jetons deviennent invalides).")
 	if err := http.Serve(ln, svc.Handler()); err != nil {
 		fmt.Fprintln(os.Stderr, "service interrompu : "+err.Error())
 		os.Exit(1)
