@@ -157,6 +157,15 @@ Acquis conservés : jeton de lecture distinct additif, lecture seule stricte,
 2 outils only, noyau sans transport, non-divulgation testée, 0 €, v1.5 non
 activée, aucune extension fournisseur.
 
+**Preuves de la correction** : CI multi-OS 6 jobs **verts** au commit final
+`e7d728dfcca8c89d637f09787e710ccf9be16abf` (run 45626226126) — le job
+`Go windows-latest` exécute RÉELLEMENT les tests `EcrireJeton`/`ChargerJeton`
+(écriture + vérification du DACL natif restreint, refus fail-closed d'un
+fichier à droits hérités) ; le job `Go ubuntu-latest` exécute les tests
+POSIX (0600/uid, refus 0644, refus liens symboliques, rotation exclusive
+sans résidu temporaire) et le race detector couvre `internal/mcpserver`.
+Fidélité vérifiée octet à octet par tarball codeload épinglé au SHA.
+
 ## Restent réservés au pilote
 
 Fusion de la PR, clôture de #35, décisions d'activation, emballages fournisseurs
