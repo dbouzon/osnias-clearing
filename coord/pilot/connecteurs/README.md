@@ -31,9 +31,13 @@ coord/go/cmd/coord-mission/            conducteur (démo locale 0 €; réel
 - **API directes retenues** pour la v1 ; A2A écarté (analyse #27) mais un
   module futur peut implémenter `adaptateurs.Adaptateur` sans dépendance
   normative ; MCP hors périmètre.
-- Le moteur normatif (`coordengine` : spec/engine/policy/budget/missions)
-  n'est **pas modifié** : tous les changements d'état passent par la machine
-  à états fermée (N-10..N-17).
+- Le moteur normatif (`coordengine` : spec/engine/policy/missions) est
+  **inchangé** ; la seule exception documentée est `internal/budget/budget.go`
+  (méthodes additives : `AjusterJetons` à l'étape 4, puis
+  `ReserverCentimes`/`AjusterCentimes`/`CentimesReservesTotal` pour la voûte
+  monétaire, réserve 7154948522 — aucune sémantique existente modifiée).
+  Tous les changements d'état passent par la machine à états fermée
+  (N-10..N-17).
 
 ## Sécurité (mission #29, étape 4)
 
@@ -53,6 +57,7 @@ coord/go/cmd/coord-mission/            conducteur (démo locale 0 €; réel
    DANS la transaction TX1 (réservation durable, fail-closed : une tentative
    interrompue reste payée, l'incertitude n'est jamais reimboursée) ; le
    surplus réel est ajouté au commit (TX2, journal `APPEL_SURPLUS`).
+   **Et voûte monétaire** : voir section suivante.
 5. **Appel hors verrou** : jamais d'appel réseau sous le verrou de mission ;
    l'arrêt du pilote reste instantané. Une réponse arrivée après un arrêt
    est journalisée `REPONSE_TARDIVE` et **aucune transition** n'est appliquée.
@@ -73,6 +78,38 @@ coord/go/cmd/coord-mission/            conducteur (démo locale 0 €; réel
    identités qualifiées de la mission ; validation normative sur COPIE
    avant tout appel (C2 conservé) ; budget refusé avant l'appel si plafond
    atteint (aucun adaptateur sans plafond ne peut jamais être appelé).
+
+## Voûte monétaire (correction de la réserve 7154948522 : plafond rendu opposable)
+
+Contre-réception du 25/11/2026 : `plafond_centimes` était validé dans la
+configuration mais jamais transmis au moteur budgétaire, et le surplus était
+comptabilisé après l'appel, la dépense étant déjà engagée. Correction :
+
+1. **Plafond transmis et armé** : `Autorisation.PlafondCentimes` est passé au
+   budget de la mission (`budget.Plafonds.Centimes`, centimes d'euro ENTIERS,
+   plafond GLOBAL de la mission).
+2. **Réservation durable AVANT chaque tentative facturable** (TX1) :
+   enveloppe conservatrice = `(1 + retraits_max) × [coût(borne entrée) +
+   coût(borne sortie) + prix par requête]`, tarifs et bornes DÉCLARÉS par
+   fournisseur (`tarif_entree_centimes_par_million`,
+   `tarif_sortie_centimes_par_million`, `tarif_requete_centimes`,
+   `jetons_entree_max_par_tentative`, `jetons_sortie_max_par_tentative`),
+   arrondis TOUJOURS vers le haut en arithmétique entière. Chaque retrait
+   429/5xx pouvant être intégralement facturé, son coût potentiel est
+   réservé dès la première tentative.
+3. **Refus avant réseau** : plafond dépassé, plafond non armé (<= 0) ou
+   tarif/borne inconnu (<= 0, `TARIF_INCONNU`) => refus AVANT tout octet
+   émis. La requête elle-même est refusée (`CHARGE_HORS_BORNE`) si sa charge
+   dépasse la borne d'entrée d'après l'heuristique conservatrice 4 octets
+   UTF-8 par jeton.
+4. **Conservateur par construction** : la réservation n'est JAMAIS libérée
+   (échec, réponse tardive, verdict non conforme, crash : l'incertitude est
+   payée) ; le coût réel constaté ne peut qu'AJOUTER un éventuel surcoût.
+5. **Plafond local estimé ≠ garantie fournisseur** : l'enveloppe est une
+   estimation LOCALE fondée sur les tarifs et bornes déclarés par le pilote.
+   Le logiciel garantit seulement qu'il refuse d'émettre au-delà ; il ne
+   garantit pas ce que le fournisseur facture. Les tarifs de l'exemple sont
+   indicatifs : le pilote les fixe selon la grille de son compte.
 
 ## Guide local (SANS AUCUN SECRET DANS UN FICHIER)
 
@@ -121,6 +158,7 @@ go run ./cmd/coord-mission \
 | Connecteurs réels Mistral/OpenAI (API directes) | REEL (testés via serveurs factices ; appel facturé NON_EXECUTE) |
 | Boucle plan/critique/réception structurée ancrée | REEL (factices) |
 | Triple verrou + autorisation pilote | REEL |
+| Voûte monétaire : plafond en centimes opposé AVANT appel, tarifs/bornes déclarés, réservation jamais libérée | REEL (serveurs factices) |
 | Anti-doublons crash/interruption | REEL |
 | Race detector (connecteurs) | CI multi-OS (`go test -race`) |
 | Appels facturés réels | NON_EXECUTE (autorisation pilote requise) |

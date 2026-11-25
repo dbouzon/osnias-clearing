@@ -18,7 +18,12 @@
       "modele": "mistral-small-latest",
       "timeout_ms": 60000,
       "taille_max_reponse": 262144,
-      "retraits_max": 2
+      "retraits_max": 2,
+      "tarif_entree_centimes_par_million": 10,
+      "tarif_sortie_centimes_par_million": 30,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 8000,
+      "jetons_sortie_max_par_tentative": 2000
     },
     {
       "id": "openai",
@@ -27,7 +32,13 @@
       "modele": "gpt-4o-mini",
       "timeout_ms": 60000,
       "taille_max_reponse": 262144,
-      "retraits_max": 2
+      "retraits_max": 2,
+      "tarif_entree_centimes_par_million": 15,
+      "tarif_sortie_centimes_par_million": 60,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 8000,
+      "jetons_sortie_max_par_tentative": 2000
     }
-  ]
+  ],
+  "note_tarifs": "Tarifs et bornes DECLARES par le pilote (a ajuster selon la grille reelle du compte) : ils bornent l'enveloppe monetaire conservee avant chaque appel (arrondis vers le haut, retraits comptes integralement). C'est une estimation LOCALE, pas une garantie du facturier fournisseur."
 }
