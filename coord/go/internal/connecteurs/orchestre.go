@@ -224,11 +224,16 @@ func (o *Orchestrateur) ResoudreAppelEnCours(issue, resolution, motif, par strin
 	if err := o.appelEnCoursEcrit(a); err != nil {
 		return err
 	}
-	return o.ref.Journaliser(issue, map[string]any{
+	errJ := o.ref.Journaliser(issue, map[string]any{
 		"type":   TypeResolution,
 		"detail": "appel en cours résolu (" + resolution + ") : " + motif,
 		"par":    par,
 	})
+	if errJ != nil {
+		return errJ
+	}
+	o.projeterDurable(issue) // projection lecture seule (M-COORD-HARDENING-01 P5)
+	return nil
 }
 
 func empreinteCharge(s string) string {
@@ -510,6 +515,7 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 			"adaptateur": p.adaptateur,
 		})
 	}
+	o.projeterDurable(issue) // projection lecture seule (M-COORD-HARDENING-01 P5)
 	return nil
 }
 
@@ -804,9 +810,14 @@ func (o *Orchestrateur) Acker(issue, executantID string) error {
 	if echec != nil {
 		return echec
 	}
-	return o.ref.Journaliser(issue, map[string]any{
+	errJ := o.ref.Journaliser(issue, map[string]any{
 		"type": "ACK", "detail": "ACK de l'exécutant " + executantID + " sur la décision reçue",
 	})
+	if errJ != nil {
+		return errJ
+	}
+	o.projeterDurable(issue) // projection lecture seule (M-COORD-HARDENING-01 P5)
+	return nil
 }
 
 // Cloturer : REFUSÉ par construction. Pas de clôture automatique (mission
