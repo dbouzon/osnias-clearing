@@ -27,15 +27,23 @@ jobs:
       - name: go build
         run: go build ./...
       - name: go test
-        run: go test ./...
+        shell: bash
+        run: |
+          if ! go test ./... > test-out.log 2>&1; then
+            cat test-out.log
+            grep -E '^--- FAIL' test-out.log | awk '{printf "::error::%s\n", $0}' || true
+            exit 1
+          fi
       - name: Vecteurs de conformite (22 publies)
         run: go run ./cmd/vector-runner -dir ../docs/conformite-v15
       - name: Demonstration autonome (19 CONFORME / 0 ECART attendus)
         run: go run ./cmd/coord-demo
       - name: Demonstration locale du conducteur (cycle complet, serveurs factices, 0 €)
         run: go run ./cmd/coord-mission -demo-local -data "${RUNNER_TEMP}/coord-mission-demo"
+      - name: Demonstration MCP locale (lecture seule stricte, serveurs factices, 0 €)
+        run: go run ./cmd/coord-mcp -demo-local
   race:
-    name: Race detector (concurrence C1..C6, reception issue #27)
+    name: Race detector (concurrence C1..C6, reception issue #27, M-COORD-MCP-01)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -46,7 +54,7 @@ jobs:
         with:
           go-version: '1.27'
       - name: go test -race (transactions et invariants de concurrence)
-        run: go test -race -count=2 ./internal/pilot/ ./internal/missions/ ./internal/connecteurs/
+        run: go test -race -count=2 ./internal/pilot/ ./internal/missions/ ./internal/connecteurs/ ./internal/mcpserver/
   schemas:
     name: Schemas JSON 2020-12 (validateur externe)
     runs-on: ubuntu-latest

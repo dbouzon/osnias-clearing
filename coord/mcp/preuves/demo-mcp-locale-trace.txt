@@ -1,0 +1,6 @@
+outils exposes : coord_get_mission, coord_list_missions
+coord_list_missions -> OK : {"missions":[{"arret":false,"budget":"mistral-simule: 0/3 appels; openai-simule: 0/3 appels","etat":"PLANIFIEE","issue":"mcp-demo-1","reprise_attendue":false},{"arret":false,"budget":"mistral-simule: 0/3 appels; openai-simule: 0/3 appels","etat":"PLANIFIEE","issue":"mcp-demo-2","reprise_attendue":false}]}
+
+coord_get_mission  -> OK : {"empreinte":"9d37e55b91d119b7a1cd2c0e142f6e06f3ac778d0bda3dd5ba7ab72305e48c05","enregistrement":{"Issue":"mcp-demo-1"," ...
+mission inconnue   -> refus explicite : MISSION_INCONNUE : mission inconnue
+DEMO CONFORME : lecture seule stricte, refus sans fuite, aucun outil de mutation, 0 euro.
