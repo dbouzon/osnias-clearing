@@ -346,3 +346,25 @@ func TestContexteAnnule(t *testing.T) {
 		t.Fatal("annulation attendue")
 	}
 }
+
+// TestExpurgationClesGoogleAIStudio (M-COORD-RAIL-01 T2, arbitrage pilote) :
+// les clés Google AI Studio (préfixe AIza + 35 caractères) sont expurgées
+// comme les clés sk- (constat Gemini confirmé par lecture du code : le motif
+// n'était pas couvert avant cette mission). Aucune reprise de service, la
+// chaîne suspecte sort TOUJOURS sous [EXPURGE].
+func TestExpurgationClesGoogleAIStudio(t *testing.T) {
+	s := nouveauServeurFactice(t, func(w http.ResponseWriter, r *http.Request) {
+		w.Write(reponseChat("cle suspecte AIzaSyA1234567890abcdefghijkM4XyZ9AbCd3", "test-modele", 10))
+	})
+	h, err := configTest(s.URL).NouveauHTTPEndPoint("mistral")
+	if err != nil {
+		t.Fatalf("connecteur : %v", err)
+	}
+	res, err := h.Executer("mandat")
+	if err != nil {
+		t.Fatalf("appel : %v", err)
+	}
+	if !strings.Contains(res.Sortie, "[EXPURGE]") || strings.Contains(res.Sortie, "AIza") {
+		t.Fatalf("expurgation AIza attendue : %q", res.Sortie)
+	}
+}

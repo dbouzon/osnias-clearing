@@ -415,3 +415,12 @@ func (r *Rail) ResoudrePilote(cle, texte string, jetons int) error {
 	e.Etat = EtatAchevee
 	return r.persister()
 }
+
+// Chemin : chemin du registre durable (lecture seule, pour diagnostics et
+// tests embarqués : aucune écriture hors persister).
+func (r *Rail) Chemin() string { return r.chemin }
+
+// EtatDepuisA2A : mapping FERMÉ des états A2A exposé (états connus du rail ;
+// tout état inconnu est REFUSÉ, fail closed). La vérification « état inconnu
+// refusé » EST la frontière de ce mapping : aucun état ne sera jamais deviné.
+func EtatDepuisA2A(e a2a.TaskState) (string, error) { return etatDepuisA2A(e) }

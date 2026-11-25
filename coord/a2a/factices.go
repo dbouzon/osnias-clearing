@@ -302,3 +302,31 @@ func portLibre() int {
 	defer ln.Close()
 	return ln.Addr().(*net.TCPAddr).Port
 }
+
+// JetonsFactices : usage déclaré par les agents factices (constante
+// SIMULATION documentée : loopback uniquement, jamais facturée).
+const JetonsFactices = jetonsFactices
+
+// Executable : alias public du contrat d'exécuteur d'agent (a2asrv).
+// Frontière du module : les consommateurs du rail (banc COORD, outils
+// tiers) implémentent et passent des exécuteurs SANS importer le SDK
+// a2a-go directement (M-COORD-RAIL-01 T2 : cohérent avec l'objectif que
+// la dépendance SDK soit un détail d'implémentation du module).
+type Executable = a2asrv.AgentExecutor
+
+// CompteurEnvois : exécuteur DÉCORATEUR comptant les message/send reçus
+// (observabilité des bancs d'essai : « l'agent n'a jamais exécuté deux
+// fois »). N'ajoute AUCUNE sémantique : il délègue intégralement.
+type CompteurEnvois struct {
+	Inner Executable
+	N     *atomic.Int32
+}
+
+func (c CompteurEnvois) Execute(ctx context.Context, ec *a2asrv.ExecutorContext) iter.Seq2[a2a.Event, error] {
+	c.N.Add(1)
+	return c.Inner.Execute(ctx, ec)
+}
+
+func (c CompteurEnvois) Cancel(ctx context.Context, ec *a2asrv.ExecutorContext) iter.Seq2[a2a.Event, error] {
+	return c.Inner.Cancel(ctx, ec)
+}
