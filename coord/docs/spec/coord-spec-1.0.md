@@ -8,7 +8,7 @@ ORCID: https://orcid.org/0009-0007-8894-8902
 SPDX-License-Identifier: Apache-2.0
 
 Status: ACTIVATED as COORD's operational reference standard since
-26 November 2026 (pilot decision, mission M-COORD-ACTIVATION-01, issue #44,
+25 November 2026 (pilot decision, mission M-COORD-ACTIVATION-01, issue #44,
 qualified base main 2abdebc943e424a11790dd8a24cd6f43c7d914ee). This status
 change is documentary only; no normative content of this specification was
 modified. Implemented reference engines: Go (`coord/go`) and Python
