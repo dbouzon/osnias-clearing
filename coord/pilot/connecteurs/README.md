@@ -246,8 +246,9 @@ stop-only). Mistral est déclaré au FORMAT `openai` (endpoint natif
 - Aucun tool/function calling dans cette tranche ; tarifs GRILLE ÉVOLUTIVE
   en configuration, jamais codés en dur.
 
-Configuration : voir `exemple-mistral.json` (SANS secret : la clé passe par
-`COORD_CLE_MISTRAL`). Recette C1..C9 sur serveurs factices loopback
+Configuration : voir `coord/connecteur/Mistral/exemple-config-mistral.json`
+(SANS secret : la clé passe par `COORD_CLE_MISTRAL`). Recette C1..C9 sur
+serveurs factices loopback
 UNIQUEMENT (SIMULÉ, 0 €) : `mistral_test.go`. Statut : **qualification
 réelle auprès de l'API Mistral : NON_EXÉCUTÉE** (aucun appel, aucune clé
 réelle), sur autorisation écrite du pilote uniquement.
