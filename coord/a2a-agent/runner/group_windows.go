@@ -9,7 +9,6 @@ package runner
 import (
 	"fmt"
 	"os/exec"
-	"syscall"
 )
 
 // sigTermine/sigTue : sous Windows il n'existe pas de signaux POSIX ni
