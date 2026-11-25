@@ -78,7 +78,9 @@ func demoLocalRun(dataDir string) int {
 	}
 
 	exec := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		repondreFactice(w, "LIVRABLE 1\nLIVRABLE 2\nLIVRABLE 3 (démo locale, serveur factice loopback)")
+		repondreFactice(w, "LIVRABLE 1
+LIVRABLE 2
+LIVRABLE 3 (démo locale, serveur factice loopback)")
 	}))
 	defer exec.Close()
 	recep := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -110,10 +112,15 @@ func demoLocalRun(dataDir string) int {
 	}))
 	defer recep.Close()
 
+	// Défaut corrigé en cycle M-COORD-PILOT-03 (découvert à la reproduction
+	// locale) : les serveurs factices répondent "model":"demo" ; un modèle
+	// DIVERGENT serait refusé MODELE_DIVERGENT avant la première étape. Les
+	// modèles DÉCLARÉS valent donc exactement le modèle répondu : le contrôle
+	// fail-closed reste actif, la démo déroule son cycle complet.
 	cfg := &connecteurs.Config{Mode: connecteurs.ModeSimule, Fournisseurs: []connecteurs.ConfigFournisseur{
-		{ID: "mistral", Endpoint: exec.URL, Modele: "demo-exec", TimeoutMS: 5000,
+		{ID: "mistral", Endpoint: exec.URL, Modele: "demo", TimeoutMS: 5000,
 			TailleMaxReponse: 65536, RetraitsMax: 1},
-		{ID: "openai", Endpoint: recep.URL, Modele: "demo-recep", TimeoutMS: 5000,
+		{ID: "openai", Endpoint: recep.URL, Modele: "demo", TimeoutMS: 5000,
 			TailleMaxReponse: 65536, RetraitsMax: 1},
 	}}
 	reg, err := registreDepuisConfig(cfg)
@@ -185,7 +192,7 @@ func demoLocalRun(dataDir string) int {
 	fmt.Println("[DEMO-LOCAL] état : " + etatToString(ref, issue))
 	fmt.Println("[DEMO-LOCAL] journal : " + missions.JournalPath(dataDir, issue))
 	fmt.Println("[DEMO-LOCAL] dossier de travail temporaire : " + rep)
-	fmt.Println("[DEMO-LOCAL] BILAN : cycle complet REEL-sur-connecteurs-factices, état attendu ACK_RECU. La clôture reste réservée au pilote.")
+	fmt.Println("[DEMO-LOCAL] BILAN : cycle complet REEL-sur-connecteurs-factories, état attendu ACK_RECU. La clôture reste réservée au pilote.")
 	if etatToString(ref, issue) != spec.EtatACKRecu {
 		return 1
 	}
@@ -282,6 +289,11 @@ func reelRun(configChemin, dataDir, issue, executant, recepteur,
 	plafonds := budget.Plafonds{
 		Appels: map[string]int{},
 		Jetons: map[string]int{},
+		// Voûte monétaire (réserve 7154948522) : le plafond monétaire de
+		// l'autorisation pilote est TRANSMIS au moteur budgétaire et opposé
+		// AVANT chaque tentative facturable. Sans lui aucune mission réelle
+		// ne peut démarrer (fail closed côté orchestrateur).
+		Centimes: cfg.Autorisation.PlafondCentimes,
 	}
 	for id := range reg {
 		plafonds.Appels[id] = cfg.Autorisation.PlafondAppels
