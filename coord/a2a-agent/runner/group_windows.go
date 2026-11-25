@@ -7,8 +7,8 @@
 package runner
 
 import (
-	"fmt"
 	"os/exec"
+	"strconv"
 )
 
 // sigTermine/sigTue : sous Windows il n'existe pas de signaux POSIX ni
@@ -27,5 +27,9 @@ func configurerGroupe(cmd *exec.Cmd) {}
 // "session résumable" non garantie sous Windows (limite documentée
 // du plan v2 §3 T4).
 func tuerProcessus(pid, sig int) {
-	_ = exec.Command("taskkill", fmt.Sprintf("/PID %d", pid), "/T", "/F").Run()
+	// taskkill exige des arguments SEPARES : "/PID <pid>" en un seul
+	// argument est rejeté ("option - '/PID 1234' invalide") et le kill
+	// échouait silencieusement (S15 : le processus muet vivait jusqu'à
+	// sa durée naturelle). Correctif M-COORD-LLM-03, CI windows.
+	_ = exec.Command("taskkill", "/PID", strconv.Itoa(pid), "/T", "/F").Run()
 }
