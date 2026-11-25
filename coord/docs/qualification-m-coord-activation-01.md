@@ -2,13 +2,13 @@
 
 # Dossier de qualification — M-COORD-ACTIVATION-01 — activation de COORD v1.5
 
-Mission : issue #44 (ordre V1.0). Pilote : Denis Bouzon. Exécutant : Mistral (Vibe). Réceptionnaire indépendant : OpenAI. Date de qualification : 26/11/2026. SHA de référence : main `2abdebc943e424a11790dd8a24cd6f43c7d914ee` (tarball codeload épinglé, sha256 archive `1d5e03d8f36b35bc5b08159108d46be91e72b37e0ae5512631901812dce8d184`).
+Mission : issue #44 (ordre V1.0). Pilote : Denis Bouzon. Exécutant : Mistral (Vibe). Réceptionnaire indépendant : OpenAI. Date de qualification : 25/11/2026. SHA de référence : main `2abdebc943e424a11790dd8a24cd6f43c7d914ee` (tarball codeload épinglé, sha256 archive `1d5e03d8f36b35bc5b08159108d46be91e72b37e0ae5512631901812dce8d184`).
 
 ## Décision du pilote
 
 Activation de COORD v1.5 comme référence opérationnelle autorisée par décision explicite publiée dans #44 (commentaire 7171803458, 25/11/2026) : « Exécuter T4 selon le plan documentaire contrôlé : préparer et publier la PR, vérifier les preuves, soumettre au contrôle OpenAI au SHA exact avant fusion. » v1.4 et antérieures deviennent historiques.
 
-## Matrice exigences → résultats (ordre #44, rejeu REEL du 26/11/2026)
+## Matrice exigences → résultats (ordre #44, rejeu REEL du 25/11/2026)
 
 | # | Exigence | Résultat | Statut |
 |---|---|---|---|

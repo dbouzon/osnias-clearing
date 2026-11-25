@@ -45,7 +45,7 @@ Les états et transitions ci-dessus, le format d'enregistrement (mission, issue,
 
 ## État et limites
 
-Version opérationnelle : **v1.5, activée le 26 novembre 2026** par décision du pilote (mission M-COORD-ACTIVATION-01, issue #44, SHA de référence `2abdebc943e424a11790dd8a24cd6f43c7d914ee`). Les versions v1.0..v1.4 deviennent historiques : leurs suites et enregistrements restent inchangés et rejouables. La v1.5 ajoute le durcissement des transitions, la voûte budgétaire monétaire, les habilitations serveur et les vecteurs de conformité (47 tests + 22 vecteurs, concordance Python/Go). Relation avec **COORD Specification 1.0** (`docs/spec/coord-spec-1.0.md`) : la norme est découplée des versions d'implémentation ; v1.5 en est l'implémentation conforme de référence (concordance 22/22 vecteurs, matrice dans `docs/qualification-m-coord-activation-01.md`). Licence : Apache-2.0 (texte complet dans `LICENSE`).
+Version opérationnelle : **v1.5, activée le 25 novembre 2026** par décision du pilote (mission M-COORD-ACTIVATION-01, issue #44, SHA de référence `2abdebc943e424a11790dd8a24cd6f43c7d914ee`). Les versions v1.0..v1.4 deviennent historiques : leurs suites et enregistrements restent inchangés et rejouables. La v1.5 ajoute le durcissement des transitions, la voûte budgétaire monétaire, les habilitations serveur et les vecteurs de conformité (47 tests + 22 vecteurs, concordance Python/Go). Relation avec **COORD Specification 1.0** (`docs/spec/coord-spec-1.0.md`) : la norme est découplée des versions d'implémentation ; v1.5 en est l'implémentation conforme de référence (concordance 22/22 vecteurs, matrice dans `docs/qualification-m-coord-activation-01.md`). Licence : Apache-2.0 (texte complet dans `LICENSE`).
 
 
 ## Licence
