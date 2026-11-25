@@ -115,7 +115,7 @@ func demoLocal() error {
 		return err
 	}
 	cheminJeton := filepath.Join(racine, "jeton-lecture.txt")
-	if err := os.WriteFile(cheminJeton, []byte(jetonLecture+"\n"), 0o600); err != nil {
+	if err := mcpserver.EcrireJeton(cheminJeton, jetonLecture); err != nil {
 		return err
 	}
 	valeur, err := mcpserver.ChargerJeton(cheminJeton)

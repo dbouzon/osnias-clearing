@@ -11,7 +11,8 @@ qualification réelle exigée pour chaque client, non présumée).
   `coord_get_mission`. Toute mutation reste du ressort exclusif du pilote via son
   interface Pilot.
 - **Aucun token console transmis aux clients IA** : le serveur ne connaît que le
-  **jeton de lecture** distinct, lu dans un fichier local `0600` détenu par le pilote.
+  **jeton de lecture** distinct, lu dans un fichier local protégé effectivement
+  (POSIX `0600` ; Windows DACL natif restreint à l'utilisateur courant) détenu par le pilote.
 - **0 €, aucune clé API, aucun compte** pour la démonstration locale (adaptateurs SIMULÉS).
 - SDK : `github.com/modelcontextprotocol/go-sdk` v1.8.0 (licence MIT/Apache-2.0 en
   transition, compatible COORD Apache-2.0), épinglé dans `coord/go/go.mod`.
@@ -43,12 +44,15 @@ PAS anticipé ici.
 démarrage de coord-pilot
         │  (rotation IMPLICITE : tout jeton précédent devient invalide)
         ├─ token console      ── affiché console, jamais journalisé, pilote seul
-        └─ jeton de lecture   ── écrit local 0600 (jeton-lecture), affiché nom du fichier
+        └─ jeton de lecture   ── écrit sécurisé local (POSIX 0600, Windows DACL natif), nom affiché
                 │
                 ▼
 coord-mcp -pilot http://127.0.0.1:PORT -jeton /chemin/du/jeton-lecture
-        │  contrôle AVANT démarrage : fichier régulier, 0600, propriétaire = utilisateur
-        │  courant (POSIX) — sinon REFUS (exit 2), aucune valeur affichée
+        │  contrôle AVANT démarrage (SEC-MCP-01/02) : fichier régulier
+        │  (liens symboliques REFUSÉS), protection effective — POSIX : 0600 +
+        │  propriétaire = utilisateur courant ; Windows : DACL natif restreint
+        │  à l'utilisateur courant, sans héritage — sinon REFUS (exit 2),
+        │  aucune valeur affichée
         ▼
 sessions de lecture uniquement (missions : liste, détail)
 ```
@@ -62,6 +66,14 @@ sessions de lecture uniquement (missions : liste, détail)
 ```bash
 ls -l /chemin/du/jeton-lecture        # attendu : -rw------- (0600)
 chmod 0600 /chemin/du/jeton-lecture   # correction si nécessaire
+```
+
+Sous Windows, les bits POSIX n'existent pas : la protection effective est le
+DACL natif appliqué à l'écriture (`EcrireJeton`) — restreint à l'utilisateur
+courant, sans héritage du répertoire parent :
+
+```powershell
+icacls "$env:TEMP\coord-pilot-jeton-lecture.txt"   # attendu : utilisateur courant seul
 ```
 
 ## Utilisation locale
@@ -100,7 +112,8 @@ secret, et l'absence de tout outil de mutation. Trace de référence :
 | Injection via données de mission | Données pures renvoyées au client, aucune route n'exécute du texte, identités NE JAMAIS dérivées d'un prompt |
 | Usurpation du pilote | Aucun outil actif en v1 ; mutations impossibles par construction ; rôle résolu côté service (S4) |
 | Transfert du token console au client IA | Le serveur ne connaît que le jeton de lecture ; jeton jamais dans l'environnement du client, les `settings`, les logs ni les réponses |
-| Jeton de lecture compromis | Fichier 0600 contrôlé au démarrage (fail-closed), rotation par redémarrage, valeur jamais affichée ni journalisée |
+| Jeton de lecture compromis | Protection EFFECTIVE du fichier contrôlée au démarrage en fail-closed (POSIX 0600+propriétaire ; Windows DACL natif restreint, sans héritage), rotation par redémarrage, valeur jamais affichée ni journalisée |
+| Substitution du fichier (lien symbolique, collision, fichier préexistant) | Écriture sécurisée `EcrireJeton` : création EXCLUSIVE d'un temporaire dans le même répertoire (jamais de collision), liens symboliques refusés au chargement ET à l'écriture (jamais suivis), remplacement atomique (rotation) ; permissions/ACL appliquées AVANT le renommage |
 | Fuite dans les erreurs | Table erreur→code stable, messages sans jeton/URL/chemin/corps brut ; tests permanents de non-divulgation (`internal/mcpserver/mcpserver_test.go` + `-race` en CI) |
 | Accès distant | URL du service restreinte à loopback (refus au démarrage), pas de port exposé par coord-mcp |
 
@@ -125,8 +138,10 @@ COORD MCP is the common, vendor-neutral Model Context Protocol server of COORD:
 a strictly read-only facade above the local COORD Pilot service (tools:
 `coord_list_missions`, `coord_get_mission`). No mutation is exposed; the pilot
 console token is never known to the program — only a separate read-only token,
-read from a local `0600` file owned by the pilot and rotated at every service
-restart. Any standard MCP client may connect over STDIO on the local machine;
+read from a locally protected file owned by the pilot (POSIX `0600`; on
+Windows, a native restrictive DACL without inheritance) and rotated at every
+service restart. Token files are written through an exclusive, symlink-proof,
+atomically-replaced creation path and links are never followed. Any standard MCP client may connect over STDIO on the local machine;
 a future remote client-server architecture can reuse the same transport-free
 core (guarded by tests) without changing the tool contract. Local demo:
 `go run ./cmd/coord-mcp -demo-local` (no key, no account, simulated adapters, €0).

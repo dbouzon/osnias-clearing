@@ -262,28 +262,34 @@ func texte(res *mcp.CallToolResult) string {
 	return out
 }
 
-// TestJetonFichier_Permissions : fichier 0600 accepté ; permissions plus
-// larges, fichier absent, vide ou binaire => refus (fail-closed, POSIX).
+// TestJetonFichier_Permissions : protection effective requise au
+// chargement — POSIX 0600+propriétaire, Windows DACL natif restreint
+// (EcrireJeton) ; fichier absent, vide ou binaire => refus (fail-closed).
 func TestJetonFichier_Permissions(t *testing.T) {
 	racine := t.TempDir()
 	bon := filepath.Join(racine, "jeton-ok.txt")
-	if err := os.WriteFile(bon, []byte(jetonLecture+"\n"), 0o600); err != nil {
+	if runtime.GOOS == "windows" {
+		// SEC-MCP-01 : sous Windows, la protection effective est le DACL
+		// natif restreint à l'utilisateur courant, appliqué par EcrireJeton.
+		if err := mcpserver.EcrireJeton(bon, jetonLecture); err != nil {
+			t.Fatalf("windows : ecriture protegee attendue, obtenue %v", err)
+		}
+	} else if err := os.WriteFile(bon, []byte(jetonLecture+"\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	v, err := mcpserver.ChargerJeton(bon)
 	if err != nil || v != jetonLecture {
-		t.Fatalf("fichier 0600 : chargement attendu, obtenu %q / %v", v, err)
+		t.Fatalf("fichier protege : chargement attendu, obtenu %q / %v", v, err)
 	}
 	ouvert := filepath.Join(racine, "jeton-ouvert.txt")
 	if err := os.WriteFile(ouvert, []byte(jetonLecture), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	if runtime.GOOS == "windows" {
-		// Sous Windows les permissions POSIX ne s'appliquent pas (contrôle
-		// sans objet, voir ChargerJeton) : comportement documenté attendu,
-		// le fichier est chargé sans erreur.
-		if _, err := mcpserver.ChargerJeton(ouvert); err != nil {
-			t.Fatalf("windows : chargement attendu (permissions sans objet), obtenu %v", err)
+		// SEC-MCP-01 : un fichier cree sans DACL restreint (droits herites
+		// du repertoire) est refuse en fail-closed.
+		if _, err := mcpserver.ChargerJeton(ouvert); err == nil {
+			t.Fatal("windows : refus attendu (DACL natif restreint absent)")
 		}
 	} else if _, err := mcpserver.ChargerJeton(ouvert); err == nil {
 		t.Fatal("permissions 0644 : refus attendu (fail closed 0600)")
@@ -309,6 +315,87 @@ func TestJetonFichier_Permissions(t *testing.T) {
 	// Non-divulgation : l'erreur ne cite jamais la valeur du jeton.
 	if _, err := mcpserver.ChargerJeton(ouvert); err != nil && strings.Contains(err.Error(), jetonLecture) {
 		t.Fatalf("valeur de jeton divulguee : %s", err.Error())
+	}
+}
+
+// TestJetonFichier_LienSymbolique (SEC-MCP-02) : un lien symbolique vers
+// un fichier de jeton valide est refusé au chargement ET à l'écriture ;
+// la cible du lien n'est jamais modifiée (pas d'écriture à travers le lien).
+func TestJetonFichier_LienSymbolique(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("creation de liens symboliques non portable sous Windows")
+	}
+	racine := t.TempDir()
+	cible := filepath.Join(racine, "cible.txt")
+	if err := os.WriteFile(cible, []byte("contenu-atomique\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	lien := filepath.Join(racine, "lien.txt")
+	if err := os.Symlink(cible, lien); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := mcpserver.ChargerJeton(lien); err == nil {
+		t.Fatal("lien symbolique : chargement refuse attendu")
+	}
+	if err := mcpserver.EcrireJeton(lien, jetonLecture); err == nil {
+		t.Fatal("lien symbolique : ecriture refusee attendue")
+	}
+	corps, err := os.ReadFile(cible)
+	if err != nil || string(corps) != "contenu-atomique\n" {
+		t.Fatalf("cible du lien modifiee a travers le lien : %q / %v", corps, err)
+	}
+}
+
+// TestEcrireJeton_RotationProtegee (SEC-MCP-01/02) : écriture sécurisée
+// (création exclusive, protection effective, remplacement atomique),
+// relecture, rotation, aucune trace temporaire résiduelle, jetons
+// invalides refusés.
+func TestEcrireJeton_RotationProtegee(t *testing.T) {
+	racine := t.TempDir()
+	chemin := filepath.Join(racine, "jeton-rotation.txt")
+	if err := mcpserver.EcrireJeton(chemin, jetonLecture); err != nil {
+		t.Fatal(err)
+	}
+	v, err := mcpserver.ChargerJeton(chemin)
+	if err != nil || v != jetonLecture {
+		t.Fatalf("chargement apres ecriture attendu, obtenu %q / %v", v, err)
+	}
+	if err := mcpserver.EcrireJeton(chemin, "jeton-rotation-2"); err != nil {
+		t.Fatal(err)
+	}
+	v2, err := mcpserver.ChargerJeton(chemin)
+	if err != nil || v2 != "jeton-rotation-2" {
+		t.Fatalf("rotation attendue, obtenu %q / %v", v2, err)
+	}
+	if runtime.GOOS != "windows" {
+		info, err := os.Stat(chemin)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if info.Mode().Perm() != 0o600 {
+			t.Fatalf("permissions 0600 attendues, obtenu %o", info.Mode().Perm())
+		}
+	}
+	entries, err := os.ReadDir(racine)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range entries {
+		if strings.Contains(e.Name(), ".tmp-") {
+			t.Fatalf("fichier temporaire residuel : %s", e.Name())
+		}
+	}
+	if err := mcpserver.EcrireJeton("", jetonLecture); err == nil {
+		t.Fatal("chemin vide : refus attendu")
+	}
+	if err := mcpserver.EcrireJeton(filepath.Join(racine, "j.txt"), ""); err == nil {
+		t.Fatal("jeton vide : refus attendu")
+	}
+	if err := mcpserver.EcrireJeton(filepath.Join(racine, "j.txt"), "a\x00b"); err == nil {
+		t.Fatal("jeton binaire : refus attendu")
+	}
+	if err := mcpserver.EcrireJeton(racine, jetonLecture); err == nil {
+		t.Fatal("cible repertoire : refus attendu")
 	}
 }
 

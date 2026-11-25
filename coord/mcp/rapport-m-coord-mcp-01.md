@@ -24,9 +24,12 @@ client-serveur distante reste possible sans développement anticipé.
 - `GET /api/missions` et `GET /api/mission/{issue}` acceptent le jeton de lecture
   OU le token console (`authLecture`) ; toute route de mutation le refuse :
   403 `JETON_LECTURE_REFUSE` + journal `REFUS_LECTURE_MUTATION` (fail-closed).
-- `cmd/coord-pilot` génère et écrit le jeton de lecture dans un fichier local
-  `0600` (rotation implicite à chaque démarrage), affiche le nom du fichier,
-  jamais la valeur ; le token console reste inchangé dans son rôle.
+- `cmd/coord-pilot` génère et écrit le jeton de lecture via `EcrireJeton`
+  (SEC-MCP-02 : création EXCLUSIVE d'un temporaire dans le même répertoire —
+  aucune collision, aucun suivi de lien symbolique —, protection effective
+  appliquée AVANT le renommage atomique, remplacement de la cible = rotation
+  implicite à chaque démarrage), affiche le nom du fichier, jamais la valeur ;
+  le token console reste inchangé dans son rôle.
 
 ### 2. Serveur MCP commun (paquet `coord/go/internal/mcpserver` + `cmd/coord-mcp`)
 
@@ -38,9 +41,13 @@ client-serveur distante reste possible sans développement anticipé.
 - Deux outils MCP, aucun autre : `coord_list_missions`, `coord_get_mission`
   (schéma d'entrée strict). **Aucune mutation exposée, par construction** — testé
   au niveau protocole (l'appel d'un outil de mutation inexistant est refusé).
-- `ChargerJeton` : fichier régulier, permissions strictement `0600` et
-  propriétaire = utilisateur courant (POSIX, fichiers de build dédiés ; Windows :
-  contrôle sans objet, documenté), valeur jamais affichée ni journalisée.
+- `ChargerJeton` : fichier régulier (Lstat, les liens symboliques sont
+  REFUSÉS, jamais suivis), protection EFFECTIVE exigée en fail-closed :
+  POSIX — permissions strictement `0600` et propriétaire = utilisateur
+  courant ; Windows — DACL natif de `golang.org/x/sys/windows` restreint au
+  seul utilisateur courant et PROTÉGÉ contre l'héritage du répertoire parent
+  (SEC-MCP-01). Valeur jamais affichée ni journalisée ; toute écriture passe
+  par `EcrireJeton` qui applique la même protection avant rotation.
 - Transport STDIO choisi **par la commande uniquement** : le paquet ne référence
   aucun transport (garde-fou testé `TestBoundary_AucunTransport`) → une future
   architecture distante (HTTP diffus) réutilise cœur et contrat inchangés.
@@ -114,12 +121,41 @@ documentée, non développée. v1.4 reste la référence opérationnelle.
 ## Réserves
 
 - `-race` couvert par CI uniquement (pas de gcc local).
-- Test de permissions strictement 0600 : exigé sur POSIX (refus 0644) ; sous
-  Windows, bits sans objet — le test affirme le comportement documenté
-  (chargement sans contrôle de mode) et le contrôle de propriétaire n'y est pas
-  applicable.
+- Protection du fichier de jeton : exigée sur TOUS les systèmes — POSIX
+  0600 + propriétaire (refus 0644), Windows DACL natif restreint à
+  l'utilisateur courant sans héritage (SEC-MCP-01) ; les liens symboliques
+  sont refusés au chargement ET à l'écriture (SEC-MCP-02). Exécution Windows
+  RÉELLE assurée par la CI multi-OS (le sandbox de développement est Linux).
 - Compatibilité réelle des clients (Gemini CLI, Antigravity, Claude, OpenAI,
   Mistral) : NON_TESTÉE, hors périmètre ; qualifications futures distinctes.
+
+## Corrections SEC-MCP-01/02 (ordre du pilote, 25/11/2026)
+
+À la suite de la contre-vérification du pilote au SHA exact (A_CORRIGER), deux
+corrections ciblées ont été apportées sur la même branche, sans nouvelle
+mission ni modification d'architecture :
+
+- **SEC-MCP-01 — protection effective sous Windows** : les bits POSIX étant
+  sans objet, la garantie équivalente est désormais un **DACL natif**
+  (`golang.org/x/sys/windows`, déjà requis) appliqué à l'écriture (ACL
+  restreint au seul utilisateur courant, DACL **protégé** = aucun héritage du
+  répertoire parent) et **vérifié en fail-closed au chargement** : DACL
+  présent, protégé, sans ACE hérité, aucun titulaire autre que l'utilisateur
+  courant — sinon REFUS. Un fichier créé sans cette protection (droits
+  hérités) est refusé ; le test l'affirme en CI Windows.
+- **SEC-MCP-02 — sécurisation de la création** : `EcrireJeton` remplace
+  l'écriture directe (répertoire temporaire, nom fixe, `O_TRUNC`) : cible
+  non régulière (lien symbolique/répertoire) refusée avant toute écriture,
+  création EXCLUSIVE (`O_EXCL`) d'un fichier temporaire dans le même répertoire
+  (aucune collision, aucune écrasement accidentel), fsync, protection
+  effective AVANT le renommage atomique (rotation, les liens ne sont jamais
+  suivis), nettoyage du temporaire en cas d'échec. `ChargerJeton` passe de
+  `Stat` à `Lstat` : un lien symbolique vers un fichier de jeton valide est
+  refusé.
+
+Acquis conservés : jeton de lecture distinct additif, lecture seule stricte,
+2 outils only, noyau sans transport, non-divulgation testée, 0 €, v1.5 non
+activée, aucune extension fournisseur.
 
 ## Restent réservés au pilote
 

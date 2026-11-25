@@ -19,7 +19,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 
+	"coordengine/internal/mcpserver"
 	"coordengine/internal/missions"
 	"coordengine/internal/pilot"
 )
@@ -33,8 +35,11 @@ func main() {
 	token := genererToken()
 	jetonLecture := genererToken()
 	jetonFichier := filepath.Join(os.TempDir(), "coord-pilot-jeton-lecture.txt")
-	if err := os.WriteFile(jetonFichier, []byte(jetonLecture+"\n"), 0o600); err != nil {
-		fmt.Fprintln(os.Stderr, "ecriture du fichier de jeton de lecture impossible : "+filepath.Base(jetonFichier))
+	// SEC-MCP-02 : création exclusive + protection effective (POSIX 0600,
+	// Windows DACL natif restreint) + remplacement atomique (rotation),
+	// liens symboliques refusés, jamais suivis.
+	if err := mcpserver.EcrireJeton(jetonFichier, jetonLecture); err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 
@@ -62,7 +67,11 @@ func main() {
 	fmt.Println("URL         : http://" + ln.Addr().String() + "/")
 	fmt.Println("Token local : " + token)
 	fmt.Println("Ce token n'est pas journalise ; il est regenere a chaque demarrage.")
-	fmt.Println("Jeton de lecture (PDF/MCP pages) : " + filepath.Base(jetonFichier) + " (permissions 0600, dossier temporaire)")
+	messageProtection := "permissions 0600"
+	if runtime.GOOS == "windows" {
+		messageProtection = "DACL natif restreint a l'utilisateur courant"
+	}
+	fmt.Println("Jeton de lecture (PDF/MCP pages) : " + filepath.Base(jetonFichier) + " (" + messageProtection + ", dossier temporaire)")
 	fmt.Println("Ce jeton est LECTURE SEULE : liste et detail des missions ; il est refuse sur toute mutation.")
 	fmt.Println("Il n'est pas journalise et est regenere a chaque demarrage (rotation : les anciens jetons deviennent invalides).")
 	if err := http.Serve(ln, svc.Handler()); err != nil {
