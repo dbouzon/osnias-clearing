@@ -248,6 +248,35 @@ func coutJetons(jetons, tarifCentimesParMillion int) int {
 	return (jetons*tarifCentimesParMillion + 999_999) / 1_000_000
 }
 
+// EnveloppeCentimes : formule conservatrice PARTAGÉE (mission
+// M-COORD-LLM-02 : le rail A2A l'applique comme les connecteurs HTTP,
+// sans dupliquer la règle monétaire). Centimes d'euro ENTIERS, arrondi
+// vers le haut ; tarifs/bornes <= 0 => TARIF_INCONNU (fail closed).
+func EnveloppeCentimes(tarifEntree, tarifSortie, tarifRequete, jetonsEntreeMax, jetonsSortieMax, retraits int) (int, error) {
+	if tarifEntree <= 0 || tarifSortie <= 0 || tarifRequete <= 0 ||
+		jetonsEntreeMax <= 0 || jetonsSortieMax <= 0 {
+		return 0, errors.New("TARIF_INCONNU : tarifs (entree/sortie/requete) ou bornes absents " +
+			": aucun plafond monetaire opposable (fail closed)")
+	}
+	parTentative := coutJetons(jetonsEntreeMax, tarifEntree) +
+		coutJetons(jetonsSortieMax, tarifSortie) + tarifRequete
+	return (1 + retraits) * parTentative, nil
+}
+
+// CoutConservateurJetons : coût À POSTERIORI d'un usage TOTAL, au tarif le
+// plus élevé des deux déclarés (on ne sous-compte jamais), + requête.
+// Centimes d'euro ENTIERS, aucun flottant. PARTAGÉE (M-COORD-LLM-02).
+func CoutConservateurJetons(tarifEntree, tarifSortie, tarifRequete, jetonsTotal int) (int, error) {
+	if tarifEntree <= 0 || tarifSortie <= 0 || tarifRequete <= 0 {
+		return 0, errors.New("TARIF_INCONNU : tarification absente (entree/sortie/requete)")
+	}
+	m := tarifEntree
+	if tarifSortie > m {
+		m = tarifSortie
+	}
+	return coutJetons(jetonsTotal, m) + tarifRequete, nil
+}
+
 // EstimationCentimesSur : enveloppe monétaire CONSERVATRICE d'une tentative
 // potentiellement facturable, en centimes d'euro entiers, calculée AVANT
 // tout appel. Chaque retrait possible (429/5xx, jusqu'à retraits_max) peut
@@ -258,14 +287,8 @@ func coutJetons(jetons, tarifCentimesParMillion int) int {
 // et bornes DÉCLARÉS par le pilote : ce n'est PAS une garantie du montant
 // réellement facturé par le fournisseur.
 func (b *baseHTTP) EstimationCentimesSur() (int, error) {
-	if b.tarifEntreeMillion <= 0 || b.tarifSortieMillion <= 0 || b.tarifRequete <= 0 ||
-		b.jetonsEntreeMax <= 0 || b.jetonsSortieMax <= 0 {
-		return 0, errors.New("TARIF_INCONNU : tarifs (entree/sortie/requete) ou bornes " +
-			"absents pour " + b.id + " : aucun plafond monetaire opposable (fail closed)")
-	}
-	parTentative := coutJetons(b.jetonsEntreeMax, b.tarifEntreeMillion) +
-		coutJetons(b.jetonsSortieMax, b.tarifSortieMillion) + b.tarifRequete
-	return (1 + b.retraits) * parTentative, nil
+	return EnveloppeCentimes(b.tarifEntreeMillion, b.tarifSortieMillion, b.tarifRequete,
+		b.jetonsEntreeMax, b.jetonsSortieMax, b.retraits)
 }
 
 // CoutReelCentimes : coût conservateur calculé À POSTERIORI depuis l'usage
@@ -275,14 +298,7 @@ func (b *baseHTTP) EstimationCentimesSur() (int, error) {
 // dépassant la réservation : le coût constaté ne libère JAMAIS de centimes
 // réservés (conservateur par construction, côté orchestrateur).
 func (b *baseHTTP) CoutReelCentimes(jetonsTotal int) (int, error) {
-	if b.tarifEntreeMillion <= 0 || b.tarifSortieMillion <= 0 || b.tarifRequete <= 0 {
-		return 0, errors.New("TARIF_INCONNU : tarification absente pour " + b.id)
-	}
-	m := b.tarifEntreeMillion
-	if b.tarifSortieMillion > m {
-		m = b.tarifSortieMillion
-	}
-	return coutJetons(jetonsTotal, m) + b.tarifRequete, nil
+	return CoutConservateurJetons(b.tarifEntreeMillion, b.tarifSortieMillion, b.tarifRequete, jetonsTotal)
 }
 
 func min64(a, b int64) int64 {

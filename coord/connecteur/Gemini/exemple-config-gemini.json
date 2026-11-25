@@ -1,0 +1,23 @@
+{
+  "_commentaire": "Exemple SANS SECRET (M-COORD-LLM-02). La clé API ne figure JAMAIS dans ce fichier : elle passe par la variable d'environnement COORD_CLE_GEMINI (fichiers .env ignores par .gitignore).",
+  "mode": "simule",
+  "fournisseurs": [
+    {
+      "id": "gemini",
+      "endpoint": "http://127.0.0.1:8081/a2a",
+      "modele": "gemini-2.5-pro",
+      "profil": "gemini",
+      "raisonnement": "low",
+      "timeout_ms": 30000,
+      "taille_max_reponse": 65536,
+      "retraits_max": 0,
+      "tarifs": {
+        "_note": "Tarifs en centimes d'euro pour 1M de jetons (grille evolutive : la config fait foi, pas le code).",
+        "requete_entree_simple": 35,
+        "requete_sortie_simple": 280,
+        "entree_cache": 7,
+        "sortie_raisonnement": 280
+      }
+    }
+  ]
+}
