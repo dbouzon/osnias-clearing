@@ -1,0 +1,23 @@
+{
+  "_commentaire": "Exemple SANS SECRET (M-COORD-LLM-04, raccordement Claude/Anthropic au serveur agent A2A mutualise). La cle API ne figure JAMAIS dans ce fichier : elle passe par la variable d'environnement COORD_CLE_ANTHROPIC (fichiers .env ignores par .gitignore). Qualification de cette tranche : endpoint factice loopback uniquement (aucun reseau fournisseur, 0 EUR, aucune cle). Mode REEL verrouille par le triple verrou (mode REEL + COORD_MODE_REEL=1 + autorisation pilote ecrite).",
+  "mode": "SIMULE",
+  "fournisseurs": [
+    {
+      "id": "anthropic",
+      "endpoint": "https://api.anthropic.com/v1/messages",
+      "cle_env": "COORD_CLE_ANTHROPIC",
+      "modele": "claude-3-5-sonnet-20241022",
+      "format": "anthropic",
+      "timeout_ms": 60000,
+      "taille_max_reponse": 262144,
+      "retraits_max": 2,
+      "tarif_entree_centimes_par_million": 300,
+      "tarif_sortie_centimes_par_million": 1500,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 8000,
+      "jetons_sortie_max_par_tentative": 2000
+    }
+  ],
+  "note_profil": "format anthropique (Messages API) : blocs text seuls (tout autre bloc = refus integral), stop_reason end_turn attendu (max_tokens = refus, troncature jamais acceptee), system top-level, en-tetes x-api-key + anthropic-version epingle 2023-06-01. Identite exacte controlee (MODELE_DIVERGENT) ; usage input_tokens + output_tokens exige (JETONS_INCONNUS sinon).",
+  "note_agent_a2a": "Raccordement M-COORD-LLM-04 : voie INFERENCE uniquement (critique de plan / reception). L'execution outillee (VOIE:VIBE) est refusee avec CAPACITE_NON_IMPLEMENTEE sur cet agent ; elle reste reservee a l'agent Mistral."
+}

@@ -33,12 +33,37 @@ import (
 
 func main() {
 	var (
-		demo    = flag.Bool("demo-local", false, "démonstration autonome (factice, 0 EUR, sans clé ni compte)")
-		jeton   = flag.String("jeton", "", "jeton du rail (X-Coord-Rail-Jeton), exigé en mode serveur")
-		ecouter = flag.Bool("ecouter", false, "rester à l'écoute après le démarrage (mode serveur)")
+		demo        = flag.Bool("demo-local", false, "démonstration autonome (factice, 0 EUR, sans clé ni compte)")
+		demoLLM04   = flag.Bool("demo-llm04", false, "démonstration autonome des raccordements d'inférence Anthropic/OpenAI/Gemini (factice, 0 EUR)")
+		jeton       = flag.String("jeton", "", "jeton du rail (X-Coord-Rail-Jeton), exigé en mode serveur")
+		fournisseur = flag.String("fournisseur", "", "raccordement d'inférence M-COORD-LLM-04 : anthropic | openai | gemini (factice loopback, voie inférence seule ; mistral = inférence uniquement, distinct de l'agent deux voies par defaut)")
+		ecouter     = flag.Bool("ecouter", false, "rester à l'écoute après le démarrage (mode serveur)")
 	)
 	flag.Parse()
 
+	if *demoLLM04 {
+		if err := demoInférenceQuatre(); err != nil {
+			fmt.Fprintln(os.Stderr, "DEMO_ECHEC:", err)
+			os.Exit(1)
+		}
+		return
+	}
+	if *fournisseur != "" {
+		d, ok := fournisseursLLM04[*fournisseur]
+		if !ok {
+			fmt.Fprintln(os.Stderr, "ERREUR : -fournisseur inconnu :", *fournisseur, "(admis : anthropic, openai, gemini, mistral)")
+			os.Exit(2)
+		}
+		if *jeton == "" {
+			fmt.Fprintln(os.Stderr, "ERREUR : -jeton requis en mode serveur (fail closed, jamais vide)")
+			os.Exit(2)
+		}
+		if err := demarrerAgentFournisseur(*fournisseur, d, *jeton, *ecouter); err != nil {
+			fmt.Fprintln(os.Stderr, "ERREUR :", err)
+			os.Exit(1)
+		}
+		return
+	}
 	if *demo {
 		if err := demoLocal(); err != nil {
 			fmt.Fprintln(os.Stderr, "DEMO_ECHEC:", err)

@@ -33,6 +33,8 @@ package socle
 import (
 	"errors"
 
+	"github.com/a2aproject/a2a-go/v2/a2a"
+
 	coorda2a "github.com/dbouzon/osnias-clearing/coord/a2a"
 )
 
@@ -70,6 +72,20 @@ func NouveauServeur(nom string, exec Executable, jeton string) (*Serveur, error)
 
 // URL : URL de BASE de l'agent (résolution de la carte, usage client).
 func (s *Serveur) URL() string { return s.inner.URL() }
+
+// NouveauServeurCarte : identique à NouveauServeur avec une carte
+// d'agent fournie (M-COORD-LLM-04 #56 : capacités HONNÊTES déclarées
+// par fournisseur). Additif ; NouveauServeur inchangé.
+func NouveauServeurCarte(nom string, exec Executable, jeton string, carte *a2a.AgentCard) (*Serveur, error) {
+	if jeton == "" {
+		return nil, ErrJetonVide
+	}
+	s, err := coorda2a.DemarrerAgentFacticeCarte(nom, exec, jeton, carte)
+	if err != nil {
+		return nil, err
+	}
+	return &Serveur{inner: s}, nil
+}
 
 // Fermer : arrêt RÉEL (écoute fermée, appels ultérieurs refusés).
 func (s *Serveur) Fermer() { s.inner.Fermer() }
