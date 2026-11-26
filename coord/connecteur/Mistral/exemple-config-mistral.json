@@ -1,0 +1,22 @@
+{
+  "_commentaire": "Exemple SANS SECRET (M-COORD-LLM-03, profil mistral stop-only). La clé API ne figure JAMAIS dans ce fichier : elle passe par la variable d'environnement COORD_CLE_MISTRAL (fichiers .env ignores par .gitignore). Champ profil STRICTEMENT ADDITIF au modele gemini : absent = comportement inchange (retrocompatible).",
+  "mode": "SIMULE",
+  "fournisseurs": [
+    {
+      "id": "mistral",
+      "endpoint": "https://api.mistral.ai/v1/chat/completions",
+      "cle_env": "COORD_CLE_MISTRAL",
+      "modele": "mistral-small-latest",
+      "profil": "mistral",
+      "timeout_ms": 60000,
+      "taille_max_reponse": 262144,
+      "retraits_max": 2,
+      "tarif_entree_centimes_par_million": 10,
+      "tarif_sortie_centimes_par_million": 30,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 8000,
+      "jetons_sortie_max_par_tentative": 2000
+    }
+  ],
+  "note_profil": "profil mistral (STOP-ONLY) : seul finish_reason \"stop\" est accepte ; troncature (length/model_length), tool_calls, absent ou inconnu = reponse REFUSEE avec motif exact, jamais reparee. Identite exacte controlee par la boucle commune (MODELE_DIVERGENT) ; usage prompt_tokens + completion_tokens exige (JETONS_INCONNUS sinon). Aucun tool/function calling dans cette tranche."
+}

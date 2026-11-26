@@ -228,3 +228,27 @@ Recette C1..C15 sur serveurs factices loopback UNIQUEMENT (SIMULÉ, 0 €) :
 NON_EXÉCUTÉE** (aucun appel, aucune clé réelle) — procédure préparée dans
 `recette-anthropic-reelle.md`, exécution sur autorisation écrite du pilote
 uniquement.
+
+## Mistral, profil stop-only (M-COORD-LLM-03, issue #54)
+
+Champ additif `"profil": "mistral"` : profil applicatif de validation
+renforcée STRICTEMENT ADDITIF au modèle gemini (même champ, même analyse
+stop-only). Mistral est déclaré au FORMAT `openai` (endpoint natif
+`api.mistral.ai/v1/chat/completions`, boucle commune partagée via
+`baseHTTP.appel`, zéro règle de sécurité dupliquée).
+
+- **Stop-only** : seul `finish_reason: "stop"` est accepté ;
+  `length`/`model_length` (troncature), `tool_calls`, absent ou inconnu =
+  réponse REFUSÉE avec motif exact journalisé, jamais réparée.
+- **Identité exacte** : champ `model` contrôlé par la boucle commune
+  (`MODELE_DIVERGENT` si divergence avec le modèle déclaré) ; usage
+  `prompt_tokens + completion_tokens` exigé (`JETONS_INCONNUS` sinon).
+- Aucun tool/function calling dans cette tranche ; tarifs GRILLE ÉVOLUTIVE
+  en configuration, jamais codés en dur.
+
+Configuration : voir `coord/connecteur/Mistral/exemple-config-mistral.json`
+(SANS secret : la clé passe par `COORD_CLE_MISTRAL`). Recette C1..C9 sur
+serveurs factices loopback
+UNIQUEMENT (SIMULÉ, 0 €) : `mistral_test.go`. Statut : **qualification
+réelle auprès de l'API Mistral : NON_EXÉCUTÉE** (aucun appel, aucune clé
+réelle), sur autorisation écrite du pilote uniquement.

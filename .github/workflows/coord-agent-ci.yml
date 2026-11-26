@@ -1,0 +1,51 @@
+name: COORD agent A2A + connecteur Mistral (module coord/a2a-agent)
+on:
+  push:
+    branches: [main]
+    paths: ['coord/a2a-agent/**', '.github/workflows/coord-agent-ci.yml']
+  pull_request:
+    paths: ['coord/a2a-agent/**', '.github/workflows/coord-agent-ci.yml']
+  workflow_dispatch:
+jobs:
+  agent:
+    name: Agent A2A ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: coord/a2a-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache-dependency-path: coord/a2a-agent/go.sum
+      - name: go vet
+        run: go vet ./...
+      - name: go build
+        run: go build ./...
+      - name: go test (socle, runner, connecteur Mistral factice)
+        shell: bash
+        run: |
+          if ! go test ./... > test-out.log 2>&1; then
+            cat test-out.log
+            grep -E '^--- FAIL' test-out.log | awk '{printf "::error::%s\n", $0}' || true
+            exit 1
+          fi
+  race:
+    name: Race detector (agent A2A + runner)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: coord/a2a-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache-dependency-path: coord/a2a-agent/go.sum
+      - name: go test -race (sessions, supervision, annulation)
+        run: go test -race -count=2 ./...
