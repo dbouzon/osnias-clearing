@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://osnias-clearing.com/coord/llmbridge/contract/coord.llm.v1.schema.json",
+  "title": "COORD LLM Bridge — contrat coord.llm.v1",
+  "description": "Contrat HTTP/JSON du pont COORD (M-COORD-LLMBRIDGE-01, issue #62). Transport loopback : GET /ping, GET /v1/models, POST /v1/chat/completions (compatible OpenAI, sous-ensemble strict). Le moteur Go reste seul maître des transitions, budgets et reprises ; le pont est sans état.",
+  "type": "object",
+  "$defs": {
+    "Erreur": {
+      "type": "object",
+      "required": ["error"],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": ["type", "message"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "JSON_INVALIDE", "REQUETE_INVALIDE", "DESTINATION_REFUSEE",
+                "JETON_INVALIDE", "ROUTE_INCONNUE", "METHODE_NON_AUTORISEE",
+                "CORPS_TROP_GRAND", "TYPE_INVALIDE", "SDK_ABSENT",
+                "CLE_ABSENTE", "ERREUR_SDK", "ERREUR_BACKEND",
+                "REPONSE_BACKEND_INVALIDE", "DELAI_DEPASSE", "INTERNE"
+              ]
+            },
+            "message": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "RequeteChat": {
+      "type": "object",
+      "required": ["model", "messages"],
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Modèle PRÉFIXÉ par une destination autorisée de la liste fermée (ex. openai/gpt-4o-mini, factice/recep/demo). Tout modèle hors liste est refusé (DESTINATION_REFUSEE)."
+        },
+        "messages": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["role", "content"],
+            "properties": {
+              "role": { "type": "string", "minLength": 1 },
+              "content": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "max_tokens": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "MessageAssistant": {
+      "type": "object",
+      "required": ["role", "content"],
+      "properties": {
+        "role": { "const": "assistant" },
+        "content": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "Choix": {
+      "type": "object",
+      "required": ["index", "message", "finish_reason"],
+      "properties": {
+        "index": { "type": "integer", "minimum": 0 },
+        "message": { "$ref": "#/$defs/MessageAssistant" },
+        "finish_reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Motif de fin TRANSMIS tel quel par le backend, jamais inventé. Les contrôles stop-only appartiennent aux profils du moteur Go."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Usage": {
+      "type": "object",
+      "required": ["prompt_tokens", "completion_tokens", "total_tokens"],
+      "properties": {
+        "prompt_tokens": { "type": "integer", "minimum": 0 },
+        "completion_tokens": { "type": "integer", "minimum": 0 },
+        "total_tokens": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "ReponseChat": {
+      "type": "object",
+      "required": ["id", "object", "created", "model", "choices", "usage"],
+      "properties": {
+        "id": { "type": "string" },
+        "object": { "const": "chat.completion" },
+        "created": { "type": "integer", "minimum": 0 },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Modèle RÉELLEMENT renvoyé par le backend (transmis au moteur Go qui applique MODELE_DIVERGENT)."
+        },
+        "choices": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/Choix" }
+        },
+        "usage": { "$ref": "#/$defs/Usage" }
+      },
+      "additionalProperties": false
+    },
+    "Ping": {
+      "type": "object",
+      "required": ["statut", "contrat", "backend"],
+      "properties": {
+        "statut": { "const": "ok" },
+        "contrat": { "const": "coord.llm.v1" },
+        "backend": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "ListeModeles": {
+      "type": "object",
+      "required": ["object", "data"],
+      "properties": {
+        "object": { "const": "list" },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "object", "owned_by"],
+            "properties": {
+              "id": { "type": "string" },
+              "object": { "const": "model" },
+              "owned_by": { "const": "coord-llmbridge" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
