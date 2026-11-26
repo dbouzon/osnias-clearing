@@ -42,7 +42,14 @@ jobs:
         run: python coord/llmbridge/test_llmbridge.py
         shell: bash
       - name: Qualification SDK RÉEL contre fournisseurs factices loopback
-        run: python coord/llmbridge/test_ci_sdk.py
+        run: |
+          set +e
+          python coord/llmbridge/test_ci_sdk.py 2>&1 | tee pont-sdk.log
+          statut=${PIPESTATUS[0]}
+          grep -E "FAIL:|ERROR:|Traceback|Error|Exception" pont-sdk.log | head -40 | while IFS= read -r l; do
+            echo "::error::${l}"
+          done
+          exit $statut
         shell: bash
       - name: Mesures de sobriété (pont sans SDK)
         run: python coord/llmbridge/mesures.py
