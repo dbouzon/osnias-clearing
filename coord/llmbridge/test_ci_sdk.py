@@ -66,14 +66,20 @@ class TestSDKReel(unittest.TestCase):
             for fmt, s in self.serveurs.items()
         }
         self.backend = LiteLLMBackend(delai_s=15.0)
-        # Le pont (validation, bornes) est qualifié par test_llmbridge.py ;
-        # ici on exerce le backend réel + le routage litellm.
-        self.contexte = {"destinations": destinations}
+        self.contexte_dests = destinations
 
     def _completion(self, model, messages=None):
+        # Même résolution que le pont (bridge.Pont.resoudre) : préfixe le plus
+        # long, la destination unique est passée au backend.
+        prefixe = None
+        for p in self.contexte_dests:
+            if model.startswith(p) and (prefixe is None or len(p) > len(prefixe)):
+                prefixe = p
+        if prefixe is None:
+            raise ValueError("destination inconnue : " + model)
         return self.backend.completion(
             model, messages or [{"role": "user", "content": "ping factice"}],
-            contexte=self.contexte)
+            contexte={"destination": self.contexte_dests[prefixe]})
 
     def test_nominal_quatre_fournisseurs(self):
         for fmt, model in MODELES.items():
@@ -153,7 +159,7 @@ class TestSDKReel(unittest.TestCase):
             backend.completion(
                 MODELES["openai"],
                 [{"role": "user", "content": "x"}],
-                contexte=self.contexte)
+                contexte={"destination": self.contexte_dests["openai/"]})
         self.serveurs["openai"].scenario = "nominal"
 
     def test_aucun_retry_implicite(self):
