@@ -19,8 +19,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/a2aproject/a2a-go/v2/a2a"
 	coorda2a "github.com/dbouzon/osnias-clearing/coord/a2a"
 	"github.com/dbouzon/osnias-clearing/coord/a2a-agent/agents"
+	"github.com/dbouzon/osnias-clearing/coord/a2a-agent/claudecode"
 
 	"coordengine/connecteursapi"
 )
@@ -78,9 +80,39 @@ func demarrerAgentFournisseur(nom string, d declarationFournisseur, jeton string
 	if err != nil {
 		return err
 	}
+	exec := &agents.ExecInférence{Nom: "recepteur", Point: point, Enveloppe: 5000}
+	var skills []a2a.AgentSkill
+	if nom == "anthropic" {
+		// M-COORD-LLM-05 : l'agent Anthropic passe DEUX VOIES — inférence
+		// INCHANGÉE + voie Claude Code supervisée (carte honnête).
+		opts, nettoyage, err := optionsClaudeCode()
+		if err != nil {
+			factice.Close()
+			return err
+		}
+		defer factice.Close()
+		defer nettoyage()
+		serv, err := agents.DemarrerServeur(agents.OptionsServeur{
+			Nom: "coord-agent-" + nom, Jeton: jeton,
+			Exec: claudecode.Agent{
+				Inference: &agents.ExecInférence{Nom: "recepteur", Point: point, Enveloppe: 5000},
+				Code:      &claudecode.ExecClaudeCode{Opts: opts},
+			},
+			Skills: skillsDeuxVoies,
+		})
+		if err != nil {
+			return err
+		}
+		fmt.Println("AGENT_PRET :", serv.URL())
+		if ecouter {
+			select {}
+		}
+		serv.Fermer()
+		return nil
+	}
 	serv, err := agents.DemarrerServeur(agents.OptionsServeur{
 		Nom: "coord-agent-" + nom, Jeton: jeton,
-		Exec: &agents.ExecInférence{Nom: "recepteur", Point: point, Enveloppe: 5000},
+		Exec: exec, Skills: skills,
 	})
 	if err != nil {
 		return err

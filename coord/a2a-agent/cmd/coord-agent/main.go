@@ -35,6 +35,7 @@ func main() {
 	var (
 		demo        = flag.Bool("demo-local", false, "démonstration autonome (factice, 0 EUR, sans clé ni compte)")
 		demoLLM04   = flag.Bool("demo-llm04", false, "démonstration autonome des raccordements d'inférence Anthropic/OpenAI/Gemini (factice, 0 EUR)")
+		demoLLM05   = flag.Bool("demo-claudecode", false, "démonstration autonome de l'agent Anthropic deux voies : inférence + Claude Code supervisé (factice, 0 EUR)")
 		jeton       = flag.String("jeton", "", "jeton du rail (X-Coord-Rail-Jeton), exigé en mode serveur")
 		fournisseur = flag.String("fournisseur", "", "raccordement d'inférence M-COORD-LLM-04 : anthropic | openai | gemini (factice loopback, voie inférence seule ; mistral = inférence uniquement, distinct de l'agent deux voies par defaut)")
 		ecouter     = flag.Bool("ecouter", false, "rester à l'écoute après le démarrage (mode serveur)")
@@ -43,6 +44,13 @@ func main() {
 
 	if *demoLLM04 {
 		if err := demoInférenceQuatre(); err != nil {
+			fmt.Fprintln(os.Stderr, "DEMO_ECHEC:", err)
+			os.Exit(1)
+		}
+		return
+	}
+	if *demoLLM05 {
+		if err := demoClaudeCode(); err != nil {
 			fmt.Fprintln(os.Stderr, "DEMO_ECHEC:", err)
 			os.Exit(1)
 		}

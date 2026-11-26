@@ -6,6 +6,7 @@ require (
 	coordengine v0.0.0
 	github.com/a2aproject/a2a-go/v2 v2.9.0
 	github.com/dbouzon/osnias-clearing/coord/a2a v0.0.0
+	golang.org/x/sys v0.48.0
 )
 
 require (

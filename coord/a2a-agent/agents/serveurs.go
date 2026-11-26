@@ -41,6 +41,10 @@ type OptionsServeur struct {
 	Description string     // description de la carte (défaut : DescriptionAgent)
 	Jeton       string     // jeton du rail EXIGÉ (fail closed côté socle)
 	Exec        Executable // exécuteur (ExecInférence)
+	// Skills : capacités additionnelles HONNÊTES de la carte (M-COORD-
+	// LLM-05 : un agent DEUX VOIES déclare inférence ET claude-code).
+	// Vide = défaut (inférence seule), rétrocompatible.
+	Skills []a2a.AgentSkill
 }
 
 // DemarrerServeur : carte aux capacités honnêtes (skill d'inférence
@@ -63,6 +67,11 @@ func DemarrerServeur(o OptionsServeur) (*Serveur, error) {
 		Description: "Voie inférence COORD : critique de plan, réception, direction (API fournisseur, fail closed).",
 		Tags:        []string{"coord", "inference", "critique-plan", "reception"},
 	}}
+	if len(o.Skills) > 0 {
+		// Surcharge honnête (additive) : chaque skill déclaré correspond à
+		// une voie EFFECTIVEMENT implémentée par l'exécuteur passé.
+		carte.Skills = o.Skills
+	}
 	interne, err := socle.NouveauServeurCarte(o.Nom, o.Exec, o.Jeton, carte)
 	if err != nil {
 		return nil, err

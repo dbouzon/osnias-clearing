@@ -62,6 +62,11 @@ func (a *agentLLM04) fermer() {
 func lancerAgentLLM04(t *testing.T, binaire string, args ...string) string {
 	t.Helper()
 	cmd := exec.Command(binaire, args...)
+	// Répertoire de travail = module a2a-agent : depuis M-COORD-LLM-05,
+	// l'agent anthropic (deux voies) y construit sa CLI factice au
+	// démarrage (go build cmd/claude-factice) ; sans effet pour les
+	// agents d'inférence seule.
+	cmd.Dir = filepath.Join("..", "..", "..", "a2a-agent")
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
