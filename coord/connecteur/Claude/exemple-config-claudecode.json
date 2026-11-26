@@ -1,0 +1,15 @@
+{
+  "_commentaire": "Exemple SANS secret (M-COORD-LLM-05). Mode SIMULE : la qualification reelle (claude -p reels, cle ANTHROPIC_API_KEY dans le trousseau du processus, jamais versionnee) est une recette DISTINCTE soumise a autorisation ecrite du pilote (triple verrou).",
+  "fournisseur": "anthropic-claude-code",
+  "voie": "claude-code",
+  "mode": "simule",
+  "binaire": "claude-factice",
+  "permission_mode": "dontAsk",
+  "outils_autorises": ["Read", "Grep", "Glob", "List"],
+  "deny_reseau": ["WebFetch", "WebSearch", "WebRequest"],
+  "budget_usd_par_run": 1.0,
+  "resultat_max_octets": 65536,
+  "session_logging": true,
+  "environnement_liste_blanche": ["HOME", "PATH"],
+  "secrets": "AUCUN secret dans ce fichier : variable d'environnement du trousseau processus uniquement, pour la qualification reelle ulterieure"
+}
