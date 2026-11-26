@@ -60,46 +60,52 @@ class ServeurFactice:
                 self.wfile.write(corps)
 
             def do_POST(self):
-                longueur = int(self.headers.get("Content-Length", 0))
-                corps = self.rfile.read(longueur) if longueur else b""
-                with serveur.lock:
-                    serveur.requetes.append({
-                        "chemin": self.path,
-                        "autorisation": self.headers.get("Authorization", ""),
-                        "cle_api": self.headers.get("x-api-key", ""),
-                    })
-                    scenario = serveur.scenario
-                if scenario == "json_malforme":
-                    corps_rep = b"{pas du json"
-                    self.send_response(200)
-                    self.send_header("Content-Type", "application/json")
-                    self.send_header("Content-Length", str(len(corps_rep)))
-                    self.end_headers()
-                    self.wfile.write(corps_rep)
-                    return
-                if scenario == "auth401":
-                    self._json(401, {"error": {"message": "clé invalide"}})
-                    return
-                if scenario == "err429":
-                    self._json(429, {"error": {"message": "quota dépassé"}})
-                    return
-                if scenario == "err500":
-                    self._json(500, {"error": {"message": "erreur interne"}})
-                    return
-                if scenario == "delai":
-                    time.sleep(serveur.delai_scenario_s)
                 try:
-                    req = json.loads(corps.decode("utf-8"))
-                except Exception:
-                    req = {}
-                if serveur.format in ("openai", "mistral"):
-                    self._repondre_openai(req, scenario, modele)
-                elif serveur.format == "anthropic":
-                    self._repondre_anthropic(req, scenario, modele)
-                else:
-                    self._repondre_gemini(req, scenario, modele)
+                    longueur = int(self.headers.get("Content-Length", 0))
+                    corps = self.rfile.read(longueur) if longueur else b""
+                    with serveur.lock:
+                        serveur.requetes.append({
+                            "chemin": self.path,
+                            "autorisation": self.headers.get("Authorization", ""),
+                            "cle_api": self.headers.get("x-api-key", ""),
+                        })
+                        scenario = serveur.scenario
+                    if scenario == "json_malforme":
+                        corps_rep = b"{pas du json"
+                        self.send_response(200)
+                        self.send_header("Content-Type", "application/json")
+                        self.send_header("Content-Length", str(len(corps_rep)))
+                        self.end_headers()
+                        self.wfile.write(corps_rep)
+                        return
+                    if scenario == "auth401":
+                        self._json(401, {"error": {"message": "clé invalide"}})
+                        return
+                    if scenario == "err429":
+                        self._json(429, {"error": {"message": "quota dépassé"}})
+                        return
+                    if scenario == "err500":
+                        self._json(500, {"error": {"message": "erreur interne"}})
+                        return
+                    if scenario == "delai":
+                        time.sleep(serveur.delai_scenario_s)
+                    try:
+                        req = json.loads(corps.decode("utf-8"))
+                    except Exception:
+                        req = {}
+                    if serveur.format in ("openai", "mistral"):
+                        self._repondre_openai(req, scenario, serveur.modele)
+                    elif serveur.format == "anthropic":
+                        self._repondre_anthropic(req, scenario, serveur.modele)
+                    else:
+                        self._repondre_gemini(req, scenario, serveur.modele)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass  # client parti (délai dépassé) : rien à émettre
 
-            def _repondre_openai(self, req, scenario, modele):
+            def _repondre_openai(self, req, scenario, modele_defaut):
+                # Le fournisseur réel ÉCHO le modèle demandé (litellm retire
+                # le préfixe fournisseur avant l'appel).
+                modele = req.get("model") or modele_defaut
                 contenu = "RÉPONSE FACTICE du fournisseur (loopback, 0 EUR)."
                 fin = "stop"
                 if scenario == "troncature":
@@ -124,7 +130,8 @@ class ServeurFactice:
                     del rep["usage"]
                 self._json(200, rep)
 
-            def _repondre_anthropic(self, req, scenario, modele):
+            def _repondre_anthropic(self, req, scenario, modele_defaut):
+                modele = req.get("model") or modele_defaut
                 modele_repondu = modele
                 motif = "end_turn"
                 if scenario == "modele_divergent":
@@ -145,7 +152,12 @@ class ServeurFactice:
                     del rep["usage"]
                 self._json(200, rep)
 
-            def _repondre_gemini(self, req, scenario, modele):
+            def _repondre_gemini(self, req, scenario, modele_defaut):
+                # Le modèle demandé est dans le chemin : models/{model}:generateContent
+                modele = modele_defaut
+                if "/models/" in self.path:
+                    morceau = self.path.split("/models/", 1)[1]
+                    modele = morceau.split(":", 1)[0] or modele_defaut
                 modele_repondu = modele
                 motif = "STOP"
                 if scenario == "modele_divergent":

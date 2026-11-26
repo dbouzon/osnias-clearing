@@ -85,9 +85,10 @@ class TestSDKReel(unittest.TestCase):
         for fmt, model in MODELES.items():
             with self.subTest(fournisseur=fmt):
                 rep = self._completion(model)
-                self.assertEqual(rep["model"], MODELES[fmt],
-                                 "MODELE_DIVERGENT côté moteur Go attendu "
-                                 "sinon : identité transmise telle quelle")
+                self.assertTrue(
+                    rep["model"].endswith(model.split("/", 1)[1]),
+                    "identité du modèle transmise telle quelle (contrôle "
+                    "MODELE_DIVERGENT côté moteur Go) : " + rep["model"])
                 self.assertEqual(rep["choices"][0]["finish_reason"], "stop")
                 self.assertGreaterEqual(rep["usage"]["total_tokens"], 1)
                 self.assertIn("FACTICE", rep["choices"][0]["message"]["content"])
@@ -133,7 +134,8 @@ class TestSDKReel(unittest.TestCase):
         for fmt in ("openai", "anthropic", "gemini"):
             self.serveurs[fmt].scenario = "modele_divergent"
             rep = self._completion(MODELES[fmt])
-            self.assertNotEqual(rep["model"], MODELES[fmt])
+            self.assertTrue(rep["model"].endswith("-divergent"),
+                            "divergence transmise telle quelle : " + rep["model"])
             self.serveurs[fmt].scenario = "nominal"
 
     def test_usage_absent_refusé(self):
@@ -148,7 +150,11 @@ class TestSDKReel(unittest.TestCase):
         try:
             with self.assertRaises(Exception) as ctx:
                 self._completion(MODELES["openai"])
-            self.assertIn("CLE_ABSENTE", str(ctx.exception))
+            # L'erreur structurée porte son type dans l'attribut (le message
+            # seul n'est pas un contrat) :
+            self.assertEqual(getattr(ctx.exception, "type", ""),
+                             "CLE_ABSENTE")
+            self.assertIn("non renseignée", str(ctx.exception))
         finally:
             os.environ["COORD_CLE_CI"] = CLE_TEST
 
