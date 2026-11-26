@@ -30,9 +30,13 @@ Summary of the delivered work (full detail in the French report):
   anchored verdict → ACK_RECU → CLOTURE_REFUSEE) then bridge restart with a
   new mission working immediately (statelessness).
 - **T4**: traced qualification — REEL local (21/21 contract tests, E2E Go
-  PASS, full non-regression, cross-OS vet), CI (3-OS matrix installing
-  litellm-core==1.111.0 and running the real SDK against the four fake
-  providers), NON_EXÉCUTÉ (real providers, DeepSeek/Meta/Grok, 72 h VPS run).
+  PASS, full non-regression, cross-OS vet), CI loop with reproductions
+  before fixes (harness context shape, fake providers must echo the
+  requested model, structured error checked by type, key must not leak into
+  body or path while the Authorization header is the normal provider
+  mechanism); final CI at SHA `ba34b04a`: **9/9 check runs success**
+  (Go 3 OS, race, schemas, Python batteries, bridge 3 OS with the real SDK),
+  NON_EXÉCUTÉ (real providers, DeepSeek/Meta/Grok, 72 h VPS run).
 - **T5**: sandbox measures (factice backend, 50 calls): startup 127 ms,
   RSS 22.8 MB, median latency 0.81 ms / p95 0.91 ms, vs the A2A rail at
   3.02 ms / 13.2 MB under identical loopback conditions; 2-GB/72 h

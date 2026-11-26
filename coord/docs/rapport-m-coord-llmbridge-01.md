@@ -72,6 +72,30 @@ La version française fait autorité (traduction : rapport-m-coord-llmbridge-01.
   puis test_llmbridge, **test_ci_sdk (SDK réel vs 4 fournisseurs factices
   natifs)**, mesures. Statuts au moment du push : voir le corps de la PR
   (mise à jour après passage CI).
+
+### Historique de la boucle de qualification CI (reproductions avant correction)
+
+- Commit initial `69dc4af3` : CI Go qualification 5/5 SUCCESS (3 OS + race +
+  batteries + schémas) ; CI llmbridge : contrat PASS, **step SDK ÉCHEC sur
+  les 3 OS** (logs inaccessibles : 403 admin). Correctif d'outillage
+  `9492fc5a` : le step publie désormais les échecs en annotations
+  `::error::` (méthode M-COORD-LLM-03).
+- Diagnostic au commit `c40834a8` : (1) harnais CI passait `destinations`
+  (plural) au backend alors que le contrat du pont passe UNE destination
+  résolue (KeyError 'destination') ; (2) fournisseurs factices n'échoaient
+  pas le modèle demandé (réponse figée) alors que les fournisseurs réels
+  échoent l'identité reçue ; (3) l'assertion CLE_ABSENTE lisait le message
+  au lieu du type de l'erreur structurée. Le SDK litellm-core RÉEL était
+  bien atteint (erreurs de comparaison, pas d'import ni de routage).
+- Correctif `483e4e97` : écho du modèle demandé (formats natifs 4
+  fournisseurs), erreur vérifiée par attribut `type`. Restait un échec :
+  le test d'absence de secret exigeait une absence de clé dans TOUTE la
+  requête, alors que l'en-tête Authorization Bearer EST le mécanisme
+  normal du fournisseur.
+- Correctif `ba34b04a` : propriété correcte — la clé ne fuit NI dans la
+  charge NI dans le chemin (journal du corps ajouté aux factices).
+  **CI finale au SHA `ba34b04a` : 9/9 check runs SUCCESS** (Go 3 OS, race,
+  schémas, batteries Python, Pont 3 OS avec SDK réel).
 - NON_EXÉCUTÉ : fournisseurs réels (qualification DISTINCTE sous triple
   verrou + autorisation écrite), DeepSeek/Meta/Grok (couverture litellm
   documentée, NON_TESTÉS v1, lacune explicite), VPS 2 Go/72 h.
