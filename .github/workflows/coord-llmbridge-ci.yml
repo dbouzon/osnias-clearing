@@ -1,0 +1,62 @@
+# Copyright © 2026 Denis Bouzon
+# ORCID: https://orcid.org/0009-0007-8894-8902
+# SPDX-License-Identifier: Apache-2.0
+#
+# CI du pont COORD HTTP/JSON coord.llm.v1 (M-COORD-LLMBRIDGE-01, issue #62).
+# litellm-core==1.111.0 est RÉELLEMENT installé et exécuté ici : l'installation
+# est interdite dans le sandbox de l'exécutant, la CI est donc le lieu de la
+# qualification SDK réelle (fournisseurs factices loopback natifs).
+name: COORD llmbridge
+
+on:
+  push:
+    branches: [main]
+    paths: ['coord/llmbridge/**']
+  pull_request:
+    paths: ['coord/llmbridge/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pont:
+    name: Pont ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Installation épinglée litellm-core (SDK réel, MIT)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "litellm-core==1.111.0"
+        shell: bash
+      - name: Contrat coord.llm.v1 (tests locaux, sans SDK)
+        run: python coord/llmbridge/test_llmbridge.py
+        shell: bash
+      - name: Qualification SDK RÉEL contre fournisseurs factices loopback
+        run: python coord/llmbridge/test_ci_sdk.py
+        shell: bash
+      - name: Mesures de sobriété (pont sans SDK)
+        run: python coord/llmbridge/mesures.py
+        shell: bash
+      - name: Mesures installation SDK (taille)
+        run: |
+          python - <<'EOF'
+          import json, site, os
+          total = 0
+          for racine in site.getsitepackages() + [site.getusersitepackages()]:
+              if racine and os.path.isdir(racine):
+                  for dirpath, _, fichiers in os.walk(racine):
+                      total += sum(os.path.getsize(os.path.join(dirpath, f))
+                                   for f in fichiers)
+          print(json.dumps({"installation_sdk_octets": total}))
+          EOF
+        shell: bash

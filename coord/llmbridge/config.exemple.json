@@ -1,0 +1,26 @@
+{
+  "version": "coord.llm.v1",
+  "_commentaire": "Exemple SANS SECRET : chaque cle_env désigne une variable d'environnement. api_base des fournisseurs réels = qualification réelle DISTINCTE sous triple verrou (NON_EXÉCUTÉE dans M-COORD-LLMBRIDGE-01). Pour la CI, voir test_ci_sdk.py qui génère ses propres destinations loopback.",
+  "bornes": {
+    "corps_max_octets": 2097152,
+    "delai_backend_s": 60
+  },
+  "destinations": {
+    "openai/": {
+      "api_base": "https://api.openai.com/v1",
+      "cle_env": "COORD_CLE_OPENAI"
+    },
+    "mistral/": {
+      "api_base": "https://api.mistral.ai/v1",
+      "cle_env": "COORD_CLE_MISTRAL"
+    },
+    "anthropic/": {
+      "api_base": "https://api.anthropic.com",
+      "cle_env": "COORD_CLE_ANTHROPIC"
+    },
+    "gemini/": {
+      "api_base": "https://generativelanguage.googleapis.com/v1beta",
+      "cle_env": "COORD_CLE_GEMINI"
+    }
+  }
+}

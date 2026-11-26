@@ -1,0 +1,26 @@
+{
+  "mode": "SIMULE",
+  "_commentaire": "Exemple de raccordement du moteur Go au pont coord.llm.v1 (M-COORD-LLMBRIDGE-01). Aucun secret : cle_env désigne une variable d'environnement. Loopback => aucun triple verrou requis (SimuleLocal). Pour une utilisation REELLE : qualification DISTINCTE sous triple verrou et autorisation écrite du pilote (NON_EXÉCUTÉE dans cette mission).",
+  "fournisseurs": [
+    {
+      "id": "mistral-exec-via-pont",
+      "endpoint": "http://127.0.0.1:8788/v1/chat/completions",
+      "format": "openai",
+      "modele": "mistral/mistral-small-latest",
+      "cle_env": "COORD_BRIDGE_JETON",
+      "timeout_ms": 60000,
+      "taille_max_reponse": 262144,
+      "retraits_max": 1
+    },
+    {
+      "id": "openai-recep-via-pont",
+      "endpoint": "http://127.0.0.1:8788/v1/chat/completions",
+      "format": "openai",
+      "modele": "openai/gpt-4o-mini",
+      "cle_env": "COORD_BRIDGE_JETON",
+      "timeout_ms": 60000,
+      "taille_max_reponse": 262144,
+      "retraits_max": 1
+    }
+  ]
+}
