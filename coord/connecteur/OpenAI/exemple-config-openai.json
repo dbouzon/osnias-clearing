@@ -1,0 +1,23 @@
+{
+  "_commentaire": "Exemple SANS SECRET (M-COORD-LLM-04, raccordement OpenAI au serveur agent A2A mutualise). La cle API ne figure JAMAIS dans ce fichier : elle passe par la variable d'environnement COORD_CLE_OPENAI. Mode REEL verrouille par le triple verrou.",
+  "mode": "SIMULE",
+  "fournisseurs": [
+    {
+      "id": "openai",
+      "endpoint": "https://api.openai.com/v1/chat/completions",
+      "cle_env": "COORD_CLE_OPENAI",
+      "modele": "gpt-4o-mini-2024-07-18",
+      "format": "openai",
+      "timeout_ms": 60000,
+      "taille_max_reponse": 262144,
+      "retraits_max": 2,
+      "tarif_entree_centimes_par_million": 15,
+      "tarif_sortie_centimes_par_million": 60,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 8000,
+      "jetons_sortie_max_par_tentative": 2000
+    }
+  ],
+  "note_agent_a2a": "Raccordement M-COORD-LLM-04 : voie INFERENCE uniquement (critique de plan / reception). L'execution outillee (VOIE:VIBE) est refusee avec CAPACITE_NON_IMPLEMENTEE sur cet agent ; elle reste reservee a l'agent Mistral.",
+  "note_profil": "format openai (defaut) : finish_reason stop attendu (toute autre valeur = refus), identite exacte controlee (MODELE_DIVERGENT), usage prompt+completion exige (JETONS_INCONNUS sinon). Modèle EXACT exigé (le retour d'alias diverge en production, M-COORD-PILOT-03 étape 3)."
+}

@@ -1,10 +1,10 @@
-name: COORD agent A2A + connecteur Mistral (module coord/a2a-agent)
+name: COORD agent A2A mutualise (Mistral + Anthropic + OpenAI + Gemini, module coord/a2a-agent)
 on:
   push:
     branches: [main]
-    paths: ['coord/a2a-agent/**', '.github/workflows/coord-agent-ci.yml']
+    paths: ['coord/a2a-agent/**', 'coord/go/connecteursapi/**', 'coord/a2a/**', '.github/workflows/coord-agent-ci.yml']
   pull_request:
-    paths: ['coord/a2a-agent/**', '.github/workflows/coord-agent-ci.yml']
+    paths: ['coord/a2a-agent/**', 'coord/go/connecteursapi/**', 'coord/a2a/**', '.github/workflows/coord-agent-ci.yml']
   workflow_dispatch:
 jobs:
   agent:
@@ -27,7 +27,7 @@ jobs:
         run: go vet ./...
       - name: go build
         run: go build ./...
-      - name: go test (socle, runner, connecteur Mistral factice)
+      - name: go test (socle, runner, agents inférence 4 fournisseurs, connecteur Mistral factice)
         shell: bash
         run: |
           if ! go test ./... > test-out.log 2>&1; then

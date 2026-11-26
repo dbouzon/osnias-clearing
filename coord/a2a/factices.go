@@ -22,6 +22,7 @@ package a2a
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"iter"
 	"net"
@@ -257,6 +258,24 @@ func carteFactice(nom, url string) *a2a.AgentCard {
 // DemarrerAgentFactice : écoute loopback, JSON-RPC A2A + carte standard ;
 // JETON EXIGÉ sur tout appel (E9 : 401 sans jeton).
 func DemarrerAgentFactice(nom string, exec a2asrv.AgentExecutor, jeton string) (*ServeurFactice, error) {
+	return demarrer(nom, exec, jeton, nil)
+}
+
+// DemarrerAgentFacticeCarte : identique à DemarrerAgentFactice avec une
+// carte d'agent fournie (M-COORD-LLM-04 #56 : cartes aux CAPACITÉS
+// HONNÊTES — Skills déclarés par fournisseur, aucune capacité simulée).
+// La carte DOIT référencer l'interface d'invocation effective : utiliser
+// CarteAgent en base puis ajuster. Additif ; le comportement historique
+// de DemarrerAgentFactice est inchangé.
+func DemarrerAgentFacticeCarte(nom string, exec a2asrv.AgentExecutor, jeton string, carte *a2a.AgentCard) (*ServeurFactice, error) {
+	if carte == nil {
+		return nil, errors.New("factices : carte d'agent exigée (nil interdit)")
+	}
+	return demarrer(nom, exec, jeton, carte)
+}
+
+// demarrer : démarrage commun (loopback, jeton exigé, fermeture réelle).
+func demarrer(nom string, exec a2asrv.AgentExecutor, jeton string, carte *a2a.AgentCard) (*ServeurFactice, error) {
 	handler := a2asrv.NewHandler(exec)
 	mux := http.NewServeMux()
 	mux.Handle("/invoke", a2asrv.NewJSONRPCHandler(handler))
@@ -268,8 +287,19 @@ func DemarrerAgentFactice(nom string, exec a2asrv.AgentExecutor, jeton string) (
 	urlInvoke := fmt.Sprintf("http://127.0.0.1:%d/invoke", port)
 	urlBase := fmt.Sprintf("http://127.0.0.1:%d", port)
 
+	if carte == nil {
+		carte = carteFactice(nom, urlInvoke)
+	}
+	// La carte DOIT désigner l'URL d'invocation RÉELLE : sans interface
+	// d'invocation déclarée, l'agent serait indésinvocable pour un client
+	// A2A conforme (V1.0 : SupportedInterfaces obligatoire).
+	if len(carte.SupportedInterfaces) == 0 {
+		carte.SupportedInterfaces = []*a2a.AgentInterface{
+			a2a.NewAgentInterface(urlInvoke, a2a.TransportProtocolJSONRPC),
+		}
+	}
 	mux.Handle(a2asrv.WellKnownAgentCardPath,
-		a2asrv.NewStaticAgentCardHandler(carteFactice(nom, urlInvoke)))
+		a2asrv.NewStaticAgentCardHandler(carte))
 
 	// Middleware jeton : seuls les appels AUTHENTIFIÉS passent ; agent
 	// FERMÉ : tout appel est refusé (arrêt réel simulé, E4).
@@ -291,6 +321,23 @@ func DemarrerAgentFactice(nom string, exec a2asrv.AgentExecutor, jeton string) (
 	srv := &http.Server{Handler: avecJeton}
 	go srv.Serve(ln)
 	return &ServeurFactice{listener: ln, url: urlBase, srv: srv, ferme: ferme}, nil
+}
+
+// CarteAgent : AgentCard standard A2A v1.0, base déclarative pour
+// DemarrerAgentFacticeCarte (l'URL d'invocation effective est réglée au
+// démarrage). Les Skills (capacités HONNÊTES, M-COORD-LLM-04) restent à
+// la charge de l'appelant : honnêteté = déclarer moins plutôt que plus.
+func CarteAgent(nom, description string) *a2a.AgentCard {
+	return &a2a.AgentCard{
+		Name:                nom,
+		Description:         description,
+		SupportedInterfaces: []*a2a.AgentInterface{
+			// URL réglée au démarrage (démarrage effectif ci-dessus).
+		},
+		DefaultInputModes:  []string{"text/plain"},
+		DefaultOutputModes: []string{"text/plain"},
+		Capabilities:       a2a.AgentCapabilities{Streaming: true},
+	}
 }
 
 // portLibre : port libre loopback (helpers de tests).
