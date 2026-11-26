@@ -72,8 +72,10 @@ RÉELLE demeure NON_EXÉCUTÉE (recette distincte, triple verrou).
    session (un run raté ne peut jamais être repris).
 3. **Isolation** : un espace de travail dédié par mission, HOME réécrit
    (aucune lecture du `~/.claude` réel, aucune credential), liste
-   blanche d'environnement EXACTE [HOME, PATH] vérifiée sur la
-   déclaration d'environnement renvoyée par la CLI (toute divergence
+   blanche d'environnement EXACTE vérifiée sur la
+   déclaration d'environnement renvoyée par la CLI ([HOME, PATH] ; sous
+   Windows le runtime Go ajoute SYSTEMROOT, attendu nommément ; toute
+   divergence
    est refusée, motif `ENV_HORS_LISTE_BLANCHE`).
 4. **Secrets** : expurgation runner conservée (sk-, xoxb-, etc.) ;
    aucun secret dans livrables, registre, settings ou configurations

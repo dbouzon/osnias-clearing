@@ -33,7 +33,9 @@
 //     écriture atomique post-validation uniquement ;
 //   - ISOLEMENT : espace de travail dédié par mission, HOME RÉÉCRIT
 //     vers cet espace (aucune lecture du ~/.claude réel), liste blanche
-//     d'environnement obtenue du runner (SEUL HOME transmis).
+//     d'environnement obtenue du runner (SEUL HOME transmis ; sous
+//     Windows le runtime Go AJOUTE LUI-MÊME SYSTEMROOT, attendu par
+//     nom — aucune variable d'identité ou de secret ne transite).
 //
 // Le budget n'est JAMAIS réservé ici : la voûte TX1/TX2 vit côté
 // orchestrateur COORD ; --max-budget-usd n'est qu'une DEUXIÈME borne
@@ -48,6 +50,7 @@ import (
 	"iter"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -81,9 +84,17 @@ var denyObligatoires = []string{"WebFetch", "WebSearch", "WebRequest", "TodoWrit
 
 // listeBlancheEnvAttendue : ensemble EXACT attendu de l'environnement
 // du processus CLI : HOME réécrit par le superviseur + PATH ajouté par
-// le runner (contrat T-ENV, seul chemin d'exécution). Toute autre clé
-// reçue (ou manquante) est une rupture d'isolation, refusée nettement.
-var listeBlancheEnvAttendue = []string{"HOME", "PATH"}
+// le runner (contrat T-ENV, seul chemin d'exécution). Sous Windows, le
+// runtime Go AJOUTE LUI-MÊME SYSTEMROOT (os/exec addCriticalEnv :
+// variable critique du système, valeur identique pour tout processus,
+// aucun identifiant) : elle est attendue NOMMÉMENT et rien d'autre ne
+// l'est (une clé tierce reste une fuite, refusée nettement).
+var listeBlancheEnvAttendue = func() []string {
+	if runtime.GOOS == "windows" {
+		return []string{"HOME", "PATH", "SYSTEMROOT"}
+	}
+	return []string{"HOME", "PATH"}
+}()
 
 // JetonsCodeDefaut : usage DECLARÉ de la voie Claude Code (SIMULATION
 // documentée, jamais facturée, loopback uniquement).

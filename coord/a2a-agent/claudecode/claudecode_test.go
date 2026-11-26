@@ -321,13 +321,16 @@ func TestCC13SettingsRefusesReseau(t *testing.T) {
 }
 
 // CC14 : liste blanche d'environnement — la validation du superviseur
-// EXIGE environment == [HOME] exactement : toute divulgation (clé
-// héritée, token, PATH réel) est refusée NETTEMENT (isolation de bout
-// en bout, motif nominal).
+// EXIGE environment == listeBlancheEnvAttendue exactement : toute
+// divulgation (clé héritée, token, PATH réel) est refusée NETTEMENT
+// (isolation de bout en bout, motif nominal). HOME est réécrit par le
+// superviseur, PATH ajouté par le runner ; sous Windows le runtime Go
+// ajoute lui-même SYSTEMROOT (addCriticalEnv).
 func TestCC14EnvironnementListeBlanche(t *testing.T) {
-	ok := `{"result":"livrable","session_id":"s1","is_error":false,"total_cost_usd":0.01,"num_turns":1,"environment":["HOME","PATH"]}`
+	envExact, _ := json.Marshal(listeBlancheEnvAttendue)
+	ok := `{"result":"livrable","session_id":"s1","is_error":false,"total_cost_usd":0.01,"num_turns":1,"environment":` + string(envExact) + `}`
 	if _, err := validerSortie(&runner.Resultat{Stdout: ok}, 4096, 1.0); err != nil {
-		t.Fatalf("liste blanche exacte attendue admise ([HOME PATH], le runner ajoute PATH) : %v", err)
+		t.Fatalf("liste blanche exacte attendue admise (%v) : %v", listeBlancheEnvAttendue, err)
 	}
 	fuite := `{"result":"livrable","session_id":"s1","is_error":false,"total_cost_usd":0.01,"num_turns":1,"environment":["GH_TOKEN","HOME"]}`
 	if _, err := validerSortie(&runner.Resultat{Stdout: fuite}, 4096, 1.0); !errors.Is(err, ErrEnvHorsListeBlanche) {

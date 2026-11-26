@@ -71,8 +71,10 @@ qualification remains NOT_EXECUTED (separate route, triple lock).
    (a failed run can never be resumed).
 3. **Isolation**: one dedicated workspace per mission, HOME rewritten
    (no access to the real `~/.claude`, no credentials), EXACT
-   environment whitelist [HOME, PATH] checked against the environment
-   declaration returned by the CLI (any divergence is refused with
+   environment whitelist checked against the environment
+   declaration returned by the CLI ([HOME, PATH]; on Windows the Go
+   runtime itself adds SYSTEMROOT, expected by name; any divergence is
+   refused with
    `ENV_HORS_LISTE_BLANCHE`).
 4. **Secrets**: runner scrubbing kept (sk-, xoxb- etc.); no secret in
    deliverables, registry, settings or example configurations (checked

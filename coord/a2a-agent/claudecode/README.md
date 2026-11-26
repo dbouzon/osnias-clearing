@@ -32,7 +32,7 @@ DISTINCTE (triple verrou, autorisation écrite du pilote), NON_EXÉCUTÉE.
 | `RESULT_VIDE` / `RESULTAT_TROP_GRAND` | result vide ou hors enveloppe | borne `ResultatMax` |
 | `COUT_INCONNU` | `total_cost_usd` absent/négatif | jamais inconnu=gratuit : refus |
 | `RESULTAT_COUT_HORS_BORNE` | coût > budget local | augmenter `BudgetUSD` (voûte COORD = autorité) |
-| `ENV_HORS_LISTE_BLANCHE` | environnement reçu ≠ [HOME, PATH] | isolation rompue : fuite à corriger |
+| `ENV_HORS_LISTE_BLANCHE` | environnement reçu ≠ attendu ([HOME, PATH] ; sous Windows [HOME, PATH, SYSTEMROOT], SYSTEMROOT ajouté par le runtime Go) | isolation rompue : fuite à corriger |
 | `SESSION_INCOHERENTE` | reprise demandée sans session valide | session absente ou divergente |
 | `REGISTRE_VERROU_INDISPONIBLE` / `REGISTRE_CORROMPU` | verrou tenu / fichier corrompu | contention bornée ; fichier à réparer |
 | `ANNULE` / `ARRET_FORCE` | annulation / limite de durée | reprise = décision PILOTE |
