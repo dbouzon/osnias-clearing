@@ -68,6 +68,10 @@ class ServeurFactice:
                             "chemin": self.path,
                             "autorisation": self.headers.get("Authorization", ""),
                             "cle_api": self.headers.get("x-api-key", ""),
+                            # Charge utile (pour prouver qu'aucun secret n'y
+                            # fuit ; la clé dans l'en-tête Authorization est
+                            # le mécanisme NORMAL du fournisseur).
+                            "corps": corps.decode("utf-8", "replace")[:20000],
                         })
                         scenario = serveur.scenario
                     if scenario == "json_malforme":

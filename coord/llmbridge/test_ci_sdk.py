@@ -13,7 +13,6 @@ Si litellm-core est absent, chaque test est marqué NON_EXECUTE (skip
 explicite) : JAMAIS un faux SDK, jamais un succès simulé.
 """
 
-import json
 import os
 import sys
 import unittest
@@ -179,11 +178,13 @@ class TestSDKReel(unittest.TestCase):
         self.serveurs["mistral"].scenario = "nominal"
 
     def test_secret_absent_des_requetes(self):
-        """La clé n'apparaît JAMAIS dans la charge envoyée au fournisseur."""
+        """La clé est portée par l'en-tête Authorization (mécanisme NORMAL du
+        fournisseur) mais ne fuit JAMAIS dans la charge ni dans le chemin."""
         self._completion(MODELES["openai"])
         for s in self.serveurs.values():
             for r in s.requetes:
-                self.assertNotIn(CLE_TEST, json.dumps(r))
+                self.assertNotIn(CLE_TEST, r["corps"])
+                self.assertNotIn(CLE_TEST, r["chemin"])
 
 
 if __name__ == "__main__":
