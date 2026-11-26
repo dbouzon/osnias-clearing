@@ -41,6 +41,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -230,6 +231,12 @@ func executer(args []string) int {
 
 // resultat : texte du champ result par scénario.
 func resultat(prompt string, appels int, session string) string {
+	// Marqueur de rétroaction RÉCEPTION (M-COORD-LLM-05 CC15) : la
+	// TACHE pilote le livrable pour la boucle A_CORRIGER DU RÉCEPTIONNAIRE
+	// (le factice de réception, lui, route sur la CHARGE qu'il reçoit).
+	if strings.Contains(prompt, "SCENARIO:LIVRABLE_A_CORRIGER") && !strings.Contains(prompt, "CORRECTION_NETTOYEE") {
+		return "LIVRABLE A CORRIGER (run " + strconv.Itoa(appels) + ", session " + session + ") SCENARIO:A_CORRIGER"
+	}
 	switch {
 	case strings.Contains(prompt, "SCENARIO:FUIE"):
 		return "lua resultat contient sk-ant-api03-EXEMPLESECRET123456789012 et xoxb-EXEMPLESECRET12345678900AAABBBB volontairement pour prouver l'expurgation (session " + session + ")"
