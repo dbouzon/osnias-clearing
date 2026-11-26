@@ -36,7 +36,7 @@ func main() {
 		demo        = flag.Bool("demo-local", false, "démonstration autonome (factice, 0 EUR, sans clé ni compte)")
 		demoLLM04   = flag.Bool("demo-llm04", false, "démonstration autonome des raccordements d'inférence Anthropic/OpenAI/Gemini (factice, 0 EUR)")
 		jeton       = flag.String("jeton", "", "jeton du rail (X-Coord-Rail-Jeton), exigé en mode serveur")
-		fournisseur = flag.String("fournisseur", "", "raccordement d'inférence M-COORD-LLM-04 : anthropic | openai | gemini (factice loopback, voie inférence seule)")
+		fournisseur = flag.String("fournisseur", "", "raccordement d'inférence M-COORD-LLM-04 : anthropic | openai | gemini (factice loopback, voie inférence seule ; mistral = inférence uniquement, distinct de l'agent deux voies par defaut)")
 		ecouter     = flag.Bool("ecouter", false, "rester à l'écoute après le démarrage (mode serveur)")
 	)
 	flag.Parse()
@@ -51,7 +51,7 @@ func main() {
 	if *fournisseur != "" {
 		d, ok := fournisseursLLM04[*fournisseur]
 		if !ok {
-			fmt.Fprintln(os.Stderr, "ERREUR : -fournisseur inconnu :", *fournisseur, "(admis : anthropic, openai, gemini)")
+			fmt.Fprintln(os.Stderr, "ERREUR : -fournisseur inconnu :", *fournisseur, "(admis : anthropic, openai, gemini, mistral)")
 			os.Exit(2)
 		}
 		if *jeton == "" {

@@ -40,6 +40,9 @@ var fournisseursLLM04 = map[string]declarationFournisseur{
 	"anthropic": {format: "anthropic", profil: "", modele: "claude-3-5-sonnet-20241022"},
 	"openai":    {format: "openai", profil: "", modele: "gpt-4o-mini-2024-07-18"},
 	"gemini":    {format: "openai", profil: "gemini", modele: "gemini-2.0-flash"},
+	// Mistral INFERENCE seule (profil stop-one existant) : DISTINCT de
+	// l'agent Mistral historique deux voies (defaut -jeton), inchangé.
+	"mistral": {format: "openai", profil: "mistral", modele: "mistral-small-latest"},
 }
 
 // demarrerAgentFournisseur : factice de format + point connecteur
@@ -97,7 +100,7 @@ func demarrerAgentFournisseur(nom string, d declarationFournisseur, jeton string
 func demoInférenceQuatre() error {
 	ctx := context.Background()
 	const emp = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-	for _, nom := range []string{"anthropic", "openai", "gemini"} {
+	for _, nom := range []string{"anthropic", "openai", "gemini", "mistral"} {
 		d := fournisseursLLM04[nom]
 		factice := agents.DemarrerFactice(agents.OptionsFactice{Format: d.format, Modele: d.modele})
 		cfg := connecteursapi.Config{Fournisseurs: []connecteursapi.ConfigFournisseur{{
@@ -127,7 +130,14 @@ func demoInférenceQuatre() error {
 			factice.Close()
 			return err
 		}
-		reg := filepath.Join(os.TempDir(), fmt.Sprintf("coord-agent-demo-%s.json", nom))
+		baseDemo, err := os.MkdirTemp("", "coord-agent-demo-")
+		if err != nil {
+			factice.Close()
+			serv.Fermer()
+			return err
+		}
+		defer os.RemoveAll(baseDemo)
+		reg := filepath.Join(baseDemo, "registre.json")
 		rail, err := coorda2a.NouveauRail(ctx, serv.URL(), "jeton-demo-llm04", reg)
 		if err != nil {
 			serv.Fermer()
@@ -158,6 +168,6 @@ func demoInférenceQuatre() error {
 		}
 		fmt.Printf("INFERENCE_OK : %s (jetons %d, verdict %s)\n", nom, env.Jetons, env.Texte)
 	}
-	fmt.Println("DEMO_LLM04_OK : trois raccordements d'inférence exercés de bout en bout, 0 EUR, aucune clé.")
+	fmt.Println("DEMO_LLM04_OK : quatre raccordements d'inférence exercés de bout en bout (dont Mistral inférence), 0 EUR, aucune clé.")
 	return nil
 }
