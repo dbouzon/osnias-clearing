@@ -36,7 +36,7 @@ if SDK_PRESENT:  # stabilization de litellm avant tout test
     except Exception:
         pass
 
-from backend import LiteLLMBackend  # noqa: E402
+from backend import ErreurBackend, LiteLLMBackend  # noqa: E402
 from fournisseurs_factices import ServeurFactice  # noqa: E402
 
 CLE_TEST = "cle-factice-ci-0123456789"
@@ -207,12 +207,12 @@ class TestPrefixeSdk(unittest.TestCase):
         self.addCleanup(s.arreter)
         backend = LiteLLMBackend(delai_s=15.0)
         dest = {"api_base": s.api_base, "cle_env": "COORD_CLE_CI"}
-        with self.assertRaises(Exception) as ctx:
+        with self.assertRaises(ErreurBackend) as ctx:
             backend.completion(
                 "factice-mistral-sans-prefixe",
                 [{"role": "user", "content": "repro"}],
                 contexte={"destination": dest})
-        self.assertIn("ERREUR_SDK", str(ctx.exception) + repr(ctx.exception))
+        self.assertEqual(ctx.exception.type, "ERREUR_SDK")
 
     def test_prefixe_sdk_route_et_preserve_identite(self):
         """D2 : prefixe_sdk ajoute le préfixe SDK, identité passthrough."""
