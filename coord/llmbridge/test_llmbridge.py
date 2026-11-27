@@ -359,6 +359,20 @@ class TestScenariosMarqueurs(unittest.TestCase):
         self.assertTrue(all(p.strip() for p in verdict["points"]))
         self.assertEqual(verdict["empreinte_attendue"], emp)
 
+    def test_recep_a_corriger_verdict_id_obligatoire(self):
+        """Reproduction M-COORD-DEP-03 recette E3 : le moteur Go exige
+        verdict_id pour toute decision recevable. Le verdict A_CORRIGER
+        DOIT donc embarquer une reference (non vide), sinon Recevoir
+        echoue avec verdict sans reference."""
+        emp = "e" * 64
+        charge = ("reception du livrable\nSCENARIO:LIVRABLE_A_CORRIGER\n"
+                  "\"empreinte_attendue\":\"" + emp + "\"")
+        verdict = json.loads(self.contenu("factice/recep/openai-dep03", charge))
+        self.assertEqual(verdict["verdict"], "A_CORRIGER")
+        self.assertTrue(verdict.get("verdict_id", "").strip(),
+                        "verdict_id obligatoire (contrat moteur)")
+        self.assertTrue(verdict.get("verdict_url", "").strip())
+
     def test_recep_sans_marqueur_acceppee_historique(self):
         emp = "f" * 64
         charge = ("reception du livrable sain\n"

@@ -62,7 +62,9 @@ section in the same PR.
   no scenario marker; this is phase 2 of the same mission identifier.
 - `SCENARIO:LIVRABLE_A_CORRIGER` (receiver): the receiver's response is an
   A_CORRIGER verdict with exactly 2 explicit points, anchored to the digest
-  of the received deliverable; any other prompt content is ignored.
+  of the received deliverable, referenced by a `verdict_id` (the Go engine
+  requires a reference for every receivable decision); any other prompt
+  content is ignored.
 - `MANDAT V1` + `MANDAT V2`: immediate 400 MARQUEURS_CONTRADICTOIRES
   refusal, no inference produced (defence against a contradictory prompt).
 - No marker: strictly unchanged historical behavior (frozen by

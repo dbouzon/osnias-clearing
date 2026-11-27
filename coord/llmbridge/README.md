@@ -145,7 +145,9 @@ cette section dans la même PR.
   de scénario ; c'est la phase 2 du même identifiant de mission.
 - `SCENARIO:LIVRABLE_A_CORRIGER` (reception) : la réponse du réceptionnaire
   est un verdict A_CORRIGER avec exactement 2 points explicites, ancrés à
-  l'empreinte du livrable reçu ; tout autre contenu de charge est ignoré.
+  l'empreinte du livrable reçu, référencé par `verdict_id` (le moteur Go
+  exige une référence pour toute décision recevable) ; tout autre contenu
+  de charge est ignoré.
 - `MANDAT V1` + `MANDAT V2` : refus immédiat 400 MARQUEURS_CONTRADICTOIRES,
   aucune inférence produite (défense contre une charge contradictoire).
 - Sans marqueur : comportement historique strictement inchangé (figé par

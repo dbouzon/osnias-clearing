@@ -113,10 +113,15 @@ class FacticeBackend:
     def _verdict(self, charge):
         empreinte = extraire_empreinte(charge)
         if self.MARQUEUR_LIVRABLE_A_CORRIGER in charge:
+            # Recette E3 DEP-03 : le moteur exige verdict_id pour toute
+            # decision recevable (verdict sans reference sinon). Ajout
+            # minimal, marqueurs et points INCHANGES.
             return json.dumps({
                 "verdict": "A_CORRIGER",
                 "points": list(self.POINTS_A_CORRIGER),
                 "empreinte_attendue": empreinte,
+                "verdict_id": "factice-verdict-a-corriger",
+                "verdict_url": "urn:coord:factice",
             }, ensure_ascii=False)
         if "CRITIQUE DE PLAN" in charge:
             return json.dumps({
