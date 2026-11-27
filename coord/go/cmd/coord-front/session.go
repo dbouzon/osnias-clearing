@@ -2,9 +2,12 @@
 // ORCID: https://orcid.org/0009-0007-8894-8902
 // SPDX-License-Identifier: Apache-2.0
 
-// Session navigateur : cookie HttpOnly + SameSite=Strict, signé HMAC
-// (secret par configuration, jamais dans le dépôt). Le cookie ne porte
-// QUE le nom du compte : les tokens pilotes restent côté serveur.
+// Session navigateur v2 (M-COORD-AUTH-01) : cookie HttpOnly + Secure +
+// SameSite=Strict, signé HMAC (secret par configuration, jamais dans le
+// dépôt), expiration GLISSANTE de 7 jours (spec §5). Le cookie porte
+// "compte|subGoogle" : les tokens pilote et les refresh tokens Drive
+// restent côté serveur. La connexion manuelle (maintenance) signe un
+// cookie sans sub.
 package main
 
 import (
@@ -15,6 +18,7 @@ import (
 	"encoding/hex"
 	"net/http"
 	"strings"
+	"time"
 )
 
 const (
@@ -22,25 +26,32 @@ const (
 	nomCookieHMAC = "coord-front-session-v1"
 )
 
-// signerCompte : nom du compte + MAC hexadécimale.
-func signerCompte(secret, nom string) string {
+// signerSession : "compte|sub.mac".
+func signerSession(secret, nom, sub string) string {
+	charge := nom + "|" + sub
 	mac := hmac.New(sha256.New, []byte(secret+nomCookieHMAC))
-	mac.Write([]byte(nom))
-	return nom + "." + hex.EncodeToString(mac.Sum(nil))
+	mac.Write([]byte(charge))
+	return charge + "." + hex.EncodeToString(mac.Sum(nil))
 }
 
-// verifierCompte : comparaison à temps constant sur la valeur complète.
-func verifierCompte(secret, valeur string) (string, bool) {
+// verifierSession : comparaison à temps constant sur la valeur complète.
+// Renvoie le compte et le sub Google ("" en connexion manuelle).
+func verifierSession(secret, valeur string) (nom, sub string, ok bool) {
 	i := strings.LastIndexByte(valeur, '.')
 	if i <= 0 {
-		return "", false
+		return "", "", false
 	}
-	nom := valeur[:i]
-	attendu := signerCompte(secret, nom)
+	charge := valeur[:i]
+	sep := strings.LastIndexByte(charge, '|')
+	if sep < 0 {
+		return "", "", false
+	}
+	nom, sub = charge[:sep], charge[sep+1:]
+	attendu := signerSession(secret, nom, sub)
 	if subtle.ConstantTimeCompare([]byte(valeur), []byte(attendu)) != 1 {
-		return "", false
+		return "", "", false
 	}
-	return nom, true
+	return nom, sub, true
 }
 
 // secretAleatoire : repli si la configuration n'en fournit pas (chaque
@@ -53,8 +64,22 @@ func secretAleatoire() string {
 	return hex.EncodeToString(b)
 }
 
-// compteSession : middleware. Renvoie le compte authentifié ou écrit
-// le 401 et renvoie false.
+// poserCookieSession : session glissante, 7 jours (spec §5).
+func (g *gateway) poserCookieSession(w http.ResponseWriter, nom, sub string) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     cookieSession,
+		Value:    signerSession(g.cfg.SecretSession, nom, sub),
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+		MaxAge:   int((7 * 24 * time.Hour).Seconds()),
+	})
+}
+
+// compteSession : middleware. Renvoie le compte authentifié ou écrit le
+// 401. Session à expiration glissante : chaque requête valide étend le
+// cookie de 7 jours.
 func (g *gateway) compteSession(w http.ResponseWriter, r *http.Request) (compteConf, bool) {
 	cookie, err := r.Cookie(cookieSession)
 	if err != nil || cookie.Value == "" {
@@ -62,7 +87,7 @@ func (g *gateway) compteSession(w http.ResponseWriter, r *http.Request) (compteC
 			"session absente : connectez-vous")
 		return compteConf{}, false
 	}
-	nom, ok := verifierCompte(g.cfg.SecretSession, cookie.Value)
+	nom, _, ok := verifierSession(g.cfg.SecretSession, cookie.Value)
 	if !ok {
 		repondreErreur(w, http.StatusUnauthorized, "AUTH_REFUSEE",
 			"session invalide")
@@ -70,12 +95,52 @@ func (g *gateway) compteSession(w http.ResponseWriter, r *http.Request) (compteC
 	}
 	for _, c := range g.cfg.Comptes {
 		if c.Nom == nom {
+			// Expiration glissante : re-signature identique.
+			if nom, sub, ok := verifierSession(g.cfg.SecretSession, cookie.Value); ok {
+				_ = sub
+				g.poserCookieSession(w, nom, sub)
+			}
 			return c, true
 		}
 	}
 	repondreErreur(w, http.StatusUnauthorized, "AUTH_REFUSEE",
 		"compte inconnu : "+nom)
 	return compteConf{}, false
+}
+
+// utilisateurSession : utilisateur Google de la session. Le 401 est
+// écrit ici (via compteSession) : aucun handler ne répond en double.
+func (g *gateway) utilisateurSession(w http.ResponseWriter, r *http.Request) (*utilisateur, bool) {
+	if _, ok := g.compteSession(w, r); !ok {
+		return nil, false
+	}
+	u, ok := g.utilisateurRequete(r)
+	if !ok {
+		repondreErreur(w, http.StatusUnauthorized, "AUTH_REFUSEE",
+			"connexion Google requise pour cette action")
+		return nil, false
+	}
+	return u, true
+}
+
+func (g *gateway) utilisateurRequete(r *http.Request) (*utilisateur, bool) {
+	cookie, err := r.Cookie(cookieSession)
+	if err != nil || cookie.Value == "" {
+		return nil, false
+	}
+	nom, sub, ok := verifierSession(g.cfg.SecretSession, cookie.Value)
+	if !ok || sub == "" {
+		return nil, false
+	}
+	c := g.compteParNom(nom)
+	if (c == compteConf{}) {
+		return nil, false
+	}
+	u, ok := g.users.parSub(sub)
+	if !ok || u.Compte != nom {
+		return nil, false
+	}
+	return u, true
 }
 
 func (g *gateway) connexion(w http.ResponseWriter, r *http.Request) {
@@ -88,13 +153,8 @@ func (g *gateway) connexion(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, c := range g.cfg.Comptes {
 		if c.Nom == req.Compte {
-			http.SetCookie(w, &http.Cookie{
-				Name:     cookieSession,
-				Value:    signerCompte(g.cfg.SecretSession, c.Nom),
-				Path:     "/",
-				HttpOnly: true,
-				SameSite: http.SameSiteStrictMode,
-			})
+			// Connexion manuelle (maintenance) : sans sub Google.
+			g.poserCookieSession(w, c.Nom, "")
 			repondreJSON(w, http.StatusOK, g.infoPublique(c))
 			return
 		}
@@ -106,7 +166,7 @@ func (g *gateway) connexion(w http.ResponseWriter, r *http.Request) {
 func (g *gateway) deconnexion(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name: cookieSession, Value: "", Path: "/", HttpOnly: true,
-		SameSite: http.SameSiteStrictMode, MaxAge: -1,
+		Secure: true, SameSite: http.SameSiteStrictMode, MaxAge: -1,
 	})
 	repondreJSON(w, http.StatusOK, map[string]any{"deconnecte": true})
 }

@@ -173,5 +173,20 @@ CoordLangues["zh"] = {
   "app.seConnecter": "登录",
   "app.seDeconnecter": "退出",
   "ui.theme": "浅色或深色界面",
-  "ui.erreurDemarrage": "应用无法启动：{motif}"
+  "ui.erreurDemarrage": "应用无法启动：{motif}",
+  "app.googleConnexion": "使用 Google 登录",
+  "app.googleAide": "您将被重定向到 Google 以使用您的个人资料登录。",
+  "creation.repertoireMission": "任务目录",
+  "creation.repertoireAide": "从您的 Drive 中选择一个文件夹，或创建专用于此任务的目录。任务的一切都将保存在其中。",
+  "creation.connecterDrive": "连接我的 Drive",
+  "creation.connecterDriveAide": "将请求 Google 授权，随后您将在原处继续创建。",
+  "creation.choisirDossier": "— 选择文件夹 —",
+  "creation.creerDossier": "或创建专用目录",
+  "creation.creerDossierPlaceholder": "任务目录的名称",
+  "creation.creerDossierBouton": "创建",
+  "creation.errNomDossier": "请为要创建的目录命名。",
+  "creation.repertoireConfirme": "已为此任务保留专用目录。启动时将在其中创建「输入」和「输出」子目录。",
+  "creation.errRepertoire": "请选择或创建任务目录。",
+  "creation.preparationRepertoire": "正在准备任务目录…",
+  "creation.repertoireIndisponible": "未配置 Google 登录：传统模式（自由路径）。"
 };

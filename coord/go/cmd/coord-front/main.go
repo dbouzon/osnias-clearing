@@ -2,21 +2,25 @@
 // ORCID: https://orcid.org/0009-0007-8894-8902
 // SPDX-License-Identifier: Apache-2.0
 
-// coord-front est le gateway du parcours client COORD (mission
-// M-COORD-FRONT-01, plan v2). Il sert le front statique (coord/front)
-// depuis la MÊME ORIGINE que l'API (/api/*), et rien d'autre :
+// coord-front est le gateway du parcours client COORD (missions
+// M-COORD-FRONT-01 puis M-COORD-AUTH-01). Il sert le front statique
+// (coord/front) depuis la MÊME ORIGINE que l'API (/api/*), et rien
+// d'autre :
 //
 //   - mode RÉEL : proxy authentifié vers l'instance coord-maieutique
 //     loopback du compte ; le token pilote est injecté CÔTÉ SERVEUR,
 //     jamais envoyé au navigateur, jamais journalisé ;
 //   - mode DÉMO : moteur factice embarqué (mêmes états, mêmes formes
-//     JSON que le moteur réel), sans aucun appel externe, 0 €.
+//     JSON que le moteur réel), sans aucun appel externe, 0 € ;
+//   - depuis M-COORD-AUTH-01 : connexion Google (OIDC), provisioning
+//     automatique des personnes, session glissante 7 jours, Drive de
+//     la personne et répertoire dédié par mission.
 //
 // LOOPBACK UNIQUEMENT (fail closed) : toute adresse non loopback est
 // refusée au démarrage. Stdlib uniquement, aucune dépendance tierce.
-// Aucun secret dans le code : la table compte→token vit dans le fichier
-// de configuration (chmod 600, hors dépôt ; exemple factice dans
-// docs/front.md).
+// Aucun secret dans le code : configuration, comptes et utilisateurs
+// vivent dans les fichiers de configuration (chmod 600, hors dépôt ;
+// exemple factice dans docs/front.md).
 package main
 
 import (
@@ -27,6 +31,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -46,12 +51,12 @@ type compteConf struct {
 	DossierDrive string `json:"dossier_drive"`
 
 	RemoteRclone           string `json:"remote_rclone"`
-	TimeoutRclone          int    `json:"timeout_rclone"`           // secondes, défaut 30, clampé [5,120]
-	ExportSortie           bool   `json:"export_sortie"`            // option A : export à la transmission
-	AutoriserEcritureDrive bool   `json:"autoriser_ecriture_drive"` // POST /api/drive/document
+	TimeoutRclone          int    `json:"timeout_rclone"`
+	ExportSortie           bool   `json:"export_sortie"`
+	AutoriserEcritureDrive bool   `json:"autoriser_ecriture_drive"`
 }
 
-// timeoutDrive : timeout rclone par appel, clampé (plan v2 §1.1).
+// timeoutDrive : timeout rclone par appel, clampé.
 func (c compteConf) timeoutDrive() time.Duration {
 	t := c.TimeoutRclone
 	if t <= 0 {
@@ -67,28 +72,53 @@ func (c compteConf) timeoutDrive() time.Duration {
 }
 
 type config struct {
-	SecretSession string       `json:"secret_session"`
-	Comptes       []compteConf `json:"comptes"`
+	SecretSession       string       `json:"secret_session"`
+	Comptes             []compteConf `json:"comptes"`
+	Google              googleConf   `json:"google"`
+	FichierUtilisateurs string       `json:"fichier_utilisateurs"`
+	FichierRepertoires  string       `json:"fichier_repertoires"`
 }
 
 // gateway : état du serveur. Les moteurs de démo et les adaptateurs
-// Drive sont instanciés PAR COMPTE (isolation inter-comptes).
+// Drive sont instanciés PAR COMPTE (isolation inter-comptes). La base
+// des utilisateurs (M-COORD-AUTH-01) et l'association mission →
+// répertoire Drive sont persistées à côté de la configuration.
 type gateway struct {
-	mu       sync.RWMutex
-	cfg      config
-	frontDir string
-	demos    map[string]*moteurDemo
-	drives   map[string]Dossiers
-	exports  map[string]etatExport // clé "compte/id" : dernier état d'export (option A)
+	mu          sync.RWMutex
+	cfg         config
+	frontDir    string
+	demos       map[string]*moteurDemo
+	drives      map[string]Dossiers
+	exports     map[string]etatExport
+	users       *banque
+	repertoires *storeKV
 }
 
-func newGateway(cfg config, frontDir string) *gateway {
+func newGateway(cfg config, frontDir, dirConfig string) *gateway {
+	fichierUsers := cfg.FichierUtilisateurs
+	if fichierUsers == "" {
+		fichierUsers = filepath.Join(dirConfig, "utilisateurs.json")
+	}
+	fichierRep := cfg.FichierRepertoires
+	if fichierRep == "" {
+		fichierRep = filepath.Join(dirConfig, "repertoires_missions.json")
+	}
+	users, err := nouvelleBanque(fichierUsers)
+	if err != nil {
+		log.Fatal("coord-front : base utilisateurs : ", err)
+	}
+	stockage, err := nouveauStoreKV(fichierRep)
+	if err != nil {
+		log.Fatal("coord-front : base répertoires : ", err)
+	}
 	g := &gateway{
-		cfg:      cfg,
-		frontDir: frontDir,
-		demos:    map[string]*moteurDemo{},
-		drives:   map[string]Dossiers{},
-		exports:  map[string]etatExport{},
+		cfg:         cfg,
+		frontDir:    frontDir,
+		demos:       map[string]*moteurDemo{},
+		drives:      map[string]Dossiers{},
+		exports:     map[string]etatExport{},
+		users:       users,
+		repertoires: stockage,
 	}
 	for _, c := range cfg.Comptes {
 		if c.Demo {
@@ -96,8 +126,6 @@ func newGateway(cfg config, frontDir string) *gateway {
 		}
 		switch {
 		case c.RemoteRclone != "":
-			// Adaptateur rclone : dossier_drive = chemin racine DANS
-			// le remote (périmètre du compte, fail-closed dans rclone.go).
 			g.drives[c.Nom] = nouveauDossierRclone(
 				c.RemoteRclone, c.DossierDrive, c.timeoutDrive())
 		case c.DossierDrive != "":
@@ -107,14 +135,33 @@ func newGateway(cfg config, frontDir string) *gateway {
 	return g
 }
 
+// compteParNom : recherche dans la configuration (fail-closed : le
+// résultat vide n'existe pas dans cfg.Comptes).
+func (g *gateway) compteParNom(nom string) compteConf {
+	for _, c := range g.cfg.Comptes {
+		if c.Nom == nom {
+			return c
+		}
+	}
+	return compteConf{}
+}
+
 func (g *gateway) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/sante", g.servirSante)
 	mux.HandleFunc("GET /api/comptes", g.listerComptes)
+	// M-COORD-AUTH-01 : connexion Google et personne.
+	mux.HandleFunc("GET /api/auth/google/etat", g.authGoogleEtat)
+	mux.HandleFunc("GET /api/auth/google/login", g.authGoogleLogin)
+	mux.HandleFunc("GET /api/auth/google/callback", g.authGoogleCallback)
+	mux.HandleFunc("GET /api/moi", g.apiMoi)
 	mux.HandleFunc("POST /api/connexion", g.connexion)
 	mux.HandleFunc("POST /api/deconnexion", g.deconnexion)
 	mux.HandleFunc("GET /api/session", g.infoSession)
 	mux.HandleFunc("/api/drive/", g.apiDrive)
+	mux.HandleFunc("GET /api/drive/dossiers", g.driveDossiers)
+	mux.HandleFunc("POST /api/drive/dossier", g.driveCreerDossier)
+	mux.HandleFunc("/api/missions/repertoire", g.missionRepertoire)
 	mux.HandleFunc("/api/projets", g.apiProjets)
 	mux.HandleFunc("/api/projets/", g.apiProjets)
 	// Le front statique en dernier : tout chemin non-API reconnu
@@ -145,10 +192,6 @@ func (g *gateway) apiProjets(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	// Option A (M-COORD-DRIVE-01, plan v2 §1.3) : la transmission
-	// déclenche l'export du dossier de sortie, NON BLOQUANT. Le moteur
-	// (factice ou réel) est servi tel quel ; seule la réponse 200 est
-	// augmentée du champ export_sortie.
 	if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/transmettre") &&
 		g.exportActif(c) {
 		g.servirTransmission(w, r, c)
@@ -200,16 +243,33 @@ func main() {
 		}
 		vus[c.Nom] = true
 		if c.RemoteRclone != "" {
-			// Fail closed au démarrage : un remote invalide refuse de lancer.
 			if err := validerNomRemote(c.RemoteRclone); err != nil {
 				log.Fatal("coord-front : compte ", c.Nom, " : remote rclone invalide")
 			}
 		}
 		if c.Demo {
-			continue // le moteur factice n'a pas d'URL à vérifier
+			continue
 		}
 		if strings.TrimSpace(c.URL) == "" || strings.TrimSpace(c.Token) == "" {
 			log.Fatal("coord-front : compte réel sans url ou token : ", c.Nom)
+		}
+	}
+	// M-COORD-AUTH-01 : fail-closed sur la configuration Google.
+	if cfg.Google.Activer {
+		if strings.TrimSpace(cfg.Google.ClientID) == "" ||
+			strings.TrimSpace(cfg.Google.ClientSecret) == "" {
+			log.Fatal("coord-front : google.activer sans client_id/client_secret")
+		}
+		if strings.TrimSpace(cfg.Google.CompteNouveau) == "" && len(cfg.Google.Correspondance) == 0 {
+			log.Fatal("coord-front : google.activer sans compte_nouveau ni correspondance")
+		}
+		if cfg.Google.CompteNouveau != "" && (compteParNomStatique(cfg, cfg.Google.CompteNouveau) == compteConf{}) {
+			log.Fatal("coord-front : google.compte_nouveau inconnu : ", cfg.Google.CompteNouveau)
+		}
+		for email, compte := range cfg.Google.Correspondance {
+			if (compteParNomStatique(cfg, compte) == compteConf{}) {
+				log.Fatal("coord-front : correspondance google pour ", email, " : compte inconnu ", compte)
+			}
 		}
 	}
 	if fi, err := os.Stat(frontDir); err != nil || !fi.IsDir() {
@@ -219,16 +279,27 @@ func main() {
 	// Fail closed : loopback uniquement, aucun écouteur public.
 	host, _, err := net.SplitHostPort(addr)
 	if err != nil {
-		log.Fatal("coord-front : adresse invalide : ", err)
+		log.Fatal("coord-front : adresse invalide : ", addr)
 	}
 	ip := net.ParseIP(host)
 	if ip == nil || !ip.IsLoopback() {
 		log.Fatal("coord-front : refus fail-closed, loopback uniquement : ", addr)
 	}
 
-	g := newGateway(cfg, frontDir)
+	dirConfig := filepath.Dir(configPath)
+	g := newGateway(cfg, frontDir, dirConfig)
 	srv := &http.Server{Addr: addr, Handler: g.routes()}
-	fmt.Printf("coord-front : écoute loopback %s (front : %s, comptes : %d)\n",
-		addr, frontDir, len(cfg.Comptes))
+	fmt.Printf("coord-front : écoute loopback %s (front : %s, comptes : %d, google : %t)\n",
+		addr, frontDir, len(cfg.Comptes), g.googleActif())
 	log.Fatal(srv.ListenAndServe())
+}
+
+// compteParNomStatique : contrôle au démarrage, avant l'instanciation.
+func compteParNomStatique(cfg config, nom string) compteConf {
+	for _, c := range cfg.Comptes {
+		if c.Nom == nom {
+			return c
+		}
+	}
+	return compteConf{}
 }

@@ -31,7 +31,7 @@ func configTest(comptes ...compteConf) config {
 
 func gatewayTest(t *testing.T, cfg config) (*gateway, *httptest.Server) {
 	t.Helper()
-	g := newGateway(cfg, ".")
+	g := newGateway(cfg, ".", t.TempDir())
 	srv := httptest.NewServer(g.routes())
 	t.Cleanup(srv.Close)
 	return g, srv
