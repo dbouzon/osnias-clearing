@@ -1,0 +1,16 @@
+{
+  "version": "coord.llm.v1",
+  "bornes": {"corps_max_octets": 2097152, "delai_backend_s": 30},
+  "destinations": {
+    "oa81/temoin/": {
+      "api_base": "http://127.0.0.1:8791/v1",
+      "cle_env": "COORD_CLE_TEMOIN",
+      "prefixe_sdk": "openai/"
+    },
+    "gpt-4o-mini-2024-07-18": {
+      "api_base": "http://127.0.0.1:8791/v1",
+      "cle_env": "COORD_CLE_TEMOIN",
+      "prefixe_sdk": "openai/"
+    }
+  }
+}
