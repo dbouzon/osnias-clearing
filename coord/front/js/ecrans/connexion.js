@@ -3,9 +3,9 @@
  * de GET /api/comptes ; aucun token ne transite jamais. */
 (function () {
   async function afficher(contenu) {
-    const titre = Coord.el("h1", null, "app.connexionTitre");
-    contenu.appendChild(titre);
-    contenu.appendChild(Coord.el("p", "aide", "app.connexionAide"));
+    /* M-COORD-UI-02 v2 : l'écran « Choisir un compte » est supprimé ;
+     * il ne reste que la liste des comptes (un seul en pratique :
+     * le compte démo). Le bouton « Se connecter » de l'en-tête y mène. */
     const rep = await Coord.requete("GET", "/api/comptes");
     if (rep.statut !== 200 || !rep.donnees || !rep.donnees.comptes) {
       Coord.messageErreur(contenu, rep.donnees && rep.donnees.motif ? rep.donnees.motif : "app.erreurReseau");

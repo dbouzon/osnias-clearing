@@ -58,8 +58,12 @@ window.Coord = (function () {
      * chaque changement de langue (M-COORD-UI-01, S6). */
     const noeuds = document.querySelectorAll("[data-i18n]");
     for (let i = 0; i < noeuds.length; i++) {
+      /* Le bouton compte porte une clé dynamique (Se connecter /
+       * Se déconnecter) : rafraichirEntete s'en occupe. */
+      if (noeuds[i].id === "btn-compte") { continue; }
       noeuds[i].textContent = t(noeuds[i].getAttribute("data-i18n"));
     }
+    appliquerTheme();
     /* Badge « COORD by COORD » en haut à gauche (frame fixe : l'en-tête est
      * sticky) : le PNG est transporté en data-URI (assets/coord-by-coord.js),
      * le binaire ne traversant pas le canal de push GitHub. */
@@ -165,6 +169,43 @@ window.Coord = (function () {
     else { bandeau.classList.add("cache"); }
     const select = document.getElementById("select-langue");
     select.value = langue;
+    /* Bouton compte (M-COORD-UI-02 v2) : « Se connecter » sans session,
+     * « Se déconnecter » avec session ; l'écran « Choisir un compte »
+     * est supprimé, la connexion directe se fait depuis ce bouton. */
+    const btnCompte = document.getElementById("btn-compte");
+    const cleCompte = session ? "app.seDeconnecter" : "app.seConnecter";
+    btnCompte.setAttribute("data-i18n", cleCompte);
+    btnCompte.textContent = t(cleCompte);
+  }
+
+  /* ---- thème clair / sombre (M-COORD-UI-02 v2) ----
+   * Le bouton montre l'ACTION : 🌙 pour passer en sombre, ☀️ pour
+   * revenir en clair. Choix mémorisé (repli silencieux si stockage
+   * indisponible). */
+  function appliquerTheme() {
+    const sombre = document.body.classList.contains("sombre");
+    const btn = document.getElementById("btn-theme");
+    btn.textContent = sombre ? "☀️" : "🌙";
+    const libelle = t("ui.theme");
+    btn.setAttribute("aria-label", libelle);
+    btn.setAttribute("title", libelle);
+  }
+
+  function basculerTheme() {
+    document.body.classList.toggle("sombre");
+    try {
+      window.localStorage.setItem("coord-theme",
+        document.body.classList.contains("sombre") ? "sombre" : "clair");
+    } catch (e) { /* stockage indisponible */ }
+    appliquerTheme();
+  }
+
+  function initTheme() {
+    let choix = null;
+    try { choix = window.localStorage.getItem("coord-theme"); } catch (e) { /* stockage indisponible */ }
+    if (choix === "sombre") { document.body.classList.add("sombre"); }
+    appliquerTheme();
+    document.getElementById("btn-theme").addEventListener("click", basculerTheme);
   }
 
   /* ---- routeur ---- */
@@ -229,10 +270,14 @@ window.Coord = (function () {
       changerLangue(e.target.value);
     });
     document.getElementById("btn-compte").addEventListener("click", async function () {
-      await requete("POST", "/api/deconnexion");
-      session = null;
+      if (session) {
+        await requete("POST", "/api/deconnexion");
+        session = null;
+      }
+      /* Sans session, le routeur affiche l'écran de connexion. */
       naviguer("#/accueil");
     });
+    initTheme();
     window.addEventListener("hashchange", function () { routerProtege(); });
     const rep = await requete("GET", "/api/session");
     if (rep.statut === 200 && rep.donnees && rep.donnees.compte) {

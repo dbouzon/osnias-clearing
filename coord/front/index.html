@@ -10,14 +10,18 @@
 <body>
   <header class="entete">
     <div class="entete-gauche">
-      <a class="logo" href="#/presentation" aria-label="COORD by COORD">
-        <img class="logo-img" alt="COORD by COORD" width="320" height="136" decoding="async">
-      </a>
-      <span class="sous-titre" data-i18n="app.sousTitre">L'intelligence coordonnée.</span>
+      <div class="logo-ligne">
+        <a class="logo" href="#/presentation" aria-label="COORD by COORD">
+          <img class="logo-img" alt="COORD by COORD" width="320" height="136" decoding="async">
+        </a>
+        <span class="sous-titre" data-i18n="app.sousTitre">L'intelligence coordonnée.</span>
+      </div>
+      <button id="btn-missions" class="bouton discret" data-i18n="ui.missions" aria-label="Missions">Missions</button>
     </div>
     <div class="entete-droite">
-      <button id="btn-missions" class="bouton discret" data-i18n="ui.missions" aria-label="Missions">Missions</button>
+      <button id="btn-theme" class="bouton theme" aria-label="ui.theme" title="ui.theme">🌙</button>
       <span id="badge-compte" class="badge"></span>
+      <button id="btn-compte" class="bouton discret" data-i18n="app.seConnecter">Se connecter</button>
       <select id="select-langue" aria-label="Langue">
         <option value="fr">fr</option>
         <option value="en">en</option>
@@ -25,7 +29,6 @@
         <option value="es">es</option>
         <option value="zh">zh</option>
       </select>
-      <button id="btn-compte" class="bouton discret" data-i18n="app.changerCompte">Changer de compte</button>
     </div>
   </header>
   <div id="bandeau-demo" class="bandeau-demo cache" data-i18n="app.bandeauDemo">Données de démonstration</div>

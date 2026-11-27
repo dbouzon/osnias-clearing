@@ -80,6 +80,7 @@
     idCourant = idMission || null;
     const aside = panneau();
     aside.classList.remove("cache");
+    aside.classList.remove("repliee");
     rendre(idCourant);
   }
 
@@ -94,6 +95,14 @@
   function fermer() { panneau().classList.remove("ouvert"); }
 
   function basculer() {
+    /* Desktop (M-COORD-UI-02 v2) : le bouton « Missions » replie ou
+     * déplie la colonne (classe .repliee). Mobile : tiroir existant. */
+    if (window.innerWidth >= 720) {
+      const aside = panneau();
+      if (aside.classList.contains("cache")) { maj(idCourant); return; }
+      aside.classList.toggle("repliee");
+      return;
+    }
     panneau().classList.remove("cache");
     panneau().classList.toggle("ouvert");
     if (ouvert()) { rendre(idCourant); }
