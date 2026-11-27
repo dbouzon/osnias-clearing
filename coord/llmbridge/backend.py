@@ -195,8 +195,20 @@ class LiteLLMBackend:
                 "CLE_ABSENTE",
                 "variable " + dest["cle_env"] + " non renseignée (fail closed, "
                 "aucun appel réseau sans clé)", 503)
+        # M-COORD-MISTRAL-VPS-01 (D2) : le SDK exige un préfixe fournisseur
+        # ("LLM Provider NOT provided", défaut reproduit NO-GO-D1). Une
+        # destination peut déclarer "prefixe_sdk" (ex. "mistral/") : le
+        # modèle demandé (identité exacte côté moteur Go) est transmis au SDK
+        # avec ce préfixe ; la réponse du fournisseur reste transmise TELLE
+        # QUELLE (identité jamais falsifiée, contrôle MODELE_DIVERGENT côté
+        # moteur inchangé). Champ additif facultatif : absent = comportement
+        # historique inchangé.
+        prefixe_sdk = str(dest.get("prefixe_sdk", "") or "")
+        model_sdk = model
+        if prefixe_sdk and not model.startswith(prefixe_sdk):
+            model_sdk = prefixe_sdk + model
         kwargs = {
-            "model": model,
+            "model": model_sdk,
             "messages": messages,
             "api_base": dest["api_base"],
             "api_key": cle,
