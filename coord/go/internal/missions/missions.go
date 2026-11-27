@@ -106,6 +106,32 @@ func Ouvrir(racine string) (*Referentiel, error) {
 	return r, nil
 }
 
+// OuvrirLectureSeule ouvre le référentiel SANS ÉCRIRE NI CRÉER QUOI QUE CE
+// SOIT (revue PR #71) : la racine doit exister, sinon erreur. Usage :
+// consultation (coord-mission -consulter), qui ne doit jamais créer de
+// répertoire sur un chemin absent ou mal orthographié.
+func OuvrirLectureSeule(racine string) (*Referentiel, error) {
+	if strings.TrimSpace(racine) == "" {
+		return nil, errors.New("referentiel : racine vide interdite")
+	}
+	info, err := os.Stat(racine)
+	if err != nil {
+		return nil, fmt.Errorf("referentiel : racine introuvable (lecture seule) : %w", err)
+	}
+	if !info.IsDir() {
+		return nil, errors.New("referentiel : la racine n'est pas un dossier")
+	}
+	r := &Referentiel{
+		racine:  racine,
+		verrous: map[string]*sync.Mutex{},
+		index:   map[string]bool{},
+	}
+	if err := r.reconstruireIndex(); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
 // Racine exposes the repository root (used by the service to compute
 // journal paths without guessing).
 func (r *Referentiel) Racine() string { return r.racine }
