@@ -77,6 +77,7 @@ type config struct {
 	Google              googleConf   `json:"google"`
 	GitHub              githubConf   `json:"github"`
 	Moteurs             moteursConf  `json:"moteurs"`
+	Metrics             metricsConf  `json:"metrics"`
 	FichierUtilisateurs string       `json:"fichier_utilisateurs"`
 	FichierRepertoires  string       `json:"fichier_repertoires"`
 }
@@ -97,12 +98,16 @@ type gateway struct {
 
 	// M-COORD-API-MISTRAL-01 : régime des moteurs IA (relecture à chaud
 	// par mtime de gateway.json) et journal de coût atomique 0600.
+	// M-COORD-ORPHEUS-01 : section metrics (exposition /metrics) et
+	// compteurs Prometheus du chemin moteurs.
 	muMoteurs     sync.Mutex
 	moteurs       moteursConf
+	metrics       metricsConf
 	mtimeMoteurs  time.Time
 	cheminConfig  string
 	cheminJournal string
 	muJournal     sync.Mutex
+	compteurs     *compteursMoteurs
 }
 
 func newGateway(cfg config, frontDir, dirConfig string) *gateway {
@@ -131,6 +136,8 @@ func newGateway(cfg config, frontDir, dirConfig string) *gateway {
 		users:         users,
 		repertoires:   stockage,
 		moteurs:       cfg.Moteurs,
+		metrics:       cfg.Metrics,
+		compteurs:     nouveauxCompteursMoteurs(),
 		cheminJournal: filepath.Join(dirConfig, journalMoteurFichier),
 	}
 	for _, c := range cfg.Comptes {
@@ -181,6 +188,8 @@ func (g *gateway) routes() http.Handler {
 	mux.HandleFunc("GET /api/drive/dossiers", g.driveDossiers)
 	mux.HandleFunc("POST /api/drive/dossier", g.driveCreerDossier)
 	mux.HandleFunc("/api/missions/repertoire", g.missionRepertoire)
+	// M-COORD-ORPHEUS-01 : exposition Prometheus (fail-closed, token).
+	mux.HandleFunc("GET /metrics", g.servirMetrics)
 	mux.HandleFunc("/api/projets", g.apiProjets)
 	mux.HandleFunc("/api/projets/", g.apiProjets)
 	// Le front statique en dernier : tout chemin non-API reconnu
@@ -301,6 +310,10 @@ func main() {
 	// M-COORD-API-MISTRAL-01 : fail-closed sur la section moteurs.
 	if err := validerMoteurs(cfg.Moteurs); err != nil {
 		log.Fatal("coord-front : section moteurs invalide : ", err)
+	}
+	// M-COORD-ORPHEUS-01 : fail-closed sur la section metrics.
+	if cfg.Metrics.Activer && len(strings.TrimSpace(cfg.Metrics.Token)) < 16 {
+		log.Fatal("coord-front : metrics.activer exige un token de 16 caractères minimum")
 	}
 	if fi, err := os.Stat(frontDir); err != nil || !fi.IsDir() {
 		log.Fatal("coord-front : dossier front introuvable : ", frontDir)
