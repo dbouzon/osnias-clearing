@@ -38,7 +38,15 @@ window.Coord = (function () {
     langue = l;
     try { window.localStorage.setItem("coord-langue", l); } catch (e) { /* stockage indisponible */ }
     document.documentElement.lang = l === "zh" ? "zh-Hans" : l;
+    appliquerMetadonnees();
     router();
+  }
+
+  function appliquerMetadonnees() {
+    /* Nom commercial et description par langue (M-COORD-BYCOORD-01). */
+    document.title = t("app.title");
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) { meta.setAttribute("content", t("app.metaDescription")); }
   }
 
   /* ---- API ---- */
@@ -120,7 +128,9 @@ window.Coord = (function () {
 
   async function router() {
     rafraichirEntete();
-    const h = window.location.hash || "#/accueil";
+    const h = window.location.hash || "#/presentation";
+    if (h === "#/presentation") { await ecrans.presentation(effacer()); return; }
+    if (h === "#/apropos") { await ecrans.apropos(effacer()); return; }
     if (!session) {
       if (h.indexOf("#/mission/") === 0 || h === "#/creation") { /* conserve le hash */ }
       await ecrans.connexion(effacer());
@@ -140,6 +150,7 @@ window.Coord = (function () {
   async function demarrer() {
     initLangue();
     document.documentElement.lang = langue === "zh" ? "zh-Hans" : langue;
+    appliquerMetadonnees();
     document.getElementById("select-langue").addEventListener("change", function (e) {
       changerLangue(e.target.value);
     });
