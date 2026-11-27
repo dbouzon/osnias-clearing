@@ -170,5 +170,8 @@ CoordLangues["en"] = {
   "creation.verifEnCours": "Verifying Drive folder access…",
   "creation.dossierEntreeAide": "Name of the Drive folder where COORD will read your reference documents.",
   "creation.dossierSortieAide": "Name of the Drive folder where COORD will place the mission order, quote, log and deliverables.",
+  "app.seConnecter": "Sign in",
+  "app.seDeconnecter": "Sign out",
+  "ui.theme": "Light or dark interface",
   "ui.erreurDemarrage": "The application could not start: {motif}"
 };

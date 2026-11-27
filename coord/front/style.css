@@ -14,6 +14,7 @@
 html, body { margin: 0; padding: 0; }
 body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  font-size: 0.88rem;
   color: var(--encre);
   background: var(--fond);
   line-height: 1.45;
@@ -26,24 +27,27 @@ body {
   border-bottom: 1px solid var(--trait);
   position: sticky; top: 0; z-index: 5;
 }
-.entete-gauche, .entete-droite { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.entete-gauche { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.entete-droite { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.logo-ligne { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.bouton.theme { min-height: 0; padding: 4px 8px; font-size: 0.95rem; line-height: 1; border-radius: 8px; }
 .logo { display: inline-flex; align-items: center; text-decoration: none; }
-.logo-img { display: block; height: 38px; width: auto; }
-@media (max-width: 600px) { .logo-img { height: 32px; } }
-.sous-titre { color: var(--gris); font-size: 0.85rem; }
+.logo-img { display: block; height: 36px; width: auto; }
+@media (max-width: 600px) { .logo-img { height: 30px; } }
+.sous-titre { color: var(--gris); font-size: 0.75rem; }
 .etat-drive { color: var(--gris); font-size: 0.85rem; }
 #select-langue { padding: 6px; border: 1px solid var(--trait); border-radius: 6px; background: var(--carte); }
 
 .bandeau-demo {
   background: #fff3cd; color: #664d03; text-align: center;
-  padding: 8px 14px; font-size: 0.9rem; border-bottom: 1px solid #ffe69c;
+  padding: 6px 14px; font-size: 0.8rem; border-bottom: 1px solid #ffe69c;
 }
 .cache { display: none; }
 
 /* ---- structure ---- */
 .contenu { max-width: 960px; margin: 0 auto; padding: 16px 14px 48px; }
 .pied { text-align: center; color: var(--gris); font-size: 0.8rem; padding: 16px; }
-h1 { font-size: 1.3rem; margin: 8px 0 16px; }
+h1 { font-size: 1.15rem; margin: 8px 0 14px; }
 h2 { font-size: 1.05rem; margin: 24px 0 10px; color: var(--encre); }
 
 .carte {
@@ -55,7 +59,7 @@ h2 { font-size: 1.05rem; margin: 24px 0 10px; color: var(--encre); }
 .bouton {
   display: inline-block; min-height: 44px; padding: 10px 16px;
   border: 1px solid var(--trait); border-radius: 8px; cursor: pointer;
-  background: var(--carte); color: var(--encre); font-size: 0.95rem;
+  background: var(--carte); color: var(--encre); font-size: 0.85rem;
 }
 .bouton:hover { border-color: var(--bleu); }
 .bouton.principal { background: var(--bleu); border-color: var(--bleu); color: #fff; font-weight: 600; }
@@ -68,7 +72,7 @@ label { display: block; margin: 12px 0 4px; font-size: 0.9rem; color: var(--gris
 input[type="text"], input[type="password"], textarea, select {
   width: 100%; min-height: 44px; padding: 10px;
   border: 1px solid var(--trait); border-radius: 8px;
-  font-size: 0.95rem; font-family: inherit; background: #fff;
+  font-size: 0.85rem; font-family: inherit; background: var(--carte); color: var(--encre);
 }
 textarea { min-height: 110px; resize: vertical; }
 .aide { color: var(--gris); font-size: 0.8rem; margin-top: 4px; }
@@ -88,7 +92,7 @@ table.tableau { width: 100%; border-collapse: collapse; background: var(--carte)
 
 /* ---- chat ---- */
 .chat { display: flex; flex-direction: column; gap: 10px; }
-.message { max-width: 85%; padding: 10px 12px; border-radius: 12px; font-size: 0.92rem; }
+.message { max-width: 85%; padding: 9px 11px; border-radius: 12px; font-size: 0.85rem; }
 .message.directeur { background: #eef2f6; border: 1px solid var(--trait); align-self: flex-start; }
 .message.client { background: #e7f1fb; border: 1px solid #bcd8f0; align-self: flex-end; }
 .message .auteur { display: block; font-size: 0.75rem; color: var(--gris); margin-bottom: 4px; font-weight: 600; }
@@ -171,7 +175,8 @@ table.tableau { width: 100%; border-collapse: collapse; background: var(--carte)
 .placeholder-accueil p { margin: 0 0 14px; color: var(--gris); }
 
 /* ---- mobile : colonne repliée derrière le bouton Missions ---- */
-#btn-missions { display: none; }
+#btn-missions { display: inline-block; }
+.col-missions.repliee { display: none; }
 @media (max-width: 719px) {
   #btn-missions { display: inline-block; }
   #volets { min-height: auto; }
@@ -186,3 +191,31 @@ table.tableau { width: 100%; border-collapse: collapse; background: var(--carte)
   .col-missions.cache { display: block; }
   .col-missions.cache:not(.ouvert) { transform: translateX(-102%); }
 }
+
+
+/* ---- thème sombre (M-COORD-UI-02 v2 : lune = sombre, soleil = clair) ---- */
+body.sombre {
+  --encre: #e2e8f0;
+  --gris: #94a3b8;
+  --trait: #334155;
+  --fond: #0f172a;
+  --carte: #1e293b;
+  --bleu: #7cb3f0;
+  --rouge: #f87171;
+  --vert: #4ade80;
+  --orange: #fbbf24;
+  color-scheme: dark;
+}
+body.sombre .bouton { background: var(--carte); color: var(--encre); }
+body.sombre .bouton.principal { background: #2563eb; border-color: #2563eb; color: #fff; }
+body.sombre .ligne-mission:hover { background: #24344d; }
+body.sombre .ligne-mission.actuelle { background: #1e3a5f; border-color: #2e5284; }
+body.sombre .message.directeur { background: #24344d; border-color: var(--trait); }
+body.sombre .message.client { background: #1e3a5f; border-color: #2e5284; }
+body.sombre .tableau th { background: #24344d; color: var(--gris); }
+body.sombre .badge { background: #24344d; color: var(--gris); }
+body.sombre .bandeau-demo { background: #3a2f0b; color: #fbbf24; border-color: #4a3c10; }
+body.sombre input, body.sombre textarea, body.sombre select { background: #0f172a; color: var(--encre); }
+body.sombre .journal { background: var(--carte); }
+body.sombre a { color: var(--bleu); }
+body.sombre .message.evenement-binome { border-color: var(--trait); }

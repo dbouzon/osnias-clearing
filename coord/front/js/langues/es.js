@@ -170,5 +170,8 @@ CoordLangues["es"] = {
   "creation.verifEnCours": "Verificando el acceso a las carpetas de Drive…",
   "creation.dossierEntreeAide": "Nombre de la carpeta de Drive donde COORD leerá sus documentos de referencia.",
   "creation.dossierSortieAide": "Nombre de la carpeta de Drive donde COORD depositará la orden de misión, el presupuesto, el registro y los entregables.",
+  "app.seConnecter": "Iniciar sesión",
+  "app.seDeconnecter": "Cerrar sesión",
+  "ui.theme": "Interfaz clara u oscura",
   "ui.erreurDemarrage": "No se pudo iniciar la aplicación: {motif}"
 };

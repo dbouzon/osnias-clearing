@@ -170,5 +170,8 @@ CoordLangues["zh"] = {
   "creation.verifEnCours": "正在验证 Drive 文件夹访问权限…",
   "creation.dossierEntreeAide": "COORD 读取参考文档的 Drive 文件夹名称。",
   "creation.dossierSortieAide": "COORD 存放任务书、报价、日志和交付物的 Drive 文件夹名称。",
+  "app.seConnecter": "登录",
+  "app.seDeconnecter": "退出",
+  "ui.theme": "浅色或深色界面",
   "ui.erreurDemarrage": "应用无法启动：{motif}"
 };
