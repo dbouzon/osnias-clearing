@@ -10,7 +10,9 @@
 <body>
   <header class="entete">
     <div class="entete-gauche">
-      <a class="logo" href="#/presentation">COORD by COORD</a>
+      <a class="logo" href="#/presentation" aria-label="COORD by COORD">
+        <img class="logo-img" alt="COORD by COORD" width="320" height="136" decoding="async">
+      </a>
       <span class="sous-titre" data-i18n="app.sousTitre">L'intelligence coordonnée.</span>
     </div>
     <div class="entete-droite">
@@ -47,6 +49,7 @@
        lève une ReferenceError et l'application reste figée sur
        « Chargement… » (incident recette mobile M-COORD-UI-01). -->
   <script>var CoordLangues = {};</script>
+  <script src="assets/coord-by-coord.js"></script>
   <script src="js/langues/fr.js"></script>
   <script src="js/langues/en.js"></script>
   <script src="js/langues/de.js"></script>

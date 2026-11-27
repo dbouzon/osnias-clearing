@@ -60,6 +60,11 @@ window.Coord = (function () {
     for (let i = 0; i < noeuds.length; i++) {
       noeuds[i].textContent = t(noeuds[i].getAttribute("data-i18n"));
     }
+    /* Badge « COORD by COORD » en haut à gauche (frame fixe : l'en-tête est
+     * sticky) : le PNG est transporté en data-URI (assets/coord-by-coord.js),
+     * le binaire ne traversant pas le canal de push GitHub. */
+    const logo = document.querySelector(".logo-img");
+    if (logo && window.CoordLogoBadge) { logo.src = window.CoordLogoBadge; }
   }
 
   /* ---- API ---- */
