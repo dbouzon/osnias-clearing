@@ -42,6 +42,11 @@
     </p>
   </footer>
 
+  <!-- Déclaration AVANT les tables : les fichiers js/langues/*.js font
+       CoordLangues["xx"] = {...} ; sans cette déclaration, chaque script
+       lève une ReferenceError et l'application reste figée sur
+       « Chargement… » (incident recette mobile M-COORD-UI-01). -->
+  <script>var CoordLangues = {};</script>
   <script src="js/langues/fr.js"></script>
   <script src="js/langues/en.js"></script>
   <script src="js/langues/de.js"></script>

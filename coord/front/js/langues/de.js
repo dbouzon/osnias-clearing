@@ -169,5 +169,6 @@ CoordLangues["de"] = {
   "creation.commencer": "Kostenlose Klärung starten",
   "creation.verifEnCours": "Zugriff auf die Drive-Ordner wird geprüft…",
   "creation.dossierEntreeAide": "Name des Drive-Ordners, aus dem COORD Ihre Referenzdokumente liest.",
-  "creation.dossierSortieAide": "Name des Drive-Ordners, in dem COORD Auftragsblatt, Angebot, Journal und Lieferleistungen ablegt."
+  "creation.dossierSortieAide": "Name des Drive-Ordners, in dem COORD Auftragsblatt, Angebot, Journal und Lieferleistungen ablegt.",
+  "ui.erreurDemarrage": "Die Anwendung konnte nicht gestartet werden: {motif}"
 };

@@ -12,7 +12,9 @@ window.Coord = (function () {
   /* ---- i18n ---- */
   function t(cle, vars) {
     const table = window.CoordLangues && (window.CoordLangues[langue] || window.CoordLangues.en) || {};
-    let texte = table[cle] !== undefined ? table[cle] : (window.CoordLangues.en[cle] !== undefined ? window.CoordLangues.en[cle] : cle);
+    const secours = (window.CoordLangues && window.CoordLangues.en) || {};
+    let texte = table[cle] !== undefined ? table[cle] :
+      (secours[cle] !== undefined ? secours[cle] : cle);
     if (vars) {
       Object.keys(vars).forEach(function (k) {
         texte = texte.split("{" + k + "}").join(String(vars[k]));
@@ -39,6 +41,7 @@ window.Coord = (function () {
     try { window.localStorage.setItem("coord-langue", l); } catch (e) { /* stockage indisponible */ }
     document.documentElement.lang = l === "zh" ? "zh-Hans" : l;
     appliquerMetadonnees();
+    appliquerTextesStatiques();
     router();
   }
 
@@ -47,6 +50,16 @@ window.Coord = (function () {
     document.title = t("app.title");
     const meta = document.querySelector('meta[name="description"]');
     if (meta) { meta.setAttribute("content", t("app.metaDescription")); }
+  }
+
+  function appliquerTextesStatiques() {
+    /* Chrome statique (en-tête, bandeau, pied) : le HTML de référence est
+     * en français ; chaque clé data-i18n est appliquée au chargement et à
+     * chaque changement de langue (M-COORD-UI-01, S6). */
+    const noeuds = document.querySelectorAll("[data-i18n]");
+    for (let i = 0; i < noeuds.length; i++) {
+      noeuds[i].textContent = t(noeuds[i].getAttribute("data-i18n"));
+    }
   }
 
   /* ---- API ---- */
@@ -88,7 +101,7 @@ window.Coord = (function () {
 
   function messageErreur(cible, cleOuTexte, vars) {
     const d = el("div", "erreur");
-    if (cleOuTexte && cleOrTexteEstCle(cleOrTexte)) { d.textContent = t(cleOrTexte, vars); }
+    if (cleOuTexte && cleOrTexteEstCle(cleOuTexte)) { d.textContent = t(cleOuTexte, vars); }
     else { d.textContent = cleOuTexte || ""; }
     cible.appendChild(d);
   }
@@ -179,13 +192,33 @@ window.Coord = (function () {
 
   function naviguer(hash) {
     window.location.hash = hash;
-    router();
+    routerProtege();
   }
 
-  async function demarrer() {
+  /* routerProtege : toute erreur d'écran est AFFICHÉE (cause +
+   * Réessayer) au lieu de devenir une promesse rejetée silencieuse
+   * (incident M-COORD-UI-01 : un écran vide sans explication). */
+  function afficherErreurFatale(e) {
+    const c = contenu();
+    c.textContent = "";
+    messageErreur(c, "ui.erreurDemarrage",
+      { motif: (e && e.message) ? e.message : String(e) });
+    c.appendChild(bouton("ui.reessayer", function () { window.location.reload(); }, "principal"));
+  }
+
+  async function routerProtege() {
+    try {
+      await router();
+    } catch (e) {
+      afficherErreurFatale(e);
+    }
+  }
+
+  async function demarrerInterne() {
     initLangue();
     document.documentElement.lang = langue === "zh" ? "zh-Hans" : langue;
     appliquerMetadonnees();
+    appliquerTextesStatiques();
     Coord.colonneMissions.init();
     document.getElementById("select-langue").addEventListener("change", function (e) {
       changerLangue(e.target.value);
@@ -195,12 +228,23 @@ window.Coord = (function () {
       session = null;
       naviguer("#/accueil");
     });
-    window.addEventListener("hashchange", router);
+    window.addEventListener("hashchange", function () { routerProtege(); });
     const rep = await requete("GET", "/api/session");
     if (rep.statut === 200 && rep.donnees && rep.donnees.compte) {
       session = rep.donnees;
     }
-    router();
+    await routerProtege();
+  }
+
+  async function demarrer() {
+    /* Dernier filet (M-COORD-UI-01, S5) : JAMAIS un écran figé sans
+     * explication. Toute erreur au démarrage affiche la cause et un
+     * bouton « Réessayer » au lieu du « Chargement… » muet. */
+    try {
+      await demarrerInterne();
+    } catch (e) {
+      afficherErreurFatale(e);
+    }
   }
 
   return {

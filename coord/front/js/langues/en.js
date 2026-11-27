@@ -169,5 +169,6 @@ CoordLangues["en"] = {
   "creation.commencer": "Start free scoping",
   "creation.verifEnCours": "Verifying Drive folder access…",
   "creation.dossierEntreeAide": "Name of the Drive folder where COORD will read your reference documents.",
-  "creation.dossierSortieAide": "Name of the Drive folder where COORD will place the mission order, quote, log and deliverables."
+  "creation.dossierSortieAide": "Name of the Drive folder where COORD will place the mission order, quote, log and deliverables.",
+  "ui.erreurDemarrage": "The application could not start: {motif}"
 };

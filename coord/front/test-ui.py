@@ -8,13 +8,20 @@ Sans navigateur ni dépendance. Vérifie :
      existe dans les 5 langues ;
   3. écran de chaque état : chaque état de la machine maïeutique a un
      libellé i18n (etat.*) ;
-  4. chargement : index.html référence tous les scripts existants.
+  4. chargement : index.html référence tous les scripts existants ;
+  5. déclaration : index.html déclare CoordLangues AVANT js/langues/* ;
+  6. EXÉCUTION (si node est présent) : les scripts chargés dans
+     l'ordre de index.html ne lèvent aucune exception et l'application
+     démarre (incident M-COORD-UI-01 : un front syntaxiquement valide
+     mais non exécutable figeait le navigateur sur « Chargement… »).
 
 Usage : python3 test-ui.py  (depuis coord/front/)
 """
 import json
 import pathlib
 import re
+import shutil
+import subprocess
 import sys
 
 RACINE = pathlib.Path(__file__).resolve().parent
@@ -92,6 +99,38 @@ def test_scripts():
             echecs.append(f"index.html : script introuvable : {m.group(1)}")
 
 
+def test_declaration_coordlangues():
+    """Incident recette mobile M-COORD-UI-01 : les js/langues/*.js font
+    CoordLangues["xx"] = {...} SANS déclarer la variable. Sans
+    déclaration préalable dans index.html, chaque script lève une
+    ReferenceError et l'application reste figée sur « Chargement… »."""
+    html = (RACINE / "index.html").read_text(encoding="utf-8")
+    pos_declaration = html.find("var CoordLangues")
+    pos_premiere_langue = html.find('src="js/langues/')
+    if pos_declaration == -1:
+        echecs.append("index.html : « var CoordLangues » absent (les tables de "
+                       "langue lèvent une ReferenceError)")
+    elif pos_premiere_langue == -1 or pos_declaration > pos_premiere_langue:
+        echecs.append("index.html : « var CoordLangues » doit précéder js/langues/*")
+
+
+def test_execution_js():
+    """Exécute réellement le front dans un moteur JS (node) via
+    test-ui-exec.js + test-ui-stub.js : aucun script ne doit lever
+    d'exception et l'application doit démarrer. Saute avec un
+    avertissement explicite si node est absent."""
+    node = shutil.which("node")
+    if not node:
+        print(" - AVERTISSEMENT : node absent, test d'exécution JS sauté")
+        return
+    proc = subprocess.run(
+        [node, str(RACINE / "test-ui-exec.js"), str(RACINE)],
+        capture_output=True, text=True, timeout=60)
+    sortie = (proc.stdout or "") + (proc.stderr or "")
+    if "EXECUTION_JS_OK" not in (proc.stdout or ""):
+        echecs.append(f"exécution JS : {sortie.strip()[:400]}")
+
+
 
 def test_export_sortie():
     """Option A (M-COORD-DRIVE-01) : l'écran Suivi doit consulter l'état
@@ -112,12 +151,15 @@ def main():
         test_etats(tables)
         test_export_sortie()
     test_scripts()
+    test_declaration_coordlangues()
+    test_execution_js()
     if echecs:
         print("ÉCHEC du harnais front :")
         for e in echecs:
             print(" -", e)
         sys.exit(1)
-    print("Harnais front : OK (i18n 5 langues, clés utilisées, états, scripts, export sortie)")
+    print("Harnais front : OK (i18n 5 langues, clés utilisées, états, scripts, "
+          "export sortie, déclaration CoordLangues, exécution JS)")
 
 
 if __name__ == "__main__":

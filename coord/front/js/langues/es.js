@@ -169,5 +169,6 @@ CoordLangues["es"] = {
   "creation.commencer": "Comenzar el enmarcado gratuito",
   "creation.verifEnCours": "Verificando el acceso a las carpetas de Drive…",
   "creation.dossierEntreeAide": "Nombre de la carpeta de Drive donde COORD leerá sus documentos de referencia.",
-  "creation.dossierSortieAide": "Nombre de la carpeta de Drive donde COORD depositará la orden de misión, el presupuesto, el registro y los entregables."
+  "creation.dossierSortieAide": "Nombre de la carpeta de Drive donde COORD depositará la orden de misión, el presupuesto, el registro y los entregables.",
+  "ui.erreurDemarrage": "No se pudo iniciar la aplicación: {motif}"
 };
