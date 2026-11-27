@@ -138,21 +138,25 @@ func (d *dossierRclone) cible(dossier, nom string) (string, error) {
 }
 
 // appeler : un appel rclone, sans shell, avec timeout par appel. Le
-// binaire absent et le timeout donnent DRIVE_INDISPONIBLE ; une sortie
-// non nulle de rclone donne DRIVE_ERREUR (motif tronqué, sans secret :
-// la ligne de commande ne contient que des chemins validés).
+// binaire absent (garde LookPath déterministe sur tout OS : l'erreur
+// exec de Windows ne se mappe pas toujours à os.ErrNotExist) et le
+// timeout donnent DRIVE_INDISPONIBLE ; une sortie non nulle de rclone
+// donne DRIVE_ERREUR (motif tronqué, sans secret : la ligne de
+// commande ne contient que des chemins validés).
 func (d *dossierRclone) appeler(args []string, entree []byte) ([]byte, error) {
-	if d.binaire == "" {
-		if b, err := exec.LookPath("rclone"); err == nil {
-			d.binaire = b
-		} else {
-			return nil, &erreurDrive{code: "DRIVE_INDISPONIBLE",
-				motif: "binaire rclone introuvable dans le PATH"}
-		}
+	binaire := d.binaire
+	if binaire == "" {
+		// Résolution PATH à chaque appel : un rclone installé en cours
+		// de route est pris en compte sans redémarrage du gateway.
+		binaire = "rclone"
+	}
+	if _, err := exec.LookPath(binaire); err != nil {
+		return nil, &erreurDrive{code: "DRIVE_INDISPONIBLE",
+			motif: "binaire rclone introuvable : " + strconv.Quote(binaire)}
 	}
 	ctx, annuler := context.WithTimeout(context.Background(), d.timeout)
 	defer annuler()
-	cmd := exec.CommandContext(ctx, d.binaire, args...)
+	cmd := exec.CommandContext(ctx, binaire, args...)
 	// Retour prompt au timeout : un petit-fils du binaire peut garder
 	// le tube ouvert après le SIGKILL ; WaitDelay clôt l'appel.
 	cmd.WaitDelay = 250 * time.Millisecond
