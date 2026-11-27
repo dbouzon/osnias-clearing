@@ -60,35 +60,89 @@ class FacticeBackend:
     """Inférence factice déterministe pour la qualification locale du contrat.
 
     Routage par préfixe de modèle :
-    - ``factice/exec/…``  : renvoie un livrable texte (exécutant).
+    - ``factice/exec/…``  : renvoie un livrable texte (exécutant) ;
+      « MANDAT V1 » => livrable v1 erroné (marque SCENARIO:LIVRABLE_A_CORRIGER),
+      « MANDAT V2 » => livrable v2 corrigé, sans marqueur => livrable constant
+      historique.
     - ``factice/recep/…`` : renvoie un verdict JSON ancré (réceptionnaire) ;
-      PLAN_ACCEPTE si la charge contient « CRITIQUE DE PLAN », ACCEPTEE sinon,
+      charge contenant SCENARIO:LIVRABLE_A_CORRIGER => A_CORRIGER (2 points),
+      « CRITIQUE DE PLAN » => PLAN_ACCEPTE, sinon ACCEPTEE,
       empreinte extraite de la charge (ancrage vérifié par le moteur Go).
+      V1+V2 simultanés => refus explicite MARQUEURS_CONTRADICTOIRES.
     Le modèle demandé est ÉCHANGÉ tel quel (aucun MODELE_DIVERGENT ici).
     """
 
     LIVRABLE = "LIVRABLE 1\nLIVRABLE 2\nLIVRABLE 3 (backend factice du pont, 0 EUR)"
 
+    # Scénarios par MARQUEURS portés par la charge (M-COORD-DEP-03, #72).
+    # Règles : marqueurs exacts et injectifs ; contradiction => refus
+    # explicite (jamais un choix arbitraire) ; SANS marqueur => comportement
+    # historique inchangé (figé par tests). Les marqueurs ne proviennent que
+    # de charges composées par le moteur (boucle simulée 0 EUR) : aucun
+    # effet sur le routage, les destinations, l'authentification ou les
+    # bornes.
+    MARQUEUR_V1 = "MANDAT V1"
+    MARQUEUR_V2 = "MANDAT V2"
+    MARQUEUR_LIVRABLE_A_CORRIGER = "SCENARIO:LIVRABLE_A_CORRIGER"
+
+    LIVRABLE_V1 = ("LIVRABLE V1\n" + MARQUEUR_LIVRABLE_A_CORRIGER +
+                   "\nBUDGET : 200 centimes = 20 euros"
+                   "\nCOUT : 0,006 centime par appel, soit 0,00006 EUR")
+    LIVRABLE_V2 = ("LIVRABLE V2 (corrige)\nBUDGET : 200 centimes = 2 euros"
+                   "\nCOUT : 0,006 centime par appel, soit 0,006 c")
+
+    POINTS_A_CORRIGER = [
+        "correction 1 : ecrire « 200 centimes = 2 euros » et non 20 euros",
+        "correction 2 : ecrire le cout reel « 0,006 centime par appel » "
+        "sans division erronee",
+    ]
+
+    def _livrable(self, charge):
+        v1 = self.MARQUEUR_V1 in charge
+        v2 = self.MARQUEUR_V2 in charge
+        if v1 and v2:
+            raise ErreurBackend(
+                "MARQUEURS_CONTRADICTOIRES",
+                "mandat V1 et V2 dans la meme charge (refus explicite)", 400)
+        if v1:
+            return self.LIVRABLE_V1
+        if v2:
+            return self.LIVRABLE_V2
+        return self.LIVRABLE
+
+    def _verdict(self, charge):
+        empreinte = extraire_empreinte(charge)
+        if self.MARQUEUR_LIVRABLE_A_CORRIGER in charge:
+            # Recette E3 DEP-03 : le moteur exige verdict_id pour toute
+            # decision recevable (verdict sans reference sinon). Ajout
+            # minimal, marqueurs et points INCHANGES.
+            return json.dumps({
+                "verdict": "A_CORRIGER",
+                "points": list(self.POINTS_A_CORRIGER),
+                "empreinte_attendue": empreinte,
+                "verdict_id": "factice-verdict-a-corriger",
+                "verdict_url": "urn:coord:factice",
+            }, ensure_ascii=False)
+        if "CRITIQUE DE PLAN" in charge:
+            return json.dumps({
+                "verdict": "PLAN_ACCEPTE",
+                "points": ["factice : plan simple, rien de bloquant"],
+                "empreinte_attendue": empreinte,
+            }, ensure_ascii=False)
+        return json.dumps({
+            "verdict": "ACCEPTEE",
+            "points": ["factice : 3 lignes présentes"],
+            "empreinte_attendue": empreinte,
+            "verdict_id": "factice-verdict",
+            "verdict_url": "urn:coord:factice",
+        }, ensure_ascii=False)
+
     def completion(self, model, messages, max_tokens=None, contexte=None):
         dernier = messages[-1]["content"] if messages else ""
         if model.startswith("factice/exec"):
-            contenu = self.LIVRABLE
+            contenu = self._livrable(dernier)
         else:
-            empreinte = extraire_empreinte(dernier)
-            if "CRITIQUE DE PLAN" in dernier:
-                contenu = json.dumps({
-                    "verdict": "PLAN_ACCEPTE",
-                    "points": ["factice : plan simple, rien de bloquant"],
-                    "empreinte_attendue": empreinte,
-                }, ensure_ascii=False)
-            else:
-                contenu = json.dumps({
-                    "verdict": "ACCEPTEE",
-                    "points": ["factice : 3 lignes présentes"],
-                    "empreinte_attendue": empreinte,
-                    "verdict_id": "factice-verdict",
-                    "verdict_url": "urn:coord:factice",
-                }, ensure_ascii=False)
+            contenu = self._verdict(dernier)
         return {
             "id": "chatcmpl-factice",
             "object": "chat.completion",

@@ -32,6 +32,7 @@ import queue
 import socket
 import sys
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -45,6 +46,7 @@ DELAI_BACKEND_DEFAUT = 60
 
 _TYPES_ERREUR = {
     "JSON_INVALIDE": 400, "REQUETE_INVALIDE": 400, "DESTINATION_REFUSEE": 400,
+    "MARQUEURS_CONTRADICTOIRES": 400,
     "JETON_INVALIDE": 401, "ROUTE_INCONNUE": 404,
     "METHODE_NON_AUTORISEE": 405, "CORPS_TROP_GRAND": 413,
     "TYPE_INVALIDE": 415, "SDK_ABSENT": 503, "CLE_ABSENTE": 503,
@@ -168,13 +170,34 @@ def valider_reponse_backend(rep, model_demande):
 class Pont:
     """Cœur du pont, séparable du transport HTTP (testable directement)."""
 
-    def __init__(self, backend, destinations, bornes=None, jeton=""):
+    def __init__(self, backend, destinations, bornes=None, jeton="",
+                 journal=""):
         self.backend = backend
         self.destinations = destinations or {}
         b = bornes or {}
         self.corps_max = int(b.get("corps_max_octets", CORPS_MAX_DEFAUT))
         self.delai_backend = float(b.get("delai_backend_s", DELAI_BACKEND_DEFAUT))
         self.jeton = jeton
+        # Journal additif optionnel (M-COORD-DEP-03) : une ligne JSONL par
+        # requête d'inférence — JAMAIS de charge, JAMAIS de jeton (corrélation
+        # des traces moteur ⇄ pont). Échec d'écriture : stderr, jamais un
+        # faux silence, jamais une erreur client.
+        self.journal = journal or ""
+        self._verrou_journal = threading.Lock()
+
+    def _ecrire_journal(self, entree):
+        if not self.journal:
+            return
+        entree = dict(entree)
+        entree["model"] = expurger(str(entree.get("model", "")))
+        ligne = json.dumps(entree, ensure_ascii=False)
+        try:
+            with self._verrou_journal:
+                with open(self.journal, "a", encoding="utf-8") as f:
+                    f.write(ligne + "\n")
+        except Exception as e:
+            sys.stderr.write("[llmbridge] journal indisponible : " +
+                              expurger(str(e)) + "\n")
 
     def authentifier(self, entete):
         if not self.jeton:
@@ -193,6 +216,8 @@ class Pont:
 
     def inferer(self, model, messages, max_tokens):
         destination = self.resoudre(model)
+        prefixe = resoudre_destination(model, self.destinations) or ""
+        debut = time.time()
         # Délai backend : exécution bornée dans un fil dédié (un fil Python
         # n'est pas tuable ; le dépassement est RÉPONDU, le processus peut
         # être redémarré sans perte : le pont est sans état).
@@ -217,8 +242,26 @@ class Pont:
                                str(self.delai_backend) + " s", 504)
         _, valeur = resultat.get_nowait()
         if isinstance(valeur, ErreurBackend):
+            self._ecrire_journal({
+                "horodatage": time.strftime(
+                    "%Y-%m-%dT%H:%M:%S", time.gmtime(debut)) + "Z",
+                "model": model,
+                "destination": prefixe,
+                "statut": "erreur",
+                "type_erreur": valeur.type,
+                "duree_ms": int((time.time() - debut) * 1000),
+            })
             raise valeur
-        return valider_reponse_backend(valeur, model)
+        reponse = valider_reponse_backend(valeur, model)
+        self._ecrire_journal({
+            "horodatage": time.strftime(
+                "%Y-%m-%dT%H:%M:%S", time.gmtime(debut)) + "Z",
+            "model": model,
+            "destination": prefixe,
+            "statut": "ok",
+            "duree_ms": int((time.time() - debut) * 1000),
+        })
+        return reponse
 
 
 def fabrique_handler(pont, mode_backend):
@@ -344,7 +387,8 @@ def main():
               args.jeton_env + ", fail closed)", file=sys.stderr)
         return 3
 
-    pont = Pont(backend, destinations, bornes, jeton=jeton)
+    journal = os.environ.get("COORD_BRIDGE_JOURNAL", "").strip()
+    pont = Pont(backend, destinations, bornes, jeton=jeton, journal=journal)
     serveur = ThreadingHTTPServer((args.adresse, args.port),
                                   fabrique_handler(pont, mode_backend))
     serveur.socket.settimeout(None)

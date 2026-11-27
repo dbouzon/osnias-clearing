@@ -31,3 +31,83 @@ package installation is forbidden in the executor sandbox), real providers
 and the 72-hour 2-GB VPS acceptance run both explicitly NON_EXÉCUTÉ in this
 mission (distinct qualifications under pilot authorization). No exactly-once
 claim: the Go-side deduplication applies before any network call.
+
+## Marker-driven fake scenarios (M-COORD-DEP-03)
+
+The `FacticeBackend` supports scenarios driven by markers carried by the
+prompt (prompts are composed by the Go engine; markers never affect
+routing, authentication or bounds).
+
+| Role | Marker in prompt | Output |
+|---|---|---|
+| `factice/exec/…` | `MANDAT V1` | flawed V1 deliverable, contains `SCENARIO:LIVRABLE_A_CORRIGER` |
+| `factice/exec/…` | `MANDAT V2` | corrected V2 deliverable (no scenario marker) |
+| `factice/exec/…` | (none) | historical constant deliverable (frozen by test) |
+| `factice/recep/…` | prompt contains `SCENARIO:LIVRABLE_A_CORRIGER` | `A_CORRIGER` verdict + 2 explicit points, anchored digest |
+| `factice/recep/…` | `CRITIQUE DE PLAN` (no scenario) | `PLAN_ACCEPTE` (historical) |
+| `factice/recep/…` | (none) | `ACCEPTEE` + `verdict_id` (historical) |
+| both | `MANDAT V1` AND `MANDAT V2` together | explicit refusal `MARQUEURS_CONTRADICTOIRES` (400) |
+
+Rules: exact, injective markers (none is a substring of another);
+contradiction => refusal, never an arbitrary choice; without marker =>
+unchanged historical behavior. Any future change: table + tests + this
+section in the same PR.
+
+### Implications of each marker
+
+- `MANDAT V1`: the caller receives a deliberately flawed deliverable to
+  exercise a full iteration cycle (delivery -> A_CORRIGER -> fix ->
+  acceptance); no other output is affected.
+- `MANDAT V2`: the caller receives the corrected deliverable, an output with
+  no scenario marker; this is phase 2 of the same mission identifier.
+- `SCENARIO:LIVRABLE_A_CORRIGER` (receiver): the receiver's response is an
+  A_CORRIGER verdict with exactly 2 explicit points, anchored to the digest
+  of the received deliverable, referenced by a `verdict_id` (the Go engine
+  requires a reference for every receivable decision); any other prompt
+  content is ignored.
+- `MANDAT V1` + `MANDAT V2`: immediate 400 MARQUEURS_CONTRADICTOIRES
+  refusal, no inference produced (defence against a contradictory prompt).
+- No marker: strictly unchanged historical behavior (frozen by
+  non-regression tests).
+
+### Request/response examples (coord.llm.v1 protocol)
+
+`MANDAT V1` (executor):
+
+    POST /v1/chat/completions
+    {"model": "factice/exec/mistral-dep03", "messages": [
+      {"role": "user", "content": "MANDAT V1 ..."}]}
+    -> 200 {"choices": [{"message": {"content":
+         "... SCENARIO:LIVRABLE_A_CORRIGER ..."}}]}
+
+`MANDAT V2` (executor):
+
+    POST /v1/chat/completions
+    {"model": "factice/exec/mistral-dep03", "messages": [
+      {"role": "user", "content": "MANDAT V2 ..."}]}
+    -> 200 {"choices": [{"message": {"content": "corrected V2 deliverable"}}]}
+
+`SCENARIO:LIVRABLE_A_CORRIGER` (receiver):
+
+    POST /v1/chat/completions
+    {"model": "factice/recep/openai-dep03", "messages": [
+      {"role": "user", "content": "... SCENARIO:LIVRABLE_A_CORRIGER ..."}]}
+    -> 200 {"choices": [{"message": {"content":
+         "verdict: A_CORRIGER; points: [2 explicit points];
+          digest: <sha256 of the deliverable>"}}]}
+
+`MANDAT V1` + `MANDAT V2` together (refusal):
+
+    POST /v1/chat/completions
+    {"model": "factice/exec/mistral-dep03", "messages": [
+      {"role": "user", "content": "MANDAT V1 ... MANDAT V2 ..."}]}
+    -> 400 {"error": {"type": "MARQUEURS_CONTRADICTOIRES",
+         "message": "..."}}
+
+## Optional bridge journal
+
+Environment variable `COORD_BRIDGE_JOURNAL` = path of a JSONL journal: one
+line per inference {timestamp, model, destination, status, error_type,
+duration_ms}. NEVER any prompt payload, NEVER any token (model value is
+scrubbed); write failures are reported on stderr with no client impact.
+Purpose: engine ⇄ bridge trace correlation (M-COORD-DEP-03).

@@ -114,3 +114,83 @@ ajoutées par la CI. **Aucune promesse de tenue sur 2 Go sans mesure.**
   `finish_reason` absent) ;
 - `num_retries=0` : aucun retry ni fallback implicite, la reprise
   appartient au moteur Go ; le pont ne journalise jamais les charges.
+
+## Scénarios factices par marqueurs (M-COORD-DEP-03)
+
+Le `FacticeBackend` produit des scénarios pilotés par des MARQUEURS portés
+par la charge (les charges sont composées par le moteur Go ; les marqueurs
+n'affectent jamais le routage, l'authentification ou les bornes).
+
+| Rôle | Marqueur dans la charge | Sortie |
+|---|---|---|
+| `factice/exec/…` | `MANDAT V1` | livrable V1 erroné, contient `SCENARIO:LIVRABLE_A_CORRIGER` |
+| `factice/exec/…` | `MANDAT V2` | livrable V2 corrigé (sans marqueur de scénario) |
+| `factice/exec/…` | (aucun) | livrable constant historique (figé par test) |
+| `factice/recep/…` | charge contenant `SCENARIO:LIVRABLE_A_CORRIGER` | verdict `A_CORRIGER` + 2 points explicites, empreinte ancrée |
+| `factice/recep/…` | `CRITIQUE DE PLAN` (sans scénario) | `PLAN_ACCEPTE` (historique) |
+| `factice/recep/…` | (aucun) | `ACCEPTEE` + `verdict_id` (historique) |
+| les deux | `MANDAT V1` ET `MANDAT V2` simultanés | refus explicite `MARQUEURS_CONTRADICTOIRES` (400) |
+
+Règles : marqueurs exacts et injectifs (aucun n'est sous-chaîne d'un autre) ;
+contradiction => refus, jamais un choix arbitraire ; sans marqueur =>
+comportement historique inchangé. Toute évolution future : table + tests +
+cette section dans la même PR.
+
+### Implications de chaque marqueur
+
+- `MANDAT V1` : l'appelant reçoit un livrable volontairement erroné afin de
+  dérouler un cycle complet d'itération (livraison -> A_CORRIGER ->
+  correction -> ACCEPTATION) ; aucune autre sortie n'est affectée.
+- `MANDAT V2` : l'appelant reçoit le livrable corrigé, sortie sans marqueur
+  de scénario ; c'est la phase 2 du même identifiant de mission.
+- `SCENARIO:LIVRABLE_A_CORRIGER` (reception) : la réponse du réceptionnaire
+  est un verdict A_CORRIGER avec exactement 2 points explicites, ancrés à
+  l'empreinte du livrable reçu, référencé par `verdict_id` (le moteur Go
+  exige une référence pour toute décision recevable) ; tout autre contenu
+  de charge est ignoré.
+- `MANDAT V1` + `MANDAT V2` : refus immédiat 400 MARQUEURS_CONTRADICTOIRES,
+  aucune inférence produite (défense contre une charge contradictoire).
+- Sans marqueur : comportement historique strictement inchangé (figé par
+  tests de non-régression).
+
+### Exemples de requête/réponse (protocole coord.llm.v1)
+
+`MANDAT V1` (exécutant) :
+
+    POST /v1/chat/completions
+    {"model": "factice/exec/mistral-dep03", "messages": [
+      {"role": "user", "content": "MANDAT V1 ..."}]}
+    -> 200 {"choices": [{"message": {"content":
+         "... SCENARIO:LIVRABLE_A_CORRIGER ..."}}]}
+
+`MANDAT V2` (exécutant) :
+
+    POST /v1/chat/completions
+    {"model": "factice/exec/mistral-dep03", "messages": [
+      {"role": "user", "content": "MANDAT V2 ..."}]}
+    -> 200 {"choices": [{"message": {"content": "livrable V2 corrigé"}}]}
+
+`SCENARIO:LIVRABLE_A_CORRIGER` (réceptionnaire) :
+
+    POST /v1/chat/completions
+    {"model": "factice/recep/openai-dep03", "messages": [
+      {"role": "user", "content": "... SCENARIO:LIVRABLE_A_CORRIGER ..."}]}
+    -> 200 {"choices": [{"message": {"content":
+         "verdict: A_CORRIGER ; points: [2 points explicites] ;
+          empreinte: <sha256 du livrable>"}}]}
+
+`MANDAT V1` + `MANDAT V2` simultanés (refus) :
+
+    POST /v1/chat/completions
+    {"model": "factice/exec/mistral-dep03", "messages": [
+      {"role": "user", "content": "MANDAT V1 ... MANDAT V2 ..."}]}
+    -> 400 {"error": {"type": "MARQUEURS_CONTRADICTOIRES",
+         "message": "..."}}
+
+## Journal optionnel du pont
+
+Variable d'environnement `COORD_BRIDGE_JOURNAL` = chemin d'un journal JSONL :
+une ligne par inférence {horodatage, model, destination, statut,
+type_erreur, duree_ms}. JAMAIS de charge, JAMAIS de jeton (modèle expurgé) ;
+échec d'écriture signalé sur stderr, sans impact client. Usage : corrélation
+des traces moteur ⇄ pont (M-COORD-DEP-03).
