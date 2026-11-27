@@ -14,6 +14,7 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -495,6 +496,34 @@ func (m *moteurDemo) servirJournal(w http.ResponseWriter, p *projetDemo) {
 		}
 		_, _ = w.Write(append(b, '\n'))
 	}
+}
+
+// donneesExport : lecture du projet pour l'export du dossier de sortie
+// (option A, M-COORD-DRIVE-01). Accesseur ADDITIF, sous mutex : aucun
+// comportement du moteur n'est modifié.
+func (m *moteurDemo) donneesExport(id string) (donneesExport, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	p, ok := m.projets[id]
+	if !ok {
+		return donneesExport{}, &erreurDrive{code: "DRIVE_ERREUR",
+			motif: "projet inconnu : " + id}
+	}
+	var journal bytes.Buffer
+	for _, e := range p.journal {
+		if b, err := json.Marshal(e); err == nil {
+			journal.Write(b)
+			journal.WriteByte('\n')
+		}
+	}
+	return donneesExport{
+		Cadrage:   p.Cadrage,
+		Ordre:     p.Ordre,
+		Version:   p.Version,
+		Empreinte: p.EmpreinteOrdre,
+		Devis:     p.Devis,
+		Journal:   journal.Bytes(),
+	}, nil
 }
 
 // repondreJSON / repondreErreur / lireJSON : parité avec le service

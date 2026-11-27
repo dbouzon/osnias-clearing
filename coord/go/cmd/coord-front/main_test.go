@@ -429,3 +429,228 @@ func TestLanguesParite(t *testing.T) {
 		}
 	}
 }
+
+/* ================== M-COORD-DRIVE-01 (plan v2 §2) ================== */
+
+// scenarioJusquaTransmission : parcours démo complet jusqu'à l'état
+// TRANSMIS (cadrage optionnel pour l'export du dossier de sortie).
+func scenarioJusquaTransmission(t *testing.T, c *client, id, dossierSortie string) {
+	t.Helper()
+	if s, _, _ := c.req(t, "POST", "/api/projets", map[string]any{
+		"id": id, "intention": "Étudier le marché agroalimentaire",
+	}); s != 201 {
+		t.Fatalf("création : statut %d", s)
+	}
+	if dossierSortie != "" {
+		if s, _, _ := c.req(t, "POST", "/api/projets/"+id+"/cadrage", map[string]any{
+			"dossier_sortie": dossierSortie,
+		}); s != 200 {
+			t.Fatalf("cadrage : statut %d", s)
+		}
+	}
+	for _, action := range []struct {
+		chemin string
+		corps  any
+	}{
+		{"/dialogue", map[string]any{"directeur": "openai-dir", "executant": "openai-exec"}},
+		{"/tour", map[string]any{"entree": "Un rapport sur le marché."}},
+		{"/tour", map[string]any{"entree": "Le secteur agroalimentaire."}},
+		{"/tour", map[string]any{"entree": "Un rapport markdown de 5 pages."}},
+		{"/qualifier", nil},
+		{"/devis", nil},
+		{"/accord-devis", map[string]any{"decision": "ACCORD"}},
+		{"/valider", map[string]any{"jeton_action": "pilote-demo"}},
+		{"/publier", nil},
+	} {
+		if s, _, raw := c.req(t, "POST", "/api/projets/"+id+action.chemin, action.corps); s != 200 {
+			t.Fatalf("étape %s : statut %d %s", action.chemin, s, raw)
+		}
+	}
+}
+
+func TestDriveEcritureAPI(t *testing.T) {
+	racine := t.TempDir()
+	_, srv := gatewayTest(t, configTest(
+		compteConf{Nom: "alice", Demo: true, DossierDrive: racine, AutoriserEcritureDrive: true},
+	))
+	c := connecter(t, srv, "alice")
+	// 200 : écrit puis lisible via l'API de lecture.
+	if s, m, _ := c.req(t, "POST", "/api/drive/document", map[string]any{
+		"dossier": "entrees", "nom": "note.txt", "contenu": "pièce fournie",
+	}); s != 200 || m["ecrit"] != true {
+		t.Fatalf("écriture : attendu 200 ecrit, reçu %d %v", s, m)
+	}
+	if s, m, _ := c.req(t, "GET", "/api/drive/?dossier=entrees", nil); s != 200 ||
+		m["documents"].([]any)[0] != "note.txt" {
+		t.Fatalf("lecture après écriture : %d %v", s, m)
+	}
+	// 401 : session obligatoire.
+	anonyme := &client{base: srv.URL}
+	if s, _, _ := anonyme.req(t, "POST", "/api/drive/document", map[string]any{
+		"nom": "x", "contenu": "y",
+	}); s != 401 {
+		t.Fatalf("écriture sans session : attendu 401, reçu %d", s)
+	}
+	// 400 : fail-closed (nom chemin, dossier en remontée, corps trop grand).
+	for _, corps := range []map[string]any{
+		{"dossier": "a", "nom": "../evil", "contenu": "x"},
+		{"dossier": "..", "nom": "ok.txt", "contenu": "x"},
+		{"dossier": "a:b", "nom": "ok.txt", "contenu": "x"},
+		{"dossier": "", "nom": "gros.txt", "contenu": strings.Repeat("x", 1<<20+1)},
+	} {
+		if s, m, _ := c.req(t, "POST", "/api/drive/document", corps); s != 400 {
+			t.Fatalf("entrée interdite %v : attendu 400, reçu %d %v", corps["nom"], s, m)
+		}
+	}
+	// 403 : opt-in requis (autoriser_ecriture_drive absent).
+	_, srv2 := gatewayTest(t, configTest(
+		compteConf{Nom: "bob", Demo: true, DossierDrive: t.TempDir()},
+	))
+	b := connecter(t, srv2, "bob")
+	if s, m, _ := b.req(t, "POST", "/api/drive/document", map[string]any{
+		"nom": "note.txt", "contenu": "x",
+	}); s != 403 || m["code"] != "DRIVE_REFUS" {
+		t.Fatalf("écriture non autorisée : attendu 403 DRIVE_REFUS, reçu %d %v", s, m)
+	}
+	// 404 : aucun Drive configuré pour ce compte.
+	_, srv3 := gatewayTest(t, configTest(compteConf{Nom: "carole", Demo: true}))
+	ca := connecter(t, srv3, "carole")
+	if s, _, _ := ca.req(t, "POST", "/api/drive/document", map[string]any{
+		"nom": "note.txt", "contenu": "x",
+	}); s != 404 {
+		t.Fatalf("écriture sans Drive : attendu 404, reçu %d", s)
+	}
+}
+
+func TestRoutageDriveConfig(t *testing.T) {
+	g, _ := gatewayTest(t, configTest(
+		compteConf{Nom: "alice", Demo: true, RemoteRclone: "recette", DossierDrive: "coord"},
+		compteConf{Nom: "bob", Demo: true, DossierDrive: t.TempDir()},
+		compteConf{Nom: "carole", Demo: true},
+	))
+	if _, ok := g.drives["alice"].(*dossierRclone); !ok {
+		t.Fatalf("alice : attendu *dossierRclone, reçu %T", g.drives["alice"])
+	}
+	if _, ok := g.drives["bob"].(*dossierFactice); !ok {
+		t.Fatalf("bob : attendu *dossierFactice, reçu %T", g.drives["bob"])
+	}
+	if g.drives["carole"] != nil {
+		t.Fatalf("carole : aucun Drive attendu, reçu %T", g.drives["carole"])
+	}
+}
+
+func TestExportOptionADossierSortie(t *testing.T) {
+	racine := t.TempDir()
+	_, srv := gatewayTest(t, configTest(
+		compteConf{Nom: "alice", Demo: true, DossierDrive: racine, ExportSortie: true},
+	))
+	c := connecter(t, srv, "alice")
+	scenarioJusquaTransmission(t, c, "etude-marche", "sortie/2026")
+	// Transmission 200 AUGMENTÉE du champ export_sortie, sans jamais
+	// faire échouer la transmission.
+	s, p, _ := c.req(t, "POST", "/api/projets/etude-marche/transmettre", nil)
+	if s != 200 || p["etat"] != etatTransmis {
+		t.Fatalf("transmission : attendu 200 TRANSMIS, reçu %d %v", s, p["etat"])
+	}
+	exp, ok := p["export_sortie"].(map[string]any)
+	if !ok || exp["etat"] != "ok" {
+		t.Fatalf("export_sortie : attendu ok, reçu %v", p["export_sortie"])
+	}
+	if exp["dossier"] != "sortie/2026" {
+		t.Fatalf("export_sortie.dossier : reçu %v", exp["dossier"])
+	}
+	fichiers, _ := exp["fichiers"].([]any)
+	if len(fichiers) != 3 {
+		t.Fatalf("export_sortie.fichiers : attendu 3 fichiers, reçu %v", fichiers)
+	}
+	// Les trois fichiers existent SOUS la racine du compte, avec le
+	// contenu attendu (ordre, devis, journal ndjson).
+	chemin := filepath.Join(racine, "sortie", "2026")
+	for _, nom := range []string{"ordre.json", "devis.json", "journal.ndjson"} {
+		if _, err := os.Stat(filepath.Join(chemin, nom)); err != nil {
+			t.Fatalf("fichier exporté absent : %s (%v)", nom, err)
+		}
+	}
+	ordre, _ := os.ReadFile(filepath.Join(chemin, "ordre.json"))
+	if !strings.Contains(string(ordre), "\"ordre\"") || !strings.Contains(string(ordre), "v1") {
+		t.Fatalf("ordre.json inattendu : %s", ordre)
+	}
+	journal, _ := os.ReadFile(filepath.Join(chemin, "journal.ndjson"))
+	if !strings.Contains(string(journal), "TRANSMISSION") {
+		t.Fatalf("journal.ndjson inattendu : %s", journal)
+	}
+	// État consultable (bandeau front) puis relance idempotente.
+	if s, m, _ := c.req(t, "GET", "/api/drive/export/etude-marche", nil); s != 200 ||
+		m["export_sortie"].(map[string]any)["etat"] != "ok" {
+		t.Fatalf("état export : reçu %d %v", s, m)
+	}
+	if s, m, _ := c.req(t, "POST", "/api/drive/export/etude-marche", nil); s != 200 ||
+		m["export_sortie"].(map[string]any)["etat"] != "ok" {
+		t.Fatalf("relance export : reçu %d %v", s, m)
+	}
+}
+
+func TestExportOptionAEchecNonBloquant(t *testing.T) {
+	// Cadrage SANS dossier de sortie : échec propre, motivé.
+	_, srv := gatewayTest(t, configTest(
+		compteConf{Nom: "alice", Demo: true, DossierDrive: t.TempDir(), ExportSortie: true},
+	))
+	c := connecter(t, srv, "alice")
+	scenarioJusquaTransmission(t, c, "sans-sortie", "")
+	s, p, _ := c.req(t, "POST", "/api/projets/sans-sortie/transmettre", nil)
+	if s != 200 || p["etat"] != etatTransmis {
+		t.Fatalf("transmission : la mission DOIT partir (non bloquant), reçu %d %v", s, p["etat"])
+	}
+	exp, _ := p["export_sortie"].(map[string]any)
+	if exp["etat"] != "echec" || !strings.Contains(exp["motif"].(string), "dossier de sortie") {
+		t.Fatalf("export sans dossier : attendu echec motivé, reçu %v", exp)
+	}
+
+	// Drive en panne (dossiersDefauts) : échec d'écriture signalé,
+	// transmission 200, état consultable, relance possible.
+	g, srv2 := gatewayTest(t, configTest(
+		compteConf{Nom: "bob", Demo: true, DossierDrive: t.TempDir(), ExportSortie: true},
+	))
+	g.drives["bob"] = &dossiersDefauts{motif: "panne simulée du stockage"}
+	b := connecter(t, srv2, "bob")
+	scenarioJusquaTransmission(t, b, "mission-b", "sortie")
+	s, p, _ = b.req(t, "POST", "/api/projets/mission-b/transmettre", nil)
+	if s != 200 || p["etat"] != etatTransmis {
+		t.Fatalf("transmission malgré export défaillant : reçu %d %v", s, p["etat"])
+	}
+	exp, _ = p["export_sortie"].(map[string]any)
+	if exp["etat"] != "echec" || !strings.Contains(exp["motif"].(string), "panne simulée") {
+		t.Fatalf("export défaillant : attendu echec/panne, reçu %v", exp)
+	}
+	if s, m, _ := b.req(t, "GET", "/api/drive/export/mission-b", nil); s != 200 ||
+		m["export_sortie"].(map[string]any)["etat"] != "echec" {
+		t.Fatalf("état export défaillant : reçu %d %v", s, m)
+	}
+	if s, m, _ := b.req(t, "POST", "/api/drive/export/mission-b", nil); s != 200 ||
+		m["export_sortie"].(map[string]any)["etat"] != "echec" {
+		t.Fatalf("relance export défaillant : reçu %d %v", s, m)
+	}
+}
+
+func TestExportOptionADesactive(t *testing.T) {
+	// Sans export_sortie : réponse de transmission TELLE QUELLE
+	// (aucun champ export_sortie), aucun état connu côté gateway.
+	_, srv := gatewayTest(t, configTest(
+		compteConf{Nom: "alice", Demo: true, DossierDrive: t.TempDir()},
+	))
+	c := connecter(t, srv, "alice")
+	scenarioJusquaTransmission(t, c, "etude-marche", "sortie")
+	s, _, raw := c.req(t, "POST", "/api/projets/etude-marche/transmettre", nil)
+	if s != 200 || strings.Contains(raw, "export_sortie") {
+		t.Fatalf("export désactivé : réponse NON augmentée attendue, reçu %d %s", s, raw)
+	}
+	if s, m, _ := c.req(t, "GET", "/api/drive/export/etude-marche", nil); s != 404 ||
+		m["code"] != "EXPORT_INCONNU" {
+		t.Fatalf("état export inconnu attendu : reçu %d %v", s, m)
+	}
+	// Relance : refusée pour un compte sans export_sortie.
+	if s, m, _ := c.req(t, "POST", "/api/drive/export/etude-marche", nil); s != 403 ||
+		m["code"] != "DRIVE_REFUS" {
+		t.Fatalf("relance sans export_sortie : attendu 403 DRIVE_REFUS, reçu %d %v", s, m)
+	}
+}

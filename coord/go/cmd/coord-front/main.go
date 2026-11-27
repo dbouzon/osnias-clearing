@@ -29,17 +29,41 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 // compteConf : une entrée = un compte client = une instance
 // coord-maieutique loopback (data dir propre) + son token pilote.
 // Demo: true bascule ce compte sur le moteur factice embarqué.
+// RemoteRclone non vide → adaptateur Drive rclone (mission
+// M-COORD-DRIVE-01) ; DossierDrive devient alors le chemin racine
+// DANS le remote (sinon : racine du dossier factice local).
 type compteConf struct {
 	Nom          string `json:"compte"`
 	URL          string `json:"url"`
 	Token        string `json:"token"`
 	Demo         bool   `json:"demo"`
 	DossierDrive string `json:"dossier_drive"`
+
+	RemoteRclone           string `json:"remote_rclone"`
+	TimeoutRclone          int    `json:"timeout_rclone"`           // secondes, défaut 30, clampé [5,120]
+	ExportSortie           bool   `json:"export_sortie"`            // option A : export à la transmission
+	AutoriserEcritureDrive bool   `json:"autoriser_ecriture_drive"` // POST /api/drive/document
+}
+
+// timeoutDrive : timeout rclone par appel, clampé (plan v2 §1.1).
+func (c compteConf) timeoutDrive() time.Duration {
+	t := c.TimeoutRclone
+	if t <= 0 {
+		t = 30
+	}
+	if t < 5 {
+		t = 5
+	}
+	if t > 120 {
+		t = 120
+	}
+	return time.Duration(t) * time.Second
 }
 
 type config struct {
@@ -55,6 +79,7 @@ type gateway struct {
 	frontDir string
 	demos    map[string]*moteurDemo
 	drives   map[string]Dossiers
+	exports  map[string]etatExport // clé "compte/id" : dernier état d'export (option A)
 }
 
 func newGateway(cfg config, frontDir string) *gateway {
@@ -63,12 +88,19 @@ func newGateway(cfg config, frontDir string) *gateway {
 		frontDir: frontDir,
 		demos:    map[string]*moteurDemo{},
 		drives:   map[string]Dossiers{},
+		exports:  map[string]etatExport{},
 	}
 	for _, c := range cfg.Comptes {
 		if c.Demo {
 			g.demos[c.Nom] = nouveauMoteurDemo()
 		}
-		if c.DossierDrive != "" {
+		switch {
+		case c.RemoteRclone != "":
+			// Adaptateur rclone : dossier_drive = chemin racine DANS
+			// le remote (périmètre du compte, fail-closed dans rclone.go).
+			g.drives[c.Nom] = nouveauDossierRclone(
+				c.RemoteRclone, c.DossierDrive, c.timeoutDrive())
+		case c.DossierDrive != "":
 			g.drives[c.Nom] = nouveauDossierFactice(c.DossierDrive)
 		}
 	}
@@ -111,6 +143,15 @@ func (g *gateway) listerComptes(w http.ResponseWriter, r *http.Request) {
 func (g *gateway) apiProjets(w http.ResponseWriter, r *http.Request) {
 	c, ok := g.compteSession(w, r)
 	if !ok {
+		return
+	}
+	// Option A (M-COORD-DRIVE-01, plan v2 §1.3) : la transmission
+	// déclenche l'export du dossier de sortie, NON BLOQUANT. Le moteur
+	// (factice ou réel) est servi tel quel ; seule la réponse 200 est
+	// augmentée du champ export_sortie.
+	if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/transmettre") &&
+		g.exportActif(c) {
+		g.servirTransmission(w, r, c)
 		return
 	}
 	if c.Demo {
@@ -158,6 +199,12 @@ func main() {
 			log.Fatal("coord-front : compte dupliqué : ", c.Nom)
 		}
 		vus[c.Nom] = true
+		if c.RemoteRclone != "" {
+			// Fail closed au démarrage : un remote invalide refuse de lancer.
+			if err := validerNomRemote(c.RemoteRclone); err != nil {
+				log.Fatal("coord-front : compte ", c.Nom, " : remote rclone invalide")
+			}
+		}
 		if c.Demo {
 			continue // le moteur factice n'a pas d'URL à vérifier
 		}
