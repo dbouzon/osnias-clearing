@@ -39,6 +39,30 @@ import (
 
 const enTeteToken = "X-Coord-Pilot-Token"
 
+// transmissionTemoin : paramètres de la mission fille témoin (plan v2 §5,
+// D7). Les RÔLES portent des ACTIONS normatives (spec 2), jamais des
+// identités : la mission fille doit être exécutable (executer, soumettre,
+// acker), recevable (recevoir) et clôturable par le pilote (cloturer).
+func transmissionTemoin() maieutique.Transmission {
+	return maieutique.Transmission{
+		IssueFille:  "MAIEUTIQUE-TEMOIN-01",
+		ExecutantID: "openai-exec",
+		RecepteurID: "openai-recep",
+		QuaExecID:   "openai-exec",
+		QuaRecepID:  "openai-recep",
+		Roles: map[string][]string{
+			"EXECUTANT":      {"executer", "soumettre", "acker"},
+			"RECEPTIONNAIRE": {"recevoir"},
+			"PILOTE":         {"cloturer"},
+		},
+		Plafonds: budget.Plafonds{
+			Appels: map[string]int{"openai-exec": 10, "openai-recep": 10},
+			Jetons: map[string]int{"openai-exec": 100000, "openai-recep": 100000},
+		},
+		LienIssueMere: "dbouzon/osnias-clearing#42",
+	}
+}
+
 func main() {
 	addr := flag.String("addr", "127.0.0.1:0", "adresse d'écoute (loopback uniquement, fail closed)")
 	racine := flag.String("data", "coord-maieutique-data", "racine des projets maïeutiques (state/maieutique)")
@@ -101,23 +125,7 @@ func main() {
 	cfg.Referentiel = ref
 	cfg.Orchestrateur = orch
 	cfg.SondesReseau = *sondes
-	cfg.Transmission = maieutique.Transmission{
-		IssueFille:  "MAIEUTIQUE-TEMOIN-01",
-		ExecutantID: "openai-exec",
-		RecepteurID: "openai-recep",
-		QuaExecID:   "openai-exec",
-		QuaRecepID:  "openai-recep",
-		Roles: map[string][]string{
-			"EXECUTANT":      {"openai-exec"},
-			"RECEPTIONNAIRE": {"openai-recep"},
-			"PILOTE":         {"openai-exec"},
-		},
-		Plafonds: budget.Plafonds{
-			Appels: map[string]int{"openai-exec": 10, "openai-recep": 10},
-			Jetons: map[string]int{"openai-exec": 100000, "openai-recep": 100000},
-		},
-		LienIssueMere: "dbouzon/osnias-clearing#42",
-	}
+	cfg.Transmission = transmissionTemoin()
 	store, err := maieutique.OuvrirStore(cfg)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "NON_EXECUTE : store maïeutique impossible : "+err.Error())
@@ -204,7 +212,8 @@ func statutDe(code string) int {
 	case maieutique.CodeActionInterdit, maieutique.CodeOperationDejaFait,
 		maieutique.CodeProjetExistant, maieutique.CodeProjetTerminal:
 		return http.StatusConflict
-	case maieutique.CodeOrdreNonConforme, maieutique.CodeObjectifNonUnique,
+	case maieutique.CodeOrdreNonConforme, maieutique.CodeOrdreAbsent,
+		maieutique.CodeObjectifNonUnique,
 		maieutique.CodeSourcesVides, maieutique.CodeSourceNonDeclaree,
 		maieutique.CodeSourcesNonVerifiees, maieutique.CodePasDeControle,
 		maieutique.CodeLivrableImprecis, maieutique.CodeEtapesIncoherentes,
