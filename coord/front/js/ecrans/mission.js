@@ -48,6 +48,28 @@
       v.textContent = Coord.t("projet.version", { version: "v" + projet.version });
       rangée.appendChild(v);
     }
+    /* M-COORD-API-MISTRAL-01 : niveau choisi + compteur d'appels moteur
+     * (transparence coût, spec §3.3 ; alerte préventive à 80 %). */
+    if (projet.niveau) {
+      const n = Coord.el("span", "badge");
+      n.textContent = Coord.t("mission.niveau", {
+        niveau: Coord.t("creation.niveau" + projet.niveau.charAt(0).toUpperCase() + projet.niveau.slice(1))
+      });
+      rangée.appendChild(n);
+    }
+    if (projet.plafond_appels) {
+      const a = Coord.el("span", "badge");
+      a.textContent = Coord.t("mission.appels", {
+        consomme: projet.appels_moteurs || 0,
+        plafond: projet.plafond_appels
+      });
+      rangée.appendChild(a);
+    }
+    if (projet.plafond_appels && (projet.appels_moteurs || 0) * 100 >= projet.plafond_appels * 80) {
+      const alerte = Coord.el("div", "erreur");
+      alerte.textContent = Coord.t("mission.alerteAppels");
+      carte.appendChild(alerte);
+    }
     carte.appendChild(rangée);
     if (projet.empreinte_ordre) {
       const emp = Coord.el("div", "rangée");

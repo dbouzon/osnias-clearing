@@ -244,6 +244,21 @@
     const executant = champTexte(carte, "creation.executant", "creer-executant");
     executant.value = "openai-exec";
 
+    /* M-COORD-API-MISTRAL-01 : niveau de la mission (grille de trois
+     * itinéraires de cascade, au choix du client ; défaut avancé). */
+    carte.appendChild(Coord.el("label", null, "creation.niveau"));
+    const selNiveau = document.createElement("select");
+    selNiveau.id = "creer-niveau";
+    ["essentiel", "avance", "premium"].forEach(function (v, i) {
+      const o = document.createElement("option");
+      o.value = v;
+      o.textContent = Coord.t("creation.niveau" + v.charAt(0).toUpperCase() + v.slice(1));
+      if (v === "avance") { o.selected = true; }
+      selNiveau.appendChild(o);
+    });
+    carte.appendChild(selNiveau);
+    carte.appendChild(Coord.el("div", "aide", "creation.niveauAide"));
+
     carte.appendChild(Coord.el("div", "aide", "creation.cadrageGratuit"));
     contenu.appendChild(carte);
     contenu.appendChild(erreur);
@@ -356,7 +371,9 @@
       /* 2. Vérification réussie : création, cadrage, dialogue. */
       const rep = await Coord.requete("POST", "/api/projets", {
         id: nom,
-        intention: textIntention
+        intention: textIntention,
+        niveau: document.getElementById("creer-niveau") ?
+          document.getElementById("creer-niveau").value : "avance"
       });
       if (rep.statut !== 201) {
         Coord.messageErreur(erreur, rep.donnees && rep.donnees.motif ? rep.donnees.motif : "app.erreurReseau");
