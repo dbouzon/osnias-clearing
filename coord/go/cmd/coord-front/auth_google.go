@@ -84,6 +84,8 @@ type utilisateur struct {
 	Compte       string    `json:"compte"`
 	Cree         time.Time `json:"cree"`
 	DriveRefresh string    `json:"drive_refresh,omitempty"` // jamais envoyé au front
+	GitHubToken  string    `json:"github_token,omitempty"`  // jamais envoyé au front
+	GitHubLogin  string    `json:"github_login,omitempty"`
 }
 
 // ---------------------------------------------------------------------------
@@ -767,6 +769,7 @@ func (g *gateway) missionRepertoire(w http.ResponseWriter, r *http.Request) {
 	}
 	var req struct {
 		Mission    string `json:"mission"`
+		Source     string `json:"source"`
 		DossierID  string `json:"dossier_id"`
 		DossierNom string `json:"dossier_nom"`
 	}
@@ -778,15 +781,36 @@ func (g *gateway) missionRepertoire(w http.ResponseWriter, r *http.Request) {
 		repondreErreur(w, http.StatusBadRequest, "CORPS_INVALIDE", "mission et dossier_id requis")
 		return
 	}
-	// Garde-fou anti-collision : le dossier ne doit servir à aucune autre mission.
-	for _, m := range g.repertoires.chargerTout(u.Compte) {
-		if m["dossier_id"] == req.DossierID {
+	if req.Source == "" {
+		req.Source = "drive" // compat : entrees creees avant SRC-01
+	}
+	if req.Source != "drive" && req.Source != "github" {
+		repondreErreur(w, http.StatusBadRequest, "SOURCE_INVALIDE", "source inconnue : "+req.Source)
+		return
+	}
+	// Homogeneite verifiee SERVEUR (spec 3.4) : refus AVANT toute
+	// ecriture si la mission change de source.
+	if existant := g.repertoires.charger(u.Compte, req.Mission); existant != nil {
+		sourceExistante, _ := existant["source"].(string)
+		if sourceExistante == "" {
+			sourceExistante = "drive"
+		}
+		if sourceExistante != req.Source {
+			repondreErreur(w, http.StatusConflict, "SOURCE_HETEROGENE",
+				"cette mission vit deja dans une source "+sourceExistante)
+			return
+		}
+	}
+	// Garde-fou anti-collision : le dossier ne doit servir à aucune
+	// AUTRE mission (la mission elle-même peut se ré-associer).
+	for cle, m := range g.repertoires.chargerTout(u.Compte) {
+		if cle != cleMission(u.Compte, req.Mission) && m["dossier_id"] == req.DossierID {
 			repondreErreur(w, http.StatusConflict, "DOSSIER_DEJA_PRIS",
 				"ce répertoire est déjà dédié à une autre mission")
 			return
 		}
 	}
-	entree := map[string]string{"dossier_id": req.DossierID, "dossier_nom": req.DossierNom}
+	entree := map[string]string{"dossier_id": req.DossierID, "dossier_nom": req.DossierNom, "source": req.Source}
 	if err := g.repertoires.majEntry(u.Compte, req.Mission, entree); err != nil {
 		repondreErreur(w, http.StatusInternalServerError, "INTERNE", err.Error())
 		return
@@ -826,7 +850,7 @@ func (s *storeKV) charger(compte, mission string) map[string]any {
 	if !ok {
 		return nil
 	}
-	c := map[string]any{"dossier_id": e["dossier_id"], "dossier_nom": e["dossier_nom"]}
+	c := map[string]any{"dossier_id": e["dossier_id"], "dossier_nom": e["dossier_nom"], "source": e["source"]}
 	return c
 }
 

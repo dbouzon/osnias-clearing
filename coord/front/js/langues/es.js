@@ -188,5 +188,16 @@ CoordLangues["es"] = {
   "creation.repertoireConfirme": "Carpeta dedicada reservada para esta misión. Las subcarpetas «entrada» y «salida» se crearán allí al iniciar.",
   "creation.errRepertoire": "Elija o cree la carpeta de la misión.",
   "creation.preparationRepertoire": "Preparando la carpeta de la misión…",
-  "creation.repertoireIndisponible": "Inicio de sesión con Google no configurado: modo histórico (rutas libres)."
+  "creation.repertoireIndisponible": "Inicio de sesión con Google no configurado: modo histórico (rutas libres).",
+  "creation.source": "Fuente de la carpeta de la misión",
+  "creation.sourceDrive": "Google Drive",
+  "creation.sourceGithub": "GitHub",
+  "creation.sourceAide": "La entrada y la salida viven en la misma fuente: documentos → Drive, código → GitHub. Una misión nunca mezcla los dos.",
+  "creation.connecterGithub": "Conectar mi GitHub",
+  "creation.connecterGithubAide": "Se pedirá un consentimiento de GitHub y después reanudará la creación aquí mismo.",
+  "creation.repoMission": "Repo de la misión",
+  "creation.choisirRepo": "— Elegir un repo —",
+  "creation.repoAide": "La carpeta de la misión vivirá en este repo: missions/<nombre>/entrada y missions/<nombre>/salida (contenido versionado).",
+  "creation.errRepo": "Elija el repo de la misión.",
+  "creation.reposErreur": "No se pudieron listar sus repos."
 };

@@ -188,5 +188,16 @@ CoordLangues["de"] = {
   "creation.repertoireConfirme": "Dedizierter Ordner für diese Mission reserviert. Die Unterordner 'eingabe' und 'ausgabe' werden beim Start dort erstellt.",
   "creation.errRepertoire": "Wählen oder erstellen Sie den Missionsordner.",
   "creation.preparationRepertoire": "Missionsordner wird vorbereitet…",
-  "creation.repertoireIndisponible": "Google-Anmeldung nicht konfiguriert: Legacy-Modus (freie Pfade)."
+  "creation.repertoireIndisponible": "Google-Anmeldung nicht konfiguriert: Legacy-Modus (freie Pfade).",
+  "creation.source": "Quelle des Missionsordners",
+  "creation.sourceDrive": "Google Drive",
+  "creation.sourceGithub": "GitHub",
+  "creation.sourceAide": "Eingabe und Ausgabe leben in derselben Quelle: Dokumente → Drive, Code → GitHub. Eine Mission mischt niemals beides.",
+  "creation.connecterGithub": "Mein GitHub verbinden",
+  "creation.connecterGithubAide": "Eine GitHub-Zustimmung wird angezeigt, danach setzen Sie die Erstellung hier fort.",
+  "creation.repoMission": "Missions-Repo",
+  "creation.choisirRepo": "— Repo wählen —",
+  "creation.repoAide": "Der Missionsordner lebt in diesem Repo: missions/<Name>/eingabe und missions/<Name>/ausgabe (versionierter Inhalt).",
+  "creation.errRepo": "Wählen Sie das Repo der Mission.",
+  "creation.reposErreur": "Ihre Repos konnten nicht geladen werden."
 };
