@@ -27,7 +27,9 @@ body {
   position: sticky; top: 0; z-index: 5;
 }
 .entete-gauche, .entete-droite { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.logo { font-weight: 700; letter-spacing: 0.08em; color: var(--encre); text-decoration: none; }
+.logo { display: inline-flex; align-items: center; text-decoration: none; }
+.logo-img { display: block; height: 38px; width: auto; }
+@media (max-width: 600px) { .logo-img { height: 32px; } }
 .sous-titre { color: var(--gris); font-size: 0.85rem; }
 .etat-drive { color: var(--gris); font-size: 0.85rem; }
 #select-langue { padding: 6px; border: 1px solid var(--trait); border-radius: 6px; background: var(--carte); }
