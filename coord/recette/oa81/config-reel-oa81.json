@@ -1,0 +1,43 @@
+{
+  "mode": "REEL",
+  "autorisation_pilote": {
+    "pilote": "denis-bouzon",
+    "fournisseurs": ["pont-exec", "pont-recep"],
+    "plafond_centimes": 9,
+    "plafond_appels_par_fournisseur": 3,
+    "plafond_jetons_par_fournisseur": 5000,
+    "date": "2026-11-27"
+  },
+  "fournisseurs": [
+    {
+      "id": "pont-exec",
+      "endpoint": "http://127.0.0.1:8790/v1/chat/completions",
+      "cle_env": "COORD_BRIDGE_JETON",
+      "modele": "oa81/temoin/exec",
+      "format": "openai",
+      "timeout_ms": 30000,
+      "taille_max_reponse": 65536,
+      "retraits_max": 0,
+      "tarif_entree_centimes_par_million": 15,
+      "tarif_sortie_centimes_par_million": 60,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 1000,
+      "jetons_sortie_max_par_tentative": 800
+    },
+    {
+      "id": "pont-recep",
+      "endpoint": "http://127.0.0.1:8790/v1/chat/completions",
+      "cle_env": "COORD_BRIDGE_JETON",
+      "modele": "gpt-4o-mini-2024-07-18",
+      "format": "openai",
+      "timeout_ms": 30000,
+      "taille_max_reponse": 65536,
+      "retraits_max": 0,
+      "tarif_entree_centimes_par_million": 15,
+      "tarif_sortie_centimes_par_million": 60,
+      "tarif_requete_centimes": 1,
+      "jetons_entree_max_par_tentative": 1000,
+      "jetons_sortie_max_par_tentative": 800
+    }
+  ]
+}

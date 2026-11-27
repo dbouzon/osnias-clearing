@@ -1,0 +1,4 @@
+RAPPORT COORD v1.5 — essai M-COORD-OPENAI-VPS-01 (témoin).
+Le plafond monétaire de la mission témoin est de 200 centimes, soit 20 euros.
+Le coût d'un appel relecteur est estimé à 0,006 centime.
+Ce rapport contient deux erreurs factuelles volontaires à identifier.
