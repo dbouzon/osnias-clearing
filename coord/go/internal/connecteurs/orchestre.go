@@ -507,6 +507,12 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 	o.ref.Journaliser(issue, map[string]any{
 		"type": TypeAppelReel, "action": action, "adaptateur": p.adaptateur,
 		"jetons": res.Jetons, "empreinte_sortie": empreinteCharge(res.Sortie),
+		// M-COORD-E2E-VPS-01 : la clé d'idempotence (unique par appel) rend
+		// chaque entrée distincte ; sans elle, deux appels réels DIFFÉRENTS
+		// aux réponses identiques (factices déterministes) sérialisaient en
+		// lignes identiques et la déduplication anti-rejeu de
+		// persist.JournalExecute supprimait la seconde (journal incomplet).
+		"cle_idempotence": p.cleIdemp,
 	})
 	if surplus := res.Jetons - p.estimation; surplus > 0 {
 		o.ref.Journaliser(issue, map[string]any{
@@ -788,6 +794,10 @@ func (o *Orchestrateur) Recevoir(ctx context.Context, issue, recepteurID, livrab
 	o.ref.Journaliser(issue, map[string]any{
 		"type": TypeReception, "verdict": v.Verdict, "cible": cible,
 		"verdict_id": v.VerdictID, "empreinte": emp, "points": len(v.Points),
+		// M-COORD-E2E-VPS-01 : même raison : deux réceptions légitimes aux
+		// verdicts identiques (verdict_id constant d'un factice, même
+		// empreinte) ne doivent plus fusionner en une seule ligne.
+		"cle_idempotence": p.cleIdemp,
 	})
 	return v, res, nil
 }
