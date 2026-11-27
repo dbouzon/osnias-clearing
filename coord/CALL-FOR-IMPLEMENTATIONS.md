@@ -20,9 +20,12 @@ Read the normative pieces only (this is enough, no reference code needed):
 
 1. `coord/docs/spec/coord-spec-1.0.md` — the specification (English, RFC 2119).
 2. `coord/schemas/*.schema.json` — the wire formats (JSON Schema 2020-12).
-3. `coord/docs/conformite-v15/` — the 22 published conformance vectors:
+3. `coord/docs/conformite-v15/` — the 25 published conformance vectors:
    3 positive transition scenarios, 9 negative transition scenarios,
-   8 authorization configurations, 2 resume arbitrations.
+   8 authorization configurations, 2 resume arbitrations, and 3 canonical
+   serialization scenarios (`coord-conformite-jcs-v1`: UTF-16 key ordering,
+   recursive key sorting with array order preserved, refusal of non-integer
+   numbers).
 4. `coord/docs/coord-guides.md` — the implementer guide.
 
 ## The rules
@@ -46,7 +49,7 @@ divergences. Open an issue in the public repository
 `[COORD-IMPL]` prefix, or publish in your own repository and reference it.
 Cross-check against the reference engines (Go `coord/go/cmd/vector-runner`,
 Python `coord/docs/conformite-v15/runner_conformite.py`): both render the same
-OK/KO per vector on the 22 published vectors.
+OK/KO per vector on the 25 published vectors.
 
 The standard, the vectors, the schemas and the reference engines are published
 under the Apache-2.0 license. COORD Specification 1.0 is an open candidacy: no
@@ -56,10 +59,10 @@ either.
 ## Résumé en français
 
 Appel à implémentations indépendantes de COORD Specification 1.0 : relisez la
-norme (`coord/docs/spec/coord-spec-1.0.md`, anglais, RFC 2119), les 5 schémas
-JSON 2020-12 et les 22 vecteurs publics (`coord/docs/conformite-v15/`),
+norme (`coord/docs/spec/coord-spec-1.0.md`, anglais, RFC 2119), les 6 schémas
+JSON 2020-12 et les 25 vecteurs publics (`coord/docs/conformite-v15/`),
 implémentez la machine à états fermée dans le langage de votre choix, rejouez
-les 22 vecteurs (chaque `attendu` doit correspondre exactement, motifs de refus
+les 25 vecteurs (chaque `attendu` doit correspondre exactement, motifs de refus
 compris), puis publiez vos résultats, environnement et qualifications
 (REEL / SIMULE / NON_EXECUTE) dans un ticket `[COORD-IMPL]` du dépôt public
 dbouzon/osnias-clearing. Le moteur n'authentifie jamais : les adaptateurs
