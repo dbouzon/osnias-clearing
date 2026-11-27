@@ -31,3 +31,32 @@ package installation is forbidden in the executor sandbox), real providers
 and the 72-hour 2-GB VPS acceptance run both explicitly NON_EXÉCUTÉ in this
 mission (distinct qualifications under pilot authorization). No exactly-once
 claim: the Go-side deduplication applies before any network call.
+
+## Marker-driven fake scenarios (M-COORD-DEP-03)
+
+The `FacticeBackend` supports scenarios driven by markers carried by the
+prompt (prompts are composed by the Go engine; markers never affect
+routing, authentication or bounds).
+
+| Role | Marker in prompt | Output |
+|---|---|---|
+| `factice/exec/…` | `MANDAT V1` | flawed V1 deliverable, contains `SCENARIO:LIVRABLE_A_CORRIGER` |
+| `factice/exec/…` | `MANDAT V2` | corrected V2 deliverable (no scenario marker) |
+| `factice/exec/…` | (none) | historical constant deliverable (frozen by test) |
+| `factice/recep/…` | prompt contains `SCENARIO:LIVRABLE_A_CORRIGER` | `A_CORRIGER` verdict + 2 explicit points, anchored digest |
+| `factice/recep/…` | `CRITIQUE DE PLAN` (no scenario) | `PLAN_ACCEPTE` (historical) |
+| `factice/recep/…` | (none) | `ACCEPTEE` + `verdict_id` (historical) |
+| both | `MANDAT V1` AND `MANDAT V2` together | explicit refusal `MARQUEURS_CONTRADICTOIRES` (400) |
+
+Rules: exact, injective markers (none is a substring of another);
+contradiction => refusal, never an arbitrary choice; without marker =>
+unchanged historical behavior. Any future change: table + tests + this
+section in the same PR.
+
+## Optional bridge journal
+
+Environment variable `COORD_BRIDGE_JOURNAL` = path of a JSONL journal: one
+line per inference {timestamp, model, destination, status, error_type,
+duration_ms}. NEVER any prompt payload, NEVER any token (model value is
+scrubbed); write failures are reported on stderr with no client impact.
+Purpose: engine ⇄ bridge trace correlation (M-COORD-DEP-03).
