@@ -114,3 +114,32 @@ ajoutées par la CI. **Aucune promesse de tenue sur 2 Go sans mesure.**
   `finish_reason` absent) ;
 - `num_retries=0` : aucun retry ni fallback implicite, la reprise
   appartient au moteur Go ; le pont ne journalise jamais les charges.
+
+## Scénarios factices par marqueurs (M-COORD-DEP-03)
+
+Le `FacticeBackend` produit des scénarios pilotés par des MARQUEURS portés
+par la charge (les charges sont composées par le moteur Go ; les marqueurs
+n'affectent jamais le routage, l'authentification ou les bornes).
+
+| Rôle | Marqueur dans la charge | Sortie |
+|---|---|---|
+| `factice/exec/…` | `MANDAT V1` | livrable V1 erroné, contient `SCENARIO:LIVRABLE_A_CORRIGER` |
+| `factice/exec/…` | `MANDAT V2` | livrable V2 corrigé (sans marqueur de scénario) |
+| `factice/exec/…` | (aucun) | livrable constant historique (figé par test) |
+| `factice/recep/…` | charge contenant `SCENARIO:LIVRABLE_A_CORRIGER` | verdict `A_CORRIGER` + 2 points explicites, empreinte ancrée |
+| `factice/recep/…` | `CRITIQUE DE PLAN` (sans scénario) | `PLAN_ACCEPTE` (historique) |
+| `factice/recep/…` | (aucun) | `ACCEPTEE` + `verdict_id` (historique) |
+| les deux | `MANDAT V1` ET `MANDAT V2` simultanés | refus explicite `MARQUEURS_CONTRADICTOIRES` (400) |
+
+Règles : marqueurs exacts et injectifs (aucun n'est sous-chaîne d'un autre) ;
+contradiction => refus, jamais un choix arbitraire ; sans marqueur =>
+comportement historique inchangé. Toute évolution future : table + tests +
+cette section dans la même PR.
+
+## Journal optionnel du pont
+
+Variable d'environnement `COORD_BRIDGE_JOURNAL` = chemin d'un journal JSONL :
+une ligne par inférence {horodatage, model, destination, statut,
+type_erreur, duree_ms}. JAMAIS de charge, JAMAIS de jeton (modèle expurgé) ;
+échec d'écriture signalé sur stderr, sans impact client. Usage : corrélation
+des traces moteur ⇄ pont (M-COORD-DEP-03).
