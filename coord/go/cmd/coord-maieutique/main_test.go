@@ -269,6 +269,83 @@ func TestServiceChaineComplete(t *testing.T) {
 	}
 }
 
+// TestServiceMissionFille (M-COORD-FRONT-01, commit « adaptations
+// serveur ») : la route additive GET /projets/{id}/fille est en lecture
+// seule — 404 AVANT transmission (aucune fuite), 200 avec l'état de la
+// mission fille témoin APRÈS transmission.
+func TestServiceMissionFille(t *testing.T) {
+	s, f := serviceTest(t)
+	f.ajouter(
+		`{"action":"QUESTION","contenu":"Quel livrable ?"}`,
+		`{"action":"PROPOSITION_ORDRE","ordre":{`+
+			`"identification":{"mission":"M-TEMOIN-01","version":"v1","protocole":"COORD v1.5"},`+
+			`"etat_des_lieux":"Coord v1.5 opérationnelle.",`+
+			`"sources":[{"ref":"issue dbouzon/osnias-clearing#42 version 1.4"}],`+
+			`"objectif":"Qualifier la mission témoin de recette maïeutique",`+
+			`"etapes":[{"nom":"T1","controle_intermediaire":"inventaire vérifié"},{"nom":"T2","controle_intermediaire":""}],`+
+			`"limites":["0 EUR"],`+
+			`"liberte_execution":"Libre.",`+
+			`"livrable":"Rapport de recette maïeutique complet et signé",`+
+			`"criteres_reception":["scénarios vérifiés"],`+
+			`"application_coord":"Protocole COORD v1.5."}}`,
+		`{"action":"VERDICT","verdict":"PLAN_ACCEPTE","points_detail":[{"severite":"RESERVE_NON_BLOQUANTE","texte":"ok"}]}`,
+	)
+
+	code, _ := appel(t, s, "POST", "/projets", map[string]string{
+		"id": "fille-temoin", "intention": "Vérifier la route mission fille"})
+	if code != http.StatusCreated {
+		t.Fatalf("création : %d", code)
+	}
+	code, mSources := appel(t, s, "POST", "/projets/fille-temoin/sources", map[string]any{
+		"sources": []string{"issue dbouzon/osnias-clearing#42 version 1.4"}})
+	if code != http.StatusOK {
+		t.Fatalf("sources : %d %+v", code, mSources)
+	}
+	code, _ = appel(t, s, "POST", "/projets/fille-temoin/dialogue", map[string]string{
+		"directeur": "directeur-factice", "executant": "exec-factice"})
+	if code != http.StatusOK {
+		t.Fatalf("dialogue : %d", code)
+	}
+	code, _ = appel(t, s, "POST", "/projets/fille-temoin/tour", map[string]string{"entree": ""})
+	if code != http.StatusOK {
+		t.Fatalf("tour question : %d", code)
+	}
+	code, _ = appel(t, s, "POST", "/projets/fille-temoin/tour", map[string]string{"entree": ""})
+	if code != http.StatusOK {
+		t.Fatalf("tour proposition : %d", code)
+	}
+	// AVANT transmission : 404, aucune information sur la mission fille.
+	code, m := appel(t, s, "GET", "/projets/fille-temoin/fille", nil)
+	if code != http.StatusNotFound || m["code"] != maieutique.CodeProjetInconnu {
+		t.Fatalf("fille avant transmission : attendu 404 PROJET_INCONNU, reçu %d %+v", code, m)
+	}
+	for _, etape := range []struct {
+		chemin string
+		corps  any
+	}{
+		{"/projets/fille-temoin/qualifier", nil},
+		{"/projets/fille-temoin/valider", map[string]string{"jeton_action": "console"}},
+		{"/projets/fille-temoin/publier", nil},
+		{"/projets/fille-temoin/transmettre", nil},
+	} {
+		code, m = appel(t, s, "POST", etape.chemin, etape.corps)
+		if code != http.StatusOK {
+			t.Fatalf("%s : %d %+v", etape.chemin, code, m)
+		}
+	}
+	// APRÈS transmission : 200 avec l'état de la mission fille témoin.
+	code, m = appel(t, s, "GET", "/projets/fille-temoin/fille", nil)
+	if code != http.StatusOK {
+		t.Fatalf("fille après transmission : %d %+v", code, m)
+	}
+	if m["issue"] != "MAIEUTIQUE-TEMOIN-01" {
+		t.Fatalf("issue fille inattendue : %+v", m["issue"])
+	}
+	if m["executant"] != "openai-exec" || m["empreinte_ordre"] == "" {
+		t.Fatalf("réponse fille incomplète : %+v", m)
+	}
+}
+
 // TestServiceOrdreNonConforme422 : un ordre multi-objectifs proposé par le
 // pilote rend 422 OBJECTIF_NON_UNIQUE (code stable).
 func TestServiceOrdreNonConforme422(t *testing.T) {
