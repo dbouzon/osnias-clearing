@@ -30,6 +30,12 @@ func (s *Store) Qualifier(ctx context.Context, id string) (*Projet, error) {
 	if p.Ordre == nil {
 		return nil, erreur(CodeOrdreAbsent, "aucun ordre proposé à qualifier")
 	}
+	// Garde d'état AVANT toute mutation (T4, verrou post-validation) :
+	// qualifier n'est licite que depuis ORDRE_PROPOSE — un appel depuis
+	// VALIDE/PUBLIE ne doit JAMAIS figer une nouvelle version.
+	if p.Etat != EtatOrdrePropose {
+		return nil, erreur(CodeActionInterdit, "qualifier requis depuis ORDRE_PROPOSE, pas depuis "+p.Etat)
+	}
 	codes := ValiderOrdre(p.Ordre)
 	if len(codes) > 0 {
 		return nil, erreur(codes[0],
@@ -126,6 +132,15 @@ func (s *Store) Publier(id string) (*Projet, error) {
 	}
 	if p.EmpreinteOrdre == "" {
 		return nil, erreur(CodeOrdreAbsent, "aucun ordre validé à publier")
+	}
+	// Garde d'état AVANT toute écriture (T4, verrou post-validation) :
+	// aucun fichier publication.json/livrable ne doit être écrit depuis
+	// un état non autorisé (ancien effet de bord avant refus de la table).
+	if p.Etat == EtatInvalide || p.Etat == EtatAbandonne {
+		return nil, erreur(CodeProjetTerminal, "état "+p.Etat+" sans action possible (terminal)")
+	}
+	if p.Etat != EtatValide && p.Etat != EtatPublie && p.Etat != EtatTransmis {
+		return nil, erreur(CodeActionInterdit, "publier requis depuis VALIDE, pas depuis "+p.Etat)
 	}
 	// Opération idempotente : déjà publiée (dans PUBLIE ou TRANSMIS) ?
 	if p.Etat == EtatPublie || p.Etat == EtatTransmis {

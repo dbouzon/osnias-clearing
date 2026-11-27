@@ -83,6 +83,20 @@ func (s *Store) Lister() ([]string, error) {
 	return out, nil
 }
 
+// verrouModification (plan v2 D2, verrou T4) : après VALIDATION, le projet
+// est FIGÉ — toute modification (sources, URL, documents) exige une
+// INVALIDATION explicite d'abord. Les états terminaux refusent aussi.
+func verrouModification(p *Projet) error {
+	switch p.Etat {
+	case EtatValide, EtatPublie:
+		return erreur(CodeActionInterdit,
+			"projet figé ("+p.Etat+") : invalider d'abord pour modifier (verrou post-validation)")
+	case EtatInvalide, EtatAbandonne, EtatTransmis:
+		return erreur(CodeProjetTerminal, "état "+p.Etat+" sans action possible (terminal)")
+	}
+	return nil
+}
+
 // DeclarerSources : le pilote déclare les sources admises (D3, contrôle 1a).
 func (s *Store) DeclarerSources(id string, refs []string) (*Projet, error) {
 	v := s.verrou(id)
@@ -90,6 +104,9 @@ func (s *Store) DeclarerSources(id string, refs []string) (*Projet, error) {
 	defer v.Unlock()
 	p, err := s.charger(id)
 	if err != nil {
+		return nil, err
+	}
+	if err := verrouModification(p); err != nil {
 		return nil, err
 	}
 	p.SourcesDeclarees = append(p.SourcesDeclarees, refs...)
@@ -121,6 +138,9 @@ func (s *Store) AccepterURL(id, url string) (*Projet, error) {
 	}
 	if !estURL(url) {
 		return nil, erreur(CodeDocumentInvalide, "acceptation d'une URL http(s) attendue : "+url)
+	}
+	if err := verrouModification(p); err != nil {
+		return nil, err
 	}
 	if p.UrlsAcceptees == nil {
 		p.UrlsAcceptees = map[string]bool{}

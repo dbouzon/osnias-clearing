@@ -56,6 +56,11 @@ func (s *Store) DeposerDocument(p *Projet, nom, contenu string) (string, error) 
 		nom == "." || nom == ".." {
 		return "", erreur(CodeDocumentInvalide, "nom de document interdit : "+nom)
 	}
+	// Verrou de modification (plan v2 D2, verrou T4) : après validation,
+	// le corpus documentaire est figé comme le reste du projet.
+	if err := verrouModification(p); err != nil {
+		return "", err
+	}
 	if strings.Contains(contenu, MarqueurDebutDocument) ||
 		strings.Contains(contenu, MarqueurFinDocument) {
 		return "", erreur(CodeDocumentInvalide,
