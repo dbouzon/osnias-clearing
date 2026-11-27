@@ -221,6 +221,7 @@ func (g *gateway) regimeMoteurs() moteursConf {
 	}
 	var partiel struct {
 		Moteurs moteursConf `json:"moteurs"`
+		Metrics metricsConf `json:"metrics"`
 	}
 	if err := json.Unmarshal(raw, &partiel); err != nil {
 		log.Printf("coord-front : relecture moteurs : json invalide : %v", err)
@@ -229,6 +230,11 @@ func (g *gateway) regimeMoteurs() moteursConf {
 	if err := validerMoteurs(partiel.Moteurs); err != nil {
 		log.Printf("coord-front : relecture moteurs refusée (fail-closed) : %v", err)
 		return g.moteurs
+	}
+	// M-COORD-ORPHEUS-01 : la section metrics suit le même rechargement
+	// à chaud ; activer sans token = ancien régime conservé (fail-closed).
+	if !partiel.Metrics.Activer || strings.TrimSpace(partiel.Metrics.Token) != "" {
+		g.metrics = partiel.Metrics
 	}
 	g.moteurs = partiel.Moteurs
 	g.mtimeMoteurs = fi.ModTime()
@@ -352,12 +358,14 @@ func (g *gateway) appelEtape(p *projetDemo, etape, system, demande string) (resu
 		}
 	}
 	if moteur == "" {
+		g.compterAppelMoteur(e.Moteur, e.Modele, niveau, etape, "refuse")
 		return resultatMoteur{}, &erreurMoteur{http.StatusServiceUnavailable, "MOTEUR_DESACTIVE",
 			"fournisseur inactif pour " + niveau + "/" + etape}
 	}
 
 	// Plafond par mission : refus propre AVANT tout appel réseau.
 	if p.AppelsMoteurs >= regime.plafond() {
+		g.compterAppelMoteur(moteur, e.Modele, niveau, etape, "refuse")
 		return resultatMoteur{}, &erreurMoteur{http.StatusTooManyRequests, "PLAFOND_ATTEINT",
 			fmt.Sprintf("plafond d'appels atteint : %d", regime.plafond())}
 	}
@@ -404,6 +412,8 @@ func (g *gateway) appelEtape(p *projetDemo, etape, system, demande string) (resu
 		entree.Resultat = "erreur"
 		entree.Erreur = errReseau.Error()
 		g.consignerMoteur(entree)
+		g.compterAppelMoteur(moteur, e.Modele, niveau, etape, "erreur")
+		g.observerDureeMoteur(moteur, etape, time.Since(debut))
 		return resultatMoteur{}, &erreurMoteur{http.StatusBadGateway, "ERREUR_MOTEUR",
 			"fournisseur " + moteur + " : " + errReseau.Error()}
 	}
@@ -411,6 +421,11 @@ func (g *gateway) appelEtape(p *projetDemo, etape, system, demande string) (resu
 	entree.JetonsEntree = res.JetonsEntree
 	entree.JetonsSortie = res.JetonsSortie
 	g.consignerMoteur(entree)
+	// M-COORD-ORPHEUS-01 : compteur et journal partagent la même source
+	// (cette fonction) — cohérence par construction.
+	g.compterAppelMoteur(moteur, e.Modele, niveau, etape, "ok")
+	g.compterJetonsMoteurs(moteur, e.Modele, res.JetonsEntree, res.JetonsSortie)
+	g.observerDureeMoteur(moteur, etape, time.Since(debut))
 	p.AppelsMoteurs++
 	p.PlafondAppels = regime.plafond()
 	return res, nil
