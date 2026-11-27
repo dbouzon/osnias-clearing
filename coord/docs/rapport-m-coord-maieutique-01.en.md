@@ -1,6 +1,6 @@
 # Report M-COORD-MAIEUTIQUE-01 — Maieutic module: from ambiguous intent to a transmitted mission order
 
-Mission M-COORD-MAIEUTIQUE-01 (issue #42, dbouzon/osnias-clearing, order v1.4). The maieutic module takes COORD from a pilot-declared intent to a qualified, validated, published and transmitted mission order, without any model output ever counting as a decision. Qualified director (OpenAI or an interchangeable profile), distinct executor and receiver, pilot Denis Bouzon as the only holder of decisive transitions (validation, closure). Plan v2 PLAN_ACCEPTE (fingerprint `e54eb7a1…`), mandate sha256 `1cab85cd…`. Budget 0 EUR, loopback fake servers only, no keys, no public listener. Base: main `f6852813`. Branch: `mission/coord-maieutique-01` (head `649cd86d`).
+Mission M-COORD-MAIEUTIQUE-01 (issue #42, dbouzon/osnias-clearing, order v1.4). The maieutic module takes COORD from a pilot-declared intent to a qualified, validated, published and transmitted mission order, without any model output ever counting as a decision. Qualified director (OpenAI or an interchangeable profile), distinct executor and receiver, pilot Denis Bouzon as the only holder of decisive transitions (validation, closure). Plan v2 PLAN_ACCEPTE (fingerprint `e54eb7a1…`), mandate sha256 `1cab85cd…`. Budget 0 EUR, loopback fake servers only, no keys, no public listener. Base: main `f6852813`. Branch: `mission/coord-maieutique-01`.
 
 ## 1. What was delivered
 
@@ -28,7 +28,7 @@ Mission M-COORD-MAIEUTIQUE-01 (issue #42, dbouzon/osnias-clearing, order v1.4). 
 - GitHub CI: 5/5 jobs green at every state (3 OS, race, engine non-regression from `f6852813`).
 - T3 OpenAI (bridge session `m-coord-maieutique-01`): favourable verdict after re-tracing the rejections.
 - T5 bench 17/17 PASS in the sandbox AND on the VPS (S1-S16 + director-profile interchangeability, criterion 5); VPS measurements: 2,481 ms total, max RSS 14 MB, 28 cumulative director calls.
-- Witness acceptance on the VPS (`coord` account, loopback only, kit pinned at `649cd86d`):
+- Witness acceptance on the VPS (`coord` account, loopback only, kit pinned at the branch head):
   - run A (openai profile, 3 real SIGKILLs: dialogue, publication, transmission): **38/38 proofs**, clean recovery at each phase;
   - run B (anthropic profile, no SIGKILL, distinct ports): **34/34 proofs**;
   - identical frozen-order fingerprint `6b3ddb905f60268e53310e693bd51995c37f7faba163b3d343006645a83f3469` across both runs and the sandbox: provider interchangeability demonstrated;
@@ -37,13 +37,13 @@ Mission M-COORD-MAIEUTIQUE-01 (issue #42, dbouzon/osnias-clearing, order v1.4). 
 ## 4. Decisions, incidents and limits
 
 - No existing engine file modified (fail-closed D1, verified by diff `f6852813…HEAD`: new scopes only).
-- Incident: a sandbox reset destroyed the working tree before any push; T2 was fully rebuilt, then a transcription drift of the acceptance driver was detected and fixed (commits `8e17be54`, `649cd86d`, pushed file verified byte-exact against the proven version).
+- Incident: a sandbox reset destroyed the working tree before any push; T2 was fully rebuilt, then a transcription drift of the acceptance driver was detected and fixed (pushed file verified byte-exact against the proven version).
 - Production bug avoided: transmission roles expressed as normative actions (EXECUTANT{executer,soumettre,acker}, RECEPTIONNAIRE{recevoir}, PILOTE{cloturer}) instead of identifiers (commit `5cb4951f` + regression test).
 - Mission closure reserved for the human pilot in all circumstances; the witness daughter mission MAIEUTIQUE-TEMOIN-01 stays at ACK_RECU.
 - SIMULATED mode only: no keys, no payment, no outbound network call from the VPS.
 
 ## 5. Traceability
 
-Issue #42 (order v1.4). Plan v1 A_CORRIGER; plan v2 PLAN_ACCEPTE, fingerprint `e54eb7a1…`. Commits (18): `1d87302c` module, `8a107cf6` documents+dialogue, `c77fe2d5` actions+operations, `67f5b322` fake director+core tests, `c3be9150` documents/dialogue/operations tests, `7ece8a3d` service, `92b544ce` service tests, `6cc1d3a7` schema+CI, `fdc8dc27`/`71455bf8` Windows CI, `c0b5d67d` T4 lock, `63932fc1` T5 bench, `5cb4951f` transmission roles, `2111de7a` daughter harness, `a12feb5e`/`a851944d` acceptance kit, `8e17be54`/`649cd86d` acceptance-driver alignment. OpenAI bridge sessions `m-coord-maieutique-01` (T3 favourable; final post-PR reception journaled on issue #42). VPS acceptance: `/srv/coord/private/recette/m-coord-maieutique-01/` (reports `run-a`, `run-b`), documented cleanup after acceptance.
+Issue #42 (order v1.4). Plan v1 A_CORRIGER; plan v2 PLAN_ACCEPTE, fingerprint `e54eb7a1…`. Commits (18): `1d87302c` module, `8a107cf6` documents+dialogue, `c77fe2d5` actions+operations, `67f5b322` fake director+core tests, `c3be9150` documents/dialogue/operations tests, `7ece8a3d` service, `92b544ce` service tests, `6cc1d3a7` schema+CI, `fdc8dc27`/`71455bf8` Windows CI, `c0b5d67d` T4 lock, `63932fc1` T5 bench, `5cb4951f` transmission roles, `2111de7a` daughter harness, `a12feb5e`/`a851944d` acceptance kit, `8e17be54`/`649cd86d` acceptance-driver alignment, then report and reception record. OpenAI bridge sessions `m-coord-maieutique-01`: T3 FAVOURABLE; final T6 reception ACCEPTED with no major reservation (verdict_id `m-coord-maieutique-01-reception-t6`), served to the mother mission by the verdict fake and journaled on issue #42. VPS acceptance: `/srv/coord/private/recette/m-coord-maieutique-01/` (reports `run-a`, `run-b`), documented cleanup after acceptance.
 
-Copyright © 2026 Denis Bouzon — ORCID: https://orcid.org/0009-0007-8894-8902 — SPDX-License-Identifier: Apache-2.0
+Copyright © 2026 Denis Bouzon — ORCID : https://orcid.org/0009-0007-8894-8902 — SPDX-License-Identifier: Apache-2.0
