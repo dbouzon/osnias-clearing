@@ -173,5 +173,20 @@ CoordLangues["fr"] = {
   "app.seConnecter": "Se connecter",
   "app.seDeconnecter": "Se déconnecter",
   "ui.theme": "Interface claire ou sombre",
-  "ui.erreurDemarrage": "Impossible de démarrer l'application : {motif}"
+  "ui.erreurDemarrage": "Impossible de démarrer l'application : {motif}",
+  "app.googleConnexion": "Se connecter avec Google",
+  "app.googleAide": "Vous serez redirigé vers Google pour vous identifier avec votre profil.",
+  "creation.repertoireMission": "Répertoire de la mission",
+  "creation.repertoireAide": "Choisissez un dossier de votre Drive ou créez le répertoire dédié à cette mission. Tout ce qui concerne la mission vivra dedans.",
+  "creation.connecterDrive": "Connecter mon Drive",
+  "creation.connecterDriveAide": "Un consentement Google sera demandé, puis vous reprendrez la création ici même.",
+  "creation.choisirDossier": "— Choisir un dossier —",
+  "creation.creerDossier": "Ou créer un dossier dédié",
+  "creation.creerDossierPlaceholder": "Nom du répertoire de la mission",
+  "creation.creerDossierBouton": "Créer",
+  "creation.errNomDossier": "Donnez un nom au dossier à créer.",
+  "creation.repertoireConfirme": "Répertoire dédié retenu pour cette mission. Les sous-dossiers « entrée » et « sortie » y seront créés au démarrage.",
+  "creation.errRepertoire": "Choisissez ou créez le répertoire de la mission.",
+  "creation.preparationRepertoire": "Préparation du répertoire de mission…",
+  "creation.repertoireIndisponible": "Connexion Google non configurée : mode historique (chemins libres)."
 };

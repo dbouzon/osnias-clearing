@@ -173,5 +173,20 @@ CoordLangues["en"] = {
   "app.seConnecter": "Sign in",
   "app.seDeconnecter": "Sign out",
   "ui.theme": "Light or dark interface",
-  "ui.erreurDemarrage": "The application could not start: {motif}"
+  "ui.erreurDemarrage": "The application could not start: {motif}",
+  "app.googleConnexion": "Sign in with Google",
+  "app.googleAide": "You will be redirected to Google to sign in with your profile.",
+  "creation.repertoireMission": "Mission folder",
+  "creation.repertoireAide": "Pick a folder from your Drive or create the folder dedicated to this mission. Everything about the mission will live in it.",
+  "creation.connecterDrive": "Connect my Drive",
+  "creation.connecterDriveAide": "A Google consent screen will be shown, then you will resume this form right here.",
+  "creation.choisirDossier": "— Choose a folder —",
+  "creation.creerDossier": "Or create a dedicated folder",
+  "creation.creerDossierPlaceholder": "Name of the mission folder",
+  "creation.creerDossierBouton": "Create",
+  "creation.errNomDossier": "Give the folder to create a name.",
+  "creation.repertoireConfirme": "Dedicated folder kept for this mission. The 'input' and 'output' subfolders will be created there at start.",
+  "creation.errRepertoire": "Choose or create the mission folder.",
+  "creation.preparationRepertoire": "Preparing the mission folder…",
+  "creation.repertoireIndisponible": "Google sign-in not configured: legacy mode (free paths)."
 };

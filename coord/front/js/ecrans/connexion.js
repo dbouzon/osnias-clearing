@@ -1,11 +1,27 @@
 "use strict";
-/* Écran CONNEXION : choix du compte client. Les noms publics viennent
- * de GET /api/comptes ; aucun token ne transite jamais. */
+/* Écran CONNEXION (M-COORD-AUTH-01) : bouton « Se connecter avec
+ * Google » quand la section google est active (OIDC serveur, aucun
+ * secret ici). Repli fail-closed : si la connexion Google n'est pas
+ * configurée côté serveur, l'écran historique de choix de compte
+ * reste disponible (maintenance). */
 (function () {
   async function afficher(contenu) {
-    /* M-COORD-UI-02 v2 : l'écran « Choisir un compte » est supprimé ;
-     * il ne reste que la liste des comptes (un seul en pratique :
-     * le compte démo). Le bouton « Se connecter » de l'en-tête y mène. */
+    const etat = await Coord.requete("GET", "/api/auth/google/etat");
+    const googleActif = etat.statut === 200 && etat.donnees && etat.donnees.activer === true;
+
+    if (googleActif) {
+      const carte = Coord.el("div", "carte");
+      const b = document.createElement("a");
+      b.className = "bouton principal";
+      b.href = "/api/auth/google/login";
+      b.textContent = Coord.t("app.googleConnexion");
+      carte.appendChild(b);
+      carte.appendChild(Coord.el("div", "aide", "app.googleAide"));
+      contenu.appendChild(carte);
+      return;
+    }
+
+    /* Repli : liste des comptes (mode maintenance, sans Google). */
     const rep = await Coord.requete("GET", "/api/comptes");
     if (rep.statut !== 200 || !rep.donnees || !rep.donnees.comptes) {
       Coord.messageErreur(contenu, rep.donnees && rep.donnees.motif ? rep.donnees.motif : "app.erreurReseau");

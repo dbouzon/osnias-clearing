@@ -173,5 +173,20 @@ CoordLangues["es"] = {
   "app.seConnecter": "Iniciar sesión",
   "app.seDeconnecter": "Cerrar sesión",
   "ui.theme": "Interfaz clara u oscura",
-  "ui.erreurDemarrage": "No se pudo iniciar la aplicación: {motif}"
+  "ui.erreurDemarrage": "No se pudo iniciar la aplicación: {motif}",
+  "app.googleConnexion": "Iniciar sesión con Google",
+  "app.googleAide": "Será redirigido a Google para identificarse con su perfil.",
+  "creation.repertoireMission": "Carpeta de la misión",
+  "creation.repertoireAide": "Elija una carpeta de su Drive o cree la carpeta dedicada a esta misión. Todo lo relativo a la misión vivirá en ella.",
+  "creation.connecterDrive": "Conectar mi Drive",
+  "creation.connecterDriveAide": "Se pedirá un consentimiento de Google y después reanudará la creación aquí mismo.",
+  "creation.choisirDossier": "— Elegir una carpeta —",
+  "creation.creerDossier": "O crear una carpeta dedicada",
+  "creation.creerDossierPlaceholder": "Nombre de la carpeta de la misión",
+  "creation.creerDossierBouton": "Crear",
+  "creation.errNomDossier": "Dé un nombre a la carpeta que va a crear.",
+  "creation.repertoireConfirme": "Carpeta dedicada reservada para esta misión. Las subcarpetas «entrada» y «salida» se crearán allí al iniciar.",
+  "creation.errRepertoire": "Elija o cree la carpeta de la misión.",
+  "creation.preparationRepertoire": "Preparando la carpeta de la misión…",
+  "creation.repertoireIndisponible": "Inicio de sesión con Google no configurado: modo histórico (rutas libres)."
 };

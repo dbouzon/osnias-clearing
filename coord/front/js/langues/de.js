@@ -173,5 +173,20 @@ CoordLangues["de"] = {
   "app.seConnecter": "Anmelden",
   "app.seDeconnecter": "Abmelden",
   "ui.theme": "Helles oder dunkles Design",
-  "ui.erreurDemarrage": "Die Anwendung konnte nicht gestartet werden: {motif}"
+  "ui.erreurDemarrage": "Die Anwendung konnte nicht gestartet werden: {motif}",
+  "app.googleConnexion": "Mit Google anmelden",
+  "app.googleAide": "Sie werden zu Google weitergeleitet, um sich mit Ihrem Profil anzumelden.",
+  "creation.repertoireMission": "Missionsordner",
+  "creation.repertoireAide": "Wählen Sie einen Ordner aus Ihrem Drive oder erstellen Sie den für diese Mission dedizierten Ordner. Alles zur Mission lebt darin.",
+  "creation.connecterDrive": "Mein Drive verbinden",
+  "creation.connecterDriveAide": "Eine Google-Zustimmung wird angefragt, danach setzen Sie die Erstellung hier fort.",
+  "creation.choisirDossier": "— Ordner wählen —",
+  "creation.creerDossier": "Oder dedizierten Ordner erstellen",
+  "creation.creerDossierPlaceholder": "Name des Missionsordners",
+  "creation.creerDossierBouton": "Erstellen",
+  "creation.errNomDossier": "Geben Sie dem zu erstellenden Ordner einen Namen.",
+  "creation.repertoireConfirme": "Dedizierter Ordner für diese Mission reserviert. Die Unterordner 'eingabe' und 'ausgabe' werden beim Start dort erstellt.",
+  "creation.errRepertoire": "Wählen oder erstellen Sie den Missionsordner.",
+  "creation.preparationRepertoire": "Missionsordner wird vorbereitet…",
+  "creation.repertoireIndisponible": "Google-Anmeldung nicht konfiguriert: Legacy-Modus (freie Pfade)."
 };

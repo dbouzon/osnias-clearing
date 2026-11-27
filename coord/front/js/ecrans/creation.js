@@ -1,16 +1,21 @@
 "use strict";
-/* Écran CRÉATION (mission M-COORD-UI-01, S4) : Nom → Intention →
- * Dossier d'entrée OBLIGATOIRE → Dossier de rendu OBLIGATOIRE →
- * « Commencer le cadrage gratuit ».
+/* Écran CRÉATION (M-COORD-AUTH-01, spec v0.5 §3.5) : Nom → Intention
+ * → RÉPERTOIRE DE LA MISSION (choisir OU créer un dossier dédié sur le
+ * Drive de la personne) → « Commencer le cadrage gratuit ».
  *
- * La vérification d'accès est SERVEUR (POST /api/drive/verifier) :
- * lecture du dossier d'entrée (Lister), sonde d'écriture dans le
- * dossier de rendu (COORD-test-acces.txt écrit puis supprimé). Un
- * échec de vérification affiche un message compréhensible PAR
- * DOSSIER et RIEN n'est créé. L'intention reste requise par l'API
- * (une mission sans intention n'a pas de sens) ; l'écart avec la
- * lettre du pilote est signalé et justifié. */
+ * Le répertoire dédié est unique pour toute la mission : COORD y crée
+ * les sous-dossiers « entrée » (documents sources) et « sortie »
+ * (livrables), puis associe le répertoire à la mission via
+ * POST /api/missions/repertoire (garde-fou serveur : un répertoire =
+ * une seule mission). Le scope Drive est demandé au PREMIER usage :
+ * si le Drive n'est pas encore connecté, l'écran affiche « Connecter
+ * mon Drive » et le parcours reprend sans perte après consentement.
+ *
+ * Repli fail-closed : sans Google actif, l'écran historique (chemins
+ * libres entree/sortie) reste utilisable (mode maintenance). */
 (function () {
+  var dossierChoisi = null; /* {id, nom} répertoire dédié de la mission */
+
   function champTexte(cible, cleLabel, id, aide) {
     cible.appendChild(Coord.el("label", null, cleLabel));
     const input = document.createElement("input");
@@ -21,9 +26,104 @@
     return input;
   }
 
+  /* Bloc « Répertoire de la mission » : connecter OU choisir OU créer. */
+  function blocRepertoire(contenu, carte, erreur) {
+    const bloc = Coord.el("div");
+    carte.appendChild(bloc);
+
+    function afficherConnexionDrive() {
+      bloc.textContent = "";
+      const b = document.createElement("a");
+      b.className = "bouton principal";
+      b.href = "/api/auth/google/login?drive=1";
+      b.textContent = Coord.t("creation.connecterDrive");
+      bloc.appendChild(b);
+      bloc.appendChild(Coord.el("div", "aide", "creation.connecterDriveAide"));
+    }
+
+    function afficherChoix(dossiers) {
+      bloc.textContent = "";
+      bloc.appendChild(Coord.el("label", null, "creation.repertoireMission"));
+      const select = document.createElement("select");
+      select.id = "creer-repertoire";
+      const vide = document.createElement("option");
+      vide.value = "";
+      vide.textContent = Coord.t("creation.choisirDossier");
+      select.appendChild(vide);
+      dossiers.forEach(function (d) {
+        const o = document.createElement("option");
+        o.value = d.id;
+        o.textContent = d.nom;
+        select.appendChild(o);
+      });
+      bloc.appendChild(select);
+      const aide = Coord.el("div", "aide", "creation.repertoireAide");
+      bloc.appendChild(aide);
+
+      /* Créer un dossier dédié sans quitter l'écran (spec §3.5). */
+      bloc.appendChild(Coord.el("label", null, "creation.creerDossier"));
+      const input = document.createElement("input");
+      input.type = "text";
+      input.id = "creer-repertoire-nouveau";
+      input.placeholder = Coord.t("creation.creerDossierPlaceholder");
+      bloc.appendChild(input);
+      const bCreer = Coord.bouton("creation.creerDossierBouton", async function () {
+        const nom = input.value.trim();
+        if (!nom) { Coord.messageErreur(erreur, "creation.errNomDossier"); return; }
+        bCreer.disabled = true;
+        const rep = await Coord.requete("POST", "/api/drive/dossier", { nom: nom });
+        bCreer.disabled = false;
+        if (rep.statut !== 200 || !rep.donnees || !rep.donnees.id) {
+          Coord.messageErreur(erreur, rep.donnees && rep.donnees.motif ? rep.donnees.motif : "app.erreurReseau");
+          return;
+        }
+        dossierChoisi = { id: rep.donnees.id, nom: rep.donnees.nom || nom };
+        bloc.textContent = "";
+        bloc.appendChild(Coord.el("label", null, "creation.repertoireMission"));
+        const ok = document.createElement("div");
+        ok.className = "aide";
+        ok.textContent = "📁 " + dossierChoisi.nom;
+        bloc.appendChild(ok);
+        bloc.appendChild(Coord.el("div", "aide", "creation.repertoireConfirme"));
+      });
+      bloc.appendChild(bCreer);
+
+      select.addEventListener("change", function () {
+        if (select.value) {
+          const o = select.selectedOptions[0];
+          dossierChoisi = { id: select.value, nom: o ? o.textContent : select.value };
+        } else {
+          dossierChoisi = null;
+        }
+      });
+    }
+
+    return async function charger() {
+      const etat = await Coord.requete("GET", "/api/auth/google/etat");
+      if (!(etat.statut === 200 && etat.donnees && etat.donnees.activer)) {
+        bloc.textContent = "";
+        bloc.appendChild(Coord.el("div", "aide", "creation.repertoireIndisponible"));
+        return false; /* mode maintenance : écran historique */
+      }
+      if (!etat.donnees.drive_connecte) {
+        afficherConnexionDrive();
+        return false;
+      }
+      const rep = await Coord.requete("GET", "/api/drive/dossiers");
+      if (rep.statut !== 200 || !rep.donnees || !rep.donnees.dossiers) {
+        Coord.messageErreur(erreur, rep.donnees && rep.donnees.motif ? rep.donnees.motif : "app.erreurReseau");
+        afficherConnexionDrive();
+        return false;
+      }
+      afficherChoix(rep.donnees.dossiers);
+      return true;
+    };
+  }
+
   async function afficher(contenu) {
     contenu.appendChild(Coord.el("h1", null, "creation.titre"));
     const carte = Coord.el("div", "carte");
+    const erreur = Coord.el("div");
 
     champTexte(carte, "creation.nom", "creer-nom", "creation.nomAide");
     const intention = Coord.el("label", null, "creation.intention");
@@ -33,8 +133,16 @@
     zone.placeholder = Coord.t("creation.intentionPlaceholder");
     carte.appendChild(zone);
 
-    champTexte(carte, "creation.dossierEntree", "creer-entree", "creation.dossierEntreeAide");
-    champTexte(carte, "creation.dossierSortie", "creer-sortie", "creation.dossierSortieAide");
+    const chargerRepertoire = blocRepertoire(contenu, carte, erreur);
+    const modeGoogle = await chargerRepertoire();
+
+    /* Mode maintenance (sans Google) : champs historiques libres. */
+    var champEntree = null;
+    var champSortie = null;
+    if (!modeGoogle) {
+      champEntree = champTexte(carte, "creation.dossierEntree", "creer-entree", "creation.dossierEntreeAide");
+      champSortie = champTexte(carte, "creation.dossierSortie", "creer-sortie", "creation.dossierSortieAide");
+    }
     const directeur = champTexte(carte, "creation.directeur", "creer-directeur");
     directeur.value = "openai-dir";
     const executant = champTexte(carte, "creation.executant", "creer-executant");
@@ -42,19 +150,60 @@
 
     carte.appendChild(Coord.el("div", "aide", "creation.cadrageGratuit"));
     contenu.appendChild(carte);
-
-    const erreur = Coord.el("div");
     contenu.appendChild(erreur);
+
     contenu.appendChild(Coord.bouton("creation.commencer", async function () {
       erreur.textContent = "";
       const nom = document.getElementById("creer-nom").value.trim();
       const textIntention = document.getElementById("creer-intention").value.trim();
-      const entree = document.getElementById("creer-entree").value.trim();
-      const sortie = document.getElementById("creer-sortie").value.trim();
       if (!nom) { Coord.messageErreur(erreur, "creation.errNom"); return; }
       if (!textIntention) { Coord.messageErreur(erreur, "creation.errIntention"); return; }
-      if (!entree) { Coord.messageErreur(erreur, "creation.errDossierEntree"); return; }
-      if (!sortie) { Coord.messageErreur(erreur, "creation.errDossierSortie"); return; }
+
+      var entree;
+      var sortie;
+      if (modeGoogle) {
+        /* Repertoire dédié OBLIGATOIRE (fail-closed spec §3.5) :
+         * choisir OU créer, puis créer les sous-dossiers entrée et
+         * sortie DANS le répertoire dédié. */
+        if (!dossierChoisi) { Coord.messageErreur(erreur, "creation.errRepertoire"); return; }
+        Coord.messageErreur(erreur, "creation.preparationRepertoire");
+        const sousEntree = await Coord.requete("POST", "/api/drive/dossier",
+          { nom: "entrée", parent: dossierChoisi.id });
+        if (sousEntree.statut !== 200) {
+          erreur.textContent = "";
+          Coord.messageErreur(erreur, sousEntree.donnees && sousEntree.donnees.motif ?
+            sousEntree.donnees.motif : "app.erreurReseau");
+          return;
+        }
+        const sousSortie = await Coord.requete("POST", "/api/drive/dossier",
+          { nom: "sortie", parent: dossierChoisi.id });
+        if (sousSortie.statut !== 200) {
+          erreur.textContent = "";
+          Coord.messageErreur(erreur, sousSortie.donnees && sousSortie.donnees.motif ?
+            sousSortie.donnees.motif : "app.erreurReseau");
+          return;
+        }
+        erreur.textContent = "";
+        /* Association mission → répertoire AVANT création (garde-fou
+         * serveur : un répertoire = une seule mission). */
+        const assoc = await Coord.requete("POST", "/api/missions/repertoire", {
+          mission: nom,
+          dossier_id: dossierChoisi.id,
+          dossier_nom: dossierChoisi.nom
+        });
+        if (assoc.statut !== 200) {
+          Coord.messageErreur(erreur, assoc.donnees && assoc.donnees.motif ?
+            assoc.donnees.motif : "app.erreurReseau");
+          return;
+        }
+        entree = dossierChoisi.nom + "/entrée";
+        sortie = dossierChoisi.nom + "/sortie";
+      } else {
+        entree = document.getElementById("creer-entree").value.trim();
+        sortie = document.getElementById("creer-sortie").value.trim();
+        if (!entree) { Coord.messageErreur(erreur, "creation.errDossierEntree"); return; }
+        if (!sortie) { Coord.messageErreur(erreur, "creation.errDossierSortie"); return; }
+      }
 
       /* 1. Vérification serveur des deux dossiers AVANT toute
        * création : un dossier inaccessible bloque le parcours avec
