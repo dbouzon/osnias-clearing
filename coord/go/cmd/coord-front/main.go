@@ -76,6 +76,7 @@ type config struct {
 	Comptes             []compteConf `json:"comptes"`
 	Google              googleConf   `json:"google"`
 	GitHub              githubConf   `json:"github"`
+	Moteurs             moteursConf  `json:"moteurs"`
 	FichierUtilisateurs string       `json:"fichier_utilisateurs"`
 	FichierRepertoires  string       `json:"fichier_repertoires"`
 }
@@ -93,6 +94,15 @@ type gateway struct {
 	exports     map[string]etatExport
 	users       *banque
 	repertoires *storeKV
+
+	// M-COORD-API-MISTRAL-01 : régime des moteurs IA (relecture à chaud
+	// par mtime de gateway.json) et journal de coût atomique 0600.
+	muMoteurs     sync.Mutex
+	moteurs       moteursConf
+	mtimeMoteurs  time.Time
+	cheminConfig  string
+	cheminJournal string
+	muJournal     sync.Mutex
 }
 
 func newGateway(cfg config, frontDir, dirConfig string) *gateway {
@@ -113,17 +123,19 @@ func newGateway(cfg config, frontDir, dirConfig string) *gateway {
 		log.Fatal("coord-front : base répertoires : ", err)
 	}
 	g := &gateway{
-		cfg:         cfg,
-		frontDir:    frontDir,
-		demos:       map[string]*moteurDemo{},
-		drives:      map[string]Dossiers{},
-		exports:     map[string]etatExport{},
-		users:       users,
-		repertoires: stockage,
+		cfg:           cfg,
+		frontDir:      frontDir,
+		demos:         map[string]*moteurDemo{},
+		drives:        map[string]Dossiers{},
+		exports:       map[string]etatExport{},
+		users:         users,
+		repertoires:   stockage,
+		moteurs:       cfg.Moteurs,
+		cheminJournal: filepath.Join(dirConfig, journalMoteurFichier),
 	}
 	for _, c := range cfg.Comptes {
 		if c.Demo {
-			g.demos[c.Nom] = nouveauMoteurDemo()
+			g.demos[c.Nom] = nouveauMoteurDemo(g)
 		}
 		switch {
 		case c.RemoteRclone != "":
@@ -286,6 +298,10 @@ func main() {
 			log.Fatal("coord-front : github.activer sans client_id/client_secret")
 		}
 	}
+	// M-COORD-API-MISTRAL-01 : fail-closed sur la section moteurs.
+	if err := validerMoteurs(cfg.Moteurs); err != nil {
+		log.Fatal("coord-front : section moteurs invalide : ", err)
+	}
 	if fi, err := os.Stat(frontDir); err != nil || !fi.IsDir() {
 		log.Fatal("coord-front : dossier front introuvable : ", frontDir)
 	}
@@ -302,9 +318,11 @@ func main() {
 
 	dirConfig := filepath.Dir(configPath)
 	g := newGateway(cfg, frontDir, dirConfig)
+	g.cheminConfig = configPath
+	g.mtimeMoteurs = time.Now()
 	srv := &http.Server{Addr: addr, Handler: g.routes()}
-	fmt.Printf("coord-front : écoute loopback %s (front : %s, comptes : %d, google : %t, github : %t)\n",
-		addr, frontDir, len(cfg.Comptes), g.googleActif(), g.githubActif())
+	fmt.Printf("coord-front : écoute loopback %s (front : %s, comptes : %d, google : %t, github : %t, moteurs : %t)\n",
+		addr, frontDir, len(cfg.Comptes), g.googleActif(), g.githubActif(), g.moteursActifs())
 	log.Fatal(srv.ListenAndServe())
 }
 

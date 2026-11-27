@@ -56,19 +56,29 @@ type projetDemo struct {
 	ContexteOctets   int             `json:"contexte_octets"`
 	InstantUTC       string          `json:"instant_utc"`
 
+	// M-COORD-API-MISTRAL-01 : niveau choisi par le client à la
+	// création (spec §3.2 : stocké dans la définition de mission, ne
+	// change plus), compteur d'appels moteur et plafond (spec §3.3).
+	Niveau        string         `json:"niveau,omitempty"`
+	AppelsMoteurs int            `json:"appels_moteurs"`
+	PlafondAppels int            `json:"plafond_appels,omitempty"`
+	Critique      map[string]any `json:"critique,omitempty"`
+
 	tours     int              `json:"-"`
 	journal   []map[string]any `json:"-"`
 	documents []string         `json:"-"`
 	empreinte string           `json:"-"`
+	escalade  bool             `json:"-"`
 }
 
 type moteurDemo struct {
+	gw      *gateway
 	mu      sync.Mutex
 	projets map[string]*projetDemo
 }
 
-func nouveauMoteurDemo() *moteurDemo {
-	return &moteurDemo{projets: map[string]*projetDemo{}}
+func nouveauMoteurDemo(gw *gateway) *moteurDemo {
+	return &moteurDemo{gw: gw, projets: map[string]*projetDemo{}}
 }
 
 func maintenantDemo() string { return time.Now().UTC().Format(time.RFC3339) }
@@ -106,6 +116,86 @@ func empreinteOrdreFactice(ordre map[string]any) string {
 	s := strings.ReplaceAll(string(b), ", ", ",")
 	sum := sha256.Sum256([]byte(s))
 	return hex.EncodeToString(sum[:])
+}
+
+// ---- M-COORD-API-MISTRAL-01 : prompts et enrichissement serveur ------
+
+// systemeDirecteur : rôle du directeur de mission pour les étapes
+// cadrage et rédaction. Aucune donnée secrète, jamais de clé.
+const systemeDirecteur = "Tu es le directeur de mission du logiciel COORD. " +
+	"Tu cadres les intentions du client avec des questions précises et brèves, " +
+	"en français, sans préambule ni formule de politesse."
+
+// historiqueDialogue : reconstitution textuelle des tours déjà joués
+// (client puis directeur), à partir du journal de la mission.
+func historiqueDialogue(p *projetDemo) string {
+	var sb strings.Builder
+	sb.WriteString("Historique du dialogue :\n")
+	for _, e := range p.journal {
+		if e["type"] == "TOUR_CLIENT" {
+			fmt.Fprintf(&sb, "Client : %v\n", e["entree"])
+		}
+		if e["type"] == "TOUR_DIRECTEUR" {
+			fmt.Fprintf(&sb, "Directeur : %v\n", e["contenu"])
+		}
+	}
+	return sb.String()
+}
+
+// enrichirOrdre : remplace les champs rédigeables de l'ordre factice par
+// ceux produits par l'étape rédaction/revision. JSON strict attendu
+// (clôtures ``` tolérées) ; échec d'analyse = ordre factice conservé
+// (fail-closed, jamais de mission cassée par une réponse hors format).
+func enrichirOrdre(ordre map[string]any, texte string) {
+	t := strings.TrimSpace(texte)
+	if debut := strings.Index(t, "{"); debut > 0 {
+		t = t[debut:]
+	}
+	if fin := strings.LastIndex(t, "}"); fin >= 0 {
+		t = t[:fin+1]
+	}
+	var v struct {
+		EtatDesLieux string `json:"etat_des_lieux"`
+		Objectif     string `json:"objectif"`
+		Etapes       []struct {
+			Nom                   string `json:"nom"`
+			ControleIntermediaire string `json:"controle_intermediaire"`
+		} `json:"etapes"`
+		Limites           []string `json:"limites"`
+		Livrable          string   `json:"livrable"`
+		CriteresReception []string `json:"criteres_reception"`
+	}
+	if err := json.Unmarshal([]byte(t), &v); err != nil {
+		return
+	}
+	if v.EtatDesLieux != "" {
+		ordre["etat_des_lieux"] = v.EtatDesLieux
+	}
+	if v.Objectif != "" {
+		ordre["objectif"] = v.Objectif
+	}
+	if len(v.Etapes) > 0 {
+		etapes := []map[string]any{}
+		for _, e := range v.Etapes {
+			if e.Nom == "" {
+				continue
+			}
+			etapes = append(etapes, map[string]any{
+				"nom": e.Nom, "controle_intermediaire": e.ControleIntermediaire})
+		}
+		if len(etapes) > 0 {
+			ordre["etapes"] = etapes
+		}
+	}
+	if len(v.Limites) > 0 {
+		ordre["limites"] = v.Limites
+	}
+	if v.Livrable != "" {
+		ordre["livrable"] = v.Livrable
+	}
+	if len(v.CriteresReception) > 0 {
+		ordre["criteres_reception"] = v.CriteresReception
+	}
 }
 
 // servir : répartit les requêtes du parcours (chemins /api/projets…).
@@ -191,6 +281,7 @@ func (m *moteurDemo) declarerIntention(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		ID        string `json:"id"`
 		Intention string `json:"intention"`
+		Niveau    string `json:"niveau"`
 	}
 	if err := lireJSON(r, &req); err != nil {
 		repondreErreur(w, http.StatusBadRequest, "CORPS_INVALIDE", err.Error())
@@ -209,12 +300,33 @@ func (m *moteurDemo) declarerIntention(w http.ResponseWriter, r *http.Request) {
 		repondreErreur(w, http.StatusConflict, "PROJET_EXISTANT", "projet déjà existant : "+req.ID)
 		return
 	}
+	// M-COORD-API-MISTRAL-01 : niveau de la mission (défaut "avance"),
+	// validé fail-closed contre la grille connue.
+	req.Niveau = strings.TrimSpace(req.Niveau)
+	if req.Niveau == "" {
+		req.Niveau = "avance"
+	}
+	regime := moteursConf{}
+	if m.gw != nil {
+		regime = m.gw.regimeMoteurs()
+	}
+	if !niveauxMoteursConnus[req.Niveau] {
+		repondreErreur(w, http.StatusBadRequest, "NIVEAU_INCONNU", "niveau inconnu : "+req.Niveau)
+		return
+	}
+	if len(regime.Niveaux) > 0 {
+		if _, ok := regime.Niveaux[req.Niveau]; !ok {
+			repondreErreur(w, http.StatusBadRequest, "NIVEAU_INCONNU", "niveau non proposé par la grille : "+req.Niveau)
+			return
+		}
+	}
 	p := &projetDemo{
 		ID: req.ID, Etat: etatIntention, Intention: req.Intention,
 		UrlsAcceptees: map[string]bool{}, SourcesDeclarees: []string{},
+		Niveau: req.Niveau, PlafondAppels: regime.plafond(),
 		InstantUTC: maintenantDemo(),
 	}
-	m.journaliser(p, map[string]any{"type": "DECLARATION_INTENTION", "acteur": "pilote", "intention": req.Intention})
+	m.journaliser(p, map[string]any{"type": "DECLARATION_INTENTION", "acteur": "pilote", "intention": req.Intention, "niveau": req.Niveau})
 	m.projets[req.ID] = p
 	repondreJSON(w, http.StatusCreated, p)
 }
@@ -270,6 +382,59 @@ func (m *moteurDemo) tourDirecteur(w http.ResponseWriter, r *http.Request, p *pr
 	p.Appels++
 	p.ContexteOctets += len(req.Entree)
 	p.tours++
+
+	// M-COORD-API-MISTRAL-01 : si au moins un moteur IA est activé,
+	// les tours sont produits par l'itinéraire de cascade du niveau
+	// (étape cadrage, puis rédaction pour la proposition d'ordre).
+	// Sans AUCUNE clé : repli sur le script déterministe ci-dessous
+	// (comportement actuel, 0 €, rien ne casse).
+	if m.gw != nil && m.gw.moteursActifs() {
+		action := "QUESTION"
+		if p.tours == 2 {
+			action = "CLARIFICATION"
+		}
+		if p.tours >= 3 {
+			// Troisième tour : PROPOSITION_ORDRE, champs de l'ordre
+			// rédigés par l'étape "redaction" du niveau.
+			demande := "Mission : " + p.ID + "\nIntention du client : " + p.Intention + "\n" +
+				historiqueDialogue(p) +
+				"\nProduis l'ordre de mission en JSON STRICT avec UNIQUEMENT les clés : " +
+				"\"etat_des_lieux\" (chaîne), \"objectif\" (chaîne), \"etapes\" (tableau de " +
+				"{\"nom\", \"controle_intermediaire\"}), \"limites\" (tableau de chaînes), " +
+				"\"livrable\" (chaîne), \"criteres_reception\" (tableau de chaînes). " +
+				"Aucun texte hors du JSON."
+			res, err := m.gw.appelEtape(p, "redaction", systemeDirecteur, demande)
+			if err != nil {
+				repondreErreur(w, err.Statut, err.Code, err.Motif)
+				return
+			}
+			ordre := ordreFactice(p.ID, p.Intention)
+			enrichirOrdre(ordre, res.Texte)
+			p.Ordre = ordre
+			p.Etat = etatOrdrePropose
+			rep := map[string]any{"action": "PROPOSITION_ORDRE", "ordre": p.Ordre}
+			m.journaliser(p, map[string]any{"type": "PROPOSITION_ORDRE", "acteur": p.DirecteurID})
+			repondreJSON(w, http.StatusOK, map[string]any{"projet": p, "reponse": rep})
+			return
+		}
+		consigne := "Pose UNE seule question ouverte et brève pour préciser la finalité attendue."
+		if p.tours == 2 {
+			consigne = "Demande UNE seule clarification courte sur le périmètre et le livrable concret attendu."
+		}
+		demande := "Intention du client : " + p.Intention + "\n" + historiqueDialogue(p) +
+			"\n" + consigne + " Réponds par le message du directeur uniquement, sans préambule."
+		res, err := m.gw.appelEtape(p, "cadrage", systemeDirecteur, demande)
+		if err != nil {
+			repondreErreur(w, err.Statut, err.Code, err.Motif)
+			return
+		}
+		rep := map[string]any{"action": action, "contenu": res.Texte}
+		m.journaliser(p, map[string]any{"type": "TOUR_DIRECTEUR",
+			"acteur": p.DirecteurID, "reponse": action, "contenu": res.Texte})
+		repondreJSON(w, http.StatusOK, map[string]any{"projet": p, "reponse": rep})
+		return
+	}
+
 	var rep map[string]any
 	switch p.tours {
 	case 1:
@@ -325,6 +490,66 @@ func (m *moteurDemo) qualifier(w http.ResponseWriter, p *projetDemo) {
 	p.Etat = etatOrdreQualifie
 	m.journaliser(p, map[string]any{"type": "QUALIFICATION",
 		"version": idn["version"], "empreinte": p.EmpreinteOrdre})
+
+	// M-COORD-API-MISTRAL-01 : étape "critique" de l'itinéraire (si au
+	// moins un moteur activé), puis escalade Premium bornée à UNE
+	// reprise (étape "revision") si la critique juge l'ordre insuffisant.
+	if m.gw != nil && m.gw.moteursActifs() {
+		ordreJSON, _ := json.Marshal(p.Ordre)
+		demande := "Voici l'ordre de mission à critiquer (JSON) :\n" + string(ordreJSON) +
+			"\nRéponds en JSON STRICT : {\"suffisant\": true ou false, " +
+			"\"remarques\": [tableau de chaînes]}. Aucun texte hors du JSON."
+		systeme := "Tu es le critique indépendant du logiciel COORD. Tu évalues un ordre " +
+			"de mission : clarté de l'objectif, étapes contrôlables, limites et critères " +
+			"de réception vérifiables. Tu réponds en JSON strict, en français."
+		res, err := m.gw.appelEtape(p, "critique", systeme, demande)
+		if err != nil {
+			repondreErreur(w, err.Statut, err.Code, err.Motif)
+			return
+		}
+		var verdict struct {
+			Suffisant bool     `json:"suffisant"`
+			Remarques []string `json:"remarques"`
+		}
+		critiqueOK := false
+		t := strings.TrimSpace(res.Texte)
+		if debut := strings.Index(t, "{"); debut >= 0 {
+			if fin := strings.LastIndex(t, "}"); fin > debut {
+				if json.Unmarshal([]byte(t[debut:fin+1]), &verdict) == nil {
+					critiqueOK = true
+				}
+			}
+		}
+		if critiqueOK {
+			p.Critique = map[string]any{"suffisant": verdict.Suffisant, "remarques": verdict.Remarques}
+		} else {
+			p.Critique = map[string]any{"suffisant": true, "remarques": []string{}}
+		}
+		m.journaliser(p, map[string]any{"type": "CRITIQUE", "acteur": p.ExecutantID,
+			"suffisant": p.Critique["suffisant"]})
+		if critiqueOK && !verdict.Suffisant && p.Niveau == "premium" && !p.escalade {
+			// Escalade Premium : UNE seule reprise de rédaction par
+			// mission (étape "revision"), comptée au journal.
+			demandeRev := "L'ordre de mission suivant a été jugé insuffisant par la critique.\n" +
+				"Remarques de la critique : " + strings.Join(verdict.Remarques, " ; ") +
+				"\nOrdre actuel (JSON) :\n" + string(ordreJSON) +
+				"\nProduis l'ordre corrigé en JSON STRICT avec UNIQUEMENT les clés : " +
+				"\"etat_des_lieux\", \"objectif\", \"etapes\", \"limites\", \"livrable\", " +
+				"\"criteres_reception\". Aucun texte hors du JSON."
+			res2, err2 := m.gw.appelEtape(p, "revision", systemeDirecteur, demandeRev)
+			if err2 != nil {
+				repondreErreur(w, err2.Statut, err2.Code, err2.Motif)
+				return
+			}
+			enrichirOrdre(p.Ordre, res2.Texte)
+			p.Version++
+			idn["version"] = fmt.Sprintf("v%d", p.Version)
+			p.EmpreinteOrdre = empreinteOrdreFactice(p.Ordre)
+			p.escalade = true
+			m.journaliser(p, map[string]any{"type": "ESCALADE_PREMIUM", "acteur": p.DirecteurID,
+				"version": idn["version"]})
+		}
+	}
 	repondreJSON(w, http.StatusOK, p)
 }
 
