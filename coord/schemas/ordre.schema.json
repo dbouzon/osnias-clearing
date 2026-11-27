@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://osnias-clearing.com/coord/schemas/ordre.schema.json",
+  "title": "Ordre de mission qualifié COORD (maïeutique)",
+  "description": "Ordre coconstruit par dialogue maïeutique (mission M-COORD-MAIEUTIQUE-01, issue #42, plan v2 D3). Les dix champs de l'ordre §5-T3 sont EXIGÉS ; la validation Go (coord/go/internal/maieutique) applique les mêmes règles de façon déterministe.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "identification",
+    "etat_des_lieux",
+    "sources",
+    "objectif",
+    "etapes",
+    "limites",
+    "liberte_execution",
+    "livrable",
+    "criteres_reception",
+    "application_coord"
+  ],
+  "properties": {
+    "identification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mission", "version", "protocole"],
+      "properties": {
+        "mission": { "type": "string", "minLength": 1, "description": "Référence de la mission (ex. M-TEMOIN-01)." },
+        "version": { "type": "string", "minLength": 1, "description": "Version du texte d'ordre (figée à la qualification : vN)." },
+        "protocole": { "type": "string", "minLength": 1, "description": "Protocole de référence (ex. COORD v1.5 / COORD Specification 1.0)." }
+      }
+    },
+    "etat_des_lieux": { "type": "string", "minLength": 1, "description": "Inventaire vérifié : intégrations, SHA de référence, mécanismes réutilisables." },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ref"],
+        "properties": {
+          "ref": { "type": "string", "minLength": 1, "description": "Référence vérifiable : source déclarée par le pilote, fichier du corpus, ou URL acceptée explicitement par le pilote (contrôle D3-1, pas d'invention)." },
+          "provenance": { "type": "string", "enum": ["DECLAREE_PILOTE", "CORPUS_DOCUMENTS", "URL_DIRECTEUR"], "description": "Rempli par la qualification (jamais par le déclarant)." },
+          "statut": { "type": "string", "enum": ["VERIFIEE", "NON_SONDE", "INVERIFIABLE"], "description": "Résultat de la sonde d'existence (D3-2) ; NON_SONDE en SIMULÉ." },
+          "detail": { "type": "string", "description": "Statut HTTP + date, ou empreinte sha256 du fichier, consignés." }
+        }
+      }
+    },
+    "objectif": { "type": "string", "minLength": 1, "description": "Objectif UNIQUE. Garde lexicale déterministe : tout séparateur de coordination (et, puis, ainsi que...) signale des objectifs multiples (OBJECTIF_NON_UNIQUE)." },
+    "etapes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["nom"],
+        "properties": {
+          "nom": { "type": "string", "minLength": 1, "description": "Nom d'étape, unique (ETAPES_INCOHERENTES sinon)." },
+          "controle_intermediaire": { "type": "string", "description": "Contrôle intermédiaire obligatoire ; AU MOINS UNE étape doit en porter un (PAS_DE_CONTROLE_INTERMEDIAIRE sinon)." }
+        }
+      }
+    },
+    "limites": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Limites explicites (ex. 0 €, loopback, aucun appel réel)." },
+    "liberte_execution": { "type": "string", "minLength": 1, "description": "Ce qui relève de la liberté d'exécution de l'exécutant." },
+    "livrable": { "type": "string", "minLength": 20, "description": "Livrable PRÉCIS et testable (LIVRABLE_IMPRECIS sinon)." },
+    "criteres_reception": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Critères de réception TESTABLES." },
+    "application_coord": { "type": "string", "minLength": 1, "description": "Règles COORD appliquées à la mission (ex. protocole v1.5, journal complet, 0 €)." }
+  }
+}

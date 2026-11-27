@@ -1,0 +1,108 @@
+name: COORD maieutique (package internal/maieutique + cmd/coord-maieutique)
+on:
+  push:
+    branches: [main, 'mission/**']
+    paths: ['coord/go/internal/maieutique/**', 'coord/go/cmd/coord-maieutique/**', 'coord/schemas/ordre.schema.json', '.github/workflows/coord-maieutique-ci.yml']
+  pull_request:
+    paths: ['coord/go/internal/maieutique/**', 'coord/go/cmd/coord-maieutique/**', 'coord/schemas/ordre.schema.json', '.github/workflows/coord-maieutique-ci.yml']
+  workflow_dispatch:
+jobs:
+  maieutique:
+    name: Maieutique ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: coord/go
+    steps:
+      - name: forcer fins de ligne LF (gofmt, Windows)
+        if: runner.os == 'Windows'
+        working-directory: ${{ github.workspace }}
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache-dependency-path: coord/go/go.sum
+      - name: gofmt verifie
+        shell: bash
+        run: |
+          nl=$(gofmt -l internal/maieutique cmd/coord-maieutique | wc -l | tr -d ' ')
+          if [ "$nl" != "0" ]; then
+            echo "::error::gofmt requis sur :$(gofmt -l internal/maieutique cmd/coord-maieutique | tr '\n' ' ')"
+            exit 1
+          fi
+      - name: go vet
+        run: go vet ./internal/maieutique/ ./cmd/coord-maieutique/
+      - name: go build
+        run: go build ./internal/maieutique/ ./cmd/coord-maieutique/
+      - name: go test (directeur factice interne loopback, 0 EUR)
+        shell: bash
+        run: |
+          if ! go test -count=1 ./internal/maieutique/ ./cmd/coord-maieutique/ > test-out.log 2>&1; then
+            cat test-out.log
+            grep -E '^--- FAIL' test-out.log | awk '{printf "::error::%s\n", $0}' || true
+            exit 1
+          fi
+          tail -4 test-out.log
+  race:
+    name: Race detector (maieutique)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: coord/go
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache-dependency-path: coord/go/go.sum
+      - name: go test -race
+        run: go test -race -count=1 ./internal/maieutique/ ./cmd/coord-maieutique/
+  non-regression:
+    name: Non-régression moteur complet (fichiers nouveaux uniquement)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: coord/go
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache-dependency-path: coord/go/go.sum
+      - name: aucun fichier du moteur modifié
+        shell: bash
+        run: |
+          # M-COORD-MAIEUTIQUE-01, plan v2 D1 : engagement FICHIERS NOUVEAUX
+          # UNIQUEMENT. Toute modification d'un fichier existant du moteur
+          # hors des périmètres nouveaux échoue ici (fail closed).
+          base="${BASE_SHA:-${{ github.event.pull_request.base.sha || 'f685281388bd9b63b43fb50d1b2d16491c3b12a8' }}}"
+          git fetch --depth=1 origin "$base" 2>/dev/null || true
+          modifs=$(git diff --name-only --diff-filter=M "$base"...HEAD -- 'coord/go' ':!coord/go/internal/maieutique' ':!coord/go/cmd/coord-maieutique' | grep -v '^$' || true)
+          if [ -n "$modifs" ]; then
+            echo "::error::Fichiers existants modifiés (interdit, plan v2 D1) : $modifs"
+            exit 1
+          fi
+          echo "AUCUN FICHIER DU MOTEUR MODIFIÉ"
+      - name: go vet ./...
+        run: go vet ./...
+      - name: go test ./... (moteur complet + maieutique)
+        run: go test -count=1 ./...
+      - name: schema ordre present et JSON valide
+        run: |
+          python3 - <<'PY'
+          import json
+          with open('../schemas/ordre.schema.json', encoding='utf-8') as f:
+              s = json.load(f)
+          assert s['$schema'].startswith('https://json-schema.org/draft/2020-12'), 'JSON Schema 2020-12 attendu'
+          for champ in ['identification', 'etat_des_lieux', 'sources', 'objectif', 'etapes',
+                        'limites', 'liberte_execution', 'livrable', 'criteres_reception', 'application_coord']:
+              assert champ in s['required'], 'champ requis manquant : ' + champ
+          print('SCHEMA ORDRE OK (2020-12, 10 champs exigés)')
+          PY
