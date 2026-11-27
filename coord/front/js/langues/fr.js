@@ -188,5 +188,18 @@ CoordLangues["fr"] = {
   "creation.repertoireConfirme": "Répertoire dédié retenu pour cette mission. Les sous-dossiers « entrée » et « sortie » y seront créés au démarrage.",
   "creation.errRepertoire": "Choisissez ou créez le répertoire de la mission.",
   "creation.preparationRepertoire": "Préparation du répertoire de mission…",
-  "creation.repertoireIndisponible": "Connexion Google non configurée : mode historique (chemins libres)."
+  "creation.repertoireIndisponible": "Connexion Google non configurée : mode historique (chemins libres).",
+  "creation.source": "Source du répertoire de la mission",
+  "creation.sourceDrive": "Google Drive",
+  "creation.sourceGithub": "GitHub",
+  "creation.sourceAide": "L'entrée et la sortie vivent dans la même source : documents → Drive, code → GitHub. Une mission ne mélange jamais les deux.",
+  "creation.connecterGithub": "Connecter mon GitHub",
+  "creation.connecterGithubAide": "Un consentement GitHub sera demandé, puis vous reprendrez la création ici même.",
+  "creation.repoMission": "Repo de la mission",
+  "creation.choisirRepo": "— Choisir un repo —",
+  "creation.repoAide": "Le répertoire de la mission vivra dans ce repo : missions/<nom>/entrée et missions/<nom>/sortie (contenu versionné).",
+  "creation.errRepo": "Choisissez le repo de la mission.",
+  "creation.reposErreur": "Impossible de lister vos repos.",
+  "app.githubConnexion": "Se connecter avec GitHub",
+  "app.githubAide": "Vos missions vivront dans un de vos repos GitHub."
 };

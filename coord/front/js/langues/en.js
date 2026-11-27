@@ -188,5 +188,18 @@ CoordLangues["en"] = {
   "creation.repertoireConfirme": "Dedicated folder kept for this mission. The 'input' and 'output' subfolders will be created there at start.",
   "creation.errRepertoire": "Choose or create the mission folder.",
   "creation.preparationRepertoire": "Preparing the mission folder…",
-  "creation.repertoireIndisponible": "Google sign-in not configured: legacy mode (free paths)."
+  "creation.repertoireIndisponible": "Google sign-in not configured: legacy mode (free paths).",
+  "creation.source": "Mission folder source",
+  "creation.sourceDrive": "Google Drive",
+  "creation.sourceGithub": "GitHub",
+  "creation.sourceAide": "Input and output live in the same source: documents → Drive, code → GitHub. A mission never mixes the two.",
+  "creation.connecterGithub": "Connect my GitHub",
+  "creation.connecterGithubAide": "A GitHub consent screen will be shown, then you will resume this form right here.",
+  "creation.repoMission": "Mission repo",
+  "creation.choisirRepo": "— Choose a repo —",
+  "creation.repoAide": "The mission folder will live in this repo: missions/<name>/input and missions/<name>/output (versioned content).",
+  "creation.errRepo": "Choose the mission repo.",
+  "creation.reposErreur": "Could not list your repos.",
+  "app.githubConnexion": "Sign in with GitHub",
+  "app.githubAide": "Your missions will live in one of your GitHub repos."
 };

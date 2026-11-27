@@ -75,6 +75,7 @@ type config struct {
 	SecretSession       string       `json:"secret_session"`
 	Comptes             []compteConf `json:"comptes"`
 	Google              googleConf   `json:"google"`
+	GitHub              githubConf   `json:"github"`
 	FichierUtilisateurs string       `json:"fichier_utilisateurs"`
 	FichierRepertoires  string       `json:"fichier_repertoires"`
 }
@@ -155,6 +156,12 @@ func (g *gateway) routes() http.Handler {
 	mux.HandleFunc("GET /api/auth/google/login", g.authGoogleLogin)
 	mux.HandleFunc("GET /api/auth/google/callback", g.authGoogleCallback)
 	mux.HandleFunc("GET /api/moi", g.apiMoi)
+	// M-COORD-SRC-01 : source GitHub (repos publics).
+	mux.HandleFunc("GET /api/auth/github/etat", g.authGithubEtat)
+	mux.HandleFunc("GET /api/auth/github/login", g.authGithubLogin)
+	mux.HandleFunc("GET /api/auth/github/callback", g.authGithubCallback)
+	mux.HandleFunc("GET /api/github/repos", g.githubRepos)
+	mux.HandleFunc("POST /api/github/structure", g.githubStructure)
 	mux.HandleFunc("POST /api/connexion", g.connexion)
 	mux.HandleFunc("POST /api/deconnexion", g.deconnexion)
 	mux.HandleFunc("GET /api/session", g.infoSession)
@@ -272,6 +279,13 @@ func main() {
 			}
 		}
 	}
+	// M-COORD-SRC-01 : fail-closed sur la configuration GitHub.
+	if cfg.GitHub.Activer {
+		if strings.TrimSpace(cfg.GitHub.ClientID) == "" ||
+			strings.TrimSpace(cfg.GitHub.ClientSecret) == "" {
+			log.Fatal("coord-front : github.activer sans client_id/client_secret")
+		}
+	}
 	if fi, err := os.Stat(frontDir); err != nil || !fi.IsDir() {
 		log.Fatal("coord-front : dossier front introuvable : ", frontDir)
 	}
@@ -289,8 +303,8 @@ func main() {
 	dirConfig := filepath.Dir(configPath)
 	g := newGateway(cfg, frontDir, dirConfig)
 	srv := &http.Server{Addr: addr, Handler: g.routes()}
-	fmt.Printf("coord-front : écoute loopback %s (front : %s, comptes : %d, google : %t)\n",
-		addr, frontDir, len(cfg.Comptes), g.googleActif())
+	fmt.Printf("coord-front : écoute loopback %s (front : %s, comptes : %d, google : %t, github : %t)\n",
+		addr, frontDir, len(cfg.Comptes), g.googleActif(), g.githubActif())
 	log.Fatal(srv.ListenAndServe())
 }
 

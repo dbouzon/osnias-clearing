@@ -188,5 +188,18 @@ CoordLangues["zh"] = {
   "creation.repertoireConfirme": "已为此任务保留专用目录。启动时将在其中创建「输入」和「输出」子目录。",
   "creation.errRepertoire": "请选择或创建任务目录。",
   "creation.preparationRepertoire": "正在准备任务目录…",
-  "creation.repertoireIndisponible": "未配置 Google 登录：传统模式（自由路径）。"
+  "creation.repertoireIndisponible": "未配置 Google 登录：传统模式（自由路径）。",
+  "creation.source": "任务目录的来源",
+  "creation.sourceDrive": "Google Drive",
+  "creation.sourceGithub": "GitHub",
+  "creation.sourceAide": "输入与输出位于同一来源：文档 → Drive，代码 → GitHub。任务绝不混用两者。",
+  "creation.connecterGithub": "连接我的 GitHub",
+  "creation.connecterGithubAide": "将请求 GitHub 授权，随后您将在原处继续创建。",
+  "creation.repoMission": "任务仓库",
+  "creation.choisirRepo": "— 选择仓库 —",
+  "creation.repoAide": "任务目录将保存在此仓库中：missions/<名称>/输入 与 missions/<名称>/输出（内容带版本）。",
+  "creation.errRepo": "请选择任务的仓库。",
+  "creation.reposErreur": "无法列出您的仓库。",
+  "app.githubConnexion": "使用 GitHub 登录",
+  "app.githubAide": "您的任务将保存在您的一个 GitHub 仓库中。"
 };
