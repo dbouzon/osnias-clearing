@@ -18,6 +18,9 @@ jobs:
       run:
         working-directory: coord/go
     steps:
+      - name: forcer fins de ligne LF (gofmt, Windows)
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
