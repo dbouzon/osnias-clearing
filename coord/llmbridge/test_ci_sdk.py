@@ -13,6 +13,7 @@ Si litellm-core est absent, chaque test est marqué NON_EXECUTE (skip
 explicite) : JAMAIS un faux SDK, jamais un succès simulé.
 """
 
+import json
 import os
 import sys
 import unittest
@@ -185,6 +186,54 @@ class TestSDKReel(unittest.TestCase):
             for r in s.requetes:
                 self.assertNotIn(CLE_TEST, r["corps"])
                 self.assertNotIn(CLE_TEST, r["chemin"])
+
+
+@unittest.skipUnless(SDK_PRESENT, RAISON_ABSENT)
+class TestPrefixeSdk(unittest.TestCase):
+    """M-COORD-MISTRAL-VPS-01 (D2) : destination avec prefixe_sdk.
+
+    Défaut reproduit (NO-GO-D1) : sans préfixe fournisseur, litellm refuse
+    ("LLM Provider NOT provided") et AUCUNE requête n'atteint le fournisseur.
+    Avec prefixe_sdk declare : le SDK recoit "<prefixe_sdk><modele>", le
+    fournisseur recoit le modele SANS préfixe (identité exacte côté moteur
+    Go) et la réponse model est transmise telle quelle (passthrough).
+    """
+
+    def test_modele_sans_prefixe_refuse_par_le_sdk(self):
+        """Reproduction NO-GO-D1 : modèle sans préfixe => ERREUR_SDK."""
+        os.environ["COORD_CLE_CI"] = CLE_TEST
+        s = ServeurFactice("mistral")
+        s.demarrer()
+        self.addCleanup(s.arreter)
+        backend = LiteLLMBackend(delai_s=15.0)
+        dest = {"api_base": s.api_base, "cle_env": "COORD_CLE_CI"}
+        with self.assertRaises(Exception) as ctx:
+            backend.completion(
+                "factice-mistral-sans-prefixe",
+                [{"role": "user", "content": "repro"}],
+                contexte={"destination": dest})
+        self.assertIn("ERREUR_SDK", str(ctx.exception) + repr(ctx.exception))
+
+    def test_prefixe_sdk_route_et_preserve_identite(self):
+        """D2 : prefixe_sdk ajoute le préfixe SDK, identité passthrough."""
+        os.environ["COORD_CLE_CI"] = CLE_TEST
+        s = ServeurFactice("mistral")
+        s.demarrer()
+        self.addCleanup(s.arreter)
+        backend = LiteLLMBackend(delai_s=15.0)
+        dest = {"api_base": s.api_base, "cle_env": "COORD_CLE_CI",
+                "prefixe_sdk": "mistral/"}
+        rep = backend.completion(
+            "factice-mistral-identite",
+            [{"role": "user", "content": "MISTRAL-VPS-01 D2"}],
+            contexte={"destination": dest})
+        # le factice echo le model recu : le SDK a transmis le modele SANS
+        # préfixe (identité exacte) et la réponse est passée telle quelle.
+        self.assertEqual(rep["model"], "factice-mistral-identite")
+        self.assertTrue(s.requetes, "au moins une requête atteinte")
+        corps = json.loads(s.requetes[-1]["corps"])
+        self.assertEqual(corps.get("model"), "factice-mistral-identite")
+        self.assertNotIn(CLE_TEST, str(rep))
 
 
 if __name__ == "__main__":

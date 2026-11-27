@@ -12,7 +12,8 @@
     },
     "mistral/": {
       "api_base": "https://api.mistral.ai/v1",
-      "cle_env": "COORD_CLE_MISTRAL"
+      "cle_env": "COORD_CLE_MISTRAL",
+      "prefixe_sdk": "mistral/"
     },
     "anthropic/": {
       "api_base": "https://api.anthropic.com",
