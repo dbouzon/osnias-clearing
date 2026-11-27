@@ -35,10 +35,15 @@ import (
 )
 
 // Dossiers : contrat de stockage documentaire du parcours client.
+// Supprimer est ajouté en mission M-COORD-UI-01 : il ne sert qu'à la
+// sonde d'accès de POST /api/drive/verifier (écrire puis supprimer
+// un fichier COORD-test-acces.txt), jamais à supprimer des documents
+// du client.
 type Dossiers interface {
 	Lister(dossier string) ([]string, error)
 	Lire(dossier, nom string) ([]byte, error)
 	Ecrire(dossier, nom string, contenu []byte) error
+	Supprimer(dossier, nom string) error
 }
 
 // dossierFactice : implémentation de recette. Racine fixée par la
@@ -101,6 +106,20 @@ func (d *dossierFactice) Ecrire(dossier, nom string, contenu []byte) error {
 		return err
 	}
 	return os.WriteFile(chemin, contenu, 0o644)
+}
+
+// Supprimer : confiné comme Ecrire (fail closed), réservé à la sonde
+// d'accès (M-COORD-UI-01). Un fichier absent n'est pas une erreur pour
+// l'appelant : idempotent, comme un rm silencieux sur la sonde.
+func (d *dossierFactice) Supprimer(dossier, nom string) error {
+	chemin, err := d.resoudre(dossier, nom)
+	if err != nil {
+		return err
+	}
+	if err := os.Remove(chemin); err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	return nil
 }
 
 // --------------------------------------------------------------- export
@@ -346,6 +365,8 @@ func (g *gateway) apiDrive(w http.ResponseWriter, r *http.Request) {
 		g.listerDocumentsDrive(w, r, c)
 	case r.Method == http.MethodPost && reste == "/document":
 		g.deposerDocumentDrive(w, r, c)
+	case r.Method == http.MethodPost && reste == "/verifier":
+		g.verifierDossiersDrive(w, r, c)
 	case reste == "/export" || strings.HasPrefix(reste, "/export/"):
 		g.apiExport(w, r, c, strings.TrimPrefix(reste, "/export/"))
 	default:
@@ -490,4 +511,89 @@ func (g *gateway) apiExport(w http.ResponseWriter, r *http.Request, c compteConf
 	default:
 		repondreErreur(w, http.StatusMethodNotAllowed, "METHODE_REFUSEE", r.Method)
 	}
+}
+
+// ------------------------------------------------------------ vérification
+
+// sondeVerifier : nom du fichier sonde de POST /api/drive/verifier.
+// Contenu explicite : quiconque le trouve Drive sait pourquoi il est là.
+const sondeVerifier = "COORD-test-acces.txt"
+const contenuSondeVerifier = "Fichier de vérification d'accès COORD : il peut être supprimé sans risque.\n"
+
+// accesDossier : résultat de vérification d'un dossier.
+type accesDossier struct {
+	OK    bool   `json:"ok"`
+	Motif string `json:"motif,omitempty"`
+}
+
+// verifierDossiersDrive (M-COORD-UI-01, S4) : vérifie CÔTÉ SERVEUR, à
+// la création d'une mission, la lecture du dossier d'entrée et
+// l'écriture du dossier de rendu AVANT qu'une mission soit ouverte.
+// La sonde écrit puis supprime COORD-test-acces.txt dans le dossier de
+// rendu. Refus explicite si l'écriture Drive est désactivée pour le
+// compte (autoriser_ecriture_drive=false) ; 400 si champs manquants.
+func (g *gateway) verifierDossiersDrive(w http.ResponseWriter, r *http.Request, c compteConf) {
+	drive, ok := g.driveCompte(w, c)
+	if !ok {
+		return
+	}
+	if !c.AutoriserEcritureDrive {
+		repondreErreur(w, http.StatusForbidden, "DRIVE_REFUS",
+			"écriture Drive désactivée pour ce compte (autoriser_ecriture_drive)")
+		return
+	}
+	var req struct {
+		DossierEntree  string `json:"dossier_entree"`
+		DossierSortie  string `json:"dossier_sortie"`
+	}
+	if err := lireJSON(r, &req); err != nil {
+		repondreErreur(w, http.StatusBadRequest, "CORPS_INVALIDE", err.Error())
+		return
+	}
+	req.DossierEntree = strings.TrimSpace(req.DossierEntree)
+	req.DossierSortie = strings.TrimSpace(req.DossierSortie)
+	if req.DossierEntree == "" || req.DossierSortie == "" {
+		repondreErreur(w, http.StatusBadRequest, "CHAMPS_MANQUANTS",
+			"dossier_entree et dossier_sortie sont obligatoires")
+		return
+	}
+
+	// Entrée : LIRE (Lister). Contrat Lister : un dossier inexistant
+	// mais lisible est indistinguable d'un dossier vide ; la
+	// vérification porte sur l'ACCESSIBILITÉ (refus, permissions,
+	// backend indisponible), pas sur l'existence.
+	entree := accesDossier{}
+	if err := validerDossier(req.DossierEntree); err != nil {
+		entree.Motif = err.Error()
+	} else if _, err := drive.Lister(req.DossierEntree); err != nil {
+		_, _, entree.Motif = statutErreurDrive(err)
+		if entree.Motif == "" {
+			entree.Motif = err.Error()
+		}
+	} else {
+		entree.OK = true
+	}
+
+	// Sortie : ÉCRIRE puis SUPPRIMER la sonde.
+	sortie := accesDossier{}
+	if err := validerDossier(req.DossierSortie); err != nil {
+		sortie.Motif = err.Error()
+	} else if err := drive.Ecrire(req.DossierSortie, sondeVerifier,
+		[]byte(contenuSondeVerifier)); err != nil {
+		_, _, sortie.Motif = statutErreurDrive(err)
+		if sortie.Motif == "" {
+			sortie.Motif = err.Error()
+		}
+	} else if err := drive.Supprimer(req.DossierSortie, sondeVerifier); err != nil {
+		sortie.Motif = "suppression de la sonde impossible : " + err.Error()
+	} else {
+		sortie.OK = true
+	}
+
+	// Journal gateway uniquement (aucun secret : chemins validés).
+	log.Printf("coord-front : verifier %s : entrée=%t sortie=%t",
+		c.Nom, entree.OK, sortie.OK)
+	repondreJSON(w, http.StatusOK, map[string]any{
+		"entree": entree, "sortie": sortie,
+	})
 }

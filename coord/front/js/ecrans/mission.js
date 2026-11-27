@@ -10,7 +10,10 @@
 
   async function charger(id) {
     const rep = await Coord.requete("GET", "/api/projets/" + encodeURIComponent(id));
-    if (rep.statut !== 200) { return null; }
+    if (rep.statut !== 200) {
+      return { erreur: rep.statut === 0 ? Coord.t("app.erreurReseau") :
+        ((rep.donnees && rep.donnees.motif) || "HTTP " + rep.statut) };
+    }
     projet = rep.donnees;
     const j = await Coord.requete("GET", "/api/projets/" + encodeURIComponent(id) + "/journal");
     journalBrut = [];
@@ -24,16 +27,22 @@
     return projet;
   }
 
+  /* ---- entête mission (S2) : nom, pastille et libellé du statut
+   * CLIENT (jaune/vert/orange), badge d'état machine détaillé,
+   * version, puis les deux dossiers Drive. ---- */
   function entete(contenu) {
-    const carte = Coord.el("div", "carte");
+    const carte = Coord.el("div", "carte bandeau-mission");
     const rangée = Coord.el("div", "rangée");
     const titre = Coord.el("span", "mission-titre mono");
     titre.textContent = projet.id;
     rangée.appendChild(titre);
-    rangée.appendChild(document.createTextNode(Coord.pastilleEtat(projet.etat) + " "));
+    rangée.appendChild(document.createTextNode(Coord.pastilleClient(projet.etat) + " "));
     const lib = Coord.el("span", "etat-libelle");
-    lib.textContent = Coord.libelleEtat(projet.etat);
+    lib.textContent = Coord.libelleStatutClient(projet.etat);
     rangée.appendChild(lib);
+    const machine = Coord.el("span", "badge");
+    machine.textContent = Coord.libelleEtat(projet.etat);
+    rangée.appendChild(machine);
     if (projet.version) {
       const v = Coord.el("span", "badge");
       v.textContent = Coord.t("projet.version", { version: "v" + projet.version });
@@ -57,6 +66,7 @@
       emp.appendChild(copier);
       carte.appendChild(emp);
     }
+    /* Les deux dossiers Drive de la mission, affichés dès le cadrage. */
     const dossiers = Coord.el("div", "aide");
     let texteDossiers = "";
     if (projet.cadrage) {
@@ -71,13 +81,46 @@
     contenu.appendChild(carte);
   }
 
+  /* ---- vérification d'accès à la réouverture (S4) : bandeau NON
+   * bloquant si un dossier Drive est devenu inaccessible ; l'historique
+   * reste toujours visible. ---- */
+  async function bandeauDossiers(contenu) {
+    if (!projet.cadrage) { return; }
+    const entree = projet.cadrage.dossier_entree;
+    const sortie = projet.cadrage.dossier_sortie;
+    /* Missions créées avant la S4 (dossier d'entrée optionnel) : pas
+     * de vérification, pas de bandeau. */
+    if (!entree || !sortie) { return; }
+    const verif = await Coord.requete("POST", "/api/drive/verifier", {
+      dossier_entree: entree,
+      dossier_sortie: sortie
+    });
+    if (verif.statut !== 200 || !verif.donnees) { return; }
+    const accesEntree = verif.donnees.entree || {};
+    const accesSortie = verif.donnees.sortie || {};
+    if (accesEntree.ok !== true && entree) {
+      const bandeau = Coord.el("div", "erreur");
+      bandeau.textContent = Coord.t("verif.bandeauKo", { motif: accesEntree.motif || "?" });
+      contenu.insertBefore(bandeau, contenu.firstChild);
+    } else if (accesSortie.ok !== true && sortie) {
+      const bandeau = Coord.el("div", "erreur");
+      bandeau.textContent = Coord.t("verif.bandeauKo", { motif: accesSortie.motif || "?" });
+      contenu.insertBefore(bandeau, contenu.firstChild);
+    }
+  }
+
   /* ---- section dialogue (chat) ---- */
   function sectionDialogue(contenu, id) {
     const section = Coord.el("div", null);
     section.appendChild(Coord.el("h2", null, "dlg.titre"));
+    /* Le fil : conteneur unique (fil + saisie) pour que la barre de
+     * saisie reste accessible sous le fil pendant le défilement. */
+    const fil = Coord.el("div", "fil");
     const chat = Coord.el("div", "chat");
-    section.appendChild(chat);
+    fil.appendChild(chat);
 
+    /* Trois classes de messages (S2) : client (droite), COORD vers
+     * client (gauche), événements du binôme (neutre, centré). */
     function messageDirecteur(auteur, texte) {
       const m = Coord.el("div", "message directeur");
       const a = Coord.el("span", "auteur");
@@ -94,14 +137,24 @@
       m.appendChild(document.createTextNode(texte));
       chat.appendChild(m);
     }
+    function evenementBinome(type) {
+      const m = Coord.el("div", "message evenement-binome");
+      m.textContent = Coord.t("dlg.evenementBinome", { type: type });
+      chat.appendChild(m);
+    }
 
-    /* Rejoue le journal connu dans le chat. */
+    /* Rejoue le journal connu dans le chat : tours client/directeur
+     * ET événements du binôme (proposition d'ordre, qualification,
+     * validation, publication, transmission). */
     journalBrut.forEach(function (e) {
       if (e.type === "TOUR_CLIENT" && e.entree !== undefined) { messageClient(e.entree); }
       else if (e.type === "TOUR_DIRECTEUR" && e.contenu) {
         messageDirecteur(Coord.t("dlg.directeur") +
           (e.reponse ? " (" + Coord.t(e.reponse === "CLARIFICATION" ? "dlg.clarification" : "dlg.question") + ")" : ""),
           e.contenu);
+      }
+      else if (Coord.colonneMissions.evenementsBinome.indexOf(e.type) !== -1) {
+        evenementBinome(e.type);
       }
     });
     if (chat.childNodes.length === 0) {
@@ -128,12 +181,14 @@
       if (r.action === "QUESTION" || r.action === "CLARIFICATION") {
         messageDirecteur(Coord.t("dlg.directeur") + " (" + Coord.t(r.action === "QUESTION" ? "dlg.question" : "dlg.clarification") + ")", r.contenu || "");
       } else if (r.action === "PROPOSITION_ORDRE") {
+        evenementBinome("PROPOSITION_ORDRE");
         Coord.naviguer("#/mission/" + encodeURIComponent(id));
       } else if (r.action === "VERDICT") {
         messageDirecteur(Coord.t("dlg.directeur"), r.verdict || "");
       }
     }, "principal"));
-    section.appendChild(saisie);
+    fil.appendChild(saisie);
+    section.appendChild(fil);
 
     /* Dépôt de document (corpus, D4). */
     section.appendChild(Coord.el("h2", null, "dlg.documents"));
@@ -388,14 +443,23 @@
   async function afficher(contenu, id, recharger) {
     if (recharger !== false) {
       const p = await charger(id);
-      if (!p) {
-        contenu.appendChild(Coord.el("h1", null, "sui.titre"));
-        Coord.messageErreur(contenu, "erreur projet inconnu : " + id);
-        contenu.appendChild(Coord.bouton("app.retour", function () { Coord.naviguer("#/accueil"); }));
+      if (p && p.erreur) {
+        /* Plus aucun « Chargement… » muet (S5) : cause + Réessayer. */
+        contenu.appendChild(Coord.el("h1", null, "accueil.titre"));
+        Coord.messageErreur(contenu, "ui.erreurChargementMission",
+          { motif: p.erreur });
+        const actions = Coord.el("div", "actions");
+        actions.appendChild(Coord.bouton("ui.reessayer", async function () {
+          contenu.textContent = "";
+          await afficher(contenu, id, true);
+        }, "principal"));
+        actions.appendChild(Coord.bouton("app.retour", function () { Coord.naviguer("#/accueil"); }));
+        contenu.appendChild(actions);
         return;
       }
     }
     entete(contenu);
+    await bandeauDossiers(contenu);
     if (projet.etat === "DIALOGUE") { sectionDialogue(contenu, id); }
     if (projet.etat === "ORDRE_PROPOSE" || projet.etat === "ORDRE_QUALIFIE" ||
         projet.etat === "VALIDE" || projet.etat === "PUBLIE" || projet.etat === "TRANSMIS") {

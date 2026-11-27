@@ -39,6 +39,9 @@ func (d *dossiersDefauts) Lire(string, string) ([]byte, error) {
 func (d *dossiersDefauts) Ecrire(string, string, []byte) error {
 	return errors.New(d.motif)
 }
+func (d *dossiersDefauts) Supprimer(string, string) error {
+	return errors.New(d.motif)
+}
 
 // fauxRclone : script shell journalisant ses arguments et son stdin
 // dans $FAUX_RCLONE_JOURNAL, avec des réponses simulées par sous-commande.
@@ -216,7 +219,6 @@ func remoteLocalRclone(t *testing.T, nom string) string {
 func TestRcloneReelRemoteLocal(t *testing.T) {
 	racine := remoteLocalRclone(t, "recette")
 	d := nouveauDossierRclone("recette", "coord", 10*time.Second)
-
 	// Écrire → Lister → Lire, dans le périmètre du compte.
 	if err := d.Ecrire("sortie", "note.txt", []byte("bonjour drive")); err != nil {
 		t.Fatalf("Ecrire : %v", err)
@@ -254,5 +256,56 @@ func TestRcloneReelRemoteLocal(t *testing.T) {
 		if d := (compteConf{TimeoutRclone: entree}).timeoutDrive(); d != attendu {
 			t.Fatalf("timeoutDrive(%d) = %v, attendu %v", entree, d, attendu)
 		}
+	}
+}
+
+/* ============ M-COORD-UI-01 : Supprimer (sonde /api/drive/verifier) ============ */
+
+func TestRcloneSupprimer(t *testing.T) {
+	journal := filepath.Join(t.TempDir(), "journal")
+	t.Setenv("FAUX_RCLONE_JOURNAL", journal)
+	binaire := fauxRclone(t, `printf '%s\n' "$@" >> "$FAUX_RCLONE_JOURNAL"
+case "$1" in
+  deletefile) : ;;
+  *) exit 1 ;;
+esac`)
+	d := &dossierRclone{remote: "recette", racine: "coord", timeout: 5 * time.Second, binaire: binaire}
+
+	// deletefile avec la cible préfixée par la racine du compte.
+	if err := d.Supprimer("sortie", sondeVerifier); err != nil {
+		t.Fatalf("Supprimer : %v", err)
+	}
+	trace, _ := os.ReadFile(journal)
+	attendu := "deletefile\nrecette:coord/sortie/" + sondeVerifier + "\n"
+	if string(trace) != attendu {
+		t.Fatalf("journal du faux rclone : %q, attendu %q", trace, attendu)
+	}
+
+	// Fichier absent : idempotent, jamais une erreur pour l'appelant.
+	absent := fauxRclone(t, `echo "file not found : recette:coord/sortie/x" >&2; exit 3`)
+	dAbsent := &dossierRclone{remote: "recette", racine: "coord", timeout: 5 * time.Second, binaire: absent}
+	if err := dAbsent.Supprimer("sortie", sondeVerifier); err != nil {
+		t.Fatalf("fichier absent : Supprimer doit être idempotent, reçu %v", err)
+	}
+
+	// Autre erreur rclone : DRIVE_ERREUR (502), motif conservé.
+	boom := fauxRclone(t, `echo "boom simulé" >&2; exit 1`)
+	dBoom := &dossierRclone{remote: "recette", racine: "coord", timeout: 5 * time.Second, binaire: boom}
+	if err := dBoom.Supprimer("sortie", sondeVerifier); err == nil {
+		t.Fatal("échec rclone attendu")
+	} else {
+		statut, code, motif := statutErreurDrive(err)
+		if statut != 502 || code != "DRIVE_ERREUR" || !strings.Contains(motif, "boom") {
+			t.Fatalf("attendu 502 DRIVE_ERREUR (boom), reçu %d %s %q", statut, code, motif)
+		}
+	}
+
+	// Fail closed : nom interdit → AUCUN appel rclone émis.
+	os.Remove(journal)
+	if err := d.Supprimer("sortie", "../evil"); err == nil {
+		t.Fatal("nom interdit accepté")
+	}
+	if _, err := os.Stat(journal); !os.IsNotExist(err) {
+		t.Fatal("rclone appelé malgré un nom interdit (fail-closed contourné)")
 	}
 }
