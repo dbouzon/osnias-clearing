@@ -38,6 +38,7 @@ import (
 	"coordengine/internal/pilot"
 	"coordengine/internal/policy"
 )
+
 // configTest : configuration d'habilitations équivalente à celle de
 // creerMission (mêmes adaptateurs simulés, mêmes rôles).
 func configTest() ([]string, map[string][]string, []policy.Identity) {
@@ -228,7 +229,7 @@ func TestC3InvariantArretDurableSousConcurrence(t *testing.T) {
 		}
 	}
 	if succes > 1 {
-		t.Fatalf("C3 : au plus UNE soumission peut aboutir (les autres sont refusées " +
+		t.Fatalf("C3 : au plus UNE soumission peut aboutir (les autres sont refusées "+
 			"par la table d'états ou l'arrêt), %d réussies", succes)
 	}
 	_, detail := e.appel("GET", "/api/mission/"+issue, tokenTest, nil)
