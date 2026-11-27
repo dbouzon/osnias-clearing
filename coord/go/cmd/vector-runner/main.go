@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // vector-runner replays the published COORD conformance vectors
-// (coord-conformite-v1 format) against the Go reference engine.
+// (coord-conformite-v1 format, plus the coord-conformite-jcs-v1 canonical
+// serialization family) against the Go reference engine.
 //
 // Usage: go run ./cmd/vector-runner -dir ../../docs/conformite-v15
 // Exit code 0 if and only if no vector is KO. Output format matches the
@@ -11,6 +12,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -20,6 +23,7 @@ import (
 	"strings"
 
 	"coordengine/internal/engine"
+	"coordengine/internal/jcs"
 	"coordengine/internal/policy"
 	"coordengine/internal/resume"
 )
@@ -114,6 +118,16 @@ func rejoue(v vecteur) (bool, string) {
 			arb = resume.Arbitrer(rk, rg, str(op, "ts_utc"), str(op, "arbitre"))
 			info = arb.Elu
 			lastKind = "arbitrer"
+		case "empreinte":
+			// Famille serialisation canonique (format coord-conformite-jcs-v1) :
+			// forme canonique RFC 8785 de l'objet, refus fail-closed des non-entiers.
+			b, err := jcs.Canonical(op["objet"])
+			if err != nil {
+				ok, info = false, err.Error()
+			} else {
+				ok, info = true, string(b)
+			}
+			lastKind = "empreinte"
 		default:
 			return false, "operation inconnue: " + str(op, "operation")
 		}
@@ -161,6 +175,28 @@ func rejoue(v vecteur) (bool, string) {
 		for k := range attendus {
 			if !obtenus[k] {
 				return false, "champ divergent manquant: " + k
+			}
+		}
+	case "empreinte":
+		if errAtt, _ := att["erreur"].(bool); errAtt {
+			if ok {
+				return false, "refus attendu mais serialisation produite: " + info
+			}
+			if cont, _ := att["contient"].(string); cont != "" && !strings.Contains(info, cont) {
+				return false, "motif inattendu: " + info + " (contient attendu: " + cont + ")"
+			}
+		} else {
+			if !ok {
+				return false, "erreur non attendue: " + info
+			}
+			if oct, _ := att["octets"].(string); oct != "" && info != oct {
+				return false, "octets != attendus: " + info + " != " + oct
+			}
+			if sha, _ := att["sha256"].(string); sha != "" {
+				sum := sha256.Sum256([]byte(info))
+				if hex.EncodeToString(sum[:]) != sha {
+					return false, "sha256 != attendu pour les octets produits"
+				}
 			}
 		}
 	default:

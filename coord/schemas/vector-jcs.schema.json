@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.osnias-clearing.com/coord/schemas/vector-jcs.schema.json",
+  "version": "1.0",
+  "title": "COORD JCS conformance vector collection (coord-conformite-jcs-v1, spec 5.2/5.3, mission M-COORD-JCS-01)",
+  "type": "object",
+  "required": [
+    "format",
+    "famille",
+    "fichier",
+    "description",
+    "vecteurs"
+  ],
+  "properties": {
+    "format": {
+      "const": "coord-conformite-jcs-v1"
+    },
+    "famille": {
+      "const": "serialisation_canonique"
+    },
+    "fichier": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "vecteurs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "nom",
+          "operations",
+          "attendu"
+        ],
+        "properties": {
+          "nom": {
+            "type": "string",
+            "minLength": 1
+          },
+          "operations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "operation",
+                "objet"
+              ],
+              "properties": {
+                "operation": {
+                  "const": "empreinte"
+                }
+              }
+            }
+          },
+          "attendu": {
+            "type": "object",
+            "oneOf": [
+              {
+                "required": [
+                  "octets",
+                  "sha256"
+                ],
+                "properties": {
+                  "octets": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "erreur"
+                ],
+                "properties": {
+                  "erreur": {
+                    "const": true
+                  },
+                  "contient": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
