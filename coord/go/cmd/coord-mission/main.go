@@ -77,7 +77,9 @@ func consulterRun(dataDir, issue string) int {
 		fmt.Fprintln(os.Stderr, "NON_EXECUTE : -issue requis avec -consulter")
 		return 3
 	}
-	ref, err := missions.Ouvrir(dataDir)
+	// Lecture seule stricte (revue PR #71) : OuvrirLectureSeule échoue si
+	// la racine n'existe pas ; une consultation ne crée jamais de répertoire.
+	ref, err := missions.OuvrirLectureSeule(dataDir)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "référentiel impossible : "+err.Error())
 		return 1
