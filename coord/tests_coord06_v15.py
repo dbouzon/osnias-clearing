@@ -328,6 +328,49 @@ check("Z4 versions v1.4 et anterieures NON modifiees (delegation lecture seule)"
       and coord06.PROTOCOL_VERSION == "M-COORD-06 v1.1"
       and coord06_v15.PROTOCOL_VERSION_V15 == "M-COORD-06 v1.5 (candidate, non activee)")
 
+# ---- JCS : serialisation canonique RFC 8785 (mission M-COORD-JCS-01, #85) ----
+# Octets et sha256 attendus = ceux du vecteur public ordre_cles_utf16.json,
+# fixes independamment par le moteur Go conforme (reproduction au SHA 3844d6a9).
+_jcs_cas1 = {"\U00010000": 1, "\ue000": 2}
+_o1 = coord06_v15._canonique_v15(_jcs_cas1)
+check("JCSa ordre des cles par unites UTF-16 : U+10000 (paire D800 DC00) avant U+E000",
+      _o1 == '{"\U00010000":1,"\ue000":2}'
+      and hashlib.sha256(_o1.encode("utf-8")).hexdigest()
+      == "4045c21a23c8ae8f8d9add81f54bd506bee65885099876fb4afb378b1f2c3516")
+_jcs_cas2 = {"liste": [{"\ue000": "a", "\U00010000": "b"}, {"x": 1}], "debut": 0}
+_o2 = coord06_v15._canonique_v15(_jcs_cas2)
+check("JCSb tri recursif des cles imbriquees, ordre des elements de tableau preserve",
+      _o2 == '{"debut":0,"liste":[{"\U00010000":"b","\ue000":"a"},{"x":1}]}'
+      and hashlib.sha256(_o2.encode("utf-8")).hexdigest()
+      == "5b77a91a0ccdfcf6444e2d76237b1749f165f943240e464a139335e5b42c96a1")
+try:
+    coord06_v15._canonique_v15({"valeur": 1.5})
+    _jcs_refus = ""
+except ValueError as e:
+    _jcs_refus = str(e)
+check("JCSc nombre non entier REFUSE (fail-closed, motif explicite, jamais approxime)",
+      _jcs_refus.startswith("nombre non canonique (entier attendu)"),
+      _jcs_refus)
+check("JCSd types de base : booleens, null, echappement minimal, tableaux (parite Go)",
+      coord06_v15._canonique_v15({"a": True, "b": None, "c": 'x "y"\nz', "d": False})
+      == '{"a":true,"b":null,"c":"x \\"y\\"\\nz","d":false}'
+      and coord06_v15._canonique_v15([3, 1, 2]) == "[3,1,2]"
+      and coord06_v15._canonique_v15(7) == "7")
+check("JCSe empreintes v1.5 (H5) passent par la forme normative : parite avec le vecteur public",
+      coord06_v15._empreinte_contenu(_jcs_cas1)
+      == "4045c21a23c8ae8f8d9add81f54bd506bee65885099876fb4afb378b1f2c3516"
+      and coord06_v15.champs_divergents({"k": _jcs_cas1},
+                                        {"k": {"\U00010000": 2, "\ue000": 1}}) == ["k"]
+      and coord06_v15.champs_divergents({"k": _jcs_cas1},
+                                        {"k": {"\ue000": 2, "\U00010000": 1}}) == []
+      and coord06_v15.champs_divergents({"v": 1.5}, {"v": 2.5}) == [])  # marque <non canonique> des deux cotes, parite Go
+check("JCSf compatibilite : cles/valeurs ASCII -> formes identiques a coord06.canonical_json (octet par octet)",
+      all(coord06_v15._canonique_v15(s) == coord06.canonical_json(s) for s in [
+          {"a": 1, "b": [2, 3], "c": {"d": "e"}},
+          {"issue": "#19", "revision": REV, "empreinte_preuves": EMP,
+           "ts_utc": "2026-11-24T22:00:00Z", "decisions": [{"verdict": "ACCEPTEE"}]},
+          {"liste": [], "vide": {}, "nul": None, "booleen": True, "echap": "x\ny\"z"}]))
+
 # ---- Manifeste d'integrite des fichiers historiques (non-regression D3) ----
 def blob_sha1(path):
     data = open(path, "rb").read()

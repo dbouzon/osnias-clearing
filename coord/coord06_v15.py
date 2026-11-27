@@ -338,19 +338,73 @@ def nettoyer_temporaire(path):
     return False
 
 
+# ---- JCS : serialisation canonique RFC 8785 (mission M-COORD-JCS-01, #85) ----
+# Alignement des empreintes v1.5 sur la forme normative (RFC 8785, reprise par
+# la spec COORD 5.2/5.3) : cles triees par unites de code UTF-16, echappement
+# minimal, nombres entiers uniquement (refus fail-closed, jamais d'approximation).
+# Parite exacte avec le moteur Go (go/internal/jcs). coord06.canonical_json
+# (tri par points de code) reste INTACT et fige (manifeste M1) : il continue de
+# servir au stockage ; seul le chemin des EMPREINTES v1.5 (_empreinte_contenu,
+# champs_divergents) utilise la forme normative. En pratique les cles de
+# production sont ASCII : les deux formes y sont identiques octet par octet.
+
+_ENTIER_MAX_FLOAT = 9007199254740992.0  # 2**53 : entier sur en float64 (parite Go)
+
+
+def _canonique_v15(obj):
+    """Forme canonique RFC 8785 d'une valeur JSON decodee (spec COORD 5.2/5.3).
+
+    Cles d'objet triees par unites de code UTF-16 (cle de tri : encodage
+    utf-16-be, equivalent exact de la comparaison par unites UTF-16),
+    tableaux a ordre preserve, echappement minimal, nombres entiers
+    uniquement : un nombre non entier est REFUSE (ValueError, motif
+    explicite), jamais approxime ni represente en forme non normative.
+    """
+    if obj is True:
+        return "true"
+    if obj is False:
+        return "false"
+    if obj is None:
+        return "null"
+    if isinstance(obj, str):
+        return json.dumps(obj, ensure_ascii=False)
+    if isinstance(obj, int):  # bool deja traite ci-dessus
+        return str(obj)
+    if isinstance(obj, float):
+        if obj != obj or obj in (float("inf"), float("-inf")) \
+                or obj != int(obj) or abs(obj) > _ENTIER_MAX_FLOAT:
+            raise ValueError("nombre non canonique (entier attendu): %r" % (obj,))
+        return str(int(obj))
+    if isinstance(obj, list):
+        return "[" + ",".join(_canonique_v15(e) for e in obj) + "]"
+    if isinstance(obj, dict):
+        cles = sorted(obj.keys(), key=lambda s: s.encode("utf-16-be"))
+        return "{" + ",".join(
+            json.dumps(k, ensure_ascii=False) + ":" + _canonique_v15(obj[k])
+            for k in cles) + "}"
+    raise ValueError("type non canonique: %s" % type(obj).__name__)
+
+
 # ---- H5 : reprise deterministe avec arbitrage des supports ----
 REGLE_ARBITRAGE = "github_fait_foi"
 
 
 def _empreinte_contenu(record):
-    return hashlib.sha256(coord06.canonical_json(record).encode("utf-8")).hexdigest()
+    return hashlib.sha256(_canonique_v15(record).encode("utf-8")).hexdigest()
 
 
 def champs_divergents(a, b):
     """Champs de premier niveau dont la forme canonique diverge entre deux
     enregistrements de reprise."""
+    def _canon(v):
+        # Parite Go (resume.ChampsDivergents) : une valeur non canonique ne
+        # fait pas echouer l'arbitrage, elle est marquee non canonique.
+        try:
+            return _canonique_v15(v)
+        except ValueError:
+            return "<non canonique>"
     cles = sorted(set(list(a.keys()) + list(b.keys())))
-    return [c for c in cles if coord06.canonical_json(a.get(c)) != coord06.canonical_json(b.get(c))]
+    return [c for c in cles if _canon(a.get(c)) != _canon(b.get(c))]
 
 
 def arbitrer_reprise(record_knowledge, record_github, ts_utc, arbitre="moteur-v1.5"):
