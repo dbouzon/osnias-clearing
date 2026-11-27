@@ -69,6 +69,7 @@ type baseHTTP struct {
 	tailleMax int64
 	retraits  int
 	simuleLoc bool // endpoint loopback : banc d'essai local uniquement
+	reel      bool // configuration déclarée REEL par le pilote (#78) : jamais un banc d'essai
 	// Tarification et bornes déclarées (réserve 7154948522). Zéro = inconnu :
 	// l'orchestrateur refuse l'appel d'un connecteur réel (fail closed).
 	tarifEntreeMillion int
@@ -81,8 +82,16 @@ type baseHTTP struct {
 // ID retourne l'identifiant opaque du fournisseur (aucun privilège).
 func (b *baseHTTP) ID() string { return b.id }
 
-// SimuleLocal indique un endpoint loopback (serveurs factices, 0 €).
-func (b *baseHTTP) SimuleLocal() bool { return b.simuleLoc }
+// SimuleLocal indique un adaptateur qui ne peut JAMAIS engager de dépense
+// réelle : endpoint loopback ET configuration NON déclarée REEL. Un
+// endpoint loopback d'une configuration REEL n'est PAS un banc d'essai :
+// la dépense facturable peut survenir derrière un pont local (moteur ->
+// pont coord.llm.v1 -> API du fournisseur). M-COORD-MISTRAL-VPS-01, issue
+// #78 (réserve du pilote, essai réel du 27/11/2026 : voûte ayant réservé
+// 0 centime pour un appel facturable derrière le pont) : une
+// configuration déclarée REEL arme donc la voûte monétaire et le triple
+// verrou, même si son endpoint est loopback.
+func (b *baseHTTP) SimuleLocal() bool { return b.simuleLoc && !b.reel }
 
 // cleIdempotence : clé SHA-256 persistée par l'orchestrateur
 // (prévention des doublons après interruption).
@@ -126,7 +135,7 @@ func (b *baseHTTP) appel(ctx context.Context, action, charge, cleIdempotence str
 	// garde-fou TestReproP1BorneOctetsSousEstimeJetons). Cette estimation
 	// locale est une défense en profondeur côté connecteur, PAS une garantie
 	// du décompte réel du fournisseur. Fail closed.
-	if !b.simuleLoc && b.jetonsEntreeMax > 0 && len(corps) > b.jetonsEntreeMax*2 {
+	if !b.SimuleLocal() && b.jetonsEntreeMax > 0 && len(corps) > b.jetonsEntreeMax*2 {
 		return adaptateurs.Resultat{}, errors.New("connecteurs : CHARGE_HORS_BORNE : " +
 			"la requête dépasse jetons_entree_max_par_tentative (estimation conservatrice " +
 			"2 octets par jeton, MAJORANT local, PAS une garantie fournisseur, " +
@@ -215,6 +224,10 @@ func (b *baseHTTP) appel(ctx context.Context, action, charge, cleIdempotence str
 // adopter : triple verrou + clés, partagé par tous les constructeurs de
 // connecteurs réels (mission #29, étape 4/5). Identique pour tout format.
 func (b *baseHTTP) adopter(c *Config, f ConfigFournisseur) error {
+	// M-COORD-MISTRAL-VPS-01 (#78) : le mode REEL déclaré par le pilote
+	// qualifie l'adaptateur de potentiellement facturable, MÊME derrière un
+	// pont loopback : voir SimuleLocal.
+	b.reel = c.Mode == ModeReel
 	u, err := parseEndpoint(f.Endpoint)
 	if err != nil {
 		return errors.New("connecteurs : endpoint invalide pour " + f.ID)
@@ -223,7 +236,7 @@ func (b *baseHTTP) adopter(c *Config, f ConfigFournisseur) error {
 		return errors.New("connecteurs : endpoint " + f.ID +
 			" non sécurisé (https exigé hors loopback, fail closed)")
 	}
-	if !b.simuleLoc {
+	if !b.SimuleLocal() {
 		if c.Mode != ModeReel {
 			return errors.New("connecteurs : APPEL_REEL_NON_AUTORISE : mode REEL requis pour " + f.ID)
 		}
