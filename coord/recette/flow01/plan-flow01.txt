@@ -1,0 +1,3 @@
+PLAN DE DEMO FLOW-01 : prouver en mode simule loopback 0 EUR l'identite durable des
+operations, la reprise sans doublon, les journaux correles et le contrat de rejeu
+(D1..D7 du plan v2 accepte). Scenarios N/R/V/X/I/P executes par le lanceur.

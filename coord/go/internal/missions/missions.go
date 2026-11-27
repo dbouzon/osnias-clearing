@@ -37,14 +37,14 @@ import (
 // after a stop is lifted, the mission stays blocked until the normative
 // resume device N-16/N-17 has been executed).
 type Enregistrement struct {
-	Issue            string              `json:"Issue"`
-	Mission          engine.Mission      `json:"Mission"`
-	Adaptateurs      []string            `json:"Adaptateurs"`
-	Roles            map[string][]string `json:"Roles"`
-	Identites        []policy.Identity   `json:"Identites"`
-	Budget           budget.Budget       `json:"Budget"`
-	Arret            arret.Etat          `json:"Arret"`
-	RepriseAttendue  bool                `json:"RepriseAttendue"`
+	Issue           string              `json:"Issue"`
+	Mission         engine.Mission      `json:"Mission"`
+	Adaptateurs     []string            `json:"Adaptateurs"`
+	Roles           map[string][]string `json:"Roles"`
+	Identites       []policy.Identity   `json:"Identites"`
+	Budget          budget.Budget       `json:"Budget"`
+	Arret           arret.Etat          `json:"Arret"`
+	RepriseAttendue bool                `json:"RepriseAttendue"`
 }
 
 // JournalPath names the mission journal file of an issue.

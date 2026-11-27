@@ -51,6 +51,7 @@ func main() {
 	mandatChemin := flag.String("mandat", "", "fichier du mandat d'exécution")
 	livrableChemin := flag.String("livrable", "", "fichier du livrable soumis (réception)")
 	consulter := flag.Bool("consulter", false, "lecture seule : état de la mission et décisions, avec le détail des points de chaque verdict (DEP-02)")
+	rejeu := flag.String("rejeu", "", "M-COORD-FLOW-01 : rejeu explicite d'une opération, par id_operation ou 'derniere' (aucun appel sans validation du contrat)")
 	flag.Parse()
 
 	if *consulter {
@@ -66,7 +67,7 @@ func main() {
 	// Le cycle réel n'est JAMAIS un succès simulé : sans porte ouverte il
 	// refuse et imprime la procédure locale (exit 3).
 	os.Exit(reelRun(*configChemin, *dataDir, *issue, *executant, *recepteur,
-		*planChemin, *mandatChemin, *livrableChemin))
+		*planChemin, *mandatChemin, *livrableChemin, *rejeu))
 }
 
 // consulterRun : LECTURE SEULE (DEP-02). Ne crée rien, ne transitionne rien,
@@ -95,6 +96,19 @@ func consulterRun(dataDir, issue string) int {
 		return 1
 	}
 	fmt.Println(string(out))
+	// M-COORD-FLOW-01 D2/D7 : registre durable des opérations, comptage
+	// séparé (terminées / échouées / interrompues / résolues / en cours).
+	// Un registre illisible est signalé FAIL CLOSED (jamais masqué) ;
+	// absent = vide (mission antérieure, D6). La section va sur STDERR :
+	// stdout reste le JSON pur de la mission (consommateurs inchangés).
+	st, err := connecteurs.ResumeOperations(dataDir, issue)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "OPERATIONS : "+err.Error())
+		return 1
+	}
+	outOps, _ := json.MarshalIndent(st, "", "  ")
+	fmt.Fprintln(os.Stderr, "--- OPERATIONS ---")
+	fmt.Fprintln(os.Stderr, string(outOps))
 	return 0
 }
 
@@ -300,7 +314,7 @@ func registreDepuisConfig(cfg *connecteurs.Config) (map[string]adaptateurs.Adapt
 }
 
 func reelRun(configChemin, dataDir, issue, executant, recepteur,
-	planChemin, mandatChemin, livrableChemin string) int {
+	planChemin, mandatChemin, livrableChemin, rejeu string) int {
 
 	cfg, err := connecteurs.ChargerConfig(configChemin)
 	if err != nil {
@@ -333,6 +347,13 @@ func reelRun(configChemin, dataDir, issue, executant, recepteur,
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "orchestrateur impossible : "+err.Error())
 		return 1
+	}
+	// M-COORD-FLOW-01 (plan v2 D5) : rejeu EXPLICITE uniquement. Le contrat
+	// est validé par l'orchestrateur AVANT tout appel et toute réservation
+	// (opération inconnue/incompatible/terminée => refus sans effet).
+	if rejeu != "" {
+		orch = orch.AvecRejeu(rejeu)
+		fmt.Println("REJEU : cible " + rejeu + " (validée par le contrat d'opération)")
 	}
 	ctx := context.Background()
 	plafonds := budget.Plafonds{

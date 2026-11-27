@@ -58,7 +58,7 @@ func TestSEC01_Pilot_A10_TokenCompromis(t *testing.T) {
 	} {
 		code, corps := e.appel("POST", "/api/mission", tk, map[string]any{
 			"issue": "SEC-P-10", "adaptateurs": []string{"mistral-simule", "openai-simule"},
-			"roles":   map[string][]string{"EXECUTANT": {"executer"}},
+			"roles":        map[string][]string{"EXECUTANT": {"executer"}},
 			"executant_id": "exec", "recepteur_id": "recep",
 			"plafonds": map[string]any{"appels": map[string]int{"mistral-simule": 3}},
 		})
@@ -101,7 +101,7 @@ func TestSEC01_Pilot_A2A3_UsurpationRefusee(t *testing.T) {
 	code, _ = e.appel("POST", "/api/mission", tokenTest, map[string]any{
 		"issue": "SEC-P-03", "adaptateurs": []string{"mistral-simule", "openai-simule"},
 		"roles": map[string][]string{
-			"EXECUTANT": {"executer", "soumettre", "acker"},
+			"EXECUTANT":      {"executer", "soumettre", "acker"},
 			"RECEPTIONNAIRE": {"recevoir"}, "PILOTE": {"cloturer"},
 		},
 		"executant_id": "pilote-local", "recepteur_id": "recep-sim",

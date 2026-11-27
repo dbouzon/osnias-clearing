@@ -1,0 +1,3 @@
+MANDAT V1 : produire le livrable de demonstration FLOW-01 (trois lignes factices,
+sans secret). Ce mandat servira la premiere execution ; le livrable sera corrige
+apres le verdict A_CORRIGER recu par le recepteur factice.
