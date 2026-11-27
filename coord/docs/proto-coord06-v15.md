@@ -92,7 +92,7 @@ Chaque mission publie un enregistrement de reprise normalisé sur deux supports 
 
 Arbitrage : `arbitrer_reprise(record_knowledge, record_github, ts_utc)` retourne l'élu, la règle (`github_fait_foi`), la liste des champs divergents, les empreintes sha256 des **deux versions intégrales** (post-mortem reconstituable). Chaque arbitrage est journalisé (JSONL canonique, idempotent). La reprise n'exécute la prochaine action qu'après vérification de l'état du monde (`sha_head` attendu) ; un SHA divergent refuse la reprise sans ré-exécution.
 
-**Vecteurs de conformité ouverts** (`docs/conformite-v15/`) : fichiers JSON, positifs et négatifs, décrivant scénarios, données et résultats attendus (format documenté `coord-conformite-v1`). Ils couvrent la machine (3 vecteurs positifs, 9 négatifs), les habilitations (8), l'arbitrage de reprise (2) — 22 au total. **Toute implémentation indépendante du protocole, quel que soit son langage, doit produire exactement ces résultats.** Le lanceur de référence (`runner_conformite.py`) admet en argument un moteur alternatif ; un manifeste d'intégrité des fichiers historiques (`manifeste-historique-main.json`) verrouille la non-régression par empreintes de blobs.
+**Vecteurs de conformité ouverts** (`docs/conformite-v15/`) : fichiers JSON, positifs et négatifs, décrivant scénarios, données et résultats attendus (format documenté `coord-conformite-v1`). Ils couvrent la machine (3 vecteurs positifs, 9 négatifs), les habilitations (8), l'arbitrage de reprise (2) — 22 au total ; la famille `coord-conformite-jcs-v1` (mission M-COORD-JCS-01, #85) ajoute la sérialisation canonique RFC 8785 : 3 vecteurs (ordre des clés par unités UTF-16, tri récursif avec ordre des tableaux préservé, refus fail-closed des non-entiers) — 25 au total. **Toute implémentation indépendante du protocole, quel que soit son langage, doit produire exactement ces résultats.** Le lanceur de référence (`runner_conformite.py`) admet en argument un moteur alternatif ; un manifeste d'intégrité des fichiers historiques (`manifeste-historique-main.json`) verrouille la non-régression par empreintes de blobs.
 
 ## 7. Enregistrements et coexistence des versions
 
@@ -112,7 +112,7 @@ Coexistence (règle A-1, arbitrée) : les enregistrements v1.1–v1.4 restent va
 
 ## 9. Exigences normatives et matrice de couverture
 
-Chaque exigence est couverte par au moins un test positif et un test négatif de la batterie v1.5 (47 tests) et/ou un vecteur de conformité.
+Chaque exigence est couverte par au moins un test positif et un test négatif de la batterie v1.5 (53 tests) et/ou un vecteur de conformité.
 
 | Exigence | Énoncé (résumé) | Tests batterie | Vecteurs |
 |---|---|---|---|
@@ -161,12 +161,12 @@ Différences assumées documentées : plafond de corrections, verrou d'exclusivi
 - Durabilité : fsync local mono-machine (§5), pas de réplication ;
 - Réception différentielle multi-rounds : conduite documentée, outillage ultérieur ;
 - Interopérabilité MCP/A2A : volontairement hors périmètre (mission ultérieure) ;
-- La batterie historique v1.0 embarque une copie locale de sa machine (divergence documentée, constat C7 de l'issue #19) ; elle n'est pas modifiée (interdit de toucher aux versions historiques) ; la couverture du code distribué est apportée par la batterie v1.5 (47 tests) sur modules importés réels.
+- La batterie historique v1.0 embarque une copie locale de sa machine (divergence documentée, constat C7 de l'issue #19) ; elle n'est pas modifiée (interdit de toucher aux versions historiques) ; la couverture du code distribué est apportée par la batterie v1.5 (53 tests) sur modules importés réels.
 
 ## 13. Références de mise en œuvre
 
-- Module : `coord06_v15.py` ; batterie : `tests_coord06_v15.py` (47 tests) ; lanceur : `run_v15.sh` ;
-- Vecteurs : `docs/conformite-v15/` (4 fichiers, 22 vecteurs) ; lanceur : `runner_conformite.py` ; manifeste : `manifeste-historique-main.json` ;
+- Module : `coord06_v15.py` ; batterie : `tests_coord06_v15.py` (53 tests) ; lanceur : `run_v15.sh` ;
+- Vecteurs : `docs/conformite-v15/` (5 fichiers, 25 vecteurs) ; lanceur : `runner_conformite.py` ; manifeste : `manifeste-historique-main.json` ;
 - Démonstration : `demo/demo_v15.py`, lanceur `run_demo_v15.sh` (18 conformités, exit 0 contractuel) ;
 - Licence : Apache-2.0 ; mentions « Copyright © 2026 Denis Bouzon — ORCID: https://orcid.org/0009-0007-8894-8902 » en tête de chaque source propre à COORD.
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1" name="viewport">
 <title>Appel à implémentations COORD Specification 1.0 | Osnias Clearing</title>
-<meta content="Rejouez les 22 vecteurs de conformité publics de COORD Specification 1.0 avec votre propre implémentation, dans le langage de votre choix, et publiez vos résultats." name="description">
+<meta content="Rejouez les 25 vecteurs de conformité publics de COORD Specification 1.0 avec votre propre implémentation, dans le langage de votre choix, et publiez vos résultats." name="description">
 <meta content="Denis Bouzon" name="author">
 <meta content="Denis Bouzon" name="creator">
 <meta content="Osnias Clearing" name="publisher">
@@ -17,7 +17,7 @@
 <link href="https://orcid.org/0009-0007-8894-8902" rel="author">
 <link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
 <meta content="Appel à implémentations COORD Specification 1.0 | Osnias Clearing" property="og:title">
-<meta content="Rejouez les 22 vecteurs de conformité publics et publiez vos résultats." property="og:description">
+<meta content="Rejouez les 25 vecteurs de conformité publics et publiez vos résultats." property="og:description">
 <meta content="article" property="og:type">
 <meta content="https://www.osnias-clearing.com/coord/implementations/" property="og:url">
 <meta content="Osnias Clearing" property="og:site_name">
@@ -53,8 +53,8 @@
 <div class="hero-heading">
 <div class="eyebrow">Standard ouvert, implémentations indépendantes</div>
 <h1>Implémentez COORD Specification 1.0</h1>
-<div class="hero-role">22 vecteurs publics · n'importe quel langage · résultats publiables</div>
-<p class="hero-lead">COORD Specification 1.0 structure la collaboration entre agents logiciels (typiquement des LLM) sous l'autorité d'un pilote humain. Sa conformité se prouve en rejouant 22 vecteurs publics, sans compte ni clé API. Deux moteurs de référence indépendants (Go et Python) les passent aujourd'hui : soyez le troisième.</p>
+<div class="hero-role">25 vecteurs publics · n'importe quel langage · résultats publiables</div>
+<p class="hero-lead">COORD Specification 1.0 structure la collaboration entre agents logiciels (typiquement des LLM) sous l'autorité d'un pilote humain. Sa conformité se prouve en rejouant 25 vecteurs publics, sans compte ni clé API. Deux moteurs de référence indépendants (Go et Python) les passent aujourd'hui : soyez le troisième.</p>
 </div>
 </section>
 </div>
@@ -63,8 +63,8 @@
 <section id="jouer">
 <div>
 <div class="section-label">01 · Ce qu'il faut rejouer</div>
-<h2>Les 22 vecteurs de conformité</h2>
-<p class="section-intro">Les vecteurs sont des scénarios JSON normatifs au format <code>coord-conformite-v1</code> : 3 transitions positives, 9 transitions négatives (motifs de refus explicites), 8 configurations d'habilitations et 2 arbitrages de reprise.</p>
+<h2>Les 25 vecteurs de conformité</h2>
+<p class="section-intro">Les vecteurs sont des scénarios JSON normatifs aux formats <code>coord-conformite-v1</code> et <code>coord-conformite-jcs-v1</code> : 3 transitions positives, 9 transitions négatives (motifs de refus explicites), 8 configurations d'habilitations, 2 arbitrages de reprise et 3 vecteurs de sérialisation canonique RFC 8785 (ordre des clés UTF-16, refus fail-closed des non-entiers).</p>
 </div>
 <div class="notice"><strong>En pratique :</strong> récupérez le dossier <code>coord/docs/conformite-v15/</code> (ou l'archive complète), lisez la <a href="/coord/docs/spec/coord-spec-1.0.md">norme (EN)</a> et le guide implémenteur (<code>coord/docs/coord-guides.md</code>), implémentez la machine à états fermée, puis rejouez chaque vecteur : chaque <code>attendu</code> doit correspondre exactement, motifs de refus compris.</div>
 </section>
@@ -83,8 +83,8 @@
 </div>
 <div class="resources">
 <a class="resource" href="/coord/docs/spec/coord-spec-1.0.md"><div><strong>COORD Specification 1.0 (EN)</strong><span>RFC 2119 · Indépendante du langage</span></div><div class="resource-type">READ →</div></a>
-<a class="resource" href="https://github.com/dbouzon/osnias-clearing/tree/main/coord/docs/conformite-v15" rel="noopener noreferrer" target="_blank"><div><strong>22 vecteurs publics</strong><span>Format coord-conformite-v1 · JSON</span></div><div class="resource-type">OPEN →</div></a>
-<a class="resource" href="https://github.com/dbouzon/osnias-clearing/tree/main/coord/schemas" rel="noopener noreferrer" target="_blank"><div><strong>5 schémas JSON 2020-12</strong><span>Identité · Habilitations · Enveloppe · Verdict · Vecteurs</span></div><div class="resource-type">OPEN →</div></a>
+<a class="resource" href="https://github.com/dbouzon/osnias-clearing/tree/main/coord/docs/conformite-v15" rel="noopener noreferrer" target="_blank"><div><strong>25 vecteurs publics</strong><span>Formats coord-conformite-v1 + coord-conformite-jcs-v1 · JSON</span></div><div class="resource-type">OPEN →</div></a>
+<a class="resource" href="https://github.com/dbouzon/osnias-clearing/tree/main/coord/schemas" rel="noopener noreferrer" target="_blank"><div><strong>6 schémas JSON 2020-12</strong><span>Identité · Habilitations · Enveloppe · Verdict · Vecteurs · Vecteurs JCS</span></div><div class="resource-type">OPEN →</div></a>
 <a class="resource" href="/coord-v1.0-v1.5.zip"><div><strong>Archive complète</strong><span>Sources v1.0 à v1.5 + Specification 1.0</span></div><div class="resource-type">⬇ ZIP →</div></a>
 </div>
 </section>
