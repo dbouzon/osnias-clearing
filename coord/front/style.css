@@ -1,0 +1,119 @@
+/* COORD parcours client — feuille de style unique, mobile-first. */
+* { box-sizing: border-box; }
+:root {
+  --encre: #1d2733;
+  --gris: #5c6874;
+  --trait: #d8dee6;
+  --fond: #f6f8fa;
+  --carte: #ffffff;
+  --vert: #1a7f37;
+  --orange: #b45309;
+  --bleu: #0b5cad;
+  --rouge: #b3261e;
+}
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  color: var(--encre);
+  background: var(--fond);
+  line-height: 1.45;
+}
+
+/* ---- entête ---- */
+.entete {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 10px 14px; background: var(--carte);
+  border-bottom: 1px solid var(--trait);
+  position: sticky; top: 0; z-index: 5;
+}
+.entete-gauche, .entete-droite { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.logo { font-weight: 700; letter-spacing: 0.08em; color: var(--encre); text-decoration: none; }
+.sous-titre { color: var(--gris); font-size: 0.85rem; }
+.etat-drive { color: var(--gris); font-size: 0.85rem; }
+#select-langue { padding: 6px; border: 1px solid var(--trait); border-radius: 6px; background: var(--carte); }
+
+.bandeau-demo {
+  background: #fff3cd; color: #664d03; text-align: center;
+  padding: 8px 14px; font-size: 0.9rem; border-bottom: 1px solid #ffe69c;
+}
+.cache { display: none; }
+
+/* ---- structure ---- */
+.contenu { max-width: 960px; margin: 0 auto; padding: 16px 14px 48px; }
+.pied { text-align: center; color: var(--gris); font-size: 0.8rem; padding: 16px; }
+h1 { font-size: 1.3rem; margin: 8px 0 16px; }
+h2 { font-size: 1.05rem; margin: 24px 0 10px; color: var(--encre); }
+
+.carte {
+  background: var(--carte); border: 1px solid var(--trait);
+  border-radius: 10px; padding: 14px; margin-bottom: 12px;
+}
+
+/* ---- boutons ---- */
+.bouton {
+  display: inline-block; min-height: 44px; padding: 10px 16px;
+  border: 1px solid var(--trait); border-radius: 8px; cursor: pointer;
+  background: var(--carte); color: var(--encre); font-size: 0.95rem;
+}
+.bouton:hover { border-color: var(--bleu); }
+.bouton.principal { background: var(--bleu); border-color: var(--bleu); color: #fff; font-weight: 600; }
+.bouton.danger { color: var(--rouge); }
+.bouton.discret { font-size: 0.85rem; min-height: 36px; padding: 6px 10px; }
+.bouton:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---- formulaires ---- */
+label { display: block; margin: 12px 0 4px; font-size: 0.9rem; color: var(--gris); }
+input[type="text"], input[type="password"], textarea, select {
+  width: 100%; min-height: 44px; padding: 10px;
+  border: 1px solid var(--trait); border-radius: 8px;
+  font-size: 0.95rem; font-family: inherit; background: #fff;
+}
+textarea { min-height: 110px; resize: vertical; }
+.aide { color: var(--gris); font-size: 0.8rem; margin-top: 4px; }
+.erreur { color: var(--rouge); font-size: 0.9rem; margin: 8px 0; }
+.info { color: var(--vert); font-size: 0.9rem; margin: 8px 0; }
+
+/* ---- tableau accueil ---- */
+.outils { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.filtre { display: flex; align-items: center; gap: 6px; }
+.filtre select { min-width: 160px; }
+table.tableau { width: 100%; border-collapse: collapse; background: var(--carte); border: 1px solid var(--trait); border-radius: 10px; overflow: hidden; }
+.tableau th, .tableau td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--trait); font-size: 0.9rem; vertical-align: top; }
+.tableau th { background: #eef2f6; color: var(--gris); font-weight: 600; }
+.tableau tr:last-child td { border-bottom: none; }
+.pastille { margin-right: 6px; }
+.empreinte { font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--gris); word-break: break-all; }
+
+/* ---- chat ---- */
+.chat { display: flex; flex-direction: column; gap: 10px; }
+.message { max-width: 85%; padding: 10px 12px; border-radius: 12px; font-size: 0.92rem; }
+.message.directeur { background: #eef2f6; border: 1px solid var(--trait); align-self: flex-start; }
+.message.client { background: #e7f1fb; border: 1px solid #bcd8f0; align-self: flex-end; }
+.message .auteur { display: block; font-size: 0.75rem; color: var(--gris); margin-bottom: 4px; font-weight: 600; }
+.saisie { display: flex; gap: 8px; margin-top: 10px; }
+.saisie input { flex: 1; }
+
+/* ---- pastilles d'état ---- */
+.etat-libelle { font-weight: 600; }
+.badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 0.75rem; background: #eef2f6; color: var(--gris); }
+.badge.accord { background: #e6f4ea; color: var(--vert); }
+.badge.refus { background: #fce8e6; color: var(--rouge); }
+
+/* ---- journal ---- */
+.journal { font-size: 0.82rem; max-height: 420px; overflow-y: auto; background: var(--carte); border: 1px solid var(--trait); border-radius: 10px; padding: 10px; }
+.journal entry, .journal div.entree { padding: 6px 4px; border-bottom: 1px dashed var(--trait); }
+.journal .type { font-family: ui-monospace, monospace; font-weight: 600; }
+
+/* ---- mobile ---- */
+@media (max-width: 719px) {
+  .tableau.et-desktop { display: none; }
+  .cartes-mobile .carte { display: flex; flex-direction: column; gap: 6px; }
+  .mission-titre { font-weight: 700; }
+  .saisie { flex-direction: column; }
+}
+@media (min-width: 720px) {
+  .cartes-mobile { display: none; }
+}
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.rangée { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mono { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }

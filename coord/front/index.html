@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COORD — Parcours client</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="entete">
+    <div class="entete-gauche">
+      <a class="logo" href="#/accueil">COORD</a>
+      <span class="sous-titre" data-i18n="app.sousTitre">Parcours client</span>
+    </div>
+    <div class="entete-droite">
+      <span id="etat-drive" class="etat-drive"></span>
+      <select id="select-langue" aria-label="Langue">
+        <option value="fr">fr</option>
+        <option value="en">en</option>
+        <option value="de">de</option>
+        <option value="es">es</option>
+        <option value="zh">zh</option>
+      </select>
+      <button id="btn-compte" class="bouton discret" data-i18n="app.changerCompte">Changer de compte</button>
+    </div>
+  </header>
+  <div id="bandeau-demo" class="bandeau-demo cache" data-i18n="app.bandeauDemo">Données de démonstration</div>
+  <main id="contenu" class="contenu">
+    <p data-i18n="app.chargement">Chargement…</p>
+  </main>
+  <footer class="pied">COORD · maïeutique · loopback</footer>
+
+  <script src="js/langues/fr.js"></script>
+  <script src="js/langues/en.js"></script>
+  <script src="js/langues/de.js"></script>
+  <script src="js/langues/es.js"></script>
+  <script src="js/langues/zh.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ecrans/connexion.js"></script>
+  <script src="js/ecrans/accueil.js"></script>
+  <script src="js/ecrans/creation.js"></script>
+  <script src="js/ecrans/mission.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () { Coord.demarrer(); });</script>
+</body>
+</html>
