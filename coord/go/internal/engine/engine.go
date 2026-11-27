@@ -133,8 +133,20 @@ func (m *Mission) Transition(cible string, id policy.Identity,
 		// jamais ecraser le detail d'une correction precedente).
 		points := []string{}
 		if raw := donnees["points"]; raw != "" {
-			if err := json.Unmarshal([]byte(raw), &points); err != nil {
+			// Validation stricte (revue PR #71) : json.Unmarshal accepte
+			// silencieusement null et [null] dans un []string ; on decode
+			// en []any pour refuser toute forme tronquee (top-level null,
+			// element null, element non chaine). Fail closed.
+			var elems []any
+			if err := json.Unmarshal([]byte(raw), &elems); err != nil || elems == nil {
 				return false, "points de verdict invalides (liste JSON de chaines attendue)"
+			}
+			for _, e := range elems {
+				s, ok := e.(string)
+				if !ok {
+					return false, "points de verdict invalides (element null ou non chaine)"
+				}
+				points = append(points, s)
 			}
 		}
 		m.Decisions = append(m.Decisions, Decision{
