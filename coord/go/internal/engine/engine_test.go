@@ -212,6 +212,17 @@ func TestVerdictPointsInvalidesRefuses(t *testing.T) {
 	refus(t, "ACCEPTEE", recep, map[string]string{
 		"verdict_id": "v", "verdict_url": "u", "points": `[42]`,
 	}, "points de verdict invalides")
+	// Revue PR #71 : null et [null] sont acceptes silencieusement par
+	// json.Unmarshal dans un []string ; le moteur doit les refuser.
+	refus(t, "EN_CORRECTION", recep, map[string]string{
+		"verdict_id": "v", "verdict_url": "u", "points": `null`,
+	}, "points de verdict invalides")
+	refus(t, "ACCEPTEE", recep, map[string]string{
+		"verdict_id": "v", "verdict_url": "u", "points": `[null]`,
+	}, "points de verdict invalides")
+	refus(t, "EN_CORRECTION", recep, map[string]string{
+		"verdict_id": "v", "verdict_url": "u", "points": `["corriger",null]`,
+	}, "points de verdict invalides")
 }
 
 func TestVerdictPointsRelectureDisque(t *testing.T) {
