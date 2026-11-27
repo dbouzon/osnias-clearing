@@ -197,6 +197,45 @@ func brancherRoutes(mux *http.ServeMux, store *maieutique.Store, token string) {
 	mux.HandleFunc("POST /projets/{id}/sources", s.gerer(s.declarerSources))
 	mux.HandleFunc("POST /projets/{id}/urls-acceptees", s.gerer(s.accepterURL))
 	mux.HandleFunc("GET /projets/{id}/ordre", s.gerer(s.obtenirOrdre))
+	mux.HandleFunc("GET /projets/{id}/fille", s.gerer(s.missionFille))
+}
+
+// missionFille (mission M-COORD-FRONT-01, commit « adaptations serveur »
+// critiqué séparément) : route ADDITIVE en LECTURE SEULE pour le parcours
+// client — état de la mission fille moteur d'un projet TRANSMIS. Le moteur
+// (internal/maieutique) n'est PAS modifié : la configuration et le
+// référentiel missions sont lus par les accesseurs existants, sans
+// méthode mutante ni verrou d'écriture. Avant transmission, la réponse
+// est 404 (aucune fuite d'information sur l'existence d'une mission).
+func (s *service) missionFille(w http.ResponseWriter, r *http.Request) error {
+	p, err := s.store.Obtenir(r.PathValue("id"))
+	if err != nil {
+		return err
+	}
+	if p.Etat != maieutique.EtatTransmis {
+		return maieutique.Erreur{Code: maieutique.CodeProjetInconnu,
+			Motif: "aucune mission fille : le projet n'est pas transmis"}
+	}
+	cfg := s.store.Config()
+	if cfg.Referentiel == nil {
+		return maieutique.Erreur{Code: maieutique.CodeActionInterdit,
+			Motif: "aucun référentiel missions configuré"}
+	}
+	tr := cfg.Transmission
+	enr, err := cfg.Referentiel.Obtenir(tr.IssueFille)
+	if err != nil {
+		return maieutique.Erreur{Code: maieutique.CodeProjetInconnu,
+			Motif: "mission fille absente du référentiel : " + tr.IssueFille}
+	}
+	repondre(w, http.StatusOK, map[string]any{
+		"issue":           tr.IssueFille,
+		"etat":            enr.Mission.State,
+		"executant":       tr.ExecutantID,
+		"receptionnaire":  tr.RecepteurID,
+		"roles":           enr.Roles,
+		"empreinte_ordre": p.EmpreinteOrdre,
+	})
+	return nil
 }
 
 type service struct {
