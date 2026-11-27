@@ -6,6 +6,7 @@ package connecteurs
 
 import (
 	"context"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -68,6 +69,19 @@ var errReponseTardive = errors.New("orchestrateur : REPONSE_TARDIVE : arrêt pil
 type Orchestrateur struct {
 	ref *missions.Referentiel
 	reg map[string]adaptateurs.Adaptateur
+	// M-COORD-FLOW-01 (plan v2 D5) : cible d'un REJEU EXPLICITE (vide =
+	// opération nouvelle). Copie shallow via AvecRejeu : l'original n'est
+	// jamais muté.
+	rejeuID string
+}
+
+// AvecRejeu : retourne une copie de l'orchestrateur ciblant le rejeu
+// explicite de l'opération id (ou "derniere"). Le rejeu est TOUJOURS un acte
+// délibéré : aucun automatisme ne le déclenche (SEC-01 inchangé).
+func (o *Orchestrateur) AvecRejeu(id string) *Orchestrateur {
+	copie := *o
+	copie.rejeuID = id
+	return &copie
 }
 
 // NouvelOrchestrateur vérifie le référentiel (R2/S5) et installe le registre.
@@ -166,6 +180,9 @@ type appelEnCours struct {
 	CleIdemp   string `json:"cle_idempotence"`
 	Etat       string `json:"etat"`
 	InstantUTC string `json:"instant_utc"`
+	// M-COORD-FLOW-01 (D1) : champ additif ; ABSENT dans les états anciens
+	// = jamais d'erreur, jamais de rejeu implicite (D6).
+	IdOperation string `json:"id_operation,omitempty"`
 }
 
 const (
@@ -224,16 +241,49 @@ func (o *Orchestrateur) ResoudreAppelEnCours(issue, resolution, motif, par strin
 	if err := o.appelEnCoursEcrit(a); err != nil {
 		return err
 	}
+	// M-COORD-FLOW-01 (D2/D5) : la décision pilote sur un appel non résolu
+	// est inscrite au registre : RESOLU_PERDU/ECARTE/ECHOUE rendent
+	// l'opération REJOUABLE (même identité, clé neuve) ; RESOLU_RECU ne
+	// l'est jamais (réponse possiblement arrivée sans commit).
+	if a.IdOperation != "" {
+		if err := journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+			Type: TypeOperationResolue, IdOperation: a.IdOperation,
+			Issue: issue, Action: a.Action, Detail: resolution,
+		}); err != nil {
+			return err
+		}
+	}
 	errJ := o.ref.Journaliser(issue, map[string]any{
 		"type":   TypeResolution,
 		"detail": "appel en cours résolu (" + resolution + ") : " + motif,
 		"par":    par,
 	})
+	if a.IdOperation != "" {
+		// journalisation de mission : corrélation D3 (best effort, la
+		// décision est déjà durable dans le registre).
+		_ = o.ref.Journaliser(issue, map[string]any{
+			"type":         "RESOLUTION_CORRELATION",
+			"id_operation": a.IdOperation, "resolution": resolution,
+		})
+	}
 	if errJ != nil {
 		return errJ
 	}
 	o.projeterDurable(issue) // projection lecture seule (M-COORD-HARDENING-01 P5)
 	return nil
+}
+
+// nouvelIdOperation : identité d'opération aléatoire (plan v2 D1) :
+// crypto/rand 16 octets hex, propre à CHAQUE opération, JAMAIS dérivée du
+// contenu (deux opérations volontaires à contenu identique ont des
+// identités DISTINCTES, ajustement pilote a ; D4). Une défaillance de
+// crypto/rand est irrécupérable : fail closed.
+func nouvelIdOperation() string {
+	b := make([]byte, 16)
+	if _, err := rand.Read(b); err != nil {
+		panic("orchestrateur : crypto/rand indisponible : aucune identité d'opération ne peut être créée (fail closed)")
+	}
+	return hex.EncodeToString(b)
 }
 
 func empreinteCharge(s string) string {
@@ -271,6 +321,8 @@ type preparation struct {
 	cleIdemp    string
 	charge      string
 	action      string
+	// M-COORD-FLOW-01 (D1) : identité propre, réutilisée au rejeu (D5).
+	idOperation string
 }
 
 // preparer : TX1. Vérifie absence d'appel non résolu, arrêt, reprise,
@@ -302,6 +354,71 @@ func (o *Orchestrateur) preparer(issue, cible, action, acteur, charge string) (*
 		id, ok := resoudreActeur(enr, acteur)
 		if !ok {
 			return errors.New("orchestrateur : acteur inconnu ou non habilité : " + acteur)
+		}
+		// M-COORD-FLOW-01 D2 (fail closed) : le registre des opérations est
+		// lu à CHAQUE préparation : une ligne illisible bloque TOUTE nouvelle
+		// opération (OPERATIONS_ILLISIBLES), aucun appel n'a lieu. Un registre
+		// absent (mission antérieure) est vide : cycle inchangé (D6).
+		evsOps, errL := LireOperations(o.ref.Racine(), issue)
+		if errL != nil {
+			return errors.New("orchestrateur : " + errL.Error())
+		}
+		// M-COORD-FLOW-01 (plan v2 D5) : rejeu explicite. Validation fail
+		// closed AVANT la validation normative et AVANT toute réservation :
+		// identité inconnue, incompatible ou terminée => refus SANS appel et
+		// SANS budget, journalisé dans le registre d'opérations (tout rejeu
+		// est traçable).
+		idOp := nouvelIdOperation()
+		if o.rejeuID != "" {
+			cibleR, okR := trouverOperationRejeu(evsOps, o.rejeuID)
+			etatsR := etatsOperations(evsOps)
+			st, existe := etatsR[cibleR]
+			if !okR || !existe {
+				_ = journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+					Type: TypeOperationRejetee, IdOperation: o.rejeuID,
+					Issue: issue, Action: action, Acteur: acteur,
+					Detail: "OPERATION_INCONNUE : aucune opération ne correspond à la cible de rejeu",
+				})
+				return errors.New("orchestrateur : OPERATION_INCONNUE : le rejeu vise une opération inconnue ou une mission sans identité (fail closed, aucun appel)")
+			}
+			if st.Action != action || st.Empreinte != empreinteCharge(charge) || st.Acteur != acteur {
+				_ = journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+					Type: TypeOperationRejetee, IdOperation: cibleR,
+					Issue: issue, Action: action, Acteur: acteur,
+					Detail: "OPERATION_INCOMPATIBLE : action/charge/acteur divergents de l'opération d'origine",
+				})
+				return errors.New("orchestrateur : OPERATION_INCOMPATIBLE : le rejeu diverge de l'opération d'origine (action/charge/acteur), fail closed avant tout appel")
+			}
+			switch st.Etat {
+			case OperationTerminee:
+				_ = journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+					Type: TypeOperationRejetee, IdOperation: cibleR,
+					Issue: issue, Action: action, Acteur: acteur,
+					Detail: "OPERATION_DEJA_TERMINEE : rejeu sans effet (zéro appel, zéro budget)",
+				})
+				return errors.New("orchestrateur : OPERATION_DEJA_TERMINEE : l'opération est terminée, le rejeu est sans effet (zéro appel, zéro budget)")
+			case OperationInterrompue, "RESOLU_RECU":
+				_ = journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+					Type: TypeOperationRejetee, IdOperation: cibleR,
+					Issue: issue, Action: action, Acteur: acteur,
+					Detail: "OPERATION_NON_REJOUABLE : résultat antérieur incertain ou arrivé sans commit : nouvelle opération requise, jamais un renvoi implicite",
+				})
+				return errors.New("orchestrateur : OPERATION_NON_REJOUABLE : le résultat antérieur est incertain (interrompu/résolu RECU) : une NOUVELLE opération volontaire est requise")
+			case OperationEnCours:
+				return ErrAppelEnCours{Issue: issue}
+			case OperationEchouee, "RESOLU_PERDU", "RESOLU_ECARTE", "RESOLU_ECHOUE":
+				// Seuls cas rejouables (D5) : relance de la MÊME identité,
+				// avec une clé d'idempotence NEUVE (la tentative reste
+				// distincte, N-19 et #75).
+				idOp = cibleR
+			default:
+				_ = journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+					Type: TypeOperationRejetee, IdOperation: cibleR,
+					Issue: issue, Action: action, Acteur: acteur,
+					Detail: "OPERATION_NON_REJOUABLE : état " + st.Etat,
+				})
+				return errors.New("orchestrateur : OPERATION_NON_REJOUABLE : état d'opération non rejouable (" + st.Etat + ")")
+			}
 		}
 		if cible == "" {
 			// Pas de cible d'état (critique de plan) : seule l'habilitation
@@ -359,14 +476,31 @@ func (o *Orchestrateur) preparer(issue, cible, action, acteur, charge string) (*
 			estCentimes: estCentimes,
 			cleIdemp: empreinteCharge(issue + "|" + action + "|" + charge + "|" +
 				time.Now().UTC().Format(time.RFC3339Nano)),
-			charge: charge,
-			action: action,
+			charge:      charge,
+			action:      action,
+			idOperation: idOp,
 		}
-		return o.appelEnCoursEcrit(&appelEnCours{
+		if err := o.appelEnCoursEcrit(&appelEnCours{
 			Issue: issue, Action: action, Empreinte: empreinteCharge(charge),
 			CleIdemp: p.cleIdemp, Etat: appelEnCoursEtatEnCours,
-			InstantUTC: time.Now().UTC().Format(time.RFC3339),
-		})
+			InstantUTC:  time.Now().UTC().Format(time.RFC3339),
+			IdOperation: p.idOperation,
+		}); err != nil {
+			return err
+		}
+		// M-COORD-FLOW-01 (plan v2 D7) : OPERATION_OUVERTE est écrite DANS
+		// TX1, APRÈS les réservations : un échec d'écriture fait échouer la
+		// transaction, AUCUN appel n'a lieu (procédure a : l'appel en cours
+		// inscrit reste résolvable par le pilote).
+		if err := journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+			Type: TypeOperationOuverte, IdOperation: p.idOperation,
+			Issue: issue, Action: action, Empreinte: empreinteCharge(charge),
+			Acteur: acteur,
+		}); err != nil {
+			return errors.New("orchestrateur : ERREUR_OPERATION_OUVERTE : " +
+				"impossible d'inscrire l'opération dans le registre, aucun appel n'a lieu (" + err.Error() + ")")
+		}
+		return nil
 	}, nil)
 	if err != nil {
 		return nil, err
@@ -378,6 +512,7 @@ func (o *Orchestrateur) preparer(issue, cible, action, acteur, charge string) (*
 		"type": TypeAppelReserve, "action": p.action, "adaptateur": p.adaptateur,
 		"jetons_reserves": p.estimation, "cle_idempotence": p.cleIdemp,
 		"centimes_reserves": p.estCentimes,
+		"id_operation":      p.idOperation, // M-COORD-FLOW-01 D3 : corrélation
 		"detail": "centimes_reserves = estimation conservatrice LOCALE declaree " +
 			"(tarifs + bornes + retraits), pas une garantie fournisseur",
 	})
@@ -428,10 +563,23 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 	echec := o.ref.Transaction(issue, func(c *missions.ContexteMission) error {
 		enr := c.Enr
 		if arret.Actif(&enr.Arret) {
+			// M-COORD-FLOW-01 (plan v2 D7) : l'événement INTERROMPUE est
+			// écrit DANS TX2 AVANT le refus : un échec d'écriture annule la
+			// séquence (ERREUR_PERSISTANCE_DECISION), l'appel reste non
+			// résolu, aucune transition n'est appliquée.
+			if err := journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+				Type: TypeOperationInterrompue, IdOperation: p.idOperation,
+				Issue: issue, Action: action, Acteur: p.identite.ID,
+				Detail: "arrêt pilote pendant l'appel : réponse arrivée sans commit",
+			}); err != nil {
+				return errors.New("orchestrateur : ERREUR_PERSISTANCE_DECISION : " +
+					"impossible d'inscrire INTERROMPUE, transition annulée (" + err.Error() + ")")
+			}
 			_ = o.appelEnCoursEcrit(&appelEnCours{
 				Issue: issue, Action: action, Empreinte: empreinteCharge(p.charge),
 				CleIdemp: p.cleIdemp, Etat: appelEnCoursEtatOrphelin,
-				InstantUTC: time.Now().UTC().Format(time.RFC3339),
+				InstantUTC:  time.Now().UTC().Format(time.RFC3339),
+				IdOperation: p.idOperation,
 			})
 			return errReponseTardive
 		}
@@ -474,16 +622,29 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 				return nil // le refus est explicite mais la comptabilité reste sauvegardée
 			}
 		}
+		// M-COORD-FLOW-01 (plan v2 D7) : l'événement terminal TERMINEE est
+		// écrit DANS TX2 AVANT le commit : un échec d'écriture annule la
+		// transition (ERREUR_PERSISTANCE_DECISION), l'appel reste non
+		// résolu (procédure b : -consulter + résolution pilote + rejeu).
+		if err := journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+			Type: TypeOperationTerminee, IdOperation: p.idOperation,
+			Issue: issue, Action: action, Acteur: p.identite.ID,
+		}); err != nil {
+			return errors.New("orchestrateur : ERREUR_PERSISTANCE_DECISION : " +
+				"impossible d'inscrire TERMINEE, transition annulée (" + err.Error() + ")")
+		}
 		return o.appelEnCoursEcrit(&appelEnCours{
 			Issue: issue, Action: action, Empreinte: empreinteCharge(p.charge),
 			CleIdemp: p.cleIdemp, Etat: appelEnCoursEtatTermine,
-			InstantUTC: time.Now().UTC().Format(time.RFC3339),
+			InstantUTC:  time.Now().UTC().Format(time.RFC3339),
+			IdOperation: p.idOperation,
 		})
 	}, nil)
 	if echec != nil {
 		if errors.Is(echec, errReponseTardive) {
 			o.ref.Journaliser(issue, map[string]any{
 				"type": TypeReponseTard, "action": action,
+				"id_operation": p.idOperation, // M-COORD-FLOW-01 D3
 				"detail":       "réponse arrivée pendant/après un arrêt pilote : aucune transition appliquée, aucune fraude d'état",
 				"jetons_reels": res.Jetons,
 			})
@@ -493,20 +654,28 @@ func (o *Orchestrateur) committer(issue, cible, action string, p *preparation,
 	if motifRefus != "" {
 		// Transition refusée au commit : comptabilité consommée (fail
 		// closed), état inchangé, appel marqué TERMINE côté comptabilité.
+		_ = journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+			Type: TypeOperationInterrompue, IdOperation: p.idOperation,
+			Issue: issue, Action: action, Acteur: p.identite.ID,
+			Detail: "transition refusée au commit : résultat incertain sans commit",
+		})
 		_ = o.appelEnCoursEcrit(&appelEnCours{
 			Issue: issue, Action: action, Empreinte: empreinteCharge(p.charge),
 			CleIdemp: p.cleIdemp, Etat: appelEnCoursEtatOrphelin,
-			InstantUTC: time.Now().UTC().Format(time.RFC3339),
+			InstantUTC:  time.Now().UTC().Format(time.RFC3339),
+			IdOperation: p.idOperation,
 		})
 		o.ref.Journaliser(issue, map[string]any{
 			"type": TypeCommitRefuse, "action": action,
-			"detail": "transition refusée au commit : " + motifRefus + " (aucune fraude d'état)",
+			"id_operation": p.idOperation, // M-COORD-FLOW-01 D3
+			"detail":       "transition refusée au commit : " + motifRefus + " (aucune fraude d'état)",
 		})
 		return fmt.Errorf("orchestrateur : COMMIT_REFUSE : %s (réservation conservée, état inchangé)", motifRefus)
 	}
 	o.ref.Journaliser(issue, map[string]any{
 		"type": TypeAppelReel, "action": action, "adaptateur": p.adaptateur,
 		"jetons": res.Jetons, "empreinte_sortie": empreinteCharge(res.Sortie),
+		"id_operation": p.idOperation, // M-COORD-FLOW-01 D3 : corrélation
 		// M-COORD-E2E-VPS-01 : la clé d'idempotence (unique par appel) rend
 		// chaque entrée distincte ; sans elle, deux appels réels DIFFÉRENTS
 		// aux réponses identiques (factices déterministes) sérialisaient en
@@ -571,14 +740,21 @@ func (o *Orchestrateur) Executer(ctx context.Context, issue, executantID, mandat
 // l'échec est EXPLICITE (aucune réponse ambiguë), l'appel est clos ECHOUÉ et
 // peut être retenté par le pilote (chaque tentative est comptée).
 func (o *Orchestrateur) echecAppel(issue string, p *preparation, err error) {
+	_ = journaliserOperation(o.ref.Racine(), issue, EvenementOperation{
+		Type: TypeOperationEchouee, IdOperation: p.idOperation,
+		Issue: issue, Action: p.action, Acteur: p.identite.ID,
+		Detail: "échec explicite de l'appel : rejeu possible (même identité, clé neuve)",
+	})
 	_ = o.appelEnCoursEcrit(&appelEnCours{
 		Issue: issue, Action: p.action, Empreinte: empreinteCharge(p.charge),
 		CleIdemp: p.cleIdemp, Etat: "RESOLU_ECHOUE",
-		InstantUTC: time.Now().UTC().Format(time.RFC3339),
+		InstantUTC:  time.Now().UTC().Format(time.RFC3339),
+		IdOperation: p.idOperation,
 	})
 	o.ref.Journaliser(issue, map[string]any{
 		"type": TypeAppelEchoue, "action": p.action, "adaptateur": p.adaptateur,
-		"detail": "échec explicite de l'appel (réservation conservée, fail closed) : " + err.Error(),
+		"id_operation": p.idOperation, // M-COORD-FLOW-01 D3
+		"detail":       "échec explicite de l'appel (réservation conservée, fail closed) : " + err.Error(),
 	})
 }
 
@@ -793,7 +969,8 @@ func (o *Orchestrateur) Recevoir(ctx context.Context, issue, recepteurID, livrab
 	}
 	o.ref.Journaliser(issue, map[string]any{
 		"type": TypeReception, "verdict": v.Verdict, "cible": cible,
-		"verdict_id": v.VerdictID, "empreinte": emp, "points": len(v.Points),
+		"id_operation": p.idOperation, // M-COORD-FLOW-01 D3 : corrélation
+		"verdict_id":   v.VerdictID, "empreinte": emp, "points": len(v.Points),
 		// M-COORD-E2E-VPS-01 : même raison : deux réceptions légitimes aux
 		// verdicts identiques (verdict_id constant d'un factice, même
 		// empreinte) ne doivent plus fusionner en une seule ligne.
