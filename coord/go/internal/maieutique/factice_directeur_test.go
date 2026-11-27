@@ -7,6 +7,7 @@ package maieutique
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -184,6 +185,7 @@ type facticeDirecteur struct {
 	reponses []string // file : une réponse JSON par tour du directeur
 	echecs   int      // indisponibilités restantes à servir (HTTP 500)
 	appels   int
+	charges  []string // charges reçues (preuves D5 : marqueurs, encadrement)
 }
 
 func nouveauFacticeDirecteur(t *testing.T) *facticeDirecteur {
@@ -196,6 +198,12 @@ func nouveauFacticeDirecteur(t *testing.T) *facticeDirecteur {
 		if restants > 0 {
 			f.echecs--
 		}
+		corpsBrut, errLecture := io.ReadAll(r.Body)
+		if errLecture != nil {
+			f.mu.Unlock()
+			http.Error(w, "corps illisible", http.StatusBadRequest)
+			return
+		}
 		var rep struct {
 			Model    string `json:"model"`
 			Messages []struct {
@@ -203,11 +211,18 @@ func nouveauFacticeDirecteur(t *testing.T) *facticeDirecteur {
 				Content string `json:"content"`
 			} `json:"messages"`
 		}
-		if err := json.NewDecoder(r.Body).Decode(&rep); err != nil {
+		if err := json.Unmarshal(corpsBrut, &rep); err != nil {
 			f.mu.Unlock()
 			http.Error(w, "corps illisible", http.StatusBadRequest)
 			return
 		}
+		// Charge DÉCODÉE (le corps brut échappe « < » en \u003c : les
+		// marqueurs D5 ne s'y lisent pas tels quels).
+		charge := ""
+		for _, m := range rep.Messages {
+			charge += m.Content + "\n"
+		}
+		f.charges = append(f.charges, charge)
 		if restants > 0 {
 			f.mu.Unlock()
 			w.WriteHeader(http.StatusInternalServerError)
@@ -255,18 +270,35 @@ func (f *facticeDirecteur) indisponibilites(n int) {
 // directeur factice — le module maïeutique ne sait pas qu'il est factice.
 func (f *facticeDirecteur) adaptateur(t *testing.T) adaptateurs.Adaptateur {
 	t.Helper()
+	return f.adaptateurID(t, "directeur-factice")
+}
+
+// adaptateurID : connecteur réel sous l'identifiant donné (interchangeabilité
+// des profils, critère 5 du plan v2 §7 : openai puis anthropic par ex.).
+func (f *facticeDirecteur) adaptateurID(t *testing.T, id string) adaptateurs.Adaptateur {
+	t.Helper()
 	cfg := connecteurs.Config{
 		Mode: connecteurs.ModeSimule,
 		Fournisseurs: []connecteurs.ConfigFournisseur{{
-			ID: "directeur-factice", Endpoint: f.srv.URL, Modele: f.modele,
+			ID: id, Endpoint: f.srv.URL, Modele: f.modele,
 			TimeoutMS: 5000, TailleMaxReponse: 1 << 20, RetraitsMax: 0,
 		}},
 	}
-	ep, err := cfg.NouveauHTTPEndPoint("directeur-factice")
+	ep, err := cfg.NouveauHTTPEndPoint(id)
 	if err != nil {
 		t.Fatalf("endpoint factice : %v", err)
 	}
 	return ep
+}
+
+// chargesRecus : les charges complètes reçues du module (preuves D5 :
+// marqueurs d'encadrement, instruction fixe, documents encadrés).
+func (f *facticeDirecteur) chargesRecus() []string {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	out := make([]string, len(f.charges))
+	copy(out, f.charges)
+	return out
 }
 
 // compteurAppels : nombre d'appels reçus (preuves : zéro second appel).
