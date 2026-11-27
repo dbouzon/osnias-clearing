@@ -48,7 +48,7 @@ const (
 	googleIssuer1  = "accounts.google.com"
 	googleIssuer2  = "https://accounts.google.com"
 
-	dureeEtatOIDC = 10 * time.Minute  // cookie d'état anti-CSRF
+	dureeEtatOIDC = 10 * time.Minute   // cookie d'état anti-CSRF
 	dureeSession  = 7 * 24 * time.Hour // session à expiration glissante
 
 	cookieOIDC = "coord_oidc"
@@ -60,11 +60,11 @@ const (
 // des instances dédiées n'est pas en place ; Correspondance permet au
 // pilote d'attribuer un compte précis par email (fail-closed sinon).
 type googleConf struct {
-	Activer        bool             `json:"activer"`
-	ClientID       string           `json:"client_id"`
-	ClientSecret   string           `json:"client_secret"`
-	Redirect       string           `json:"redirect"`
-	CompteNouveau  string           `json:"compte_nouveau"`
+	Activer        bool              `json:"activer"`
+	ClientID       string            `json:"client_id"`
+	ClientSecret   string            `json:"client_secret"`
+	Redirect       string            `json:"redirect"`
+	CompteNouveau  string            `json:"compte_nouveau"`
 	Correspondance map[string]string `json:"correspondance"`
 }
 
@@ -316,6 +316,42 @@ func (g *gateway) googleActif() bool {
 	return g.cfg.Google.Activer && g.cfg.Google.ClientID != "" && g.cfg.Google.ClientSecret != ""
 }
 
+// ---------------------------------------------------------------------------
+// Garde-rythme (critique OpenAI v0.1 de la PR) : les routes
+// d'authentification sont limitées à limiteRythme requêtes par fenêtre
+// glissante par adresse IP, en mémoire (aucune dépendance). Au-delà :
+// 429. Fail-closed côté Google comme côté serveur.
+// ---------------------------------------------------------------------------
+
+const (
+	limiteRythme  = 10          // requêtes par fenêtre
+	fenetreRythme = time.Minute // fenêtre glissante
+)
+
+var gardeRythme = struct {
+	sync.Mutex
+	fenetre map[string][]time.Time
+}{fenetre: map[string][]time.Time{}}
+
+func rythmeAutorise(r *http.Request) bool {
+	ip := r.RemoteAddr
+	gardeRythme.Lock()
+	defer gardeRythme.Unlock()
+	now := time.Now()
+	gardées := gardeRythme.fenetre[ip][:0]
+	for _, t := range gardeRythme.fenetre[ip] {
+		if now.Sub(t) < fenetreRythme {
+			gardées = append(gardées, t)
+		}
+	}
+	if len(gardées) >= limiteRythme {
+		gardeRythme.fenetre[ip] = gardées
+		return false
+	}
+	gardeRythme.fenetre[ip] = append(gardées, now)
+	return true
+}
+
 func (g *gateway) authGoogleEtat(w http.ResponseWriter, r *http.Request) {
 	if !g.googleActif() {
 		repondreJSON(w, http.StatusOK, map[string]any{"activer": false})
@@ -330,6 +366,11 @@ func (g *gateway) authGoogleEtat(w http.ResponseWriter, r *http.Request) {
 
 // authGoogleLogin : redirection vers le consentement Google.
 func (g *gateway) authGoogleLogin(w http.ResponseWriter, r *http.Request) {
+	if !rythmeAutorise(r) {
+		repondreErreur(w, http.StatusTooManyRequests, "RYTME_DEPASSE",
+			"trop de tentatives, réessayez dans une minute")
+		return
+	}
 	if !g.googleActif() {
 		repondreErreur(w, http.StatusServiceUnavailable, "AUTH_GOOGLE_DESACTIVE",
 			"connexion Google non configurée (gateway.json)")
@@ -370,6 +411,11 @@ func (g *gateway) authGoogleLogin(w http.ResponseWriter, r *http.Request) {
 //   - drive.file → refresh_token : session obligatoire, stockage serveur ;
 //   - openid     → id_token : vérification, provisioning, session.
 func (g *gateway) authGoogleCallback(w http.ResponseWriter, r *http.Request) {
+	if !rythmeAutorise(r) {
+		repondreErreur(w, http.StatusTooManyRequests, "RYTME_DEPASSE",
+			"trop de tentatives, réessayez dans une minute")
+		return
+	}
 	if !g.googleActif() {
 		repondreErreur(w, http.StatusServiceUnavailable, "AUTH_GOOGLE_DESACTIVE",
 			"connexion Google non configurée")
@@ -528,25 +574,40 @@ func (g *gateway) echangerCode(code string) (map[string]any, error) {
 // Drive de la personne : listage et création de dossiers.
 // ---------------------------------------------------------------------------
 
-var tokensDrive = struct {
-	sync.Mutex
-	m map[string]struct {
+// tokenDriveAcces : access token court via refresh token de l'utilisateur.
+// Nettoyage : les entrées expirées sont purgées à chaque acquisition
+// (critique OpenAI v0.1 de la PR : le cache ne croît pas sans borne).
+type cacheTokens struct {
+	mu     sync.Mutex
+	tokens map[string]struct {
 		val string
 		exp time.Time
 	}
-}{m: map[string]struct {
+}
+
+var tokensDrive = &cacheTokens{tokens: map[string]struct {
 	val string
 	exp time.Time
 }{}}
 
+func (c *cacheTokens) purger() {
+	now := time.Now()
+	for sub, t := range c.tokens {
+		if now.After(t.exp) {
+			delete(c.tokens, sub)
+		}
+	}
+}
+
 func (g *gateway) tokenDrive(u *utilisateur) (string, error) {
-	tokensDrive.Lock()
-	if t, ok := tokensDrive.m[u.Sub]; ok && time.Now().Before(t.exp) {
+	tokensDrive.mu.Lock()
+	tokensDrive.purger()
+	if t, ok := tokensDrive.tokens[u.Sub]; ok {
 		val := t.val
-		tokensDrive.Unlock()
+		tokensDrive.mu.Unlock()
 		return val, nil
 	}
-	tokensDrive.Unlock()
+	tokensDrive.mu.Unlock()
 	form := url.Values{
 		"client_id":     {g.cfg.Google.ClientID},
 		"client_secret": {g.cfg.Google.ClientSecret},
@@ -569,12 +630,12 @@ func (g *gateway) tokenDrive(u *utilisateur) (string, error) {
 	if tok.AccessToken == "" {
 		return "", fmt.Errorf("token Drive absent")
 	}
-	tokensDrive.Lock()
-	tokensDrive.m[u.Sub] = struct {
+	tokensDrive.mu.Lock()
+	tokensDrive.tokens[u.Sub] = struct {
 		val string
 		exp time.Time
 	}{tok.AccessToken, time.Now().Add(time.Duration(tok.ExpiresIn-60) * time.Second)}
-	tokensDrive.Unlock()
+	tokensDrive.mu.Unlock()
 	return tok.AccessToken, nil
 }
 

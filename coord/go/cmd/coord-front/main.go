@@ -72,11 +72,11 @@ func (c compteConf) timeoutDrive() time.Duration {
 }
 
 type config struct {
-	SecretSession          string       `json:"secret_session"`
-	Comptes                []compteConf `json:"comptes"`
-	Google                 googleConf   `json:"google"`
-	FichierUtilisateurs    string       `json:"fichier_utilisateurs"`
-	FichierRepertoires     string       `json:"fichier_repertoires"`
+	SecretSession       string       `json:"secret_session"`
+	Comptes             []compteConf `json:"comptes"`
+	Google              googleConf   `json:"google"`
+	FichierUtilisateurs string       `json:"fichier_utilisateurs"`
+	FichierRepertoires  string       `json:"fichier_repertoires"`
 }
 
 // gateway : état du serveur. Les moteurs de démo et les adaptateurs
