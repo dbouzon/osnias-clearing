@@ -3,7 +3,7 @@
 COORD est le logiciel qui fait dialoguer deux agents IA de laboratoires différents — Mistral (exécutant) et OpenAI (évaluateur indépendant) — autour d'un même dépôt GitHub, sans jamais qu'une IA valide son propre travail.
 
 - Modules canoniques Python 3 (stdlib uniquement) : `coord06.py` (v1.0/v1.1), `coord06_v12.py` (v1.2), `coord06_v13.py` (v1.3), `coord06_v14.py` (v1.4), `coord06_v15.py` (v1.5, version opérationnelle activée).
-- Batteries de tests : `tests_coord06.py` (24), `tests_coord06_v11.py` (13), `tests_coord06_v12.py` (11), `tests_coord06_v13.py` (13), `tests_coord06_robustness.py` (10), `tests_coord06_v14.py` (17).
+- Batteries de tests : `tests_coord06.py` (24), `tests_coord06_v11.py` (13), `tests_coord06_v12.py` (11), `tests_coord06_v13.py` (13), `tests_coord06_robustness.py` (10), `tests_coord06_v14.py` (17), `tests_coord06_v15.py` (47).
 - Spécification de référence publique : `docs/proto-coord06-v15.md` (activée) ; norme découplée : `docs/spec/coord-spec-1.0.md`.
 - **Téléchargement direct** : [coord-v1.0-v1.5.zip](https://www.osnias-clearing.com/coord-v1.0-v1.5.zip) — archive complète du dossier, reconstruite automatiquement à chaque publication (lien historique `coord-v1.0-v1.4.zip` maintenu vivant, contenu équivalent).
 
@@ -35,13 +35,15 @@ sh run_v12.sh        # batterie v1.2 candidate : 11/11 PASS
 sh run_v13.sh        # batterie v1.3 : 13/13 PASS
 sh run_robustness.sh # suite de robustesse T3 : 10/10 PASS
 sh run_v14.sh        # batterie v1.4 candidate : 17/17 PASS
+sh run_v15.sh        # batterie v1.5 (opérationnelle) : 47/47 PASS
+python3 docs/conformite-v15/runner_conformite.py docs/conformite-v15  # 22/22 vecteurs
 ```
 
-Total : 88/88 PASS (exit 0 chacun). Ces batteries sont UNITAIRES ou d'INTEGRATION AVEC MOCKS ; les E2E réels sont les missions réelles elles-mêmes.
+Total : 88/88 PASS (exit 0 chacun) ; v1.5 : 47/47 PASS ; vecteurs de conformité : 22/22. Ces batteries sont UNITAIRES ou d'INTEGRATION AVEC MOCKS ; les E2E réels sont les missions réelles elles-mêmes.
 
 ## Implémenter le protocole dans votre projet
 
-Les états et transitions ci-dessus, le format d'enregistrement (mission, issue, state, protocol, sha_git, proof_fp, model_api, ts_utc, verdict_url, verdict_id, ack) et les conventions de commentaires (`FROM:MISTRAL`, `FROM:CHATGPT-API DECISION`, `TO:MISTRAL`) suffisent, dans n'importe quel langage. Invariants à reproduire : réception indépendante, jamais d'auto-réception, obsolescence par empreinte, idempotence des publications, aucun secret en dépôt. Voir `docs/proto-coord06-v14.md` et `/tools/ai-coordinator` (seconde implémentation, Go).
+Les états et transitions ci-dessus, le format d'enregistrement (mission, issue, state, protocol, sha_git, proof_fp, model_api, ts_utc, verdict_url, verdict_id, ack) et les conventions de commentaires (`FROM:MISTRAL`, `FROM:CHATGPT-API DECISION`, `TO:MISTRAL`) suffisent, dans n'importe quel langage. Invariants à reproduire : réception indépendante, jamais d'auto-réception, obsolescence par empreinte, idempotence des publications, aucun secret en dépôt. Voir `docs/proto-coord06-v15.md` (spécification de référence activée), la norme `docs/spec/coord-spec-1.0.md` et le moteur de référence Go `go/` ; `docs/proto-coord06-v14.md` et `/tools/ai-coordinator` restent publiés à titre historique.
 
 ## État et limites
 
