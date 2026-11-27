@@ -742,6 +742,13 @@ func (o *Orchestrateur) Recevoir(ctx context.Context, issue, recepteurID, livrab
 		v.VerdictURL = "urn:coord:verdict:" + issue + "/" + v.VerdictID
 	}
 	donnees["verdict_url"] = v.VerdictURL
+	// DEP-02 : le DETAIL des points du verdict voyage avec la decision
+	// pour etre persiste (opposable apres arret et reprise). Encodage
+	// JSON de la liste ; le moteur refuse une liste invalide (fail
+	// closed) et persiste une liste vide telle quelle.
+	if pj, errJ := json.Marshal(v.Points); errJ == nil {
+		donnees["points"] = string(pj)
+	}
 	err = o.committer(issue, cible, "recevoir", p, res, donnees, false)
 	if err != nil {
 		return v, res, err
