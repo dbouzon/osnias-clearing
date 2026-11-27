@@ -66,6 +66,18 @@ La configuration (`config.exemple.json`) ne contient **aucun secret** : chaque
 destination désigne une variable d'environnement (`cle_env`). Un champ `cle`,
 `token` ou `api_key` dans le fichier est refusé au chargement (fail closed).
 
+### `prefixe_sdk` (destination, facultatif — M-COORD-MISTRAL-VPS-01 D2)
+
+Le SDK litellm exige un préfixe fournisseur (`mistral/…`) alors que le moteur
+Go contrôle l'IDENTITÉ EXACTE (`MODELE_DIVERGENT`, égalité stricte). Une
+destination peut déclarer `"prefixe_sdk": "mistral/"` : le modèle demandé
+(identité exacte, ex. `mistral-small-latest`) est transmis au SDK avec ce
+préfixe, et la réponse du fournisseur est transmise **telle quelle**
+(l'identité n'est jamais falsifiée). Champ facultatif : absent = comportement
+historique inchangé. Exemple : déclarer la destination par l'identité exacte
+du modèle, `"mistral-small-latest": {"api_base": "https://api.mistral.ai/v1",
+"cle_env": "COORD_CLE_MISTRAL", "prefixe_sdk": "mistral/"}`.
+
 ## Raccordement au moteur Go (additif, optionnel)
 
 Aucune modification du moteur : déclarer un fournisseur format `openai` dont

@@ -23,6 +23,18 @@ Reproducible install (outside the execution sandbox):
 `pip install "litellm-core==1.111.0"`, then
 `python3 coord/llmbridge/bridge.py --config coord/llmbridge/config.exemple.json`.
 
+### `prefixe_sdk` (destination, optional — M-COORD-MISTRAL-VPS-01 D2)
+
+The litellm SDK requires a provider prefix (`mistral/...`) while the Go engine
+checks the EXACT identity (`MODELE_DIVERGENT`, strict equality). A destination
+may declare `"prefixe_sdk": "mistral/"`: the requested model (exact identity,
+e.g. `mistral-small-latest`) is passed to the SDK with that prefix, and the
+provider response is passed through **as-is** (identity is never falsified).
+Optional field: absent = unchanged historical behavior. Example: key the
+destination by the exact model identity, `"mistral-small-latest":
+{"api_base": "https://api.mistral.ai/v1", "cle_env": "COORD_CLE_MISTRAL",
+"prefixe_sdk": "mistral/"}`.
+
 Qualification statuses are traced everywhere (REEL / CI / NON_EXECUTE):
 local contract tests (21, fake backend), Go E2E test (full mission cycle
 through the bridge, closure refused, bridge restart), CI-only real-SDK tests
