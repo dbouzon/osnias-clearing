@@ -7,10 +7,10 @@ Mission M-COORD-MAIEUTIQUE-01 (issue #42, dbouzon/osnias-clearing, order v1.4). 
 | Deliverable | Content |
 |---|---|
 | `coord/go/internal/maieutique/` | state machine INTENTION→DIALOGUE→ORDRE_PROPOSE→ORDRE_QUALIFIE→VALIDE→PUBLIE→TRANSMIS (+ ATTENTE_PILOTE/INVALIDE/ABANDONNE), ten-field order, deterministic validation, sources, framed documents, two-party dialogue, D10 journal |
-| `coord/go/cmd/coord-maieutique/` | loopback REST service (pilot token, ~26 routes), daughter-mission test harness, witness acceptance kit (4 Python scripts), T5 bench |
+| `coord/go/cmd/coord-maieutique/` | loopback REST service (pilot token, ~26 routes), daughter-mission test harness, witness acceptance kit (4 Python scripts) |
 | `coord/schemas/ordre.schema.json` | JSON Schema 2020-12 of the order (ten required fields) |
 | `.github/workflows/coord-maieutique-ci.yml` | CI: gofmt/vet/build/test on ubuntu/windows/macos, race detector, engine non-regression (new files only) |
-| `coord/go/cmd/coord-maieutique/banc/` | T5 bench: scenarios S1 to S16 + interchangeability, RAM/CPU/latency/call measurements |
+| `coord/go/internal/maieutique/scenarios_test.go` | T5 bench: scenarios S1 to S16 + interchangeability (criterion 5), RAM/CPU/latency/call/context measurements (JSON report via `COORD_SCENARIOS_RAPPORT`) |
 
 ## 2. Demonstrated contract (D2-D10)
 

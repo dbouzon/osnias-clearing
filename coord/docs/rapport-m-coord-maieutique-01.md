@@ -7,10 +7,10 @@ Mission M-COORD-MAIEUTIQUE-01 (issue #42, dbouzon/osnias-clearing, ordre v1.4). 
 | Livrable | Contenu |
 |---|---|
 | `coord/go/internal/maieutique/` | machine à états INTENTION→DIALOGUE→ORDRE_PROPOSE→ORDRE_QUALIFIE→VALIDE→PUBLIE→TRANSMIS (+ ATTENTE_PILOTE/INVALIDE/ABANDONNE), ordre à dix champs, validation déterministe, sources, documents encadrés, dialogue binômé, journal D10 |
-| `coord/go/cmd/coord-maieutique/` | service REST loopback (jeton pilote, ~26 routes), harnais de recette de la mission fille, kit de recette témoin (4 scripts Python), banc T5 |
+| `coord/go/cmd/coord-maieutique/` | service REST loopback (jeton pilote, ~26 routes), harnais de recette de la mission fille, kit de recette témoin (4 scripts Python) |
 | `coord/schemas/ordre.schema.json` | schéma JSON 2020-12 de l'ordre (dix champs requis) |
 | `.github/workflows/coord-maieutique-ci.yml` | CI : gofmt/vet/build/test sur ubuntu/windows/macos, race detector, non-régression du moteur (fichiers nouveaux uniquement) |
-| `coord/go/cmd/coord-maieutique/banc/` | banc T5 : scénarios S1 à S16 + interchangeabilité, mesures RAM/CPU/latences/appels |
+| `coord/go/internal/maieutique/scenarios_test.go` | banc T5 : scénarios S1 à S16 + interchangeabilité (critère 5), mesures RAM/CPU/latences/appels/contexte (rapport JSON via `COORD_SCENARIOS_RAPPORT`) |
 
 ## 2. Contrat démontré (D2-D10)
 
