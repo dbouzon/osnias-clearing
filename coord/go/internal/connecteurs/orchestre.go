@@ -641,6 +641,28 @@ func (o *Orchestrateur) CritiquerPlan(ctx context.Context, issue, recepteurID, p
 	return v, nil
 }
 
+// pointsConformes : validation stricte du champ points AU NIVEAU JSON BRUT
+// (revue PR #71, tour 3). Un décodage direct en []string aplatirait [null]
+// en [""] avant tout contrôle : on sonde le JSON pour refuser, fail closed,
+// tout élément null ou non chaîne. Le champ ABSENT reste recevable (liste
+// vide, compatibilité avec les verdicts antérieurs) ; null explicite =
+// charge tronquée, refusé.
+func pointsConformes(brut json.RawMessage) error {
+	if len(brut) == 0 {
+		return nil
+	}
+	var elems []any
+	if err := json.Unmarshal(brut, &elems); err != nil || elems == nil {
+		return errors.New("points invalides (liste JSON de chaînes attendue, null interdit)")
+	}
+	for _, e := range elems {
+		if _, ok := e.(string); !ok {
+			return errors.New("points invalides (élément null ou non chaîne)")
+		}
+	}
+	return nil
+}
+
 // VerdictPlanDeSortie : validation du verdict structuré (fail closed).
 func VerdictPlanDeSortie(sortie, empreinteAttendue string) (VerdictPlan, error) {
 	var v VerdictPlan
@@ -653,6 +675,14 @@ func VerdictPlanDeSortie(sortie, empreinteAttendue string) (VerdictPlan, error) 
 	}
 	if err := json.Unmarshal([]byte(s), &v); err != nil {
 		return v, errors.New("verdict JSON invalide")
+	}
+	var probe struct {
+		Points json.RawMessage `json:"points"`
+	}
+	if err := json.Unmarshal([]byte(s), &probe); err == nil {
+		if err := pointsConformes(probe.Points); err != nil {
+			return v, err
+		}
 	}
 	switch v.Verdict {
 	case "PLAN_ACCEPTE", "A_CORRIGER", "REFUSEE":
@@ -743,11 +773,13 @@ func (o *Orchestrateur) Recevoir(ctx context.Context, issue, recepteurID, livrab
 	}
 	donnees["verdict_url"] = v.VerdictURL
 	// DEP-02 : le DETAIL des points du verdict voyage avec la decision
-	// pour etre persiste (opposable apres arret et reprise). Encodage
-	// JSON de la liste ; le moteur refuse une liste invalide (fail
-	// closed) et persiste une liste vide telle quelle.
-	if pj, errJ := json.Marshal(v.Points); errJ == nil {
-		donnees["points"] = string(pj)
+	// pour etre persiste (opposable apres arret et reprise). Champ points
+	// ABSENT cote fournisseur => cle ABSENTE cote moteur : jamais "null"
+	// (refuse par le moteur), la decision persiste une liste vide.
+	if v.Points != nil {
+		if pj, errJ := json.Marshal(v.Points); errJ == nil {
+			donnees["points"] = string(pj)
+		}
 	}
 	err = o.committer(issue, cible, "recevoir", p, res, donnees, false)
 	if err != nil {
@@ -772,6 +804,14 @@ func VerdictReceptionDeSortie(sortie, empreinteAttendue string) (VerdictReceptio
 	}
 	if err := json.Unmarshal([]byte(s), &v); err != nil {
 		return v, errors.New("verdict JSON invalide")
+	}
+	var probe struct {
+		Points json.RawMessage `json:"points"`
+	}
+	if err := json.Unmarshal([]byte(s), &probe); err == nil {
+		if err := pointsConformes(probe.Points); err != nil {
+			return v, err
+		}
 	}
 	if _, ok := CibleDeVerdict(v.Verdict); !ok {
 		return v, errors.New("verdict hors énumération (ACCEPTEE|A_CORRIGER|REFUSEE)")
