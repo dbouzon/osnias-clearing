@@ -92,19 +92,32 @@ def test_scripts():
             echecs.append(f"index.html : script introuvable : {m.group(1)}")
 
 
+
+def test_export_sortie():
+    """Option A (M-COORD-DRIVE-01) : l'écran Suivi doit consulter l'état
+    de l'export du dossier de sortie (GET) et permettre la relance
+    (POST), et les trois clés export.* exister dans les 5 langues."""
+    mission = (RACINE / "js" / "ecrans" / "mission.js").read_text(encoding="utf-8")
+    if 'GET", "/api/drive/export/"' not in mission:
+        echecs.append("mission.js : consultation GET /api/drive/export/ absente")
+    if 'POST", "/api/drive/export/"' not in mission:
+        echecs.append("mission.js : relance POST /api/drive/export/ absente")
+
+
 def main():
     tables = charger_langues()
     if len(tables) == len(LANGUES):
         test_parite(tables)
         test_usage(tables)
         test_etats(tables)
+        test_export_sortie()
     test_scripts()
     if echecs:
         print("ÉCHEC du harnais front :")
         for e in echecs:
             print(" -", e)
         sys.exit(1)
-    print("Harnais front : OK (i18n 5 langues, clés utilisées, états, scripts)")
+    print("Harnais front : OK (i18n 5 langues, clés utilisées, états, scripts, export sortie)")
 
 
 if __name__ == "__main__":

@@ -328,7 +328,7 @@
     }
   }
 
-  /* ---- section suivi : mission fille + journal ---- */
+  /* ---- section suivi : mission fille + export sortie + journal ---- */
   async function sectionSuivi(contenu, id) {
     const section = Coord.el("div", null);
     section.appendChild(Coord.el("h2", null, "sui.titre"));
@@ -340,6 +340,29 @@
         ajouterChamp(carte, "sui.filleExecutant", fille.donnees.executant);
         if (projet.devis) { ajouterChamp(carte, "sui.livrable", projet.devis.livrable); }
         section.appendChild(carte);
+      }
+      /* Export du dossier de sortie (option A) : bandeau tant que
+       * l'export n'a pas réussi, relance manuelle possible. */
+      const exp = await Coord.requete("GET", "/api/drive/export/" + encodeURIComponent(id));
+      if (exp.statut === 200 && exp.donnees && exp.donnees.export_sortie) {
+        const e = exp.donnees.export_sortie;
+        if (e.etat === "echec") {
+          const bandeau = Coord.el("div", "erreur");
+          bandeau.textContent = Coord.t("export.echec", { motif: e.motif || "?" });
+          section.appendChild(bandeau);
+          const actions = Coord.el("div", "actions");
+          actions.appendChild(Coord.bouton("export.relancer", async function () {
+            const relance = await Coord.requete("POST", "/api/drive/export/" + encodeURIComponent(id));
+            if (relance.statut === 200 && relance.donnees && relance.donnees.export_sortie) {
+              Coord.naviguer("#/mission/" + encodeURIComponent(id));
+            }
+          }));
+          section.appendChild(actions);
+        } else {
+          const bandeau = Coord.el("div", "info");
+          bandeau.textContent = Coord.t("export.ok", { dossier: e.dossier || "?" });
+          section.appendChild(bandeau);
+        }
       }
     } else {
       const absence = Coord.el("div", "aide");
