@@ -17,6 +17,7 @@ Ce module est un adaptateur de REFERENCE : sa seule responsabilite est
 l'appel du moteur ; il ne reimplemente RIEN du protocole.
 """
 import json
+import hashlib
 import os
 import sys
 
@@ -36,11 +37,16 @@ def rejouer(vecteur):
       - {"operation":"transition","cible":...,"identite":{...},"config":{...},"donnees":{...}}
       - {"operation":"valider_habilitations","config":{...}}
       - {"operation":"arbitrer","record_knowledge":{...},"record_github":{...},"ts_utc":...}
+      - {"operation":"empreinte","objet":<valeur JSON>} (famille serialisation
+        canonique, format coord-conformite-jcs-v1 : forme canonique RFC 8785
+        et empreinte sha256 du module distribue, refus fail-closed des non-entiers)
     Attendu (dernier result) :
       - {"ok": true, "etat": "..."} pour une transition ;
       - {"ok": false, "contient": "motif attendu dans le refus"} ;
       - {"habilitations": false, "contient": "..."} pour valider_habilitations ;
-      - {"arbitre": "github", "champs_divergents": [...]} pour arbitrer.
+      - {"arbitre": "github", "champs_divergents": [...]} pour arbitrer ;
+      - {"octets": "...", "sha256": "..."} ou {"erreur": true, "contient": "..."}
+        pour empreinte.
     """
     mission = None
     dernier = None
@@ -64,6 +70,13 @@ def rejouer(vecteur):
                                                  op["ts_utc"],
                                                  op.get("arbitre", "runner"))
             dernier = ("arbitrer", entry.get("elu"), entry.get("champs_divergents"))
+        elif kind == "empreinte":
+            try:
+                octets = coord06_v15._canonique_v15(op["objet"])
+            except ValueError as e:
+                dernier = ("empreinte", str(e), None)
+            else:
+                dernier = ("empreinte", None, octets)
         else:
             return False, "operation inconnue: " + str(kind)
     attendu = vecteur["attendu"]
@@ -88,6 +101,21 @@ def rejouer(vecteur):
             return False, "elu=%s attendu=%s" % (ok, attendu.get("arbitre"))
         if set(attendu.get("champs_divergents", [])) != set(info or []):
             return False, "champs divergents %s != attendus %s" % (info, attendu.get("champs_divergents"))
+    elif kind == "empreinte":
+        erreur, octets = ok, info
+        if attendu.get("erreur"):
+            if erreur is None:
+                return False, "refus attendu mais serialisation produite: %s" % octets
+            if attendu.get("contient") and attendu["contient"] not in erreur:
+                return False, "motif inattendu: %s (contient attendu: %s)" % (erreur, attendu["contient"])
+        else:
+            if erreur is not None:
+                return False, "erreur non attendue: %s" % erreur
+            if attendu.get("octets") is not None and octets != attendu["octets"]:
+                return False, "octets != attendus: %s != %s" % (octets, attendu["octets"])
+            if attendu.get("sha256") is not None and \
+                    hashlib.sha256(octets.encode("utf-8")).hexdigest() != attendu["sha256"]:
+                return False, "sha256 != attendu pour les octets produits"
     return True, ""
 
 

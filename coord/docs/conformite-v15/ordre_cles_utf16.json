@@ -1,0 +1,67 @@
+{
+  "format": "coord-conformite-jcs-v1",
+  "famille": "serialisation_canonique",
+  "fichier": "ordre_cles_utf16.json",
+  "description": "Vecteurs de serialisation canonique JSON (RFC 8785, reprise par COORD Specification 1.0 sections 5.2 et 5.3) : ordre des cles d'objet par unites de code UTF-16 (une cle astrale U+10000, encodee par la paire de substituts D800 DC00, precede la cle BMP U+E000), ordre des elements de tableau PRESERVE, echappement minimal, nombres entiers uniquement (un non-entier est refuse, jamais approxime). Octets canoniques et empreintes sha256 attendus fixes independamment par le moteur Go conforme (coord/go/internal/jcs) avant la correction Python (mission M-COORD-JCS-01, issue #85) ; toute implementation conforme doit reproduire exactement ces octets, empreintes et refus.",
+  "references": [
+    "RFC 8785 (3.2.2.2, 3.2.3)",
+    "COORD Specification 1.0 (5.2, 5.3)"
+  ],
+  "vecteurs": [
+    {
+      "nom": "JCS-1 ordre des cles par unites UTF-16 : U+10000 (paire D800 DC00) avant U+E000",
+      "operations": [
+        {
+          "operation": "empreinte",
+          "objet": {
+            "\ud800\udc00": 1,
+            "\ue000": 2
+          }
+        }
+      ],
+      "attendu": {
+        "octets": "{\"\ud800\udc00\":1,\"\ue000\":2}",
+        "sha256": "4045c21a23c8ae8f8d9add81f54bd506bee65885099876fb4afb378b1f2c3516"
+      }
+    },
+    {
+      "nom": "JCS-2 tri recursif des cles imbriquees, ordre des elements de tableau preserve",
+      "operations": [
+        {
+          "operation": "empreinte",
+          "objet": {
+            "liste": [
+              {
+                "\ue000": "a",
+                "\ud800\udc00": "b"
+              },
+              {
+                "x": 1
+              }
+            ],
+            "debut": 0
+          }
+        }
+      ],
+      "attendu": {
+        "octets": "{\"debut\":0,\"liste\":[{\"\ud800\udc00\":\"b\",\"\ue000\":\"a\"},{\"x\":1}]}",
+        "sha256": "5b77a91a0ccdfcf6444e2d76237b1749f165f943240e464a139335e5b42c96a1"
+      }
+    },
+    {
+      "nom": "JCS-3 nombre non entier refuse (fail-closed, jamais approxime ni represente)",
+      "operations": [
+        {
+          "operation": "empreinte",
+          "objet": {
+            "valeur": 1.5
+          }
+        }
+      ],
+      "attendu": {
+        "erreur": true,
+        "contient": "nombre non canonique (entier attendu)"
+      }
+    }
+  ]
+}

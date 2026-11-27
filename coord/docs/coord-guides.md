@@ -11,12 +11,15 @@ How to implement COORD Specification 1.0 without reading the reference code.
 1. `coord/docs/spec/coord-spec-1.0.md` — the specification (English, RFC 2119).
 2. `coord/schemas/*.schema.json` — the wire formats (JSON Schema 2020-12):
    message envelope, identity, verdict payload, habilitation configuration,
-   conformance vector collection.
-3. `coord/docs/conformite-v15/` — the 22 published conformance vectors
-   (`coord-conformite-v1`): 3 positive transition scenarios, 9 negative
-   transition scenarios, 8 habilitation configurations, 2 resume arbitrations.
+   conformance vector collection, canonical serialization vector collection.
+3. `coord/docs/conformite-v15/` — the 25 published conformance vectors: 3 positive
+   transition scenarios, 9 negative transition scenarios, 8 habilitation
+   configurations, 2 resume arbitrations (`coord-conformite-v1`), plus 3
+   canonical serialization scenarios (`coord-conformite-jcs-v1`: UTF-16 key
+   ordering, recursive key sorting with array order preserved, refusal of
+   non-integer numbers).
 
-An implementation that passes all 22 vectors conforms to the specification
+An implementation that passes all 25 vectors conforms to the specification
 (spec 10). The reference runners (Go `cmd/vector-runner`, Python
 `runner_conformite.py`) are adapters with no normative role; the Python runner
 accepts an alternative engine as its second argument.
@@ -55,7 +58,7 @@ Canonical form RFC 8785; proofs SHA-256 over the canonical form.
 - Add unit tests for the three crash points of persistence (original intact,
   then new record in place) and for journal idempotence.
 - Cross-check with the reference engines: both render the same OK/KO per
-  vector on the 22 published vectors.
+  vector on the 25 published vectors.
 
 ## 5. Declaring conformance
 

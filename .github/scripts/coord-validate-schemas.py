@@ -47,7 +47,7 @@ def validate_instance(schema, instance):
 
 
 # 1. Chaque schema doit etre valide au regard de la metaschema 2020-12.
-schema_names = ["identity", "habilitations", "message", "verdict", "vector"]
+schema_names = ["identity", "habilitations", "message", "verdict", "vector", "vector-jcs"]
 schemas = {}
 for name in schema_names:
     path = os.path.join(SCHEMAS, name + ".schema.json")
@@ -130,26 +130,40 @@ check("issue sans diese refusee", bool(validate_instance(
 check("empreinte d'enveloppe optionnelle mais contrainte", bool(validate_instance(
     smsg, {**msg_valide, "fingerprint": "court"})))
 
-# 6. Vecteurs de conformite publies (format coord-conformite-v1).
+# 6. Vecteurs de conformite publies (familles coord-conformite-v1 et
+#    coord-conformite-jcs-v1, mission M-COORD-JCS-01 #85).
 svec = schemas["vector"]
+svecjcs = schemas["vector-jcs"]
 vector_files = [f for f in sorted(os.listdir(VECTORS))
                 if f.endswith(".json") and not f.startswith("manifeste")]
 n_vec = 0
+n_vec_jcs = 0
 fichiers_avec_vecteurs = 0
+fichiers_jcs = 0
 for f in vector_files:
     with open(os.path.join(VECTORS, f), encoding="utf-8") as fh:
         doc = json.load(fh)
-    if doc.get("format") != "coord-conformite-v1":
-        continue
-    errs = validate_instance(svec, doc)
-    check("vecteurs valides 2020-12 : " + f, not errs,
-          "; ".join(e.message for e in errs[:3]))
-    fichiers_avec_vecteurs += 1
-    n_vec += len(doc.get("vecteurs", []))
-check("22 vecteurs couverts", n_vec == 22,
+    fmt = doc.get("format")
+    if fmt == "coord-conformite-v1":
+        errs = validate_instance(svec, doc)
+        check("vecteurs valides 2020-12 : " + f, not errs,
+              "; ".join(e.message for e in errs[:3]))
+        fichiers_avec_vecteurs += 1
+        n_vec += len(doc.get("vecteurs", []))
+    elif fmt == "coord-conformite-jcs-v1":
+        errs = validate_instance(svecjcs, doc)
+        check("vecteurs valides 2020-12 : " + f, not errs,
+              "; ".join(e.message for e in errs[:3]))
+        fichiers_jcs += 1
+        n_vec_jcs += len(doc.get("vecteurs", []))
+check("22 vecteurs couverts (famille coord-conformite-v1)", n_vec == 22,
       "compte=" + str(n_vec))
-check("4 fichiers de vecteurs couverts", fichiers_avec_vecteurs == 4,
-      "compte=" + str(fichiers_avec_vecteurs))
+check("4 fichiers de vecteurs couverts (famille coord-conformite-v1)",
+      fichiers_avec_vecteurs == 4, "compte=" + str(fichiers_avec_vecteurs))
+check("3 vecteurs JCS couverts (famille coord-conformite-jcs-v1, #85)",
+      n_vec_jcs == 3, "compte=" + str(n_vec_jcs))
+check("1 fichier de vecteurs JCS couvert (famille coord-conformite-jcs-v1)",
+      fichiers_jcs == 1, "compte=" + str(fichiers_jcs))
 
 print()
 print("BILAN SCHEMAS: OK=%d KO=%d" % (ok, ko))

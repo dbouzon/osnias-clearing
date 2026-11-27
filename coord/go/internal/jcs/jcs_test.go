@@ -4,7 +4,12 @@
 
 package jcs
 
-import "testing"
+import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"testing"
+)
 
 func TestOrdreUTF16(t *testing.T) {
 	// Ordre par unites UTF-16 (RFC 8785, 3.2.3) :
@@ -63,4 +68,60 @@ func contains(s, sub string) bool {
 		}
 	}
 	return false
+}
+
+// TestVecteursPartagesJCS rejoue le vecteur public coord-conformite-jcs-v1
+// (mission M-COORD-JCS-01, issue #85) : le MÊME fichier que le runner Python,
+// preuve de parite au même artefact (octets, sha256, refus des non-entiers).
+func TestVecteursPartagesJCS(t *testing.T) {
+	chemin := filepath.Join("..", "..", "..", "docs", "conformite-v15", "ordre_cles_utf16.json")
+	b, err := os.ReadFile(chemin)
+	if err != nil {
+		t.Fatalf("vecteur public illisible (%s): %v", chemin, err)
+	}
+	var doc struct {
+		Vecteurs []struct {
+			Nom        string           `json:"nom"`
+			Operations []map[string]any `json:"operations"`
+			Attendu    map[string]any   `json:"attendu"`
+		} `json:"vecteurs"`
+	}
+	if err := json.Unmarshal(b, &doc); err != nil {
+		t.Fatalf("vecteur public invalide: %v", err)
+	}
+	if len(doc.Vecteurs) != 3 {
+		t.Fatalf("3 vecteurs JCS attendus, obtenu %d", len(doc.Vecteurs))
+	}
+	for _, v := range doc.Vecteurs {
+		var obj any
+		for _, op := range v.Operations {
+			if str, _ := op["operation"].(string); str == "empreinte" {
+				obj = op["objet"]
+			}
+		}
+		octets, err := Canonical(obj)
+		att := v.Attendu
+		if errAtt, _ := att["erreur"].(bool); errAtt {
+			if err == nil {
+				t.Fatalf("%s: refus attendu, serialisation produite %s", v.Nom, octets)
+			}
+			if cont, _ := att["contient"].(string); !contains(err.Error(), cont) {
+				t.Fatalf("%s: motif inattendu %q (contient attendu %q)", v.Nom, err.Error(), cont)
+			}
+			continue
+		}
+		if err != nil {
+			t.Fatalf("%s: erreur non attendue: %v", v.Nom, err)
+		}
+		if oct, _ := att["octets"].(string); string(octets) != oct {
+			t.Fatalf("%s: octets %s != attendus %s", v.Nom, octets, oct)
+		}
+		fp, err := Fingerprint(obj)
+		if err != nil {
+			t.Fatalf("%s: empreinte: %v", v.Nom, err)
+		}
+		if sha, _ := att["sha256"].(string); fp != sha {
+			t.Fatalf("%s: sha256 %s != attendu %s", v.Nom, fp, sha)
+		}
+	}
 }
