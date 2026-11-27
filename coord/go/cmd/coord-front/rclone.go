@@ -265,6 +265,24 @@ func (d *dossierRclone) Ecrire(dossier, nom string, contenu []byte) error {
 	return nil
 }
 
+// Supprimer (M-COORD-UI-01) : supprime UN fichier, réservé à la sonde
+// d'accès de /api/drive/verifier. deletefile attend un fichier ; un
+// chemin absent n'est pas une erreur pour l'appelant (idempotent,
+// parité avec l'adaptateur factice).
+func (d *dossierRclone) Supprimer(dossier, nom string) error {
+	cible, err := d.cible(dossier, nom)
+	if err != nil {
+		return err
+	}
+	if _, err := d.appeler([]string{"deletefile", cible}, nil); err != nil {
+		if absentRclone(nil, err) {
+			return nil
+		}
+		return err
+	}
+	return nil
+}
+
 // statutErreurDrive : mapping code Dossiers → statut HTTP.
 func statutErreurDrive(err error) (int, string, string) {
 	var ed *erreurDrive

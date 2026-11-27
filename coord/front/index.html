@@ -14,7 +14,8 @@
       <span class="sous-titre" data-i18n="app.sousTitre">L'intelligence coordonnée.</span>
     </div>
     <div class="entete-droite">
-      <span id="etat-drive" class="etat-drive"></span>
+      <button id="btn-missions" class="bouton discret" data-i18n="ui.missions" aria-label="Missions">Missions</button>
+      <span id="badge-compte" class="badge"></span>
       <select id="select-langue" aria-label="Langue">
         <option value="fr">fr</option>
         <option value="en">en</option>
@@ -26,9 +27,12 @@
     </div>
   </header>
   <div id="bandeau-demo" class="bandeau-demo cache" data-i18n="app.bandeauDemo">Données de démonstration</div>
-  <main id="contenu" class="contenu">
-    <p data-i18n="app.chargement">Chargement…</p>
-  </main>
+  <div id="volets">
+    <aside id="col-missions" class="col-missions" aria-label="Missions"></aside>
+    <main id="contenu" class="contenu">
+      <p data-i18n="app.chargement">Chargement…</p>
+    </main>
+  </div>
   <footer class="pied">
     <p data-i18n="pied.binome">Conçu et vérifié par un binôme d'IA — Mistral ⇄ OpenAI.</p>
     <p data-i18n="pied.gouvernance">Gouvernance humaine : Denis Bouzon (ORCID 0009-0007-8894-8902) · Licence Apache-2.0</p>
@@ -44,6 +48,7 @@
   <script src="js/langues/es.js"></script>
   <script src="js/langues/zh.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/colonne-missions.js"></script>
   <script src="js/ecrans/connexion.js"></script>
   <script src="js/ecrans/accueil.js"></script>
   <script src="js/ecrans/creation.js"></script>

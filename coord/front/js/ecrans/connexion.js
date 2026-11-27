@@ -9,6 +9,9 @@
     const rep = await Coord.requete("GET", "/api/comptes");
     if (rep.statut !== 200 || !rep.donnees || !rep.donnees.comptes) {
       Coord.messageErreur(contenu, rep.donnees && rep.donnees.motif ? rep.donnees.motif : "app.erreurReseau");
+      contenu.appendChild(Coord.bouton("ui.reessayer", function () {
+        Coord.naviguer("#/accueil");
+      }, "principal"));
       return;
     }
     const liste = Coord.el("div", "carte");

@@ -654,3 +654,84 @@ func TestExportOptionADesactive(t *testing.T) {
 		t.Fatalf("relance sans export_sortie : attendu 403 DRIVE_REFUS, reçu %d %v", s, m)
 	}
 }
+
+/* ============ M-COORD-UI-01 : POST /api/drive/verifier (S4) ============ */
+
+func TestVerifierDossiers(t *testing.T) {
+	racine := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(racine, "entree-ok"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	_, srv := gatewayTest(t, configTest(
+		compteConf{Nom: "alice", Demo: true, DossierDrive: racine, AutoriserEcritureDrive: true},
+		compteConf{Nom: "bob", Demo: true, DossierDrive: racine}, // sans écriture Drive
+	))
+
+	// Session obligatoire.
+	anonyme := &client{base: srv.URL}
+	if s, _, _ := anonyme.req(t, "POST", "/api/drive/verifier",
+		map[string]any{"dossier_entree": "a", "dossier_sortie": "b"}); s != 401 {
+		t.Fatalf("sans session : attendu 401, reçu %d", s)
+	}
+
+	c := connecter(t, srv, "alice")
+
+	// Champs manquants : 400 explicite.
+	if s, m, _ := c.req(t, "POST", "/api/drive/verifier",
+		map[string]any{"dossier_entree": "entree-ok"}); s != 400 || m["code"] != "CHAMPS_MANQUANTS" {
+		t.Fatalf("champs manquants : attendu 400 CHAMPS_MANQUANTS, reçu %d %v", s, m)
+	}
+
+	// Cas nominal : lecture entrée OK, sonde écrire+supprimer sortie OK.
+	s, m, _ := c.req(t, "POST", "/api/drive/verifier",
+		map[string]any{"dossier_entree": "entree-ok", "dossier_sortie": "sortie-ok"})
+	if s != 200 {
+		t.Fatalf("verifier nominal : attendu 200, reçu %d", s)
+	}
+	entree, _ := m["entree"].(map[string]any)
+	sortie, _ := m["sortie"].(map[string]any)
+	if entree["ok"] != true || sortie["ok"] != true {
+		t.Fatalf("verifier nominal : attendu ok:true partout, reçu %v %v", entree, sortie)
+	}
+	// La sonde a disparu du dossier de sortie.
+	s, m, _ = c.req(t, "GET", "/api/drive?dossier=sortie-ok", nil)
+	noms, _ := m["documents"].([]any)
+	for _, n := range noms {
+		if n == sondeVerifier {
+			t.Fatalf("sonde %s non supprimée : %v", sondeVerifier, noms)
+		}
+	}
+
+	// Dossier d'entrée hors périmètre : ok=false + motif compréhensible.
+	// (Contrat Lister : un dossier inexistant mais lisible est
+	// indistinguable d'un dossier vide ; la vérification porte sur
+	// l'ACCESSIBILITÉ, pas l'existence.)
+	s, m, _ = c.req(t, "POST", "/api/drive/verifier",
+		map[string]any{"dossier_entree": "../hors", "dossier_sortie": "sortie-ok"})
+	if s != 200 {
+		t.Fatalf("verifier entrée refusée : attendu 200, reçu %d", s)
+	}
+	entree, _ = m["entree"].(map[string]any)
+	if entree["ok"] != false || entree["motif"] == nil || entree["motif"] == "" {
+		t.Fatalf("entrée refusée : attendu ok:false + motif, reçu %v", entree)
+	}
+
+	// Dossier interdit (remontée) : ok=false, motif de refus.
+	s, m, _ = c.req(t, "POST", "/api/drive/verifier",
+		map[string]any{"dossier_entree": "entree-ok", "dossier_sortie": "../evil"})
+	if s != 200 {
+		t.Fatalf("verifier sortie interdite : attendu 200, reçu %d", s)
+	}
+	sortie, _ = m["sortie"].(map[string]any)
+	if sortie["ok"] != false || sortie["motif"] == nil || sortie["motif"] == "" {
+		t.Fatalf("sortie interdite : attendu ok:false + motif, reçu %v", sortie)
+	}
+
+	// Écriture désactivée : refus EXPLICITE (403 DRIVE_REFUS), avant
+	// toute écriture dans le Drive.
+	bob := connecter(t, srv, "bob")
+	if s, m, _ := bob.req(t, "POST", "/api/drive/verifier",
+		map[string]any{"dossier_entree": "entree-ok", "dossier_sortie": "sortie-ok"}); s != 403 {
+		t.Fatalf("écriture désactivée : attendu 403, reçu %d %v", s, m)
+	}
+}

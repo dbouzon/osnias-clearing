@@ -131,3 +131,56 @@ table.tableau { width: 100%; border-collapse: collapse; background: var(--carte)
 .cta-zone { text-align: center; margin: 20px 0; }
 .pied p { margin: 4px 0; }
 .pied a { color: var(--bleu); }
+
+/* ---- layout deux volets (M-COORD-UI-01, S1) ---- */
+#volets { display: flex; align-items: stretch; min-height: calc(100vh - 180px); }
+#volets .contenu { flex: 1; min-width: 0; max-width: none; margin: 0; padding: 16px 20px 48px; }
+.col-missions {
+  width: 280px; flex-shrink: 0; background: var(--carte);
+  border-right: 1px solid var(--trait); padding: 12px;
+  overflow-y: auto; max-height: calc(100vh - 120px);
+  position: sticky; top: 48px;
+}
+.col-missions.cache { display: none; }
+.bouton.bloc { display: block; width: 100%; margin-bottom: 12px; }
+.liste-missions { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.ligne-mission {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  width: 100%; text-align: left; padding: 10px 10px; min-height: 44px;
+  background: transparent; border: 1px solid transparent; border-radius: 8px;
+  cursor: pointer; font-size: 0.9rem; color: var(--encre);
+}
+.ligne-mission:hover { background: #eef2f6; }
+.ligne-mission.actuelle { background: #e7f1fb; border-color: #bcd8f0; }
+.ligne-mission .mission-statut { color: var(--gris); font-size: 0.78rem; }
+#badge-compte { align-self: center; }
+
+/* ---- bandeau mission + fil (S2) ---- */
+.bandeau-mission .rangée { margin-bottom: 6px; }
+.fil { display: flex; flex-direction: column; gap: 10px; }
+.fil .chat { flex: 1; overflow-y: auto; max-height: 56vh; min-height: 120px; padding: 4px 2px; }
+.fil .saisie { position: sticky; bottom: 8px; background: var(--fond); padding: 8px 0 2px; border-top: 1px solid var(--trait); }
+.message.evenement-binome {
+  align-self: center; text-align: center; max-width: 90%;
+  background: transparent; border: 1px dashed var(--trait); color: var(--gris);
+  font-size: 0.8rem;
+}
+.placeholder-accueil { text-align: center; padding: 28px 16px; }
+.placeholder-accueil p { margin: 0 0 14px; color: var(--gris); }
+
+/* ---- mobile : colonne repliée derrière le bouton Missions ---- */
+#btn-missions { display: none; }
+@media (max-width: 719px) {
+  #btn-missions { display: inline-block; }
+  #volets { min-height: auto; }
+  #volets .contenu { padding: 14px 12px 48px; }
+  .col-missions {
+    position: fixed; top: 0; left: 0; bottom: 0; width: min(85vw, 320px);
+    max-height: 100vh; z-index: 30; border-right: 1px solid var(--trait);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+    transform: translateX(-102%); transition: transform 0.18s ease-out;
+  }
+  .col-missions.ouvert { transform: none; }
+  .col-missions.cache { display: block; }
+  .col-missions.cache:not(.ouvert) { transform: translateX(-102%); }
+}

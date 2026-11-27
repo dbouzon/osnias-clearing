@@ -109,12 +109,38 @@ window.Coord = (function () {
     return t("etat.pastille.AUTRE");
   }
 
+  /* ---- statuts client (M-COORD-UI-01, S3) ---- */
+  /* Vue SIMPLIFIÉE demandée par le pilote : 3 statuts lisibles au lieu
+   * des 11 états machine, qui restent affichés en détail dans
+   * l'écran mission (libellés etat.* inchangés). */
+  function statutClient(etat) {
+    if (etat === "INTENTION" || etat === "DIALOGUE" ||
+        etat === "ORDRE_PROPOSE" || etat === "ORDRE_QUALIFIE") { return "initiee"; }
+    if (etat === "VALIDE" || etat === "PUBLIE" || etat === "TRANSMIS" ||
+        etat === "ATTENTE_PILOTE") { return "encours"; }
+    /* REALISEE, ABANDONNE, INVALIDE + tout état inconnu fermé. */
+    return "cloturee";
+  }
+
+  function pastilleClient(etat) {
+    return t("statut.pastille." + statutClient(etat));
+  }
+
+  function libelleStatutClient(etat) {
+    return t("statut." + statutClient(etat));
+  }
+
   function rafraichirEntete() {
-    const drive = document.getElementById("etat-drive");
+    /* En-tête compact (M-COORD-UI-01, S5) : badge de compte à la
+     * place de l'indicateur « Dossier Drive » ; le sélecteur de
+     * langue et le changement de compte restent sur la même ligne. */
+    const badge = document.getElementById("badge-compte");
     if (session) {
-      drive.textContent = t("app.dossierDrive", { nom: session.dossier_drive || t("app.aucun") });
+      badge.textContent = session.compte || "";
+      badge.setAttribute("title", t("ui.compte"));
     } else {
-      drive.textContent = "";
+      badge.textContent = "";
+      badge.removeAttribute("title");
     }
     const bandeau = document.getElementById("bandeau-demo");
     if (session && session.demo) { bandeau.classList.remove("cache"); }
@@ -129,17 +155,26 @@ window.Coord = (function () {
   async function router() {
     rafraichirEntete();
     const h = window.location.hash || "#/presentation";
-    if (h === "#/presentation") { await ecrans.presentation(effacer()); return; }
-    if (h === "#/apropos") { await ecrans.apropos(effacer()); return; }
+    /* Écrans plein cadre : la colonne des missions est masquée. */
+    if (h === "#/presentation") { Coord.colonneMissions.masquer(); await ecrans.presentation(effacer()); return; }
+    if (h === "#/apropos") { Coord.colonneMissions.masquer(); await ecrans.apropos(effacer()); return; }
     if (!session) {
       if (h.indexOf("#/mission/") === 0 || h === "#/creation") { /* conserve le hash */ }
+      Coord.colonneMissions.masquer();
       await ecrans.connexion(effacer());
       return;
     }
-    if (h === "#/creation") { await ecrans.creation(effacer()); return; }
+    if (h === "#/creation") { Coord.colonneMissions.masquer(); await ecrans.creation(effacer()); return; }
+    /* Écrans deux volets : colonne des missions visible. */
     const m = h.match(/^#\/mission\/([^/]+)$/);
-    if (m) { await ecrans.mission(effacer(), decodeURIComponent(m[1])); return; }
+    if (m) {
+      const id = decodeURIComponent(m[1]);
+      await ecrans.mission(effacer(), id);
+      Coord.colonneMissions.maj(id);
+      return;
+    }
     await ecrans.accueil(effacer());
+    Coord.colonneMissions.maj(null);
   }
 
   function naviguer(hash) {
@@ -151,6 +186,7 @@ window.Coord = (function () {
     initLangue();
     document.documentElement.lang = langue === "zh" ? "zh-Hans" : langue;
     appliquerMetadonnees();
+    Coord.colonneMissions.init();
     document.getElementById("select-langue").addEventListener("change", function (e) {
       changerLangue(e.target.value);
     });
@@ -170,6 +206,7 @@ window.Coord = (function () {
   return {
     t: t, requete: requete, el: el, bouton: bouton, texte: texte,
     messageErreur: messageErreur, libelleEtat: libelleEtat, pastilleEtat: pastilleEtat,
+    statutClient: statutClient, pastilleClient: pastilleClient, libelleStatutClient: libelleStatutClient,
     naviguer: naviguer, router: router, demarrer: demarrer,
     ecrans: ecrans,
     getSession: function () { return session; },
