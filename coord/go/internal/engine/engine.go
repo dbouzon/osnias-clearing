@@ -10,6 +10,7 @@
 package engine
 
 import (
+	"encoding/json"
 	"regexp"
 	"strings"
 
@@ -35,6 +36,11 @@ type Decision struct {
 	Recepteur  string `json:"recepteur"`
 	VerdictID  string `json:"verdict_id"`
 	VerdictURL string `json:"verdict_url"`
+	// Points : detail des points du verdict (corrections demandees ou
+	// reserves). Persiste avec la decision pour rester opposable APRES un
+	// arret et une reprise (M-COORD-DEP-02) : sans lui, l'executant ne
+	// peut pas retrouver le detail des corrections a appliquer.
+	Points []string `json:"points,omitempty"`
 }
 
 // Mission is the durable state machine instance (spec 6).
@@ -122,6 +128,27 @@ func (m *Mission) Transition(cible string, id policy.Identity,
 		if donnees["verdict_id"] == "" || donnees["verdict_url"] == "" {
 			return false, "reference de verdict obligatoire (verdict_id + verdict_url)"
 		}
+		// Points du verdict (DEP-02) : champ additif ; present mais
+		// invalide => refus fail-closed (un verdict tronque ne doit
+		// jamais ecraser le detail d'une correction precedente).
+		points := []string{}
+		if raw := donnees["points"]; raw != "" {
+			// Validation stricte (revue PR #71) : json.Unmarshal accepte
+			// silencieusement null et [null] dans un []string ; on decode
+			// en []any pour refuser toute forme tronquee (top-level null,
+			// element null, element non chaine). Fail closed.
+			var elems []any
+			if err := json.Unmarshal([]byte(raw), &elems); err != nil || elems == nil {
+				return false, "points de verdict invalides (liste JSON de chaines attendue)"
+			}
+			for _, e := range elems {
+				s, ok := e.(string)
+				if !ok {
+					return false, "points de verdict invalides (element null ou non chaine)"
+				}
+				points = append(points, s)
+			}
+		}
 		m.Decisions = append(m.Decisions, Decision{
 			Verdict:    attendu,
 			Revision:   m.EnAttente.Revision,
@@ -129,6 +156,7 @@ func (m *Mission) Transition(cible string, id policy.Identity,
 			Recepteur:  id.ID,
 			VerdictID:  donnees["verdict_id"],
 			VerdictURL: donnees["verdict_url"],
+			Points:     points,
 		})
 		m.EnAttente = nil
 		m.State = cible

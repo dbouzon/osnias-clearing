@@ -7,6 +7,9 @@
 //
 //	-demo-local         : démo AUTONOME sur serveurs factices loopback,
 //	                      HORS RÉSEAU, aucune clé, 0 €. Rejouable partout.
+//	-consulter          : lecture seule (-data, -issue) : état,
+//	                      décisions et détail des points de chaque
+//	                      verdict (DEP-02, reprise après arrêt).
 //	-config <fichier>   : mission réelle contre les fournisseurs déclarés.
 //	                      Entrée exclusivement possible si le triple verrou
 //	                      tient (mode REEL + COORD_MODE_REEL=1 + clés
@@ -47,8 +50,12 @@ func main() {
 	planChemin := flag.String("plan", "", "fichier du plan à critiquer")
 	mandatChemin := flag.String("mandat", "", "fichier du mandat d'exécution")
 	livrableChemin := flag.String("livrable", "", "fichier du livrable soumis (réception)")
+	consulter := flag.Bool("consulter", false, "lecture seule : état de la mission et décisions, avec le détail des points de chaque verdict (DEP-02)")
 	flag.Parse()
 
+	if *consulter {
+		os.Exit(consulterRun(*dataDir, *issue))
+	}
 	if *demoLocal {
 		os.Exit(demoLocalRun(*dataDir))
 	}
@@ -60,6 +67,35 @@ func main() {
 	// refuse et imprime la procédure locale (exit 3).
 	os.Exit(reelRun(*configChemin, *dataDir, *issue, *executant, *recepteur,
 		*planChemin, *mandatChemin, *livrableChemin))
+}
+
+// consulterRun : LECTURE SEULE (DEP-02). Ne crée rien, ne transitionne rien,
+// n'appelle aucun fournisseur : sert notamment à l'exécutant pour relire le
+// détail des corrections après un arrêt et une reprise au stade EN_CORRECTION.
+func consulterRun(dataDir, issue string) int {
+	if issue == "" {
+		fmt.Fprintln(os.Stderr, "NON_EXECUTE : -issue requis avec -consulter")
+		return 3
+	}
+	// Lecture seule stricte (revue PR #71) : OuvrirLectureSeule échoue si
+	// la racine n'existe pas ; une consultation ne crée jamais de répertoire.
+	ref, err := missions.OuvrirLectureSeule(dataDir)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "référentiel impossible : "+err.Error())
+		return 1
+	}
+	enr, err := ref.Obtenir(issue)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "mission introuvable : "+err.Error())
+		return 1
+	}
+	out, err := json.MarshalIndent(enr.Mission, "", "  ")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "lecture impossible : "+err.Error())
+		return 1
+	}
+	fmt.Println(string(out))
+	return 0
 }
 
 // ---- démo locale : serveurs factices loopback ----

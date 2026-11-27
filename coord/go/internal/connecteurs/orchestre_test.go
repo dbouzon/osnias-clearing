@@ -25,15 +25,20 @@ import (
 // référentiel temporaire, un orchestrateur réel sur connecteurs factices.
 // HORS RÉSEAU, AUCUNE CLÉ, 0 €.
 type banc struct {
-	ref             *missions.Referentiel
-	orch            *Orchestrateur
-	exec            *httptest.Server
-	recep           *httptest.Server
-	appelsExec      int
-	appelsRecep     int
-	bloquerExecMS   int
-	verdictPlan     string
+	ref              *missions.Referentiel
+	orch             *Orchestrateur
+	exec             *httptest.Server
+	recep            *httptest.Server
+	appelsExec       int
+	appelsRecep      int
+	bloquerExecMS    int
+	verdictPlan      string
 	verdictReception string
+	// pointsReception : JSON BRUT du champ points de la réponse du
+	// réceptionnaire factice (revue PR #71, tour 3) : nil = "[]" (comportement
+	// historique), chaîne vide = champ ABSENT, sinon inséré verbatim
+	// (ex. "[null]", "null").
+	pointsReception *string
 }
 
 func rolesTest() map[string][]string {
@@ -97,12 +102,18 @@ func nouveauBanc(t *testing.T) *banc {
 			if verdict == "" {
 				verdict = "ACCEPTEE"
 			}
-			out, _ := json.Marshal(map[string]any{
-				"verdict": verdict, "points": []string{},
-				"empreinte_attendue": emp,
-				"verdict_id":         "verdict-" + r.Header.Get("Idempotency-Key")[:8],
-				"verdict_url":        "urn:test:reception",
-			})
+			reponse := map[string]any{
+				"verdict": verdict, "empreinte_attendue": emp,
+				"verdict_id":  "verdict-" + r.Header.Get("Idempotency-Key")[:8],
+				"verdict_url": "urn:test:reception",
+			}
+			switch {
+			case b.pointsReception == nil:
+				reponse["points"] = []string{}
+			case *b.pointsReception != "":
+				reponse["points"] = json.RawMessage(*b.pointsReception)
+			}
+			out, _ := json.Marshal(reponse)
 			w.Write(reponseChat(string(out), "recep-modele", 300))
 			return
 		}

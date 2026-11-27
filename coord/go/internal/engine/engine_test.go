@@ -5,6 +5,7 @@
 package engine
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 
@@ -171,5 +172,82 @@ func TestBoucleCorrectionRefus(t *testing.T) {
 	}
 	if m.State != "REFUSEE" || m.Decisions[1].Verdict != "REFUSEE" {
 		t.Fatal("refus motive attendu")
+	}
+}
+
+// ---- M-COORD-DEP-02 : points du verdict persistes avec la decision ----
+
+func TestVerdictPointsPersistes(t *testing.T) {
+	// Controle decisif DEP-02 : au stade EN_CORRECTION, le DETAIL des
+	// corrections doit rester attache a la decision persistee.
+	m := New("#1")
+	m.Transition("EXECUTION", exec, adaptateurs, roles, nil)
+	m.Transition("DECISION_ATTENDUE", exec, adaptateurs, roles,
+		map[string]string{"revision": rev40, "empreinte_preuves": emp64})
+	ok, motif := m.Transition("EN_CORRECTION", recep, adaptateurs, roles,
+		map[string]string{"verdict_id": "v", "verdict_url": "u",
+			"points": `["corriger la conversion 200 centimes","corriger le cout 0,006 c"]`})
+	if !ok {
+		t.Fatalf("transition EN_CORRECTION refusee: %s", motif)
+	}
+	if len(m.Decisions) != 1 {
+		t.Fatalf("une decision attendue, obtenu %d", len(m.Decisions))
+	}
+	d := m.Decisions[0]
+	if d.Verdict != "A_CORRIGER" || len(d.Points) != 2 {
+		t.Fatalf("verdict A_CORRIGER avec 2 points attendu, obtenu %+v", d)
+	}
+	if d.Points[0] != "corriger la conversion 200 centimes" ||
+		d.Points[1] != "corriger le cout 0,006 c" {
+		t.Fatalf("points alters: %+v", d.Points)
+	}
+}
+
+func TestVerdictPointsInvalidesRefuses(t *testing.T) {
+	// Fail closed : un champ points present mais invalide refuse la
+	// transition (un verdict tronque n'ecrase jamais le detail).
+	refus(t, "EN_CORRECTION", recep, map[string]string{
+		"verdict_id": "v", "verdict_url": "u", "points": `{invalide}`,
+	}, "points de verdict invalides")
+	refus(t, "ACCEPTEE", recep, map[string]string{
+		"verdict_id": "v", "verdict_url": "u", "points": `[42]`,
+	}, "points de verdict invalides")
+	// Revue PR #71 : null et [null] sont acceptes silencieusement par
+	// json.Unmarshal dans un []string ; le moteur doit les refuser.
+	refus(t, "EN_CORRECTION", recep, map[string]string{
+		"verdict_id": "v", "verdict_url": "u", "points": `null`,
+	}, "points de verdict invalides")
+	refus(t, "ACCEPTEE", recep, map[string]string{
+		"verdict_id": "v", "verdict_url": "u", "points": `[null]`,
+	}, "points de verdict invalides")
+	refus(t, "EN_CORRECTION", recep, map[string]string{
+		"verdict_id": "v", "verdict_url": "u", "points": `["corriger",null]`,
+	}, "points de verdict invalides")
+}
+
+func TestVerdictPointsRelectureDisque(t *testing.T) {
+	// Relecture APRES arret/reprise : la persistance JSON de la mission
+	// restitue integralement les points (controle decisif DEP-02).
+	m := New("#1")
+	m.Transition("EXECUTION", exec, adaptateurs, roles, nil)
+	m.Transition("DECISION_ATTENDUE", exec, adaptateurs, roles,
+		map[string]string{"revision": rev40, "empreinte_preuves": emp64})
+	m.Transition("EN_CORRECTION", recep, adaptateurs, roles,
+		map[string]string{"verdict_id": "v9", "verdict_url": "u9",
+			"points": `["corriger la conversion 200 centimes","corriger le cout 0,006 c"]`})
+	raw, err := json.Marshal(m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var relue Mission
+	if err := json.Unmarshal(raw, &relue); err != nil {
+		t.Fatal(err)
+	}
+	if relue.State != "EN_CORRECTION" || len(relue.Decisions) != 1 {
+		t.Fatalf("etat/decisions non restitues: %+v", relue)
+	}
+	d := relue.Decisions[0]
+	if len(d.Points) != 2 || d.Points[1] != "corriger le cout 0,006 c" {
+		t.Fatalf("points perdus apres relecture disque: %+v", d.Points)
 	}
 }
