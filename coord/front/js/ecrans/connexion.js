@@ -1,27 +1,49 @@
 "use strict";
-/* Écran CONNEXION (M-COORD-AUTH-01) : bouton « Se connecter avec
- * Google » quand la section google est active (OIDC serveur, aucun
- * secret ici). Repli fail-closed : si la connexion Google n'est pas
- * configurée côté serveur, l'écran historique de choix de compte
- * reste disponible (maintenance). */
+/* Écran CONNEXION (M-COORD-SRC-01, règle du pilote) : le moyen de
+ * connexion désigne la source de travail —
+ *   - « Se connecter avec Google » : compte Gmail, missions dans le
+ *     Google Drive de la personne (analyse documentaire) ;
+ *   - « Se connecter avec GitHub » : compte GitHub, missions dans un
+ *     repo GitHub.
+ * Chaque bouton n'apparaît que si sa source est configurée côté
+ * serveur (fail-closed). Repli : liste des comptes (maintenance). */
 (function () {
-  async function afficher(contenu) {
-    const etat = await Coord.requete("GET", "/api/auth/google/etat");
-    const googleActif = etat.statut === 200 && etat.donnees && etat.donnees.activer === true;
+  function boutonSource(cle, href, aide) {
+    const b = document.createElement("a");
+    b.className = "bouton principal";
+    b.href = href;
+    b.textContent = Coord.t(cle);
+    const bloc = Coord.el("div");
+    bloc.appendChild(b);
+    if (aide) { bloc.appendChild(Coord.el("div", "aide", aide)); }
+    return bloc;
+  }
 
-    if (googleActif) {
+  async function afficher(contenu) {
+    var googleActif = false;
+    var githubActif = false;
+    try {
+      const e1 = await Coord.requete("GET", "/api/auth/google/etat");
+      googleActif = e1.statut === 200 && e1.donnees && e1.donnees.activer === true;
+    } catch (e) { /* fail-closed */ }
+    try {
+      const e2 = await Coord.requete("GET", "/api/auth/github/etat");
+      githubActif = e2.statut === 200 && e2.donnees && e2.donnees.activer === true;
+    } catch (e) { /* fail-closed */ }
+
+    if (googleActif || githubActif) {
       const carte = Coord.el("div", "carte");
-      const b = document.createElement("a");
-      b.className = "bouton principal";
-      b.href = "/api/auth/google/login";
-      b.textContent = Coord.t("app.googleConnexion");
-      carte.appendChild(b);
-      carte.appendChild(Coord.el("div", "aide", "app.googleAide"));
+      if (googleActif) {
+        carte.appendChild(boutonSource("app.googleConnexion", "/api/auth/google/login", "app.googleAide"));
+      }
+      if (githubActif) {
+        carte.appendChild(boutonSource("app.githubConnexion", "/api/auth/github/login", "app.githubAide"));
+      }
       contenu.appendChild(carte);
       return;
     }
 
-    /* Repli : liste des comptes (mode maintenance, sans Google). */
+    /* Repli : liste des comptes (mode maintenance, sans source). */
     const rep = await Coord.requete("GET", "/api/comptes");
     if (rep.statut !== 200 || !rep.donnees || !rep.donnees.comptes) {
       Coord.messageErreur(contenu, rep.donnees && rep.donnees.motif ? rep.donnees.motif : "app.erreurReseau");

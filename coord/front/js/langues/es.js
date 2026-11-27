@@ -199,5 +199,7 @@ CoordLangues["es"] = {
   "creation.choisirRepo": "— Elegir un repo —",
   "creation.repoAide": "La carpeta de la misión vivirá en este repo: missions/<nombre>/entrada y missions/<nombre>/salida (contenido versionado).",
   "creation.errRepo": "Elija el repo de la misión.",
-  "creation.reposErreur": "No se pudieron listar sus repos."
+  "creation.reposErreur": "No se pudieron listar sus repos.",
+  "app.githubConnexion": "Iniciar sesión con GitHub",
+  "app.githubAide": "Sus misiones vivirán en uno de sus repos de GitHub."
 };

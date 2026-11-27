@@ -888,12 +888,17 @@ func (g *gateway) apiMoi(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
+	origine := "google"
+	if strings.HasPrefix(u.Sub, "gh:") {
+		origine = "github"
+	}
 	repondreJSON(w, http.StatusOK, map[string]any{
 		"nom":            u.Nom,
 		"email":          u.Email,
 		"image":          u.Image,
 		"compte":         u.Compte,
 		"solde":          0,
+		"origine":        origine,
 		"drive_connecte": u.DriveRefresh != "",
 	})
 }

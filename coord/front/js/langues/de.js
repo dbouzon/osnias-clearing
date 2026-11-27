@@ -199,5 +199,7 @@ CoordLangues["de"] = {
   "creation.choisirRepo": "— Repo wählen —",
   "creation.repoAide": "Der Missionsordner lebt in diesem Repo: missions/<Name>/eingabe und missions/<Name>/ausgabe (versionierter Inhalt).",
   "creation.errRepo": "Wählen Sie das Repo der Mission.",
-  "creation.reposErreur": "Ihre Repos konnten nicht geladen werden."
+  "creation.reposErreur": "Ihre Repos konnten nicht geladen werden.",
+  "app.githubConnexion": "Mit GitHub anmelden",
+  "app.githubAide": "Ihre Missionen leben in einem Ihrer GitHub-Repos."
 };

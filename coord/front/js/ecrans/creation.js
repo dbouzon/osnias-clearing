@@ -49,6 +49,7 @@
       const o = document.createElement("option");
       o.value = s;
       o.textContent = Coord.t(s === "drive" ? "creation.sourceDrive" : "creation.sourceGithub");
+      if (s === sourceActive) { o.selected = true; }
       select.appendChild(o);
     });
     bloc.appendChild(select);
@@ -211,6 +212,17 @@
       }
     } catch (e) { /* silencieux */ }
 
+    /* Règle du pilote : le moyen de connexion désigne la source.
+     * Compte Gmail -> Drive ; compte GitHub -> repo. La source par
+     * défaut suit l'origine, l'autre reste sélectionnable. */
+    try {
+      const moi = await Coord.requete("GET", "/api/moi");
+      if (moi.statut === 200 && moi.donnees && moi.donnees.origine === "github") {
+        if (etats.github) { sourceActive = "github"; }
+      } else if (etats.drive) {
+        sourceActive = "drive";
+      }
+    } catch (e) { /* repli : drive par défaut */ }
     const modeSources = blocSource(carte, etats, erreur) !== null;
     var modeGoogle = false;
     if (modeSources) {

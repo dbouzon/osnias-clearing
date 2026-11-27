@@ -199,5 +199,7 @@ CoordLangues["zh"] = {
   "creation.choisirRepo": "— 选择仓库 —",
   "creation.repoAide": "任务目录将保存在此仓库中：missions/<名称>/输入 与 missions/<名称>/输出（内容带版本）。",
   "creation.errRepo": "请选择任务的仓库。",
-  "creation.reposErreur": "无法列出您的仓库。"
+  "creation.reposErreur": "无法列出您的仓库。",
+  "app.githubConnexion": "使用 GitHub 登录",
+  "app.githubAide": "您的任务将保存在您的一个 GitHub 仓库中。"
 };

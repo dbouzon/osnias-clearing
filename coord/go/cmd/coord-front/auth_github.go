@@ -256,16 +256,33 @@ func (g *gateway) authGithubCallback(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{Name: cookieOIDC, Value: "", Path: "/", HttpOnly: true,
 		SameSite: http.SameSiteLaxMode, MaxAge: -1})
 
-	// Le sub de session est requis : GitHub se connecte pour une
-	// personne déjà identifiée par Google (spec §3.2).
-	if subEtat == "" {
-		repondreErreur(w, http.StatusUnauthorized, "AUTH_REFUSEE",
-			"connectez-vous avant de connecter votre GitHub")
-		return
-	}
-	login, err := g.loginGitHub(tok)
+	identite, err := g.identiteGitHub(tok)
 	if err != nil {
 		repondreErreur(w, http.StatusBadGateway, "GITHUB_INJOIGNABLE", err.Error())
+		return
+	}
+	if subEtat == "" {
+		// Flux PRIMAIRE (règle du pilote, spec v0.4 §3.2) : la
+		// première connexion GitHub crée le compte elle-même, sans
+		// passer par Google ; session ouverte, redirection accueil.
+		u, err := g.provisionner("gh:"+identite.id, "", identite.login, "")
+		if err != nil {
+			repondreErreur(w, http.StatusServiceUnavailable, "COMPTE_NON_PROVISIONNE", err.Error())
+			return
+		}
+		if err := g.users.maj(func(m map[string]*utilisateur) error {
+			if m[u.Sub] == nil {
+				return fmt.Errorf("utilisateur disparu")
+			}
+			m[u.Sub].GitHubToken = tok
+			m[u.Sub].GitHubLogin = identite.login
+			return nil
+		}); err != nil {
+			repondreErreur(w, http.StatusInternalServerError, "INTERNE", err.Error())
+			return
+		}
+		g.poserCookieSession(w, u.Compte, u.Sub)
+		http.Redirect(w, r, "/#/presentation", http.StatusFound)
 		return
 	}
 	if err := g.users.maj(func(m map[string]*utilisateur) error {
@@ -273,7 +290,7 @@ func (g *gateway) authGithubCallback(w http.ResponseWriter, r *http.Request) {
 			return fmt.Errorf("utilisateur disparu")
 		}
 		m[subEtat].GitHubToken = tok
-		m[subEtat].GitHubLogin = login
+		m[subEtat].GitHubLogin = identite.login
 		return nil
 	}); err != nil {
 		repondreErreur(w, http.StatusInternalServerError, "INTERNE", err.Error())
@@ -321,29 +338,35 @@ func (g *gateway) echangerCodeGitHub(code string) (string, error) {
 	return tok.AccessToken, nil
 }
 
-func (g *gateway) loginGitHub(token string) (string, error) {
+type identiteGitHubT struct {
+	id    string
+	login string
+}
+
+func (g *gateway) identiteGitHub(token string) (identiteGitHubT, error) {
 	req, _ := http.NewRequest(http.MethodGet, githubAPI+"/user", nil)
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Accept", githubAccept)
 	req.Header.Set("User-Agent", githubUserAgent)
 	rep, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", err
+		return identiteGitHubT{}, err
 	}
 	defer rep.Body.Close()
 	if rep.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("utilisateur GitHub : statut %d", rep.StatusCode)
+		return identiteGitHubT{}, fmt.Errorf("utilisateur GitHub : statut %d", rep.StatusCode)
 	}
 	var u struct {
+		ID    int64  `json:"id"`
 		Login string `json:"login"`
 	}
 	if err := json.NewDecoder(io.LimitReader(rep.Body, 1<<20)).Decode(&u); err != nil {
-		return "", err
+		return identiteGitHubT{}, err
 	}
-	if u.Login == "" {
-		return "", fmt.Errorf("login GitHub absent")
+	if u.ID == 0 || u.Login == "" {
+		return identiteGitHubT{}, fmt.Errorf("identité GitHub incomplète")
 	}
-	return u.Login, nil
+	return identiteGitHubT{id: fmt.Sprintf("%d", u.ID), login: u.Login}, nil
 }
 
 // ---------------------------------------------------------------------------
