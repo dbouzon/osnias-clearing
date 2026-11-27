@@ -73,18 +73,17 @@ REPONSES = [
 ]
 
 PREUVES = []
+
 def preuve(nom, ok, detail=""):
     PREUVES.append({"nom": nom, "ok": bool(ok), "detail": str(detail)})
     print(("PASS " if ok else "FAIL ") + nom + (" : " + str(detail) if detail else ""))
     return ok
-
 
 def sha256f(chemin):
     h = hashlib.sha256()
     with open(chemin, "rb") as f:
         h.update(f.read())
     return h.hexdigest()
-
 
 def attendre_port(port, delai=10.0):
     fin = time.time() + delai
@@ -95,7 +94,6 @@ def attendre_port(port, delai=10.0):
         except OSError:
             time.sleep(0.1)
     return False
-
 
 class Service:
     def __init__(self, chemin, args, log):
