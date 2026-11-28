@@ -134,6 +134,10 @@
 
     var corps = document.createElement("div");
     corps.className = "console-carte-corps";
+    // M-COORD-ENGINE-08 : spécialité éditoriale de chaque fournisseur
+    // (texte statique traduit, distinct des métriques réelles).
+    corps.appendChild(ligne(Coord.t("console.specialite"),
+      Coord.t("console.specialite." + carte.fournisseur)));
     corps.appendChild(ligne(Coord.t("console.modeleTeste"), carte.modele_teste || "—"));
     corps.appendChild(ligne(Coord.t("console.version"),
       versionRetournee(etat, carte) || Coord.t("console.versionNonCommuniquee")));

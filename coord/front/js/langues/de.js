@@ -264,5 +264,12 @@ CoordLangues["de"] = {
   "console.chargeInactif": "keine Aufrufe",
   "console.jetonsConsommes": "Verbrauchte Tokens (E / A)",
   "console.version": "Version",
-  "console.versionNonCommuniquee": "nicht mitgeteilt"
+  "console.versionNonCommuniquee": "nicht mitgeteilt",
+  "console.specialite": "Spezialität",
+  "console.specialite.mistral": "offene Modelle, Effizienz, europäische Souveränität",
+  "console.specialite.anthropic": "Textqualität, langes Denken, Sicherheit",
+  "console.specialite.openai": "vielseitiger Allrounder, breites Ökosystem",
+  "console.specialite.gemini": "sehr langer Kontext, multimodal",
+  "console.specialite.deepseek": "Schlussfolgern und Mathematik, niedrige Preise",
+  "console.specialite.zai": "Agenten und Code, günstigster Preis",
 };

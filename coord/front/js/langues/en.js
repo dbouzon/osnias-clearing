@@ -264,5 +264,12 @@ CoordLangues["en"] = {
   "console.chargeInactif": "no calls",
   "console.jetonsConsommes": "Tokens consumed (I / O)",
   "console.version": "Version",
-  "console.versionNonCommuniquee": "not disclosed"
+  "console.versionNonCommuniquee": "not disclosed",
+  "console.specialite": "Specialty",
+  "console.specialite.mistral": "open-weight models, efficiency, European sovereignty",
+  "console.specialite.anthropic": "writing, long reasoning, safety",
+  "console.specialite.openai": "versatile generalist, broad ecosystem",
+  "console.specialite.gemini": "very long context, multimodal",
+  "console.specialite.deepseek": "reasoning and math, low pricing",
+  "console.specialite.zai": "agents and coding, lowest cost",
 };
