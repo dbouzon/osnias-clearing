@@ -14,7 +14,8 @@
     ["anthropic", "Anthropic", "PBC · anthropic.com"],
     ["openai", "OpenAI", "openai.com"],
     ["gemini", "Google Gemini", "AI Studio · google.com"],
-    ["deepseek", "DeepSeek", "deepseek.com"]
+    ["deepseek", "DeepSeek", "deepseek.com"],
+    ["zai", "Z.AI", "z.ai"]
   ];
 
   function badgeEtat(etat) {

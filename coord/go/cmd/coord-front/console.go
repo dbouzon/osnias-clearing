@@ -381,7 +381,7 @@ func (g *gateway) consoleEtat(w http.ResponseWriter, r *http.Request) {
 	tests := g.lireTests()
 
 	cartes := []map[string]any{}
-	for _, nom := range []string{"mistral", "anthropic", "openai", "gemini", "deepseek"} {
+	for _, nom := range []string{"mistral", "anthropic", "openai", "gemini", "deepseek", "zai"} {
 		f := fournisseurs[nom]
 		modele := premierModeleFournisseur(regime, nom)
 		carte := map[string]any{
@@ -608,6 +608,10 @@ func (g *gateway) testDispo(nom string, f fournisseurMoteurConf, modele string, 
 	if nom == "anthropic" {
 		url = strings.TrimSuffix(base, "/") + "/v1/models"
 	}
+	if nom == "zai" {
+		// M-COORD-API-ZAI-01 : Z.AI expose /models sous /api/paas/v4.
+		url = strings.TrimSuffix(base, "/") + "/models"
+	}
 	debut := time.Now()
 	client := &http.Client{Timeout: 30 * time.Second}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -652,7 +656,7 @@ func (g *gateway) testReel(regime moteursConf, nom string, f fournisseurMoteurCo
 		}
 		res, errReseau = postMoteur(strings.TrimSuffix(base, "/")+"/v1/messages",
 			"x-api-key "+f.CleAPI, corps, timeout)
-	case nom == "gemini":
+	case nom == "gemini" || nom == "zai":
 		corps := map[string]any{
 			"model": modele, "max_tokens": plafond,
 			"messages": []messageMoteur{{Role: "system", Contenu: systeme}, {Role: "user", Contenu: demande}},
@@ -748,6 +752,10 @@ func baseFournisseur(nom string, f fournisseurMoteurConf) string {
 		return "https://generativelanguage.googleapis.com/v1beta/openai"
 	case "deepseek":
 		return "https://api.deepseek.com"
+	case "zai":
+		// M-COORD-API-ZAI-01 : racine /api/paas/v4 de Z.AI (chemins
+		// /models et /chat/completions, sans le préfixe /v1 commun).
+		return "https://api.z.ai/api/paas/v4"
 	case "anthropic":
 		return "https://api.anthropic.com"
 	}

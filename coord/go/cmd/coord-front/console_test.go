@@ -182,8 +182,8 @@ func TestConsoleEtatSansDepense(t *testing.T) {
 		t.Fatalf("GET /etat a déclenché des appels fournisseur : chat=%d models=%d", chats, models)
 	}
 	cartes, _ := m["fournisseurs"].([]any)
-	if len(cartes) != 5 {
-		t.Fatalf("cinq cartes attendues, reçu %d", len(cartes))
+	if len(cartes) != 6 {
+		t.Fatalf("six cartes attendues, reçu %d", len(cartes))
 	}
 	if m["grille"] == nil || m["jetons_missions"] == nil {
 		t.Fatalf("etat incomplet : %v", m)
