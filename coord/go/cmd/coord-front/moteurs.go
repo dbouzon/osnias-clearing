@@ -101,6 +101,7 @@ type moteursConf struct {
 	Anthropic       fournisseurMoteurConf       `json:"anthropic"`
 	Openai          fournisseurMoteurConf       `json:"openai"`
 	Gemini          fournisseurMoteurConf       `json:"gemini"`
+	Deepseek        fournisseurMoteurConf       `json:"deepseek"`
 	Niveaux         map[string]niveauMoteurConf `json:"niveaux"`
 	PlafondAppels   int                         `json:"plafond_appels"`
 	TimeoutCadrage  int                         `json:"timeout_cadrage"`
@@ -152,6 +153,7 @@ func (mc moteursConf) fournisseurs() map[string]fournisseurMoteurConf {
 		"anthropic": mc.Anthropic,
 		"openai":    mc.Openai,
 		"gemini":    mc.Gemini,
+		"deepseek":  mc.Deepseek,
 	}
 }
 
@@ -383,6 +385,10 @@ func (g *gateway) appelEtape(p *projetDemo, etape, system, demande string) (resu
 			// M-COORD-API-GEMINI-01 : surface OpenAI-compatible de
 			// l'API Gemini (AI Studio), authentifiee par Bearer.
 			base = "https://generativelanguage.googleapis.com/v1beta/openai"
+		case "deepseek":
+			// M-COORD-API-DEEPSEEK-01 : API nativement OpenAI-compatible
+			// (l'adaptateur commun ajoute /v1/chat/completions, Bearer).
+			base = "https://api.deepseek.com"
 		}
 	}
 	timeout := regime.timeout(etape)
