@@ -226,6 +226,7 @@ func (g *gateway) regimeMoteurs() moteursConf {
 	var partiel struct {
 		Moteurs moteursConf `json:"moteurs"`
 		Metrics metricsConf `json:"metrics"`
+		Console consoleConf `json:"console"`
 	}
 	if err := json.Unmarshal(raw, &partiel); err != nil {
 		log.Printf("coord-front : relecture moteurs : json invalide : %v", err)
@@ -240,7 +241,10 @@ func (g *gateway) regimeMoteurs() moteursConf {
 	if !partiel.Metrics.Activer || strings.TrimSpace(partiel.Metrics.Token) != "" {
 		g.metrics = partiel.Metrics
 	}
+	// M-COORD-API-STATUS-01 : la section console suit le même
+	// rechargement (un seul point de relecture, un seul mtime).
 	g.moteurs = partiel.Moteurs
+	g.console = partiel.Console
 	g.mtimeMoteurs = fi.ModTime()
 	return g.moteurs
 }

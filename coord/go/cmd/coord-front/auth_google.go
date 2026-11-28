@@ -86,6 +86,10 @@ type utilisateur struct {
 	DriveRefresh string    `json:"drive_refresh,omitempty"` // jamais envoyé au front
 	GitHubToken  string    `json:"github_token,omitempty"`  // jamais envoyé au front
 	GitHubLogin  string    `json:"github_login,omitempty"`
+	// M-COORD-API-STATUS-01 : drapeau pilote/administrateur (fail-closed :
+	// aucun drapeau = aucune habilitation console). Renseigné par le
+	// pilote dans utilisateurs.json, jamais par le front.
+	Admin bool `json:"admin,omitempty"`
 }
 
 // ---------------------------------------------------------------------------

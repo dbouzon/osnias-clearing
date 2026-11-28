@@ -78,6 +78,7 @@ type config struct {
 	GitHub              githubConf   `json:"github"`
 	Moteurs             moteursConf  `json:"moteurs"`
 	Metrics             metricsConf  `json:"metrics"`
+	Console             consoleConf  `json:"console"`
 	FichierUtilisateurs string       `json:"fichier_utilisateurs"`
 	FichierRepertoires  string       `json:"fichier_repertoires"`
 }
@@ -103,11 +104,18 @@ type gateway struct {
 	muMoteurs     sync.Mutex
 	moteurs       moteursConf
 	metrics       metricsConf
+	console       consoleConf
 	mtimeMoteurs  time.Time
 	cheminConfig  string
 	cheminJournal string
+	cheminTests   string
 	muJournal     sync.Mutex
 	compteurs     *compteursMoteurs
+
+	// M-COORD-API-STATUS-01 : état de la console (anti-doublon des
+	// tests et garde-rythme, en mémoire, jamais persisté).
+	muConsole          sync.Mutex
+	consoleEtatServeur *etatConsole
 }
 
 func newGateway(cfg config, frontDir, dirConfig string) *gateway {
@@ -137,8 +145,10 @@ func newGateway(cfg config, frontDir, dirConfig string) *gateway {
 		repertoires:   stockage,
 		moteurs:       cfg.Moteurs,
 		metrics:       cfg.Metrics,
+		console:       cfg.Console,
 		compteurs:     nouveauxCompteursMoteurs(),
 		cheminJournal: filepath.Join(dirConfig, journalMoteurFichier),
+		cheminTests:   filepath.Join(dirConfig, testsMoteurFichier),
 	}
 	for _, c := range cfg.Comptes {
 		if c.Demo {
@@ -190,6 +200,10 @@ func (g *gateway) routes() http.Handler {
 	mux.HandleFunc("/api/missions/repertoire", g.missionRepertoire)
 	// M-COORD-ORPHEUS-01 : exposition Prometheus (fail-closed, token).
 	mux.HandleFunc("GET /metrics", g.servirMetrics)
+	// M-COORD-API-STATUS-01 : console de supervision (admin uniquement).
+	mux.HandleFunc("GET /api/console/etat", g.consoleEtat)
+	mux.HandleFunc("POST /api/console/test", g.consoleTest)
+	mux.HandleFunc("GET /api/console/historique-tests", g.consoleHistorique)
 	mux.HandleFunc("/api/projets", g.apiProjets)
 	mux.HandleFunc("/api/projets/", g.apiProjets)
 	// Le front statique en dernier : tout chemin non-API reconnu
