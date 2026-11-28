@@ -262,5 +262,7 @@ CoordLangues["en"] = {
   "console.chargeModeree": "moderate",
   "console.chargeElevee": "high",
   "console.chargeInactif": "no calls",
-  "console.jetonsConsommes": "Tokens consumed (I / O)"
+  "console.jetonsConsommes": "Tokens consumed (I / O)",
+  "console.version": "Version",
+  "console.versionNonCommuniquee": "not disclosed"
 };
