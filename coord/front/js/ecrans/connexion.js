@@ -43,34 +43,16 @@
       return;
     }
 
-    /* Repli : liste des comptes (mode maintenance, sans source). */
-    const rep = await Coord.requete("GET", "/api/comptes");
-    if (rep.statut !== 200 || !rep.donnees || !rep.donnees.comptes) {
-      Coord.messageErreur(contenu, rep.donnees && rep.donnees.motif ? rep.donnees.motif : "app.erreurReseau");
-      contenu.appendChild(Coord.bouton("ui.reessayer", function () {
-        Coord.naviguer("#/accueil");
-      }, "principal"));
-      return;
-    }
-    const liste = Coord.el("div", "carte");
-    rep.donnees.comptes.forEach(function (nom) {
-      const rangée = Coord.el("div", "rangée");
-      const b = Coord.bouton("app.entrer", async function () {
-        const r = await Coord.requete("POST", "/api/connexion", { compte: nom });
-        if (r.statut === 200 && r.donnees && r.donnees.compte) {
-          Coord.setSession(r.donnees);
-          Coord.router();
-        } else {
-          Coord.messageErreur(contenu, r.donnees && r.donnees.motif ? r.donnees.motif : "app.erreurReseau");
-        }
-      }, "principal");
-      rangée.appendChild(b);
-      const label = document.createElement("span");
-      label.textContent = nom;
-      rangée.appendChild(label);
-      liste.appendChild(rangée);
-    });
-    contenu.appendChild(liste);
+    /* Aucune source configurée : plus de repli de comptes démo
+     * (ordre du pilote, M-COORD-ENGINE-03). Message sobre uniquement ;
+     * l'API /api/comptes et /api/connexion restent inchangées côté
+     * serveur (recettes curl). */
+    const carte = Coord.el("div", "carte");
+    const msg = document.createElement("p");
+    msg.className = "aide";
+    msg.textContent = Coord.t("app.connexionIndisponible");
+    carte.appendChild(msg);
+    contenu.appendChild(carte);
   }
   Coord.ecrans.connexion = afficher;
 })();

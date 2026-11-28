@@ -249,5 +249,23 @@ CoordLangues["de"] = {
   "console.etat.NON_TESTEE": "Nicht getestet",
   "console.etat.OPERATIONNELLE": "Betriebsbereit",
   "console.etat.ERREUR": "Fehler",
-  "console.etat.PREUVE_PERIMEE": "Veralteter Nachweis"
+  "console.etat.PREUVE_PERIMEE": "Veralteter Nachweis",
+
+  "console.charge": "Reelle Last (Missionen)",
+  "console.appelsReels": "Echte Aufrufe",
+  "console.jetonsEntree": "Verbrauchte Tokens (Eingabe)",
+  "console.jetonsSortie": "Verbrauchte Tokens (Ausgabe)",
+  "console.latenceMoyenne": "Durchschnittliche Latenz",
+  "console.dernierAppel": "Letzter echter Aufruf",
+  "console.aucunAppel": "Kein echter Aufruf im Zeitraum aufgezeichnet.",
+  "console.erreurs": "Fehler",
+  "app.connexionIndisponible": "Es ist noch keine Anmeldequelle konfiguriert (Google oder GitHub). Die Anmeldung wird in Kürze geöffnet.",
+  "console.etatCharge": "Lastzustand",
+  "console.chargeFaible": "gering",
+  "console.chargeModeree": "mäßig",
+  "console.chargeElevee": "hoch",
+  "console.chargeInactif": "keine Aufrufe",
+  "console.totalCommande": "Bestellt gesamt",
+  "console.restant": "Verbleibend",
+  "console.jetonsConsommes": "Verbrauchte Tokens (E / A)"
 };

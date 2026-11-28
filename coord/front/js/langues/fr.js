@@ -249,5 +249,23 @@ CoordLangues["fr"] = {
   "console.etat.NON_TESTEE": "Non testée",
   "console.etat.OPERATIONNELLE": "Opérationnelle",
   "console.etat.ERREUR": "Erreur",
-  "console.etat.PREUVE_PERIMEE": "Preuve périmée"
+  "console.etat.PREUVE_PERIMEE": "Preuve périmée",
+
+  "console.charge": "Charge réelle (missions)",
+  "console.appelsReels": "Appels réels",
+  "console.jetonsEntree": "Jetons consommés (entrée)",
+  "console.jetonsSortie": "Jetons consommés (sortie)",
+  "console.latenceMoyenne": "Latence moyenne",
+  "console.dernierAppel": "Dernier appel réel",
+  "console.aucunAppel": "Aucun appel réel enregistré sur la période.",
+  "console.erreurs": "erreurs",
+  "app.connexionIndisponible": "Aucune source de connexion n'est encore configurée (Google ou GitHub). La connexion sera ouverte prochainement.",
+  "console.etatCharge": "État de charge",
+  "console.chargeFaible": "faible",
+  "console.chargeModeree": "modérée",
+  "console.chargeElevee": "élevée",
+  "console.chargeInactif": "aucun appel",
+  "console.totalCommande": "Total commandé",
+  "console.restant": "Restant",
+  "console.jetonsConsommes": "Jetons consommés (E / S)"
 };

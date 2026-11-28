@@ -249,5 +249,23 @@ CoordLangues["zh"] = {
   "console.etat.NON_TESTEE": "未测试",
   "console.etat.OPERATIONNELLE": "运行正常",
   "console.etat.ERREUR": "错误",
-  "console.etat.PREUVE_PERIMEE": "证明过期"
+  "console.etat.PREUVE_PERIMEE": "证明过期",
+
+  "console.charge": "真实负载（任务）",
+  "console.appelsReels": "真实调用",
+  "console.jetonsEntree": "已消耗令牌（输入）",
+  "console.jetonsSortie": "已消耗令牌（输出）",
+  "console.latenceMoyenne": "平均延迟",
+  "console.dernierAppel": "最近真实调用",
+  "console.aucunAppel": "该期间没有真实调用记录。",
+  "console.erreurs": "错误",
+  "app.connexionIndisponible": "尚未配置任何登录来源（Google 或 GitHub）。登录功能即将开放。",
+  "console.etatCharge": "负载状态",
+  "console.chargeFaible": "低",
+  "console.chargeModeree": "中等",
+  "console.chargeElevee": "高",
+  "console.chargeInactif": "无调用",
+  "console.totalCommande": "已购总量",
+  "console.restant": "剩余",
+  "console.jetonsConsommes": "已消耗令牌（入 / 出）"
 };

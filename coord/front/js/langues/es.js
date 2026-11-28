@@ -249,5 +249,23 @@ CoordLangues["es"] = {
   "console.etat.NON_TESTEE": "Sin probar",
   "console.etat.OPERATIONNELLE": "Operativo",
   "console.etat.ERREUR": "Error",
-  "console.etat.PREUVE_PERIMEE": "Prueba caducada"
+  "console.etat.PREUVE_PERIMEE": "Prueba caducada",
+
+  "console.charge": "Carga real (misiones)",
+  "console.appelsReels": "Llamadas reales",
+  "console.jetonsEntree": "Tokens consumidos (entrada)",
+  "console.jetonsSortie": "Tokens consumidos (salida)",
+  "console.latenceMoyenne": "Latencia media",
+  "console.dernierAppel": "Última llamada real",
+  "console.aucunAppel": "Ninguna llamada real registrada en el periodo.",
+  "console.erreurs": "errores",
+  "app.connexionIndisponible": "Aún no hay ninguna fuente de conexión configurada (Google o GitHub). El acceso se abrirá próximamente.",
+  "console.etatCharge": "Estado de carga",
+  "console.chargeFaible": "baja",
+  "console.chargeModeree": "moderada",
+  "console.chargeElevee": "alta",
+  "console.chargeInactif": "sin llamadas",
+  "console.totalCommande": "Total contratado",
+  "console.restant": "Restante",
+  "console.jetonsConsommes": "Tokens consumidos (E / S)"
 };
