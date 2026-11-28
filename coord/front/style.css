@@ -238,6 +238,7 @@ body.sombre .message.evenement-binome { border-color: var(--trait); }
 .badge-console { border-radius: 30px; padding: 4px 9px; font-size: 0.7rem;
   font-weight: 600; white-space: nowrap; background: #eef2f7; color: #53637c; }
 .badge-console.ok { background: #e6f5ee; color: var(--vert); }
+.badge-console.moyen { background: #fdf3e0; color: var(--orange, #b26a00); }
 .badge-console.bad { background: #fce9ec; color: var(--rouge); }
 .console-carte-corps { padding: 0 16px 12px; flex: 1; }
 .console-paire { display: flex; justify-content: space-between; gap: 10px;

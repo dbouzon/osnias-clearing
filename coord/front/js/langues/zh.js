@@ -261,11 +261,12 @@ CoordLangues["zh"] = {
   "console.erreurs": "错误",
   "app.connexionIndisponible": "尚未配置任何登录来源（Google 或 GitHub）。登录功能即将开放。",
   "console.etatCharge": "负载状态",
-  "console.chargeFaible": "低",
-  "console.chargeModeree": "中等",
-  "console.chargeElevee": "高",
   "console.chargeInactif": "无调用",
   "console.totalCommande": "已购总量",
   "console.restant": "剩余",
-  "console.jetonsConsommes": "已消耗令牌（入 / 出）"
+  "console.jetonsConsommes": "已消耗令牌（入 / 出）",
+  "console.rapide": "快",
+  "console.moyen": "中等",
+  "console.congestionne": "拥堵"
+
 };
