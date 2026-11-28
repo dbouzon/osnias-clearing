@@ -102,6 +102,7 @@ type moteursConf struct {
 	Openai          fournisseurMoteurConf       `json:"openai"`
 	Gemini          fournisseurMoteurConf       `json:"gemini"`
 	Deepseek        fournisseurMoteurConf       `json:"deepseek"`
+	Zai             fournisseurMoteurConf       `json:"zai"`
 	Niveaux         map[string]niveauMoteurConf `json:"niveaux"`
 	PlafondAppels   int                         `json:"plafond_appels"`
 	TimeoutCadrage  int                         `json:"timeout_cadrage"`
@@ -154,6 +155,7 @@ func (mc moteursConf) fournisseurs() map[string]fournisseurMoteurConf {
 		"openai":    mc.Openai,
 		"gemini":    mc.Gemini,
 		"deepseek":  mc.Deepseek,
+		"zai":       mc.Zai,
 	}
 }
 
@@ -393,6 +395,11 @@ func (g *gateway) appelEtape(p *projetDemo, etape, system, demande string) (resu
 			// M-COORD-API-DEEPSEEK-01 : API nativement OpenAI-compatible
 			// (l'adaptateur commun ajoute /v1/chat/completions, Bearer).
 			base = "https://api.deepseek.com"
+		case "zai":
+			// M-COORD-API-ZAI-01 : API OpenAI-compatible de Z.AI (GLM),
+			// racine /api/paas/v4, chemins /chat/completions et /models
+			// (l'adaptateur commun ajoute /v1/... et ne convient pas).
+			base = "https://api.z.ai/api/paas/v4"
 		}
 	}
 	timeout := regime.timeout(etape)
@@ -411,7 +418,7 @@ func (g *gateway) appelEtape(p *projetDemo, etape, system, demande string) (resu
 			essais = 2
 			res, errReseau = appelAnthropic(urlAnthropic, conf.CleAPI, e.Modele, system, demande, timeout)
 		}
-	} else if moteur == "gemini" {
+	} else if moteur == "gemini" || moteur == "zai" {
 		res, errReseau = appelGeminiCompatible(base, conf.CleAPI, e.Modele, system, demande, timeout)
 		if errReseau != nil {
 			essais = 2
