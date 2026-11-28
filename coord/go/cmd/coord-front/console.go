@@ -266,10 +266,21 @@ func dernierTestValide(tests fichierTests, fournisseur string, conf fournisseurM
 // -------------------------------------------------------------------
 
 type agregatMoteur struct {
-	Moteur       string `json:"moteur"`
-	Appels       int    `json:"appels"`
-	JetonsEntree int    `json:"jetons_entree"`
-	JetonsSortie int    `json:"jetons_sortie"`
+	Moteur          string `json:"moteur"`
+	Appels          int    `json:"appels"`
+	JetonsEntree    int    `json:"jetons_entree"`
+	JetonsSortie    int    `json:"jetons_sortie"`
+	Erreurs         int    `json:"erreurs"`
+	DureeTotaleMs   int64  `json:"duree_totale_ms"`
+	DernierAppelUtc string `json:"dernier_appel_utc,omitempty"`
+}
+
+// latenceMoyenne : durée moyenne des appels de la période (0 si aucun).
+func (a agregatMoteur) latenceMoyenne() int64 {
+	if a.Appels == 0 {
+		return 0
+	}
+	return a.DureeTotaleMs / int64(a.Appels)
 }
 
 func (g *gateway) agregerJetons(periode string) ([]agregatMoteur, []agregatMoteur, string, string, int) {
@@ -310,6 +321,13 @@ func (g *gateway) agregerJetons(periode string) ([]agregatMoteur, []agregatMoteu
 		a.Appels++
 		a.JetonsEntree += e.JetonsEntree
 		a.JetonsSortie += e.JetonsSortie
+		a.DureeTotaleMs += e.DureeMs
+		if e.Resultat != "ok" {
+			a.Erreurs++
+		}
+		if e.Instant > a.DernierAppelUtc {
+			a.DernierAppelUtc = e.Instant
+		}
 	}
 	vers := func(m map[string]*agregatMoteur) []agregatMoteur {
 		out := []agregatMoteur{}

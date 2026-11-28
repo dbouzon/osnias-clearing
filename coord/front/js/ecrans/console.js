@@ -55,7 +55,32 @@
     return div;
   }
 
-  function carteFournisseur(etat, carte, tester) {
+  function blocCharge(carte, charge) {
+    var div = document.createElement("div");
+    div.className = "console-charge";
+    var t = document.createElement("p");
+    t.className = "console-charge-titre";
+    t.textContent = Coord.t("console.charge");
+    div.appendChild(t);
+    if (!charge) {
+      var vide = document.createElement("p");
+      vide.className = "console-paire";
+      vide.textContent = Coord.t("console.aucunAppel");
+      div.appendChild(vide);
+      return div;
+    }
+    div.appendChild(ligne(Coord.t("console.appelsReels"),
+      charge.appels + (charge.erreurs ? " (" + charge.erreurs + " " + Coord.t("console.erreurs") + ")" : "")));
+    div.appendChild(ligne(Coord.t("console.jetonsEntree"), String(charge.jetons_entree)));
+    div.appendChild(ligne(Coord.t("console.jetonsSortie"), String(charge.jetons_sortie)));
+    div.appendChild(ligne(Coord.t("console.latenceMoyenne"),
+      (charge.duree_totale_ms && charge.appels ? Math.round(charge.duree_totale_ms / charge.appels) : 0) + " ms"));
+    div.appendChild(ligne(Coord.t("console.dernierAppel"),
+      charge.dernier_appel_utc || Coord.t("console.jamaisTeste")));
+    return div;
+  }
+
+  function carteFournisseur(etat, carte, tester, charge) {
     var article = document.createElement("article");
     article.className = "console-carte";
     var haut = document.createElement("div");
@@ -87,6 +112,7 @@
     corps.appendChild(ligne(Coord.t("console.dernierTest"),
       dernier ? (dernier.instant_utc + (dernier.categorie ? " · " + dernier.categorie : "")) :
         Coord.t("console.jamaisTeste")));
+    corps.appendChild(blocCharge(carte, charge));
     corps.appendChild(blocContrat(carte));
     article.appendChild(corps);
 
@@ -188,10 +214,12 @@
       grille.textContent = "";
       var noms = {};
       etat.fournisseurs.forEach(function (c) { noms[c.fournisseur] = c; });
+      var charges = {};
+      (etat.jetons_missions || []).forEach(function (a) { charges[a.moteur] = a; });
       FOURNISSEURS.forEach(function (f) {
         var c = noms[f[0]] || { fournisseur: f[0], etat: "NON_CONFIGUREE" };
         c.nom = f[1]; c.proprietaire = f[2];
-        grille.appendChild(carteFournisseur(etat, c, tester));
+        grille.appendChild(carteFournisseur(etat, c, tester, charges[f[0]] || null));
       });
       notice.textContent = Coord.t("console.origine") + " · " + Coord.t("console.actualisation") +
         " : " + etat.actualisation_utc;
