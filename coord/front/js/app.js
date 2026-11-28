@@ -224,6 +224,8 @@ window.Coord = (function () {
       return;
     }
     if (h === "#/creation") { Coord.colonneMissions.masquer(); await ecrans.creation(effacer()); return; }
+    /* M-COORD-API-STATUS-01 : console de supervision (admin serveur). */
+    if (h === "#/console") { Coord.colonneMissions.masquer(); await ecrans.console(effacer()); return; }
     /* Écrans deux volets : colonne des missions visible. */
     const m = h.match(/^#\/mission\/([^/]+)$/);
     if (m) {

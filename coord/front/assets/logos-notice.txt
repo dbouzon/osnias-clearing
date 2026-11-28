@@ -1,0 +1,4 @@
+Logos des fournisseurs (logo-mistral.svg, logo-anthropic.svg,
+logo-openai.svg, logo-gemini.svg, logo-deepseek.svg) :
+@lobehub/icons-static-svg 1.106.0, licence MIT,
+https://github.com/lobehub/lobe-icons — mission M-COORD-API-STATUS-01.

@@ -219,3 +219,44 @@ body.sombre input, body.sombre textarea, body.sombre select { background: #0f172
 body.sombre .journal { background: var(--carte); }
 body.sombre a { color: var(--bleu); }
 body.sombre .message.evenement-binome { border-color: var(--trait); }
+
+/* ---- console de supervision (M-COORD-API-STATUS-01) ---- */
+.console-barre { display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; margin: 14px 0; flex-wrap: wrap; }
+.console-notice { color: var(--gris); font-size: 0.78rem; margin: 0 0 14px; }
+.console-retour { min-height: 20px; color: var(--bleu); font-size: 0.8rem; margin: 12px 0; }
+.console-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px; }
+.console-carte { background: var(--carte); border: 1px solid var(--trait);
+  border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.console-carte-haut { padding: 14px 16px; display: flex; justify-content: space-between;
+  align-items: center; gap: 10px; }
+.console-identite { display: flex; align-items: center; gap: 10px; }
+.console-logo { width: 40px; height: 40px; padding: 6px; border: 1px solid var(--trait);
+  border-radius: 10px; background: var(--carte); }
+.console-identite small { display: block; color: var(--gris); font-size: 0.68rem; }
+.badge-console { border-radius: 30px; padding: 4px 9px; font-size: 0.7rem;
+  font-weight: 600; white-space: nowrap; background: #eef2f7; color: #53637c; }
+.badge-console.ok { background: #e6f5ee; color: var(--vert); }
+.badge-console.bad { background: #fce9ec; color: var(--rouge); }
+.console-carte-corps { padding: 0 16px 12px; flex: 1; }
+.console-paire { display: flex; justify-content: space-between; gap: 10px;
+  margin: 6px 0; font-size: 0.78rem; }
+.console-paire span:first-child { color: var(--gris); }
+.console-contrat { font-size: 0.72rem; color: var(--gris); margin-top: 8px;
+  overflow-wrap: anywhere; }
+.console-carte-pied { border-top: 1px solid var(--trait); padding: 10px 16px;
+  display: flex; gap: 8px; justify-content: flex-end; }
+.console-carte-pied button { font-size: 0.72rem; padding: 6px 10px; }
+.console-panneau { background: var(--carte); border: 1px solid var(--trait);
+  border-radius: 12px; padding: 16px; margin-top: 18px; }
+.console-table { width: 100%; border-collapse: collapse; font-size: 0.75rem;
+  text-align: left; margin-top: 10px; }
+.console-table th { color: var(--gris); font-weight: 600; font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.06em; }
+.console-table td, .console-table th { padding: 8px 8px; border-bottom: 1px solid var(--trait); }
+@media (max-width: 620px) {
+  .console-grille { grid-template-columns: 1fr; }
+  .console-barre { flex-direction: column; align-items: stretch; }
+  .console-table { font-size: 0.7rem; }
+}
