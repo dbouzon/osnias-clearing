@@ -1,4 +1,4 @@
-successfully downloaded text file (SHA: f476ad34882fa4eb6bbac31daec149fe91fddbe4)successfully downloaded text file (SHA: 25d22dcd7ce8dd9819fd1307d91a2408358b7a13)// Recorrido del cliente de COORD — traducción al español.
+// Recorrido del cliente de COORD — traducción al español.
 // Formato impuesto (TestLanguesParite): CoordLangues["es"] = { JSON estricto };
 CoordLangues["es"] = {
   "app.sousTitre": "Inteligencia coordinada.",

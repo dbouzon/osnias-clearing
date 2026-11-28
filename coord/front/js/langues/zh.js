@@ -1,4 +1,4 @@
-successfully downloaded text file (SHA: 69b51e7c429fc8c06c00b861bbed171cee06ec7a)successfully downloaded text file (SHA: c0eed75a2b4aab4ef3b6bd4bd755e84ec7109b2a)// COORD 客户旅程 — 简体中文翻译。
+// COORD 客户旅程 — 简体中文翻译。
 // 规定格式（TestLanguesParite）：CoordLangues["zh"] = { 严格 JSON };
 CoordLangues["zh"] = {
   "app.sousTitre": "协调智能。",

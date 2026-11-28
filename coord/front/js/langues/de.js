@@ -1,4 +1,4 @@
-successfully downloaded text file (SHA: 7a6f881e23b9aff1ca45ac82feecef4854b3b92c)successfully downloaded text file (SHA: 59000e579aeddf96b148dbd569ab17c4d7b0bec6)// COORD Kundenreise — deutsche Übersetzung.
+// COORD Kundenreise — deutsche Übersetzung.
 // Vorgeschriebenes Format (TestLanguesParite): CoordLangues["de"] = { striktes JSON };
 CoordLangues["de"] = {
   "app.sousTitre": "Koordinierte Intelligenz.",

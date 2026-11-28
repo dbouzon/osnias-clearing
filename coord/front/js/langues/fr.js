@@ -1,4 +1,4 @@
-successfully downloaded text file (SHA: d2bfa4e15de8d0d1d9871d2ec5c0f90efb29e942)successfully downloaded text file (SHA: ded07ae029b89f1f81b5f6cb123587560e9a1635)// COORD parcours client — traduction française (langue de référence).
+// COORD parcours client — traduction française (langue de référence).
 // Format imposé (test TestLanguesParite) : CoordLangues["fr"] = { JSON strict };
 CoordLangues["fr"] = {
   "app.sousTitre": "L'intelligence coordonnée.",
