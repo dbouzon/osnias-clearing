@@ -161,6 +161,7 @@ CoordLangues["es"] = {
   "statut.pastille.cloturee": "🟠",
   "ui.nouvelleMission": "+ Nueva misión",
   "ui.missions": "Misiones",
+      "ui.engine": "Engine",
   "ui.selectionner": "Seleccione una misión en la columna izquierda o cree una nueva.",
   "ui.reessayer": "Reintentar",
   "ui.erreurChargement": "No se pudieron cargar las misiones: {motif}",

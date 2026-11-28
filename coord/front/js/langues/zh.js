@@ -161,6 +161,7 @@ CoordLangues["zh"] = {
   "statut.pastille.cloturee": "🟠",
   "ui.nouvelleMission": "+ 新建任务",
   "ui.missions": "任务",
+      "ui.engine": "Engine",
   "ui.selectionner": "请在左侧栏选择一个任务，或新建一个任务。",
   "ui.reessayer": "重试",
   "ui.erreurChargement": "任务列表加载失败：{motif}",
