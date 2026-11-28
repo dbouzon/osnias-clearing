@@ -265,4 +265,11 @@ CoordLangues["zh"] = {
   "console.jetonsConsommes": "已消耗令牌（入 / 出）",
   "console.version": "版本",
   "console.versionNonCommuniquee": "未提供"
+  "console.specialite": "特长",
+  "console.specialite.mistral": "开放权重、高效率、欧洲主权",
+  "console.specialite.anthropic": "写作、长推理、安全性",
+  "console.specialite.openai": "通用全能、生态广泛",
+  "console.specialite.gemini": "超长上下文、多模态",
+  "console.specialite.deepseek": "推理与数学、低价",
+  "console.specialite.zai": "智能体与代码、成本最低",
 };

@@ -265,4 +265,11 @@ CoordLangues["fr"] = {
   "console.jetonsConsommes": "Jetons consommés (E / S)",
   "console.version": "Version",
   "console.versionNonCommuniquee": "non communiquée"
+  "console.specialite": "Spécialité",
+  "console.specialite.mistral": "modèles ouverts, efficacité, souveraineté européenne",
+  "console.specialite.anthropic": "rédaction, raisonnement long, sûreté",
+  "console.specialite.openai": "généraliste polyvalent, écosystème étendu",
+  "console.specialite.gemini": "contexte très long, multimodal",
+  "console.specialite.deepseek": "raisonnement et mathématiques, prix bas",
+  "console.specialite.zai": "agents et code, coût minimal",
 };

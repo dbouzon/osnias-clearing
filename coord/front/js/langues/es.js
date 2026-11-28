@@ -265,4 +265,11 @@ CoordLangues["es"] = {
   "console.jetonsConsommes": "Tokens consumidos (E / S)",
   "console.version": "Versión",
   "console.versionNonCommuniquee": "no comunicada"
+  "console.specialite": "Especialidad",
+  "console.specialite.mistral": "modelos abiertos, eficiencia, soberanía europea",
+  "console.specialite.anthropic": "redacción, razonamiento largo, seguridad",
+  "console.specialite.openai": "generalista polivalente, ecosistema amplio",
+  "console.specialite.gemini": "contexto muy largo, multimodal",
+  "console.specialite.deepseek": "razonamiento y matemáticas, precios bajos",
+  "console.specialite.zai": "agentes y código, coste mínimo",
 };
