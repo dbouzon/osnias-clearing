@@ -261,11 +261,12 @@ CoordLangues["en"] = {
   "console.erreurs": "errors",
   "app.connexionIndisponible": "No sign-in source is configured yet (Google or GitHub). Sign-in will open soon.",
   "console.etatCharge": "Load status",
-  "console.chargeFaible": "low",
-  "console.chargeModeree": "moderate",
-  "console.chargeElevee": "high",
   "console.chargeInactif": "no calls",
   "console.totalCommande": "Total ordered",
   "console.restant": "Remaining",
-  "console.jetonsConsommes": "Tokens consumed (I / O)"
+  "console.jetonsConsommes": "Tokens consumed (I / O)",
+  "console.rapide": "fast",
+  "console.moyen": "medium",
+  "console.congestionne": "congested"
+
 };

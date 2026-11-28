@@ -55,20 +55,22 @@
     return div;
   }
 
-  /* État de charge du serveur LLM du fournisseur, ESTIMÉ depuis
-   * l'usage COORD réel de la période (aucune métrique serveur
-   * n'est exposée par les API) : latence moyenne et erreurs. */
+  /* État de charge du serveur LLM du fournisseur : LATENCE MOYENNE
+   * réelle de la période (aucune métrique serveur n'est exposée par
+   * les API). Décision du pilote : < 1 s vert (rapide), 1-2 s orange
+   * (moyen), > 2 s rouge (congestionné). Les erreurs ne colorent pas
+   * le badge : elles restent affichées sur la ligne des appels. */
+  function latenceMoyenne(charge) {
+    return charge && charge.duree_totale_ms && charge.appels ? charge.duree_totale_ms / charge.appels : null;
+  }
+
   function badgeCharge(charge) {
     var classe = "neutre", cle = "console.chargeInactif";
-    if (charge) {
-      var lat = charge.duree_totale_ms && charge.appels ? charge.duree_totale_ms / charge.appels : 0;
-      if (charge.erreurs > 0 || lat > 3000) {
-        classe = "bad"; cle = "console.chargeElevee";
-      } else if (lat > 1000) {
-        classe = "ok"; cle = "console.chargeModeree";
-      } else {
-        classe = "ok"; cle = "console.chargeFaible";
-      }
+    var lat = latenceMoyenne(charge);
+    if (lat !== null) {
+      if (lat < 1000) { classe = "ok"; cle = "console.rapide"; }
+      else if (lat <= 2000) { classe = "moyen"; cle = "console.moyen"; }
+      else { classe = "bad"; cle = "console.congestionne"; }
     }
     var b = document.createElement("span");
     b.className = "badge-console " + classe;
@@ -272,7 +274,18 @@
       etat.fournisseurs.forEach(function (c) { noms[c.fournisseur] = c; });
       var charges = {};
       (etat.jetons_missions || []).forEach(function (a) { charges[a.moteur] = a; });
-      FOURNISSEURS.forEach(function (f) {
+      /* Classement du plus rapide au plus lent (décision du pilote) ;
+       * moteurs sans appel réel de la période en fin de liste, tri
+       * alphabétique stable. */
+      var tries = FOURNISSEURS.slice().sort(function (a, b) {
+        var la = latenceMoyenne(charges[a[0]]);
+        var lb = latenceMoyenne(charges[b[0]]);
+        if (la === null && lb === null) { return a[0] < b[0] ? -1 : 1; }
+        if (la === null) { return 1; }
+        if (lb === null) { return -1; }
+        return la - lb;
+      });
+      tries.forEach(function (f) {
         var c = noms[f[0]] || { fournisseur: f[0], etat: "NON_CONFIGUREE" };
         c.nom = f[1]; c.proprietaire = f[2];
         grille.appendChild(carteFournisseur(etat, c, tester, charges[f[0]] || null));

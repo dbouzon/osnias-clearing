@@ -261,11 +261,12 @@ CoordLangues["de"] = {
   "console.erreurs": "Fehler",
   "app.connexionIndisponible": "Es ist noch keine Anmeldequelle konfiguriert (Google oder GitHub). Die Anmeldung wird in Kürze geöffnet.",
   "console.etatCharge": "Lastzustand",
-  "console.chargeFaible": "gering",
-  "console.chargeModeree": "mäßig",
-  "console.chargeElevee": "hoch",
   "console.chargeInactif": "keine Aufrufe",
   "console.totalCommande": "Bestellt gesamt",
   "console.restant": "Verbleibend",
-  "console.jetonsConsommes": "Verbrauchte Tokens (E / A)"
+  "console.jetonsConsommes": "Verbrauchte Tokens (E / A)",
+  "console.rapide": "schnell",
+  "console.moyen": "mittel",
+  "console.congestionne": "überlastet"
+
 };
