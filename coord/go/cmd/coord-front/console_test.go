@@ -120,28 +120,34 @@ func TestConsoleHabilitation(t *testing.T) {
 	api := httptest.NewServer(g.routes())
 	defer api.Close()
 
-	// Anonyme.
+	// M-COORD-ENGINE-02 : lecture PUBLIQUE — anonyme → 200.
 	rep, _ := http.Get(api.URL + "/api/console/etat")
-	if rep.StatusCode != http.StatusUnauthorized {
-		t.Fatalf("anonyme : attendu 401, reçu %d", rep.StatusCode)
+	if rep.StatusCode != http.StatusOK {
+		t.Fatalf("anonyme : attendu 200 (lecture publique), reçu %d", rep.StatusCode)
 	}
 	rep.Body.Close()
 
-	// Connecté NON admin.
+	// Connecté NON admin : lecture publique, drapeau admin=false ;
+	// mais les TESTS POST restent refusés (403 CONSOLE_REFUSEE).
 	c := adminClient(t, g, api, false)
 	s, m, _ := c.req(t, "GET", "/api/console/etat", nil)
+	if s != http.StatusOK || m["admin"] != false {
+		t.Fatalf("non admin : attendu 200 admin=false, reçu %d %v", s, m)
+	}
+	s, m, _ = c.req(t, "POST", "/api/console/test",
+		map[string]any{"fournisseur": "mistral", "type": "dispo"})
 	if s != http.StatusForbidden || m["code"] != "CONSOLE_REFUSEE" {
-		t.Fatalf("non admin : attendu 403 CONSOLE_REFUSEE, reçu %d %v", s, m)
+		t.Fatalf("non admin POST : attendu 403 CONSOLE_REFUSEE, reçu %d %v", s, m)
 	}
 
-	// Admin.
+	// Admin : lecture avec drapeau admin=true.
 	c = adminClient(t, g, api, true)
 	s, m, _ = c.req(t, "GET", "/api/console/etat", nil)
-	if s != http.StatusOK {
-		t.Fatalf("admin : attendu 200, reçu %d %v", s, m)
+	if s != http.StatusOK || m["admin"] != true {
+		t.Fatalf("admin : attendu 200 admin=true, reçu %d %v", s, m)
 	}
 
-	// Console désactivée dans la config.
+	// Console désactivée dans la config : 403 même en lecture publique.
 	g2 := newGateway(configConsoleTest(srv.URL), ".", t.TempDir())
 	g2.console.Activer = false
 	api2 := httptest.NewServer(g2.routes())

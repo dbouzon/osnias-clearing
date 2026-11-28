@@ -1,7 +1,9 @@
 "use strict";
 /* Écran CONSOLE (M-COORD-API-STATUS-01) : supervision des cinq moteurs
- * IA, réservée au pilote/administrateur (contrôle côté serveur : sans
- * session admin, l'API répond 403 et l'écran affiche le refus).
+ * IA. Depuis M-COORD-ENGINE-02 la LECTURE est publique (décision du
+ * pilote, 28/11/2026) ; les boutons de TEST (dépense ou appel réseau)
+ * ne sont affichés qu'à l'admin (drapeau "admin" de /api/console/etat,
+ * contrôle serveur inchangé sur POST).
  * Aucun appel réseau fournisseur depuis le navigateur : tout passe par
  * /api/console/* (côté serveur uniquement). Les logos proviennent de
  * @lobehub/icons-static-svg 1.106.0 (MIT) — attribution conservée dans
@@ -99,7 +101,7 @@
         tester(carte.fournisseur, "reel", bDispo, bReel);
       }
     });
-    pied.appendChild(bDispo); pied.appendChild(bReel);
+    if (etat && etat.admin) { pied.appendChild(bDispo); pied.appendChild(bReel); }
     article.appendChild(pied);
     return article;
   }
@@ -137,8 +139,12 @@
       sel.appendChild(opt);
     });
     sel.addEventListener("change", function () { rafraichir(sel.value); });
-    var bTous = Coord.bouton("console.testTous", function () { testerTous(bTous); }, "principal");
-    barre.appendChild(sel); barre.appendChild(bTous);
+    var bTous = null;
+    if (etat && etat.admin) {
+      bTous = Coord.bouton("console.testTous", function () { testerTous(bTous); }, "principal");
+    }
+    barre.appendChild(sel);
+    if (bTous) { barre.appendChild(bTous); }
     contenu.appendChild(barre);
 
     var notice = Coord.el("p", "console-notice", "console.origine");

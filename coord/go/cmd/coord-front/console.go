@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Console de supervision des cinq moteurs IA (mission
-// M-COORD-API-STATUS-01, spec v2). Réservée au pilote/administrateur.
+// M-COORD-API-STATUS-01, spec v2). Lecture PUBLIQUE depuis
+// M-COORD-ENGINE-02 (décision du pilote, 28/11/2026) ; les TESTS
+// POST restent réservés au pilote/administrateur.
 //
 // Règles implémentées (spec v2, issue #117) :
 //   - fail-closed : section console désactivée par défaut (403
@@ -342,9 +344,15 @@ func (g *gateway) agregerJetons(periode string) ([]agregatMoteur, []agregatMoteu
 // -------------------------------------------------------------------
 
 func (g *gateway) consoleEtat(w http.ResponseWriter, r *http.Request) {
-	if !g.adminSession(w, r) {
+	if !g.regimeConsole().Activer {
+		repondreErreur(w, http.StatusForbidden, "CONSOLE_DESACTIVEE",
+			"console désactivée dans la configuration")
 		return
 	}
+	// M-COORD-ENGINE-02 : lecture PUBLIQUE. admin = simple indication
+	// pour le front (boutons de test) ; les tests POST restent admin.
+	u, _ := g.utilisateurRequete(r)
+	admin := u != nil && u.Admin
 	regime := g.regimeMoteurs()
 	console := g.regimeConsole()
 	periode := r.URL.Query().Get("periode")
@@ -415,6 +423,7 @@ func (g *gateway) consoleEtat(w http.ResponseWriter, r *http.Request) {
 		"jetons_missions":    missions,
 		"jetons_tests":       testsAg,
 		"actualisation_utc":  time.Now().UTC().Format(time.RFC3339),
+		"admin":              admin,
 	}
 	repondreJSON(w, http.StatusOK, reponse)
 }
@@ -777,7 +786,10 @@ func categorieErreurReseau(err error) string {
 // -------------------------------------------------------------------
 
 func (g *gateway) consoleHistorique(w http.ResponseWriter, r *http.Request) {
-	if !g.adminSession(w, r) {
+	// M-COORD-ENGINE-02 : lecture publique (console désactivée = 403).
+	if !g.regimeConsole().Activer {
+		repondreErreur(w, http.StatusForbidden, "CONSOLE_DESACTIVEE",
+			"console désactivée dans la configuration")
 		return
 	}
 	tests := g.lireTests()
