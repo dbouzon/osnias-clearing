@@ -217,6 +217,11 @@ window.Coord = (function () {
     /* Écrans plein cadre : la colonne des missions est masquée. */
     if (h === "#/presentation") { Coord.colonneMissions.masquer(); await ecrans.presentation(effacer()); return; }
     if (h === "#/apropos") { Coord.colonneMissions.masquer(); await ecrans.apropos(effacer()); return; }
+    /* M-COORD-ENGINE-04 : la page Engine est PUBLIQUE (décision pilote
+     * M-COORD-ENGINE-02) — elle doit s'afficher SANS session, le serveur
+     * contrôle déjà seul les données (GET public, POST de test admin).
+     * Le contrôle de session arrive APRÈS cette route. */
+    if (h === "#/engine") { Coord.colonneMissions.masquer(); await ecrans.console(effacer()); return; }
     if (!session) {
       if (h.indexOf("#/mission/") === 0 || h === "#/creation") { /* conserve le hash */ }
       Coord.colonneMissions.masquer();
