@@ -100,6 +100,7 @@ type moteursConf struct {
 	Mistral         fournisseurMoteurConf       `json:"mistral"`
 	Anthropic       fournisseurMoteurConf       `json:"anthropic"`
 	Openai          fournisseurMoteurConf       `json:"openai"`
+	Gemini          fournisseurMoteurConf       `json:"gemini"`
 	Niveaux         map[string]niveauMoteurConf `json:"niveaux"`
 	PlafondAppels   int                         `json:"plafond_appels"`
 	TimeoutCadrage  int                         `json:"timeout_cadrage"`
@@ -150,6 +151,7 @@ func (mc moteursConf) fournisseurs() map[string]fournisseurMoteurConf {
 		"mistral":   mc.Mistral,
 		"anthropic": mc.Anthropic,
 		"openai":    mc.Openai,
+		"gemini":    mc.Gemini,
 	}
 }
 
@@ -377,6 +379,10 @@ func (g *gateway) appelEtape(p *projetDemo, etape, system, demande string) (resu
 			base = "https://api.mistral.ai"
 		case "openai":
 			base = "https://api.openai.com"
+		case "gemini":
+			// M-COORD-API-GEMINI-01 : surface OpenAI-compatible de
+			// l'API Gemini (AI Studio), authentifiee par Bearer.
+			base = "https://generativelanguage.googleapis.com/v1beta/openai"
 		}
 	}
 	timeout := regime.timeout(etape)
@@ -394,6 +400,12 @@ func (g *gateway) appelEtape(p *projetDemo, etape, system, demande string) (resu
 			// Au plus UN nouvel essai en cas d'erreur réseau.
 			essais = 2
 			res, errReseau = appelAnthropic(urlAnthropic, conf.CleAPI, e.Modele, system, demande, timeout)
+		}
+	} else if moteur == "gemini" {
+		res, errReseau = appelGeminiCompatible(base, conf.CleAPI, e.Modele, system, demande, timeout)
+		if errReseau != nil {
+			essais = 2
+			res, errReseau = appelGeminiCompatible(base, conf.CleAPI, e.Modele, system, demande, timeout)
 		}
 	} else {
 		res, errReseau = appelOpenAICompatible(base, conf.CleAPI, e.Modele, system, demande, timeout)
@@ -451,6 +463,24 @@ func appelOpenAICompatible(base, cle, modele, system, demande string, timeout ti
 		"max_tokens": 1024,
 	}
 	return postMoteur(base+"/v1/chat/completions", "Bearer "+cle, corps, timeout)
+}
+
+// ---- Adaptateur Gemini (surface OpenAI-compatible, M-COORD-API-GEMINI-01) ----
+
+// appelGeminiCompatible : meme corps et reponse que l'OpenAI-compatible,
+// chemin /chat/completions de la surface v1beta/openai de Gemini. Toute
+// erreur HTTP (quota 429 compris) remonte comme erreur fournisseur
+// generique (spec v0.2 §3.3), sans traitement dedie.
+func appelGeminiCompatible(base, cle, modele, system, demande string, timeout time.Duration) (resultatMoteur, error) {
+	corps := map[string]any{
+		"model": modele,
+		"messages": []messageMoteur{
+			{Role: "system", Contenu: system},
+			{Role: "user", Contenu: demande},
+		},
+		"max_tokens": 1024,
+	}
+	return postMoteur(strings.TrimSuffix(base, "/")+"/chat/completions", "Bearer "+cle, corps, timeout)
 }
 
 // ---- Adaptateur Anthropic Messages (/v1/messages) --------------------
