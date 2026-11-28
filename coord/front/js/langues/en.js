@@ -264,7 +264,7 @@ CoordLangues["en"] = {
   "console.chargeInactif": "no calls",
   "console.jetonsConsommes": "Tokens consumed (I / O)",
   "console.version": "Version",
-  "console.versionNonCommuniquee": "not disclosed"
+  "console.versionNonCommuniquee": "not disclosed",
   "console.specialite": "Specialty",
   "console.specialite.mistral": "open-weight models, efficiency, European sovereignty",
   "console.specialite.anthropic": "writing, long reasoning, safety",

@@ -264,7 +264,7 @@ CoordLangues["zh"] = {
   "console.chargeInactif": "无调用",
   "console.jetonsConsommes": "已消耗令牌（入 / 出）",
   "console.version": "版本",
-  "console.versionNonCommuniquee": "未提供"
+  "console.versionNonCommuniquee": "未提供",
   "console.specialite": "特长",
   "console.specialite.mistral": "开放权重、高效率、欧洲主权",
   "console.specialite.anthropic": "写作、长推理、安全性",

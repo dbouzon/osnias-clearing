@@ -264,7 +264,7 @@ CoordLangues["fr"] = {
   "console.chargeInactif": "aucun appel",
   "console.jetonsConsommes": "Jetons consommés (E / S)",
   "console.version": "Version",
-  "console.versionNonCommuniquee": "non communiquée"
+  "console.versionNonCommuniquee": "non communiquée",
   "console.specialite": "Spécialité",
   "console.specialite.mistral": "modèles ouverts, efficacité, souveraineté européenne",
   "console.specialite.anthropic": "rédaction, raisonnement long, sûreté",
