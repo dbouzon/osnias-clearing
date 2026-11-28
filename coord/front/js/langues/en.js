@@ -1,4 +1,4 @@
-// COORD client journey — English translation.
+successfully downloaded text file (SHA: 07521641f2fc2b0edb2570f22d5782abe6c3edc4)// COORD client journey — English translation.
 // Imposed format (TestLanguesParite): CoordLangues["en"] = { strict JSON };
 CoordLangues["en"] = {
   "app.sousTitre": "Coordinated intelligence.",
@@ -160,7 +160,8 @@ CoordLangues["en"] = {
   "statut.pastille.encours": "🟢",
   "statut.pastille.cloturee": "🟠",
   "ui.nouvelleMission": "+ New mission",
-  "ui.missions": "Missions",
+  "ui.missions": "Missions",,
+      "ui.engine": "Engine"
   "ui.selectionner": "Select a mission in the left column, or create a new one.",
   "ui.reessayer": "Retry",
   "ui.erreurChargement": "Missions could not be loaded: {motif}",

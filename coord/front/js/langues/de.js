@@ -1,4 +1,4 @@
-// COORD Kundenreise — deutsche Übersetzung.
+successfully downloaded text file (SHA: 59000e579aeddf96b148dbd569ab17c4d7b0bec6)// COORD Kundenreise — deutsche Übersetzung.
 // Vorgeschriebenes Format (TestLanguesParite): CoordLangues["de"] = { striktes JSON };
 CoordLangues["de"] = {
   "app.sousTitre": "Koordinierte Intelligenz.",
@@ -160,7 +160,8 @@ CoordLangues["de"] = {
   "statut.pastille.encours": "🟢",
   "statut.pastille.cloturee": "🟠",
   "ui.nouvelleMission": "+ Neue Mission",
-  "ui.missions": "Missionen",
+  "ui.missions": "Missionen",,
+      "ui.engine": "Engine"
   "ui.selectionner": "Wählen Sie eine Mission in der linken Spalte oder legen Sie eine neue an.",
   "ui.reessayer": "Erneut versuchen",
   "ui.erreurChargement": "Missionen konnten nicht geladen werden: {motif}",

@@ -1,4 +1,4 @@
-// COORD 客户旅程 — 简体中文翻译。
+successfully downloaded text file (SHA: c0eed75a2b4aab4ef3b6bd4bd755e84ec7109b2a)// COORD 客户旅程 — 简体中文翻译。
 // 规定格式（TestLanguesParite）：CoordLangues["zh"] = { 严格 JSON };
 CoordLangues["zh"] = {
   "app.sousTitre": "协调智能。",
@@ -160,7 +160,8 @@ CoordLangues["zh"] = {
   "statut.pastille.encours": "🟢",
   "statut.pastille.cloturee": "🟠",
   "ui.nouvelleMission": "+ 新建任务",
-  "ui.missions": "任务",
+  "ui.missions": "任务",,
+      "ui.engine": "Engine"
   "ui.selectionner": "请在左侧栏选择一个任务，或新建一个任务。",
   "ui.reessayer": "重试",
   "ui.erreurChargement": "任务列表加载失败：{motif}",

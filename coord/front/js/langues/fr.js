@@ -1,4 +1,4 @@
-// COORD parcours client — traduction française (langue de référence).
+successfully downloaded text file (SHA: ded07ae029b89f1f81b5f6cb123587560e9a1635)// COORD parcours client — traduction française (langue de référence).
 // Format imposé (test TestLanguesParite) : CoordLangues["fr"] = { JSON strict };
 CoordLangues["fr"] = {
   "app.sousTitre": "L'intelligence coordonnée.",
@@ -160,7 +160,8 @@ CoordLangues["fr"] = {
   "statut.pastille.encours": "🟢",
   "statut.pastille.cloturee": "🟠",
   "ui.nouvelleMission": "+ Nouvelle mission",
-  "ui.missions": "Missions",
+  "ui.missions": "Missions",,
+      "ui.engine": "Engine"
   "ui.selectionner": "Sélectionnez une mission dans la colonne de gauche, ou créez-en une nouvelle.",
   "ui.reessayer": "Réessayer",
   "ui.erreurChargement": "Les missions n'ont pas pu être chargées : {motif}",

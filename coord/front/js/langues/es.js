@@ -1,4 +1,4 @@
-// Recorrido del cliente de COORD — traducción al español.
+successfully downloaded text file (SHA: 25d22dcd7ce8dd9819fd1307d91a2408358b7a13)// Recorrido del cliente de COORD — traducción al español.
 // Formato impuesto (TestLanguesParite): CoordLangues["es"] = { JSON estricto };
 CoordLangues["es"] = {
   "app.sousTitre": "Inteligencia coordinada.",
@@ -160,7 +160,8 @@ CoordLangues["es"] = {
   "statut.pastille.encours": "🟢",
   "statut.pastille.cloturee": "🟠",
   "ui.nouvelleMission": "+ Nueva misión",
-  "ui.missions": "Misiones",
+  "ui.missions": "Misiones",,
+      "ui.engine": "Engine"
   "ui.selectionner": "Seleccione una misión en la columna izquierda o cree una nueva.",
   "ui.reessayer": "Reintentar",
   "ui.erreurChargement": "No se pudieron cargar las misiones: {motif}",

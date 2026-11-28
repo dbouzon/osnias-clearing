@@ -1,4 +1,4 @@
-"use strict";
+successfully downloaded text file (SHA: 22f85b603639f7daa057d188e3bf312cceb4ae05)"use strict";
 /* COORD parcours client — noyau applicatif (mission M-COORD-FRONT-01).
  * Conventions (plan v2 §5.4) : un module par écran dans l'espace
  * Coord.ecrans, i18n central via Coord.t(cle), aucun style en ligne,
@@ -226,6 +226,9 @@ window.Coord = (function () {
     if (h === "#/creation") { Coord.colonneMissions.masquer(); await ecrans.creation(effacer()); return; }
     /* M-COORD-API-STATUS-01 : console de supervision (admin serveur). */
     if (h === "#/console") { Coord.colonneMissions.masquer(); await ecrans.console(effacer()); return; }
+    /* M-COORD-ENGINE-01 : #/engine = alias public du bouton Engine ; la
+     * console reste contrôlée côté serveur (403 si non admin). */
+    if (h === "#/engine") { Coord.colonneMissions.masquer(); await ecrans.console(effacer()); return; }
     /* Écrans deux volets : colonne des missions visible. */
     const m = h.match(/^#\/mission\/([^/]+)$/);
     if (m) {
@@ -270,6 +273,9 @@ window.Coord = (function () {
     Coord.colonneMissions.init();
     document.getElementById("select-langue").addEventListener("change", function (e) {
       changerLangue(e.target.value);
+    });
+    document.getElementById("btn-engine").addEventListener("click", function () {
+      naviguer("#/engine");
     });
     document.getElementById("btn-compte").addEventListener("click", async function () {
       if (session) {
