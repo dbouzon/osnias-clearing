@@ -8,10 +8,10 @@
 // fail-closed sur nil), en stdlib UNIQUEMENT. Familles de marque COORD
 // depuis M-COORD-ORPHEUS-02 (décision du pilote, 28/11/2026) :
 //
-//   coord_moteurs_appels_total{moteur,modele,niveau,etape,resultat}
-//   coord_moteurs_jetons_entree_total{moteur,modele}
-//   coord_moteurs_jetons_sortie_total{moteur,modele}
-//   coord_moteurs_duree_seconds{moteur,etape} (histogramme)
+//	coord_moteurs_appels_total{moteur,modele,niveau,etape,resultat}
+//	coord_moteurs_jetons_entree_total{moteur,modele}
+//	coord_moteurs_jetons_sortie_total{moteur,modele}
+//	coord_moteurs_duree_seconds{moteur,etape} (histogramme)
 //
 // Exposition /metrics au format texte Prometheus (version 0.0.4),
 // protégée fail-closed : section "metrics" de gateway.json (activer,
@@ -206,7 +206,12 @@ func (g *gateway) exposerMetrics() string {
 		sort.Strings(cles)
 		for _, k := range cles {
 			fmt.Fprintf(&sb, "%s%s %d\n", nom,
-				func() string { if k == "" { return "" } ; return "{" + k + "}" }(),
+				func() string {
+					if k == "" {
+						return ""
+					}
+					return "{" + k + "}"
+				}(),
 				atomic.LoadUint64(famille[k]))
 		}
 	}
