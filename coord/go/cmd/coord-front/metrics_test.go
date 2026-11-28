@@ -90,11 +90,11 @@ func TestMetricsFailClosed(t *testing.T) {
 		t.Fatalf("metrics bon token : attendu 200, reçu %d", s)
 	}
 	for _, attendu := range []string{
-		"# HELP osnias_coord_moteurs_appels_total",
-		"# TYPE osnias_coord_moteurs_appels_total counter",
-		"osnias_coord_moteurs_jetons_entree_total",
-		"osnias_coord_moteurs_jetons_sortie_total",
-		"# TYPE osnias_coord_moteurs_duree_seconds histogram",
+		"# HELP coord_moteurs_appels_total",
+		"# TYPE coord_moteurs_appels_total counter",
+		"coord_moteurs_jetons_entree_total",
+		"coord_moteurs_jetons_sortie_total",
+		"# TYPE coord_moteurs_duree_seconds histogram",
 	} {
 		if !strings.Contains(corps, attendu) {
 			t.Fatalf("exposition : %q absent du rendu", attendu)
@@ -127,17 +127,17 @@ func TestMetricsCompteurAppelReel(t *testing.T) {
 		t.Fatalf("1 appel moteur attendu")
 	}
 	_, corps := obtenirMetrics(t, srv.URL, tokenMetricsTest)
-	ligne := `osnias_coord_moteurs_appels_total{etape="cadrage",modele="haiku-test",moteur="anthropic",niveau="essentiel",resultat="ok"} 1`
+	ligne := `coord_moteurs_appels_total{etape="cadrage",modele="haiku-test",moteur="anthropic",niveau="essentiel",resultat="ok"} 1`
 	if !strings.Contains(corps, ligne) {
 		t.Fatalf("compteur appels ok absent ou faux :\n%s", corps)
 	}
-	if !strings.Contains(corps, `osnias_coord_moteurs_jetons_entree_total{modele="haiku-test",moteur="anthropic"} 11`) {
+	if !strings.Contains(corps, `coord_moteurs_jetons_entree_total{modele="haiku-test",moteur="anthropic"} 11`) {
 		t.Fatalf("jetons entrée attendus (11), exposition :\n%s", corps)
 	}
-	if !strings.Contains(corps, `osnias_coord_moteurs_jetons_sortie_total{modele="haiku-test",moteur="anthropic"} 7`) {
+	if !strings.Contains(corps, `coord_moteurs_jetons_sortie_total{modele="haiku-test",moteur="anthropic"} 7`) {
 		t.Fatalf("jetons sortie attendus (7), exposition :\n%s", corps)
 	}
-	if !strings.Contains(corps, `osnias_coord_moteurs_duree_seconds_count{etape="cadrage",moteur="anthropic"} 1`) {
+	if !strings.Contains(corps, `coord_moteurs_duree_seconds_count{etape="cadrage",moteur="anthropic"} 1`) {
 		t.Fatalf("histogramme durée attendu (_count 1), exposition :\n%s", corps)
 	}
 	// Cohérence compteur/journal : la même source, mêmes valeurs.

@@ -2,15 +2,16 @@
 // ORCID: https://orcid.org/0009-0007-8894-8902
 // SPDX-License-Identifier: Apache-2.0
 
-// Compteurs Orpheus (mission M-COORD-ORPHEUS-01, spec v0.1 FIGÉE) :
+// Compteurs COORD (missions M-COORD-ORPHEUS-01 puis M-COORD-ORPHEUS-02) :
 // instrumentation Prometheus du chemin des moteurs IA, alignée sur la
 // convention Orpheus des connecteurs Osnias (compteurs par familles,
-// fail-closed sur nil), en stdlib UNIQUEMENT :
+// fail-closed sur nil), en stdlib UNIQUEMENT. Familles de marque COORD
+// depuis M-COORD-ORPHEUS-02 (décision du pilote, 28/11/2026) :
 //
-//   osnias_coord_moteurs_appels_total{moteur,modele,niveau,etape,resultat}
-//   osnias_coord_moteurs_jetons_entree_total{moteur,modele}
-//   osnias_coord_moteurs_jetons_sortie_total{moteur,modele}
-//   osnias_coord_moteurs_duree_seconds{moteur,etape} (histogramme)
+//	coord_moteurs_appels_total{moteur,modele,niveau,etape,resultat}
+//	coord_moteurs_jetons_entree_total{moteur,modele}
+//	coord_moteurs_jetons_sortie_total{moteur,modele}
+//	coord_moteurs_duree_seconds{moteur,etape} (histogramme)
 //
 // Exposition /metrics au format texte Prometheus (version 0.0.4),
 // protégée fail-closed : section "metrics" de gateway.json (activer,
@@ -205,19 +206,24 @@ func (g *gateway) exposerMetrics() string {
 		sort.Strings(cles)
 		for _, k := range cles {
 			fmt.Fprintf(&sb, "%s%s %d\n", nom,
-				func() string { if k == "" { return "" } ; return "{" + k + "}" }(),
+				func() string {
+					if k == "" {
+						return ""
+					}
+					return "{" + k + "}"
+				}(),
 				atomic.LoadUint64(famille[k]))
 		}
 	}
-	rendre("osnias_coord_moteurs_appels_total",
+	rendre("coord_moteurs_appels_total",
 		"Appels moteurs IA (resultat: ok, erreur, refuse).", "counter", c.appels)
-	rendre("osnias_coord_moteurs_jetons_entree_total",
+	rendre("coord_moteurs_jetons_entree_total",
 		"Jetons d'entrée facturés par moteur.", "counter", c.jetonsEntree)
-	rendre("osnias_coord_moteurs_jetons_sortie_total",
+	rendre("coord_moteurs_jetons_sortie_total",
 		"Jetons de sortie facturés par moteur.", "counter", c.jetonsSortie)
 
 	// Histogramme de durée.
-	nomH := "osnias_coord_moteurs_duree_seconds"
+	nomH := "coord_moteurs_duree_seconds"
 	fmt.Fprintf(&sb, "# HELP %s Durée des appels moteurs IA.\n# TYPE %s histogram\n", nomH, nomH)
 	cles := make([]string, 0, len(c.durees))
 	for k := range c.durees {
