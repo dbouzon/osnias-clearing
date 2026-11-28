@@ -56,6 +56,27 @@
     return b;
   }
 
+  /* Version exacte du modèle : identifiant RETOURNÉ par l'API lors du
+   * dernier test réel réussi du modèle de la grille (l'alias configuré
+   * peut différer de la version servie, ex. gpt-4o-mini-2024-07-18).
+   * Source : champ identifiant_retourne de la grille de /api/console/etat ;
+   * « non communiquée » si aucun test réel n'a encore fixé la version. */
+  function versionRetournee(etat, carte) {
+    if (!etat || !etat.grille) { return null; }
+    var cherche = carte.modele_teste;
+    for (var niveau in etat.grille) {
+      var etapes = etat.grille[niveau];
+      for (var etape in etapes) {
+        var e = etapes[etape];
+        if (e && e.moteur === carte.fournisseur &&
+            (!cherche || e.modele === cherche) && e.identifiant_retourne) {
+          return e.identifiant_retourne;
+        }
+      }
+    }
+    return null;
+  }
+
   function blocCharge(carte, charge) {
     var div = document.createElement("div");
     div.className = "console-charge";
@@ -113,6 +134,8 @@
     var corps = document.createElement("div");
     corps.className = "console-carte-corps";
     corps.appendChild(ligne(Coord.t("console.modeleTeste"), carte.modele_teste || "—"));
+    corps.appendChild(ligne(Coord.t("console.version"),
+      versionRetournee(etat, carte) || Coord.t("console.versionNonCommuniquee")));
     corps.appendChild(ligne(Coord.t("console.active"),
       carte.active ? Coord.t("console.oui") : Coord.t("console.non") +
       (carte.cle_presente ? "" : " (" + Coord.t("console.cleAbsente") + ")")));

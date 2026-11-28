@@ -262,5 +262,7 @@ CoordLangues["zh"] = {
   "console.chargeModeree": "中等",
   "console.chargeElevee": "高",
   "console.chargeInactif": "无调用",
-  "console.jetonsConsommes": "已消耗令牌（入 / 出）"
+  "console.jetonsConsommes": "已消耗令牌（入 / 出）",
+  "console.version": "版本",
+  "console.versionNonCommuniquee": "未提供"
 };

@@ -262,5 +262,7 @@ CoordLangues["fr"] = {
   "console.chargeModeree": "modérée",
   "console.chargeElevee": "élevée",
   "console.chargeInactif": "aucun appel",
-  "console.jetonsConsommes": "Jetons consommés (E / S)"
+  "console.jetonsConsommes": "Jetons consommés (E / S)",
+  "console.version": "Version",
+  "console.versionNonCommuniquee": "non communiquée"
 };
