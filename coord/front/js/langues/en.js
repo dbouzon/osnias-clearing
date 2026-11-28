@@ -237,9 +237,6 @@ CoordLangues["en"] = {
   "console.cleAbsente": "no key",
   "console.dernierTest": "Last check",
   "console.jamaisTeste": "never",
-  "console.contratQuota": "Quota",
-  "console.contratConsomme": "Used",
-  "console.contratNonRenseigne": "Contract not provided",
   "console.traitement": "Testing…",
   "console.refusee": "Console restricted to the pilot (administrator login required).",
   "console.erreur": "Could not load the console state.",
@@ -261,12 +258,9 @@ CoordLangues["en"] = {
   "console.erreurs": "errors",
   "app.connexionIndisponible": "No sign-in source is configured yet (Google or GitHub). Sign-in will open soon.",
   "console.etatCharge": "Load status",
+  "console.chargeFaible": "low",
+  "console.chargeModeree": "moderate",
+  "console.chargeElevee": "high",
   "console.chargeInactif": "no calls",
-  "console.totalCommande": "Total ordered",
-  "console.restant": "Remaining",
-  "console.jetonsConsommes": "Tokens consumed (I / O)",
-  "console.rapide": "fast",
-  "console.moyen": "medium",
-  "console.congestionne": "congested"
-
+  "console.jetonsConsommes": "Tokens consumed (I / O)"
 };

@@ -237,9 +237,6 @@ CoordLangues["zh"] = {
   "console.cleAbsente": "缺少密钥",
   "console.dernierTest": "上次检查",
   "console.jamaisTeste": "从未",
-  "console.contratQuota": "配额",
-  "console.contratConsomme": "已用",
-  "console.contratNonRenseigne": "合同未提供",
   "console.traitement": "测试中…",
   "console.refusee": "控制台仅供飞行员使用（需管理员登录）。",
   "console.erreur": "无法加载控制台状态。",
@@ -261,12 +258,9 @@ CoordLangues["zh"] = {
   "console.erreurs": "错误",
   "app.connexionIndisponible": "尚未配置任何登录来源（Google 或 GitHub）。登录功能即将开放。",
   "console.etatCharge": "负载状态",
+  "console.chargeFaible": "低",
+  "console.chargeModeree": "中等",
+  "console.chargeElevee": "高",
   "console.chargeInactif": "无调用",
-  "console.totalCommande": "已购总量",
-  "console.restant": "剩余",
-  "console.jetonsConsommes": "已消耗令牌（入 / 出）",
-  "console.rapide": "快",
-  "console.moyen": "中等",
-  "console.congestionne": "拥堵"
-
+  "console.jetonsConsommes": "已消耗令牌（入 / 出）"
 };

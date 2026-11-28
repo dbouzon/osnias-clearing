@@ -35,73 +35,25 @@
     return p;
   }
 
-  function blocContrat(carte) {
-    var c = carte.contrat;
-    var div = document.createElement("div");
-    div.className = "console-contrat";
-    if (!c) {
-      div.textContent = Coord.t("console.contratNonRenseigne");
-      return div;
-    }
-    var texte = Coord.t("console.contratQuota") + " : " +
-      (c.quota === null ? Coord.t("console.contratNonRenseigne") : c.quota) +
-      (c.type === "credit" ? " " + (c.devise || "") : "");
-    if (c.periode) { texte += " / " + c.periode; }
-    if (c.consomme !== null && c.consomme !== undefined) {
-      texte += " · " + Coord.t("console.contratConsomme") + " : " + c.consomme;
-    }
-    texte += " (" + c.source + ", " + c.date_source + ")";
-    div.textContent = texte;
-    return div;
-  }
-
-  /* État de charge du serveur LLM du fournisseur : LATENCE MOYENNE
-   * réelle de la période (aucune métrique serveur n'est exposée par
-   * les API). Décision du pilote : < 1 s vert (rapide), 1-2 s orange
-   * (moyen), > 2 s rouge (congestionné). Les erreurs ne colorent pas
-   * le badge : elles restent affichées sur la ligne des appels. */
-  function latenceMoyenne(charge) {
-    return charge && charge.duree_totale_ms && charge.appels ? charge.duree_totale_ms / charge.appels : null;
-  }
-
+  /* État de charge du serveur LLM du fournisseur, ESTIMÉ depuis
+   * l'usage COORD réel de la période (aucune métrique serveur
+   * n'est exposée par les API) : latence moyenne et erreurs. */
   function badgeCharge(charge) {
     var classe = "neutre", cle = "console.chargeInactif";
-    var lat = latenceMoyenne(charge);
-    if (lat !== null) {
-      if (lat < 1000) { classe = "ok"; cle = "console.rapide"; }
-      else if (lat <= 2000) { classe = "moyen"; cle = "console.moyen"; }
-      else { classe = "bad"; cle = "console.congestionne"; }
+    if (charge) {
+      var lat = charge.duree_totale_ms && charge.appels ? charge.duree_totale_ms / charge.appels : 0;
+      if (charge.erreurs > 0 || lat > 3000) {
+        classe = "bad"; cle = "console.chargeElevee";
+      } else if (lat > 1000) {
+        classe = "ok"; cle = "console.chargeModeree";
+      } else {
+        classe = "ok"; cle = "console.chargeFaible";
+      }
     }
     var b = document.createElement("span");
     b.className = "badge-console " + classe;
     b.textContent = Coord.t(cle);
     return b;
-  }
-
-  /* Total commandé / restant : depuis le contrat déclaratif
-   * (console.contrats de gateway.json) et la consommation réelle
-   * de la période (journal). Non renseigné tant que le pilote
-   * n'a pas fixé les quotas. */
-  function ligneTotalRestant(carte, charge) {
-    var div = document.createElement("div");
-    var consomme = charge ? (charge.jetons_entree + charge.jetons_sortie) : 0;
-    var quota = carte.contrat && carte.contrat.quota;
-    var pT = document.createElement("p");
-    pT.className = "console-paire";
-    var sT = document.createElement("span");
-    sT.textContent = Coord.t("console.totalCommande");
-    var vT = document.createElement("span");
-    vT.textContent = quota ? String(quota) : Coord.t("console.contratNonRenseigne");
-    pT.appendChild(sT); pT.appendChild(vT);
-    var pR = document.createElement("p");
-    pR.className = "console-paire";
-    var sR = document.createElement("span");
-    sR.textContent = Coord.t("console.restant");
-    var vR = document.createElement("span");
-    vR.textContent = quota ? String(Math.max(0, quota - consomme)) : Coord.t("console.contratNonRenseigne");
-    pR.appendChild(sR); pR.appendChild(vR);
-    div.appendChild(pT); div.appendChild(pR);
-    return div;
   }
 
   function blocCharge(carte, charge) {
@@ -123,7 +75,6 @@
       vide.className = "console-paire";
       vide.textContent = Coord.t("console.aucunAppel");
       div.appendChild(vide);
-      div.appendChild(ligneTotalRestant(carte, charge));
       return div;
     }
     div.appendChild(ligne(Coord.t("console.appelsReels"),
@@ -134,7 +85,6 @@
       (charge.duree_totale_ms && charge.appels ? Math.round(charge.duree_totale_ms / charge.appels) : 0) + " ms"));
     div.appendChild(ligne(Coord.t("console.dernierAppel"),
       charge.dernier_appel_utc || Coord.t("console.jamaisTeste")));
-    div.appendChild(ligneTotalRestant(carte, charge));
     return div;
   }
 
@@ -171,7 +121,6 @@
       dernier ? (dernier.instant_utc + (dernier.categorie ? " · " + dernier.categorie : "")) :
         Coord.t("console.jamaisTeste")));
     corps.appendChild(blocCharge(carte, charge));
-    corps.appendChild(blocContrat(carte));
     article.appendChild(corps);
 
     var pied = document.createElement("div");
@@ -274,18 +223,7 @@
       etat.fournisseurs.forEach(function (c) { noms[c.fournisseur] = c; });
       var charges = {};
       (etat.jetons_missions || []).forEach(function (a) { charges[a.moteur] = a; });
-      /* Classement du plus rapide au plus lent (décision du pilote) ;
-       * moteurs sans appel réel de la période en fin de liste, tri
-       * alphabétique stable. */
-      var tries = FOURNISSEURS.slice().sort(function (a, b) {
-        var la = latenceMoyenne(charges[a[0]]);
-        var lb = latenceMoyenne(charges[b[0]]);
-        if (la === null && lb === null) { return a[0] < b[0] ? -1 : 1; }
-        if (la === null) { return 1; }
-        if (lb === null) { return -1; }
-        return la - lb;
-      });
-      tries.forEach(function (f) {
+      FOURNISSEURS.forEach(function (f) {
         var c = noms[f[0]] || { fournisseur: f[0], etat: "NON_CONFIGUREE" };
         c.nom = f[1]; c.proprietaire = f[2];
         grille.appendChild(carteFournisseur(etat, c, tester, charges[f[0]] || null));

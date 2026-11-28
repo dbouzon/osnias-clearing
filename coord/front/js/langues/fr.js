@@ -237,9 +237,6 @@ CoordLangues["fr"] = {
   "console.cleAbsente": "clé absente",
   "console.dernierTest": "Dernier contrôle",
   "console.jamaisTeste": "jamais",
-  "console.contratQuota": "Quota",
-  "console.contratConsomme": "Consommé",
-  "console.contratNonRenseigne": "Contrat non renseigné",
   "console.traitement": "Test en cours…",
   "console.refusee": "Console réservée au pilote (connexion administrateur requise).",
   "console.erreur": "Impossible de charger l'état de la console.",
@@ -261,12 +258,9 @@ CoordLangues["fr"] = {
   "console.erreurs": "erreurs",
   "app.connexionIndisponible": "Aucune source de connexion n'est encore configurée (Google ou GitHub). La connexion sera ouverte prochainement.",
   "console.etatCharge": "État de charge",
+  "console.chargeFaible": "faible",
+  "console.chargeModeree": "modérée",
+  "console.chargeElevee": "élevée",
   "console.chargeInactif": "aucun appel",
-  "console.totalCommande": "Total commandé",
-  "console.restant": "Restant",
-  "console.jetonsConsommes": "Jetons consommés (E / S)",
-  "console.rapide": "rapide",
-  "console.moyen": "moyen",
-  "console.congestionne": "congestionné"
-
+  "console.jetonsConsommes": "Jetons consommés (E / S)"
 };
