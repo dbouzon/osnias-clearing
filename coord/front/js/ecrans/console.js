@@ -55,6 +55,53 @@
     return div;
   }
 
+  /* État de charge du serveur LLM du fournisseur, ESTIMÉ depuis
+   * l'usage COORD réel de la période (aucune métrique serveur
+   * n'est exposée par les API) : latence moyenne et erreurs. */
+  function badgeCharge(charge) {
+    var classe = "neutre", cle = "console.chargeInactif";
+    if (charge) {
+      var lat = charge.duree_totale_ms && charge.appels ? charge.duree_totale_ms / charge.appels : 0;
+      if (charge.erreurs > 0 || lat > 3000) {
+        classe = "bad"; cle = "console.chargeElevee";
+      } else if (lat > 1000) {
+        classe = "ok"; cle = "console.chargeModeree";
+      } else {
+        classe = "ok"; cle = "console.chargeFaible";
+      }
+    }
+    var b = document.createElement("span");
+    b.className = "badge-console " + classe;
+    b.textContent = Coord.t(cle);
+    return b;
+  }
+
+  /* Total commandé / restant : depuis le contrat déclaratif
+   * (console.contrats de gateway.json) et la consommation réelle
+   * de la période (journal). Non renseigné tant que le pilote
+   * n'a pas fixé les quotas. */
+  function ligneTotalRestant(carte, charge) {
+    var div = document.createElement("div");
+    var consomme = charge ? (charge.jetons_entree + charge.jetons_sortie) : 0;
+    var quota = carte.contrat && carte.contrat.quota;
+    var pT = document.createElement("p");
+    pT.className = "console-paire";
+    var sT = document.createElement("span");
+    sT.textContent = Coord.t("console.totalCommande");
+    var vT = document.createElement("span");
+    vT.textContent = quota ? String(quota) : Coord.t("console.contratNonRenseigne");
+    pT.appendChild(sT); pT.appendChild(vT);
+    var pR = document.createElement("p");
+    pR.className = "console-paire";
+    var sR = document.createElement("span");
+    sR.textContent = Coord.t("console.restant");
+    var vR = document.createElement("span");
+    vR.textContent = quota ? String(Math.max(0, quota - consomme)) : Coord.t("console.contratNonRenseigne");
+    pR.appendChild(sR); pR.appendChild(vR);
+    div.appendChild(pT); div.appendChild(pR);
+    return div;
+  }
+
   function blocCharge(carte, charge) {
     var div = document.createElement("div");
     div.className = "console-charge";
@@ -62,21 +109,30 @@
     t.className = "console-charge-titre";
     t.textContent = Coord.t("console.charge");
     div.appendChild(t);
+    var ligneCharge = document.createElement("p");
+    ligneCharge.className = "console-paire";
+    var sC = document.createElement("span");
+    sC.textContent = Coord.t("console.etatCharge");
+    ligneCharge.appendChild(sC);
+    ligneCharge.appendChild(badgeCharge(charge));
+    div.appendChild(ligneCharge);
     if (!charge) {
       var vide = document.createElement("p");
       vide.className = "console-paire";
       vide.textContent = Coord.t("console.aucunAppel");
       div.appendChild(vide);
+      div.appendChild(ligneTotalRestant(carte, charge));
       return div;
     }
     div.appendChild(ligne(Coord.t("console.appelsReels"),
       charge.appels + (charge.erreurs ? " (" + charge.erreurs + " " + Coord.t("console.erreurs") + ")" : "")));
-    div.appendChild(ligne(Coord.t("console.jetonsEntree"), String(charge.jetons_entree)));
-    div.appendChild(ligne(Coord.t("console.jetonsSortie"), String(charge.jetons_sortie)));
+    div.appendChild(ligne(Coord.t("console.jetonsConsommes"),
+      (charge.jetons_entree + charge.jetons_sortie) + " (" + charge.jetons_entree + " / " + charge.jetons_sortie + ")"));
     div.appendChild(ligne(Coord.t("console.latenceMoyenne"),
       (charge.duree_totale_ms && charge.appels ? Math.round(charge.duree_totale_ms / charge.appels) : 0) + " ms"));
     div.appendChild(ligne(Coord.t("console.dernierAppel"),
       charge.dernier_appel_utc || Coord.t("console.jamaisTeste")));
+    div.appendChild(ligneTotalRestant(carte, charge));
     return div;
   }
 

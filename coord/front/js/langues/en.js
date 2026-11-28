@@ -259,5 +259,13 @@ CoordLangues["en"] = {
   "console.dernierAppel": "Last real call",
   "console.aucunAppel": "No real call recorded in the period.",
   "console.erreurs": "errors",
-  "app.connexionIndisponible": "No sign-in source is configured yet (Google or GitHub). Sign-in will open soon."
+  "app.connexionIndisponible": "No sign-in source is configured yet (Google or GitHub). Sign-in will open soon.",
+  "console.etatCharge": "Load status",
+  "console.chargeFaible": "low",
+  "console.chargeModeree": "moderate",
+  "console.chargeElevee": "high",
+  "console.chargeInactif": "no calls",
+  "console.totalCommande": "Total ordered",
+  "console.restant": "Remaining",
+  "console.jetonsConsommes": "Tokens consumed (I / O)"
 };

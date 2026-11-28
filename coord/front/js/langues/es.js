@@ -259,5 +259,13 @@ CoordLangues["es"] = {
   "console.dernierAppel": "Última llamada real",
   "console.aucunAppel": "Ninguna llamada real registrada en el periodo.",
   "console.erreurs": "errores",
-  "app.connexionIndisponible": "Aún no hay ninguna fuente de conexión configurada (Google o GitHub). El acceso se abrirá próximamente."
+  "app.connexionIndisponible": "Aún no hay ninguna fuente de conexión configurada (Google o GitHub). El acceso se abrirá próximamente.",
+  "console.etatCharge": "Estado de carga",
+  "console.chargeFaible": "baja",
+  "console.chargeModeree": "moderada",
+  "console.chargeElevee": "alta",
+  "console.chargeInactif": "sin llamadas",
+  "console.totalCommande": "Total contratado",
+  "console.restant": "Restante",
+  "console.jetonsConsommes": "Tokens consumidos (E / S)"
 };
